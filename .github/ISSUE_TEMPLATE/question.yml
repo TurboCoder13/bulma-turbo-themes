@@ -1,0 +1,30 @@
+---
+name: Question
+description: Ask a question about this project
+labels: [question, needs-triage]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context / Goal
+  - type: input
+    id: env-os
+    attributes:
+      label: OS version
+  - type: input
+    id: env-node
+    attributes:
+      label: Node version
+  - type: checkboxes
+    id: research
+    attributes:
+      label: Research done
+      options:
+        - label: I checked the docs
+        - label: I searched existing issues
