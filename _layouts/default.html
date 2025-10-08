@@ -23,19 +23,19 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link
       rel="icon"
-      type="image/svg+xml"
-      href="{{ '/assets/img/@bulma-logo.svg' | relative_url }}"
+      type="image/png"
+      href="{{ '/assets/img/bulma-logo.png' | relative_url }}"
       media="(prefers-color-scheme: light)"
     />
     <link
       rel="icon"
-      type="image/svg+xml"
-      href="{{ '/assets/img/@bulma-logo-dark.svg' | relative_url }}"
+      type="image/png"
+      href="{{ '/assets/img/bulma-logo-dark.png' | relative_url }}"
       media="(prefers-color-scheme: dark)"
     />
     <link
       rel="mask-icon"
-      href="{{ '/assets/img/@bulma-logo.svg' | relative_url }}"
+      href="{{ '/assets/img/bulma-logo.png' | relative_url }}"
       color="#111827"
     />
     <link
@@ -58,6 +58,14 @@
     <link id="theme-flavor-css" rel="stylesheet" href="#" />
     <link rel="stylesheet" href="{{ '/assets/css/custom.css' | relative_url }}" />
     <script type="module" src="{{ '/dist/index.js' | relative_url }}"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Initialize navbar highlighting
+        if (window.initNavbar) {
+          window.initNavbar(document);
+        }
+      });
+    </script>
   </head>
   <body>
     <nav class="navbar is-spaced" role="navigation" aria-label="main navigation">
@@ -106,7 +114,6 @@
                     aria-label="Theme"
                   >
                     <span class="icon is-small" id="theme-flavor-trigger-icon"></span>
-                    <span id="theme-flavor-trigger-label"></span>
                   </button>
                 </div>
                 <div class="dropdown-menu" id="theme-flavor-menu" role="menu">
