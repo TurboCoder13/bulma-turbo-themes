@@ -8,7 +8,7 @@
 # Quick CI (skips cleanup and Lighthouse)
 npm run ci:quick
 
-# Full CI (includes Lighthouse performance analysis)
+# Full CI (includes Lighthouse performance analysis via npx)
 npm run ci:full
 
 # Default CI (same as quick)
@@ -50,8 +50,9 @@ npm run ci:docker:full
 
 ### Dependencies Added
 
-- `@lhci/cli` - Lighthouse CI tool
 - `@catppuccin/palette` - Theme palette data
+  - Note: Lighthouse CI is executed via `npx @lhci/cli@latest` and is not
+    installed as a devDependency to avoid deprecated transitive packages.
 
 ## 🎯 Usage Patterns
 
