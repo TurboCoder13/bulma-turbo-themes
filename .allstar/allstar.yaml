@@ -1,0 +1,19 @@
+# Allstar Configuration for bulma-turbo-themes
+# This file configures the Allstar GitHub App for continuous security monitoring
+# See: https://github.com/ossf/allstar
+
+optConfig:
+  # Use opt-out strategy: enable Allstar on all repositories by default
+  optOutStrategy: true
+  # Disable repository override to enforce policies consistently
+  disableRepoOverride: true
+
+# Use 'allstar' label for all issues created by Allstar
+issueLabel: allstar
+
+# Custom footer for issues created by Allstar
+issueFooter: |
+  ---
+  This issue was created by [Allstar](https://github.com/ossf/allstar), a security policy enforcement tool.
+
+  If you believe this is a false positive, please contact the repository maintainers.
