@@ -1,0 +1,22 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "packageRules": [
+    {
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "branch"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "pinDigests": true,
+      "automerge": true,
+      "automergeType": "branch"
+    }
+  ],
+  "schedule": ["after 22:00", "before 23:00"],
+  "timezone": "UTC",
+  "labels": ["dependencies"],
+  "semanticCommits": "enabled"
+}
