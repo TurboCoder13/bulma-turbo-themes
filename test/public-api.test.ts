@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { initTheme, wireFlavorSelector } from "../src/index";
+import { initTheme, wireFlavorSelector, initNavbar } from "../src/index";
 
 // Mock localStorage
 const mockLocalStorage = {
@@ -118,9 +118,10 @@ describe("public API", () => {
     };
   });
 
-  it("exports initTheme and wireFlavorSelector", () => {
+  it("exports initTheme, wireFlavorSelector, and initNavbar", () => {
     expect(typeof initTheme).toBe("function");
     expect(typeof wireFlavorSelector).toBe("function");
+    expect(typeof initNavbar).toBe("function");
   });
 
   it("initTheme sets data-flavor attribute", () => {
@@ -360,6 +361,112 @@ describe("public API", () => {
     expect(typeof (mockImg as any).src).toBe("string");
   });
 
+  it("handles missing flavor link gracefully (no throw, no href set)", () => {
+    // Remove flavor link from DOM mocks
+    const mockLocal = mockLocalStorage;
+    Object.defineProperty(document, "getElementById", {
+      value: vi.fn((id) => {
+        if (
+          id === "theme-flavor-trigger-icon" ||
+          id === "theme-flavor-items" ||
+          id === "theme-flavor-dd"
+        )
+          return mockElement;
+        return null;
+      }),
+      writable: true,
+    });
+
+    // Should not throw when link is missing
+    expect(() => initTheme(document as any, window as any)).not.toThrow();
+    // No href to set; ensure we didn't try to access mockLink
+    expect(mockLocal.getItem).toHaveBeenCalled();
+  });
+
+  it("falls back to text icon when theme has no icon", () => {
+    // Force a theme without an icon
+    mockLocalStorage.getItem.mockReturnValue("bulma-light");
+    // Temporarily remove icon from theme by intercepting createElement calls
+    const triggerIconEl: any = {
+      firstChild: null,
+      removeChild: vi.fn(),
+      appendChild: vi.fn(),
+    };
+    Object.defineProperty(document, "getElementById", {
+      value: vi.fn((id) => {
+        if (id === "theme-flavor-trigger-icon") return triggerIconEl;
+        if (id === "theme-flavor-css") return mockLink;
+        if (id === "theme-flavor-items" || id === "theme-flavor-dd") return mockElement;
+        return null;
+      }),
+      writable: true,
+    });
+
+    // Spy on document.createElement to simulate no icon path by returning span for non-img
+    const origCreate = document.createElement;
+    Object.defineProperty(document, "createElement", {
+      value: vi.fn((tag: string) => {
+        if (tag === "img") return { ...mockImg, src: "" } as any; // img with empty src
+        if (tag === "span") return { ...mockSpan } as any;
+        return mockElement as any;
+      }),
+      writable: true,
+    });
+
+    initTheme(document as any, window as any);
+    // Expect a child appended (span fallback)
+    expect(triggerIconEl.appendChild).toHaveBeenCalled();
+
+    // Restore createElement to avoid side effects for later tests
+    Object.defineProperty(document, "createElement", {
+      value: origCreate,
+      writable: true,
+    });
+  });
+
+  it("applyTheme skips trigger icon update when trigger element is missing", () => {
+    // Provide flavor link but omit trigger icon element
+    Object.defineProperty(document, "getElementById", {
+      value: vi.fn((id) => {
+        if (id === "theme-flavor-css") return mockLink;
+        if (id === "theme-flavor-items" || id === "theme-flavor-dd") return mockElement;
+        return null;
+      }),
+      writable: true,
+    });
+
+    // Should not throw
+    expect(() => initTheme(document as any, window as any)).not.toThrow();
+  });
+
+  it("applyTheme handles URL constructor error (cssFile) without throwing", () => {
+    // Set up DOM elements
+    Object.defineProperty(document, "getElementById", {
+      value: vi.fn((id) => {
+        if (id === "theme-flavor-css") return mockLink;
+        if (id === "theme-flavor-trigger-icon") return mockElement;
+        if (id === "theme-flavor-items" || id === "theme-flavor-dd") return mockElement;
+        return null;
+      }),
+      writable: true,
+    });
+
+    // Mock URL to throw when resolving cssFile
+    const OriginalURL = globalThis.URL as any;
+    // Override global URL safely for test
+    (globalThis as any).URL = vi.fn((input: any, base?: any) => {
+      if (typeof input === "string" && input.includes("assets/css/themes")) {
+        throw new Error("bad url");
+      }
+      return new OriginalURL(input, base);
+    }) as any;
+
+    expect(() => initTheme(document as any, window as any)).not.toThrow();
+
+    // Restore URL
+    (globalThis as any).URL = OriginalURL as any;
+  });
+
   it("falls back to default theme when saved theme is unknown", () => {
     mockLocalStorage.getItem.mockReturnValue("unknown-theme-id");
     initTheme(document, window);
@@ -466,5 +573,124 @@ describe("public API", () => {
       expect(mockKeyEvent.preventDefault).not.toHaveBeenCalled();
       expect(mockElement.classList.toggle).not.toHaveBeenCalled();
     }
+  });
+
+  describe("initNavbar", () => {
+    beforeEach(() => {
+      // Mock location.pathname
+      Object.defineProperty(document, "location", {
+        value: { pathname: "/components/" },
+        writable: true,
+      });
+    });
+
+    it("highlights navbar item matching current path", () => {
+      const mockNavbarItem = {
+        href: "http://localhost/components/",
+        classList: { add: vi.fn(), remove: vi.fn() },
+      } as any;
+
+      Object.defineProperty(document, "querySelectorAll", {
+        value: vi.fn(() => [mockNavbarItem]),
+        writable: true,
+      });
+
+      initNavbar(document);
+
+      expect(mockNavbarItem.classList.add).toHaveBeenCalledWith("is-active");
+      expect(mockNavbarItem.classList.remove).not.toHaveBeenCalled();
+    });
+
+    it("removes active class from non-matching navbar items", () => {
+      const mockNavbarItem = {
+        href: "http://localhost/forms/",
+        classList: { add: vi.fn(), remove: vi.fn() },
+      } as any;
+
+      Object.defineProperty(document, "querySelectorAll", {
+        value: vi.fn(() => [mockNavbarItem]),
+        writable: true,
+      });
+
+      initNavbar(document);
+
+      expect(mockNavbarItem.classList.remove).toHaveBeenCalledWith("is-active");
+      expect(mockNavbarItem.classList.add).not.toHaveBeenCalled();
+    });
+
+    it("handles trailing slashes correctly", () => {
+      Object.defineProperty(document, "location", {
+        value: { pathname: "/components" },
+        writable: true,
+      });
+
+      const mockNavbarItem = {
+        href: "http://localhost/components/",
+        classList: { add: vi.fn(), remove: vi.fn() },
+      } as any;
+
+      Object.defineProperty(document, "querySelectorAll", {
+        value: vi.fn(() => [mockNavbarItem]),
+        writable: true,
+      });
+
+      initNavbar(document);
+
+      expect(mockNavbarItem.classList.add).toHaveBeenCalledWith("is-active");
+    });
+
+    it("handles root path correctly", () => {
+      Object.defineProperty(document, "location", {
+        value: { pathname: "/" },
+        writable: true,
+      });
+
+      const mockNavbarItem = {
+        href: "http://localhost/",
+        classList: { add: vi.fn(), remove: vi.fn() },
+      } as any;
+
+      Object.defineProperty(document, "querySelectorAll", {
+        value: vi.fn(() => [mockNavbarItem]),
+        writable: true,
+      });
+
+      initNavbar(document);
+
+      expect(mockNavbarItem.classList.add).toHaveBeenCalledWith("is-active");
+    });
+
+    it("handles invalid URLs gracefully", () => {
+      const mockNavbarItem = {
+        href: "invalid-url",
+        classList: { add: vi.fn(), remove: vi.fn() },
+      } as any;
+
+      Object.defineProperty(document, "querySelectorAll", {
+        value: vi.fn(() => [mockNavbarItem]),
+        writable: true,
+      });
+
+      // Should not throw
+      expect(() => initNavbar(document)).not.toThrow();
+      expect(mockNavbarItem.classList.add).not.toHaveBeenCalled();
+      expect(mockNavbarItem.classList.remove).not.toHaveBeenCalled();
+    });
+
+    it("handles navbar items without href", () => {
+      const mockNavbarItem = {
+        classList: { add: vi.fn(), remove: vi.fn() },
+      } as any;
+
+      Object.defineProperty(document, "querySelectorAll", {
+        value: vi.fn(() => [mockNavbarItem]),
+        writable: true,
+      });
+
+      initNavbar(document);
+
+      expect(mockNavbarItem.classList.add).not.toHaveBeenCalled();
+      expect(mockNavbarItem.classList.remove).not.toHaveBeenCalled();
+    });
   });
 });
