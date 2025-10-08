@@ -1,0 +1,11 @@
+{
+  // Use defaults; relax rules to avoid large doc rewrites
+  "default": true,
+  "MD013": false,
+  "MD024": false,
+  "MD025": false,
+  "MD033": false,
+  "MD034": false,
+  "MD040": false,
+  "MD041": false,
+}
