@@ -1,0 +1,3 @@
+en:
+  theme_label: "Theme"
+  current_theme_title: "Current Theme: %{label}"

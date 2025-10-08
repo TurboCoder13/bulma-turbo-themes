@@ -1,0 +1,45 @@
+# Branch Protection Policy
+# Ensures that critical branches have appropriate protection settings enabled
+# See: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches
+
+optConfig:
+  # Enable this policy on all repositories
+  optOutStrategy: true
+  # Disable repository override to enforce consistently
+  disableRepoOverride: true
+
+# Action to take when policy is violated: create/update an issue
+action: issue
+
+# Enforce protection on the default branch (main/master)
+enforceDefault: true
+
+# Require pull request reviews before merging
+requireApproval: true
+
+# Number of approvals required (minimum 1)
+approvalCount: 1
+
+# Require review from code owners
+requireCodeOwnerReviews: false
+
+# Dismiss stale pull request approvals when new commits are pushed
+dismissStale: false
+
+# Prevent force pushes to protected branches
+blockForce: true
+
+# Require status checks to pass before merging
+requireStatusChecks: false
+
+# Require branches to be up to date before merging
+requireUpToDateBranch: false
+
+# Restrict who can push to matching branches
+restrictPushes: false
+
+# Require signed commits
+requireSignedCommits: false
+
+# Include administrators in restrictions
+enforceAdmin: false
