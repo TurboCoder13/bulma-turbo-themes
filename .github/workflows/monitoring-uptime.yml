@@ -1,0 +1,51 @@
+name: Monitoring - Uptime Check
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "URL to check"
+        required: false
+        default: "http://localhost:4000"
+  schedule:
+    - cron: "*/30 * * * *" # every 30 minutes
+
+permissions:
+  contents: read
+
+concurrency:
+  group: uptime
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: 💓 Health Check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@c6295a65d1254861815972266d5933fd6e532bdf
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+      - name: Resolve target URL
+        id: vars
+        run: |
+          URL_INPUT="${{ github.event.inputs.url }}"
+          if [ -n "$URL_INPUT" ]; then echo "url=$URL_INPUT" >> $GITHUB_OUTPUT; exit 0; fi
+          echo "url=${TARGET_URL:-http://localhost:4000}" >> $GITHUB_OUTPUT
+      - name: Curl HEAD request
+        run: |
+          set -euo pipefail
+          URL='${{ steps.vars.outputs.url }}'
+          echo "Checking $URL"
+          code=$(curl -s -o /dev/null -w "%{http_code}" -I "$URL" || echo 000)
+          echo "HTTP $code"
+          if [ "$code" -ge 400 ] || [ "$code" -lt 200 ]; then
+            echo "Uptime check failed for $URL with status $code" >&2
+            exit 1
+          fi
+        env:
+          TARGET_URL: ${{ secrets.UPTIME_URL }}

@@ -1,0 +1,7 @@
+# Normalize line endings
+* text=auto eol=lf
+
+# Linguist overrides (optional)
+*.ts linguist-language=TypeScript
+*.css linguist-language=CSS
+*.html linguist-language=HTML
