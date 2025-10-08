@@ -68,19 +68,19 @@ npm test --silent
 **Required Steps:**
 
 - ✅ Build site (`./build.sh --no-serve`)
-- ✅ Run Lighthouse CI (`npx @lhci/cli autorun`)
+- ✅ Run Lighthouse CI (`npx @lhci/cli@latest autorun`)
 
 **Dependencies:**
 
 - `build.sh` script in root
 - `lighthouserc.json` configuration
-- `@lhci/cli` package
+- `npx @lhci/cli@latest` available in environment
 
 **Local Testing:**
 
 ```bash
 ./build.sh --no-serve
-npx @lhci/cli autorun --config=./lighthouserc.json --collect.numberOfRuns=1
+npx @lhci/cli@latest autorun --config=./lighthouserc.json --collect.numberOfRuns=1
 ```
 
 ### 4. CodeQL Security Analysis (`security-codeql.yml`)
@@ -110,8 +110,7 @@ npm run build
 
 ```json
 {
-  "@catppuccin/palette": "^1.0.0",
-  "@lhci/cli": "^0.14.0"
+  "@catppuccin/palette": "^1.0.0"
 }
 ```
 
