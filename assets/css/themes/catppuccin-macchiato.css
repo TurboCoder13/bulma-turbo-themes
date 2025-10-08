@@ -1,0 +1,99 @@
+/* SPDX-License-Identifier: MIT */
+html[data-flavor="catppuccin-macchiato"] .highlight {
+  background: var(--syntax-bg);
+  color: var(--syntax-fg);
+}
+html[data-flavor="catppuccin-macchiato"] .highlight pre,
+html[data-flavor="catppuccin-macchiato"] pre.highlight {
+  background: transparent;
+  color: var(--syntax-fg);
+}
+html[data-flavor="catppuccin-macchiato"] .highlight code {
+  background: transparent;
+  color: var(--syntax-fg);
+}
+html[data-flavor="catppuccin-macchiato"] .highlight .c,
+html[data-flavor="catppuccin-macchiato"] .highlight .cm,
+html[data-flavor="catppuccin-macchiato"] .highlight .c1 {
+  color: var(--syntax-comment);
+}
+html[data-flavor="catppuccin-macchiato"] .highlight .k,
+html[data-flavor="catppuccin-macchiato"] .highlight .kc,
+html[data-flavor="catppuccin-macchiato"] .highlight .kd {
+  color: var(--syntax-keyword);
+}
+html[data-flavor="catppuccin-macchiato"] .highlight .s,
+html[data-flavor="catppuccin-macchiato"] .highlight .s1,
+html[data-flavor="catppuccin-macchiato"] .highlight .sb,
+html[data-flavor="catppuccin-macchiato"] .highlight .sd,
+html[data-flavor="catppuccin-macchiato"] .highlight .s2 {
+  color: var(--syntax-string);
+}
+html[data-flavor="catppuccin-macchiato"] .highlight .m,
+html[data-flavor="catppuccin-macchiato"] .highlight .mi,
+html[data-flavor="catppuccin-macchiato"] .highlight .mf,
+html[data-flavor="catppuccin-macchiato"] .highlight .mh {
+  color: var(--syntax-number);
+}
+html[data-flavor="catppuccin-macchiato"] .highlight .nt,
+html[data-flavor="catppuccin-macchiato"] .highlight .na {
+  color: var(--syntax-attr);
+}
+html[data-flavor="catppuccin-macchiato"] .highlight .nn,
+html[data-flavor="catppuccin-macchiato"] .highlight .nc,
+html[data-flavor="catppuccin-macchiato"] .highlight .no,
+html[data-flavor="catppuccin-macchiato"] .highlight .nf {
+  color: var(--syntax-title);
+}
+html[data-flavor="catppuccin-macchiato"] {
+  --bulma-body-background-color: #24273a;
+  --bulma-body-color: #cad3f5;
+  --bulma-primary-h: 220;
+  --bulma-primary-s: 83%;
+  --bulma-primary-l: 75%;
+  --bulma-link: #8aadf4;
+  --bulma-info: #91d7e3;
+  --bulma-success: #a6da95;
+  --bulma-warning: #eed49f;
+  --bulma-danger: #ed8796;
+  --bulma-border: #6e738d;
+  --theme-font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+    "Apple Color Emoji", "Segoe UI Emoji";
+  --theme-font-mono:
+    JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --theme-text: #cad3f5;
+  --theme-text-muted: #a5adcb;
+  --theme-h1: #a6da95;
+  --theme-h2: #8aadf4;
+  --theme-h3: #7dc4e4;
+  --theme-h4: #eed49f;
+  --theme-h5: #c6a0f6;
+  --theme-h6: #ed8796;
+  --theme-link: #8aadf4;
+  --theme-blockquote-border: #8087a2;
+  --theme-blockquote-fg: #cad3f5;
+  --theme-blockquote-bg: #1e2030;
+  --theme-code-fg: #cad3f5;
+  --theme-code-bg: #363a4f;
+  --theme-pre-fg: #cad3f5;
+  --theme-pre-bg: #363a4f;
+  --theme-table-border: #8087a2;
+  --theme-table-stripe: #363a4f;
+  --theme-table-thead-bg: #494d64;
+  --theme-selection-fg: #cad3f5;
+  --theme-selection-bg: #8087a2;
+  --syntax-fg: #cad3f5;
+  --syntax-bg: #363a4f;
+  --syntax-keyword: #eed49f;
+  --syntax-string: #a6da95;
+  --syntax-number: #eed49f;
+  --syntax-comment: #a5adcb;
+  --syntax-title: #91d7e3;
+  --syntax-attr: #8aadf4;
+  --theme-surface-0: #24273a;
+  --theme-surface-1: #1e2030;
+  --theme-surface-2: #181926;
+  color-scheme: dark;
+}
