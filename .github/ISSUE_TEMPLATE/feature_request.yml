@@ -1,0 +1,90 @@
+---
+name: Feature request
+description: Suggest an idea or enhancement for bulma-turbo-themes
+labels: [enhancement, needs-triage]
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Thank you for suggesting a feature!
+
+        We appreciate your ideas for improving bulma-turbo-themes. Please provide details to help us understand and evaluate your proposal.
+
+  - type: input
+    id: summary
+    attributes:
+      label: Feature summary
+      description: A clear and concise one-line description of the feature
+      placeholder: "Example: Add dark mode support to all themes"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What problem does this feature address? Why is it needed?
+      placeholder: |
+        Example: Currently, there's no way to easily switch between light and dark variants of themes, which is problematic for users who prefer dark mode.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How would you like this feature to work?
+      placeholder: |
+        Example: Add a `dark` variant for each theme and a `prefersDarkMode` option in the theme selector that automatically switches based on system preferences.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Have you considered any alternative solutions or workarounds?
+      placeholder: |
+        Example: Users could manually override CSS variables, but this is not intuitive and doesn't integrate with the theme selector.
+
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: Use cases
+      description: Specific scenarios where this feature would be useful
+      placeholder: |
+        - Users with visual impairments who need dark mode
+        - Applications that want to respect system theme preferences
+        - Websites with night mode features
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - Nice to have
+        - Would be helpful
+        - Very important
+        - Critical for my use case
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I would be willing to contribute a PR for this feature
+          required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and feature requests
+          required: true
+        - label: This feature would benefit the broader community (not just my specific use case)
+          required: true
+        - label: This aligns with the project's goals and scope
+          required: false

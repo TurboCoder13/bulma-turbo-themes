@@ -1,0 +1,32 @@
+---
+name: Setup Environment
+description: Set up Node.js and Ruby with caching and install dependencies
+
+inputs:
+  node-version:
+    description: "Node.js version to use"
+    required: false
+    default: "22"
+  ruby-version:
+    description: "Ruby version to use"
+    required: false
+    default: "3.3"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: npm
+
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@0481980f17b760ef6bca5e8c55809102a0af1e5a # v1
+      with:
+        ruby-version: ${{ inputs.ruby-version }}
+        bundler-cache: true
+
+    - name: Install Node.js dependencies
+      shell: bash
+      run: npm ci
