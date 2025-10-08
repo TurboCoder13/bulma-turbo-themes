@@ -1,0 +1,67 @@
+name: Deploy - GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: 🏗️ Build Site
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@c6295a65d1254861815972266d5933fd6e532bdf
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            objects.githubusercontent.com:443
+            codeload.github.com:443
+            registry.npmjs.org:443
+            npmjs.org:443
+            rubygems.org:443
+            api.rubygems.org:443
+            index.rubygems.org:443
+            bundler.rubygems.org:443
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          node-version: "22"
+          ruby-version: "3.3"
+      - run: bundle exec jekyll build
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
+        with:
+          path: _site
+
+  deploy:
+    name: 🚀 Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@c6295a65d1254861815972266d5933fd6e532bdf
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            registry.npmjs.org:443
+            npmjs.org:443
+      - id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5

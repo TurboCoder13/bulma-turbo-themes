@@ -1,0 +1,25 @@
+name: Security - SBOM Generation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  actions: write
+  id-token: write # Required for SBOM signing
+
+concurrency:
+  group: sbom-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sbom:
+    name: 📋 Generate & Sign Software Bill of Materials
+    uses: ./.github/workflows/reusable-sbom.yml
+    permissions:
+      contents: read
+      actions: write
+      id-token: write

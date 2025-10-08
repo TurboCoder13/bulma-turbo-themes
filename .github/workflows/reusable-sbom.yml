@@ -1,0 +1,121 @@
+---
+name: Reusable - SBOM Generation
+# Reusable workflow for Software Bill of Materials generation.
+# Creates SBOM in multiple formats (CycloneDX, SPDX) and uploads as artifacts for supply chain security.
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  actions: write
+  id-token: write # Required for cosign signing
+
+jobs:
+  sbom:
+    name: 📋 Generate SBOM (Multi-format)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@c6295a65d1254861815972266d5933fd6e532bdf
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            uploads.github.com:443
+            pipelines.actions.githubusercontent.com:443
+            objects.githubusercontent.com:443
+            codeload.github.com:443
+            raw.githubusercontent.com:443
+            release-assets.githubusercontent.com:443
+            anchore.io:443
+            get.anchore.io:443
+            toolbox-data.anchore.io:443
+            fulcio.sigstore.dev:443
+            rekor.sigstore.dev:443
+            tuf-repo-cdn.sigstore.dev:443
+
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install Syft
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b ./.bin
+          echo "$(pwd)/.bin" >> $GITHUB_PATH
+
+      - name: Create SBOM directory
+        run: mkdir -p sbom
+
+      - name: Generate SBOM (CycloneDX JSON)
+        run: syft dir:. -o cyclonedx-json > sbom/sbom.cyclonedx.json
+
+      - name: Generate SBOM (SPDX JSON)
+        run: syft dir:. -o spdx-json > sbom/sbom.spdx.json
+
+      - name: Generate SBOM (CycloneDX XML)
+        run: syft dir:. -o cyclonedx-xml > sbom/sbom.cyclonedx.xml
+
+      - name: Validate CycloneDX SBOM
+        run: |
+          if [ ! -s sbom/sbom.cyclonedx.json ]; then
+            echo "Error: CycloneDX SBOM is empty"
+            exit 1
+          fi
+          echo "✅ CycloneDX SBOM validation passed"
+
+      - name: Validate SPDX SBOM
+        run: |
+          if [ ! -s sbom/sbom.spdx.json ]; then
+            echo "Error: SPDX SBOM is empty"
+            exit 1
+          fi
+          echo "✅ SPDX SBOM validation passed"
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@dc72c7d5c4d10cd6bcb8cf6e3fd625a9e5e537da # v3.7.0
+
+      - name: Sign SBOM files with Cosign
+        run: |
+          echo "🔐 Signing SBOM files with keyless signing..."
+
+          # Sign each SBOM file
+          for sbom_file in sbom/*.json sbom/*.xml; do
+            if [ -f "$sbom_file" ]; then
+              echo "Signing: $sbom_file"
+              cosign sign-blob "$sbom_file" \
+                --output-signature="${sbom_file}.sig" \
+                --output-certificate="${sbom_file}.cert" \
+                --yes
+              echo "✅ Signed: $sbom_file"
+            fi
+          done
+
+          echo "✅ All SBOM files signed successfully"
+
+      - name: Verify SBOM signatures
+        run: |
+          echo "🔍 Verifying SBOM signatures..."
+
+          for sbom_file in sbom/*.json sbom/*.xml; do
+            if [ -f "$sbom_file" ]; then
+              echo "Verifying: $sbom_file"
+              cosign verify-blob "$sbom_file" \
+                --signature="${sbom_file}.sig" \
+                --certificate="${sbom_file}.cert" \
+                --certificate-identity-regexp=".*" \
+                --certificate-oidc-issuer-regexp=".*"
+              echo "✅ Verified: $sbom_file"
+            fi
+          done
+
+          echo "✅ All SBOM signatures verified successfully"
+
+      - name: Upload SBOM artifacts (all formats with signatures)
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        with:
+          name: sbom-all-formats
+          path: sbom/
+          overwrite: true
+          retention-days: 90
