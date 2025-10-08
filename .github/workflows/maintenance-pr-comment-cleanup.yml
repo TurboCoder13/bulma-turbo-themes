@@ -1,0 +1,112 @@
+---
+name: Maintenance - PR Comment Cleanup
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to clean up comments for"
+        required: true
+        type: number
+      dry_run:
+        description: "Dry run (don't actually delete)"
+        required: false
+        type: boolean
+        default: true
+      marker:
+        description: "Comment marker to filter by (empty = all markers)"
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  cleanup:
+    name: 🧹 Clean PR Comments
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@c6295a65d1254861815972266d5933fd6e532bdf
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+
+      - name: List and clean comments
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = ${{ inputs.pr_number }};
+            const dryRun = ${{ inputs.dry_run }};
+            const markerFilter = "${{ inputs.marker }}";
+
+            // Known markers
+            const markers = [
+              '<!-- allstar-comment -->',
+              '<!-- lighthouse-ci-comment -->',
+              '<!-- coverage-report -->',
+            ];
+
+            // Get all comments
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            console.log(`Found ${comments.data.length} total comments on PR #${prNumber}`);
+
+            // Filter comments with markers
+            const markedComments = comments.data.filter(comment => {
+              const hasMarker = markers.some(marker => comment.body.includes(marker));
+              if (!hasMarker) return false;
+              
+              // If marker filter is specified, only match that marker
+              if (markerFilter && !comment.body.includes(`<!-- ${markerFilter} -->`)) {
+                return false;
+              }
+              
+              return true;
+            });
+
+            console.log(`Found ${markedComments.length} comments with markers`);
+
+            if (markedComments.length === 0) {
+              console.log('No marked comments to clean up');
+              return;
+            }
+
+            // List comments
+            for (const comment of markedComments) {
+              const marker = markers.find(m => comment.body.includes(m)) || 'unknown';
+              console.log(`\nComment ID: ${comment.id}`);
+              console.log(`  Marker: ${marker}`);
+              console.log(`  Created: ${comment.created_at}`);
+              console.log(`  Updated: ${comment.updated_at}`);
+              console.log(`  Author: ${comment.user.login}`);
+              console.log(`  Preview: ${comment.body.substring(0, 100)}...`);
+            }
+
+            // Delete if not dry run
+            if (!dryRun) {
+              console.log('\n🗑️  Deleting marked comments...');
+              for (const comment of markedComments) {
+                await github.rest.issues.deleteComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: comment.id,
+                });
+                console.log(`Deleted comment ${comment.id}`);
+              }
+              console.log(`✅ Deleted ${markedComments.length} comments`);
+            } else {
+              console.log('\n🔍 Dry run mode - no comments deleted');
+              console.log(`Would delete ${markedComments.length} comments`);
+            }

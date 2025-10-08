@@ -1,0 +1,82 @@
+# CODEOWNERS - Define code ownership and review requirements
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Note: Dependency files are excluded from CODEOWNERS to allow Renovate bot to automerge.
+# This improves security by enabling automated dependency updates without manual intervention.
+
+# ==============================================================================
+# EXCLUSIONS FOR AUTOMATED DEPENDENCY MANAGEMENT
+# ==============================================================================
+# The following files are intentionally NOT owned to allow Renovate automerge:
+# - package.json (npm dependencies)
+# - package-lock.json (npm lockfile)
+# - Gemfile.lock (Ruby dependencies)
+# - renovate.json (Renovate configuration)
+#
+# Rationale: Automated dependency updates improve security posture by ensuring
+# timely patching of vulnerabilities. Manual review adds latency without
+# significant security benefit when CI gates are comprehensive.
+
+# ==============================================================================
+# CRITICAL SECURITY PATHS - Require explicit approval
+# ==============================================================================
+
+# GitHub Actions workflows - Critical for CI/CD security
+/.github/workflows/** @TurboCoder13
+
+# Composite actions - Reusable workflow components
+/.github/actions/** @TurboCoder13
+
+# Security policies and documentation
+/SECURITY.md @TurboCoder13
+/CODE_OF_CONDUCT.md @TurboCoder13
+/GOVERNANCE.md @TurboCoder13
+
+# ==============================================================================
+# SOURCE CODE - Require code review
+# ==============================================================================
+
+# TypeScript source
+/src/** @TurboCoder13
+
+# Build and automation scripts
+/scripts/** @TurboCoder13
+*.sh @TurboCoder13
+
+# Tests
+/test/** @TurboCoder13
+
+# ==============================================================================
+# SITE CONTENT - Require content review
+# ==============================================================================
+
+# Jekyll layouts and content
+/_layouts/** @TurboCoder13
+/_es/** @TurboCoder13
+/_data/** @TurboCoder13
+
+# Site assets (CSS, images)
+/assets/** @TurboCoder13
+
+# Markdown documentation
+*.md @TurboCoder13
+
+# ==============================================================================
+# BUILD CONFIGURATION - Require review
+# ==============================================================================
+
+# TypeScript configuration
+/tsconfig.json @TurboCoder13
+
+# Vitest configuration
+/vitest.config.ts @TurboCoder13
+
+# Jekyll configuration
+/_config.yml @TurboCoder13
+
+# ==============================================================================
+# DEFAULT OWNER - Fallback for unmatched files
+# ==============================================================================
+
+# Default owner for all other files
+* @TurboCoder13

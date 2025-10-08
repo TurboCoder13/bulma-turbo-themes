@@ -1,0 +1,78 @@
+---
+name: Reusable - Build & Package
+# Reusable workflow for building TypeScript and Jekyll site.
+# Uploads build artifacts for use in downstream workflows.
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: Node.js version to use
+        type: string
+        required: false
+        default: "22"
+      ruby-version:
+        description: Ruby version to use
+        type: string
+        required: false
+        default: "3.3"
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  build:
+    name: 🏗️ Build Artifacts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@c6295a65d1254861815972266d5933fd6e532bdf
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            uploads.github.com:443
+            pipelines.actions.githubusercontent.com:443
+            objects.githubusercontent.com:443
+            codeload.github.com:443
+            registry.npmjs.org:443
+            npmjs.org:443
+            rubygems.org:443
+            api.rubygems.org:443
+            index.rubygems.org:443
+            bundler.rubygems.org:443
+
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          node-version: ${{ inputs.node-version }}
+          ruby-version: ${{ inputs.ruby-version }}
+
+      - name: TypeScript build
+        run: npm run build
+
+      - name: Jekyll build
+        run: bundle exec jekyll build --trace --strict_front_matter
+
+      - name: HTMLProofer (check built site)
+        run: bundle exec htmlproofer ./_site --assume-extension --disable-external --allow-hash-href
+
+      - name: Upload JS dist artifact
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        with:
+          name: js-dist
+          path: dist/
+          overwrite: true
+
+      - name: Upload built site artifact
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        with:
+          name: site-build
+          path: _site/
+          overwrite: true

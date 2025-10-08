@@ -1,0 +1,91 @@
+---
+name: Release - Manual Tag Creation
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to tag (e.g., v1.2.3)"
+        required: true
+        type: string
+      prerelease:
+        description: "Mark as pre-release"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: manual-tag
+  cancel-in-progress: false
+
+jobs:
+  create-tag:
+    name: 🏷️ Create Git Tag
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@c6295a65d1254861815972266d5933fd6e532bdf
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Validate version format
+        run: |
+          VERSION="${{ inputs.version }}"
+          if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "❌ Error: Invalid version format. Expected format: v1.2.3 or v1.2.3-beta.1"
+            exit 1
+          fi
+          echo "✅ Version format is valid: $VERSION"
+
+      - name: Check if tag already exists
+        run: |
+          VERSION="${{ inputs.version }}"
+          if git rev-parse "$VERSION" >/dev/null 2>&1; then
+            echo "❌ Error: Tag $VERSION already exists"
+            exit 1
+          fi
+          echo "✅ Tag $VERSION does not exist yet"
+
+      - name: Create and push tag
+        run: |
+          VERSION="${{ inputs.version }}"
+          PRERELEASE="${{ inputs.prerelease }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          MESSAGE="Release $VERSION"
+          if [ "$PRERELEASE" = "true" ]; then
+            MESSAGE="Pre-release $VERSION"
+          fi
+
+          git tag -a "$VERSION" -m "$MESSAGE"
+          git push origin "$VERSION"
+
+          echo "✅ Successfully created and pushed tag: $VERSION"
+
+      - name: Summary
+        run: |
+          VERSION="${{ inputs.version }}"
+          PRERELEASE="${{ inputs.prerelease }}"
+
+          echo "## 🏷️ Tag Created Successfully" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** $VERSION" >> $GITHUB_STEP_SUMMARY
+          echo "**Pre-release:** $PRERELEASE" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "This tag will trigger the publish workflow automatically." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 [View tag on GitHub](https://github.com/${{ github.repository }}/releases/tag/$VERSION)" >> $GITHUB_STEP_SUMMARY

@@ -1,0 +1,67 @@
+---
+name: Post PR Comment
+description: >-
+  Post or update a comment on a pull request with merge-update support
+
+inputs:
+  github-token:
+    description: "GitHub token for authentication"
+    required: true
+  marker:
+    description: >-
+      Unique marker to identify the comment (e.g., "coverage-report")
+    required: true
+  comment-body:
+    description: "The comment body content"
+    required: false
+  comment-file:
+    description: "Path to a file whose contents are used as the comment body"
+    required: false
+  update-mode:
+    description: 'Update mode: "replace" or "append"'
+    required: false
+    default: "replace"
+
+runs:
+  using: composite
+  steps:
+    - name: Prepare comment body
+      id: prepare-body
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.comment-file }}" ]; then
+          if [ ! -f "${{ inputs.comment-file }}" ]; then
+            echo "Comment file not found: ${{ inputs.comment-file }}" >&2
+            exit 1
+          fi
+          BODY_CONTENT=$(cat "${{ inputs.comment-file }}")
+        else
+          BODY_CONTENT="${{ inputs.comment-body }}"
+        fi
+
+        # Emit as multi-line output
+        {
+          echo "body<<EOF"
+          echo "$BODY_CONTENT"
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Find existing comment
+      uses: peter-evans/find-comment@3eae4d37986fb5a8592848f6a574fdf654e61f9e # v3
+      id: find-comment
+      with:
+        token: ${{ inputs.github-token }}
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: "github-actions[bot]"
+        body-includes: ${{ inputs.marker }}
+
+    - name: Create or update comment
+      uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4
+      with:
+        token: ${{ inputs.github-token }}
+        comment-id: ${{ steps.find-comment.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          <!-- ${{ inputs.marker }} -->
+          ${{ steps.prepare-body.outputs.body }}
+        edit-mode: ${{ inputs.update-mode }}
