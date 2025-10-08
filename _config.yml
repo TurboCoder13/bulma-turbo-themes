@@ -4,7 +4,7 @@ baseurl: ""
 url: "https://turbocoder13.github.io/bulma-turbo-themes"
 
 # Site metadata used by jekyll-seo-tag
-logo: "/assets/img/@bulma-logo.svg"
+logo: "/assets/img/bulma-logo.png"
 lang: "en"
 
 theme: null
