@@ -183,8 +183,8 @@ if [ "$FULL_MODE" = true ]; then
     if command_exists "npx"; then
         # Check if Lighthouse config exists
         if [ -f "lighthouserc.json" ]; then
-            print_status "$YELLOW" "  Running Lighthouse CI..."
-            npx --yes @lhci/cli@0.14.0 autorun --config=./lighthouserc.json --collect.numberOfRuns=1
+            print_status "$YELLOW" "  Running Lighthouse CI (latest)..."
+            npx --yes @lhci/cli@latest autorun --config=./lighthouserc.json --collect.numberOfRuns=1
         else
             print_status "$YELLOW" "⚠️  Lighthouse config not found, skipping..."
         fi
