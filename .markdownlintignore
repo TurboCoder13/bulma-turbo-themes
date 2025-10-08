@@ -1,0 +1,10 @@
+# Ignore generated and external content
+node_modules/
+vendor/
+vendor/**
+vendor/bundle/**
+.bundle/
+_site/
+dist/
+coverage/
+.git/
