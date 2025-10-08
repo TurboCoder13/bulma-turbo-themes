@@ -1,0 +1,142 @@
+<!doctype html>
+<html
+  lang="{{ site.lang | default: 'en' }}"
+  data-theme="auto"
+  data-baseurl="{{ site.baseurl }}"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="app-i18n"
+      data-theme-label="{{ site.data.i18n.en.theme_label }}"
+      data-current-theme-title-template="{{ site.data.i18n.en.current_theme_title }}"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    />
+    <title>{{ page.title | default: site.title }}</title>
+    {% seo %}
+    <link rel="icon" href="{{ '/favicon.ico' | relative_url }}" />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link
+      rel="icon"
+      type="image/png"
+      href="{{ '/assets/img/bulma-logo.png' | relative_url }}"
+      media="(prefers-color-scheme: light)"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="{{ '/assets/img/bulma-logo-dark.png' | relative_url }}"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link
+      rel="mask-icon"
+      href="{{ '/assets/img/bulma-logo.png' | relative_url }}"
+      color="#111827"
+    />
+    <link
+      rel="preload"
+      as="style"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+      integrity="sha384-tl5h4XuWmVzPeVWU0x8bx0j/5iMwCBduLEgZ+2lH4Wjda+4+q3mpCww74dgAB3OX"
+      crossorigin="anonymous"
+    />
+    <link
+      id="theme-global-css"
+      rel="stylesheet"
+      href="{{ '/assets/css/themes/global.css' | relative_url }}"
+    />
+    <link id="theme-flavor-css" rel="stylesheet" href="#" />
+    <link rel="stylesheet" href="{{ '/assets/css/custom.css' | relative_url }}" />
+    <script type="module" src="{{ '/dist/index.js' | relative_url }}"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Initialize navbar highlighting
+        if (window.initNavbar) {
+          window.initNavbar(document);
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <nav class="navbar is-spaced" role="navigation" aria-label="main navigation">
+      <div class="container">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="{{ '/' | relative_url }}"> {{ site.title }} </a>
+          <button
+            class="navbar-burger"
+            aria-label="menu"
+            aria-expanded="false"
+            data-target="navbarBasicExample"
+            type="button"
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+          <div class="navbar-start">
+            <a class="navbar-item" href="{{ '/' | relative_url }}">Home</a>
+            <a class="navbar-item" href="{{ '/components/' | relative_url }}">
+              Components
+            </a>
+            <a class="navbar-item" href="{{ '/forms/' | relative_url }}">Forms</a>
+          </div>
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <div class="control has-icons-left">
+                <div class="select is-rounded is-small is-hidden" aria-hidden="true">
+                  <select id="theme-flavor-select" aria-label="Theme flavor"></select>
+                </div>
+                <span
+                  class="icon is-small is-left"
+                  id="theme-flavor-icon"
+                  aria-hidden="true"
+                ></span>
+              </div>
+              <div class="dropdown is-right is-theme" id="theme-flavor-dd">
+                <div class="dropdown-trigger">
+                  <button
+                    class="button is-small is-rounded is-flavor-trigger theme-flavor-trigger"
+                    aria-haspopup="true"
+                    aria-controls="theme-flavor-menu"
+                    aria-label="Theme"
+                  >
+                    <span class="icon is-small" id="theme-flavor-trigger-icon"></span>
+                  </button>
+                </div>
+                <div class="dropdown-menu" id="theme-flavor-menu" role="menu">
+                  <div class="dropdown-content" id="theme-flavor-items"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <section class="section">
+      <div class="container content">
+        <h1 class="title">{{ page.title | default: site.title }}</h1>
+        {{ content }}
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p><strong>{{ site.title }}</strong> — Bulma demo with theme switch.</p>
+      </div>
+    </footer>
+  </body>
+</html>

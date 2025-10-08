@@ -1,0 +1,82 @@
+# CODEOWNERS - Define code ownership and review requirements
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Note: Dependency files are excluded from CODEOWNERS to allow Renovate bot to automerge.
+# This improves security by enabling automated dependency updates without manual intervention.
+
+# ==============================================================================
+# EXCLUSIONS FOR AUTOMATED DEPENDENCY MANAGEMENT
+# ==============================================================================
+# The following files are intentionally NOT owned to allow Renovate automerge:
+# - package.json (npm dependencies)
+# - package-lock.json (npm lockfile)
+# - Gemfile.lock (Ruby dependencies)
+# - renovate.json (Renovate configuration)
+#
+# Rationale: Automated dependency updates improve security posture by ensuring
+# timely patching of vulnerabilities. Manual review adds latency without
+# significant security benefit when CI gates are comprehensive.
+
+# ==============================================================================
+# CRITICAL SECURITY PATHS - Require explicit approval
+# ==============================================================================
+
+# GitHub Actions workflows - Critical for CI/CD security
+/.github/workflows/** @eiteldagnin
+
+# Composite actions - Reusable workflow components
+/.github/actions/** @eiteldagnin
+
+# Security policies and documentation
+/SECURITY.md @eiteldagnin
+/CODE_OF_CONDUCT.md @eiteldagnin
+/GOVERNANCE.md @eiteldagnin
+
+# ==============================================================================
+# SOURCE CODE - Require code review
+# ==============================================================================
+
+# TypeScript source
+/src/** @eiteldagnin
+
+# Build and automation scripts
+/scripts/** @eiteldagnin
+*.sh @eiteldagnin
+
+# Tests
+/test/** @eiteldagnin
+
+# ==============================================================================
+# SITE CONTENT - Require content review
+# ==============================================================================
+
+# Jekyll layouts and content
+/_layouts/** @eiteldagnin
+/_es/** @eiteldagnin
+/_data/** @eiteldagnin
+
+# Site assets (CSS, images)
+/assets/** @eiteldagnin
+
+# Markdown documentation
+*.md @eiteldagnin
+
+# ==============================================================================
+# BUILD CONFIGURATION - Require review
+# ==============================================================================
+
+# TypeScript configuration
+/tsconfig.json @eiteldagnin
+
+# Vitest configuration
+/vitest.config.ts @eiteldagnin
+
+# Jekyll configuration
+/_config.yml @eiteldagnin
+
+# ==============================================================================
+# DEFAULT OWNER - Fallback for unmatched files
+# ==============================================================================
+
+# Default owner for all other files
+* @eiteldagnin

@@ -1,0 +1,17 @@
+# Security Policy File Check
+# Ensures that repositories have a SECURITY.md file documenting security policies
+# See: https://docs.github.com/en/code-security/getting-started/adding-a-security-policy-to-your-repository
+
+optConfig:
+  # Enable this policy on all repositories
+  optOutStrategy: true
+  # Disable repository override to enforce consistently
+  disableRepoOverride: true
+
+# Action to take when policy is violated: create/update an issue
+action: issue
+# Note: This policy checks for the presence of a non-empty SECURITY.md file
+# The file can be located in:
+# - Root directory: SECURITY.md
+# - .github directory: .github/SECURITY.md
+# - docs directory: docs/SECURITY.md

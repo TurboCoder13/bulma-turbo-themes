@@ -1,0 +1,98 @@
+---
+name: Bug report
+description: Create a report to help us improve bulma-turbo-themes
+labels: [bug, needs-triage]
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Thank you for reporting a bug!
+
+        Please provide as much detail as possible to help us diagnose and fix the issue quickly.
+
+  - type: input
+    id: title
+    attributes:
+      label: Bug summary
+      description: A clear and concise description of what the bug is
+      placeholder: "Example: Theme selector dropdown doesn't work in Safari"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Exact commands and outputs that reproduce the issue
+      placeholder: |
+        1. Install package with `npm install @turbocoder13/bulma-turbo-themes`
+        2. Import theme selector
+        3. Click on dropdown
+        4. See error in console
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What you expected to happen
+      placeholder: The dropdown should open and display available themes
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened
+      placeholder: The dropdown remains closed and throws an error
+    validations:
+      required: true
+
+  - type: input
+    id: env-os
+    attributes:
+      label: Operating System
+      placeholder: "Example: macOS 14.2, Windows 11, Ubuntu 22.04"
+
+  - type: input
+    id: env-browser
+    attributes:
+      label: Browser & Version
+      placeholder: "Example: Chrome 120, Safari 17, Firefox 121"
+
+  - type: input
+    id: env-node
+    attributes:
+      label: Node.js version
+      placeholder: "Example: 22.0.0 (run `node --version`)"
+
+  - type: input
+    id: env-package
+    attributes:
+      label: Package version
+      description: What version of @turbocoder13/bulma-turbo-themes are you using?
+      placeholder: "Example: 0.1.0 (check package.json or npm list)"
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Add any other context, screenshots, or error messages
+      placeholder: Paste error messages, stack traces, or screenshots here
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and this is not a duplicate
+          required: true
+        - label: I can reproduce this bug consistently
+          required: true
+        - label: I have read the README and followed the setup instructions
+          required: true
+        - label: I have included all relevant environment details above
+          required: false
