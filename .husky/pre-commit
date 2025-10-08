@@ -1,10 +1,3 @@
-#!/usr/bin/env sh
-
-# Disabled pre-commit hook
-exit 0
-
-. "$(dirname -- "$0")/_/husky.sh"
-
 # Run quick CI checks before commit
 echo "🔍 Running pre-commit CI checks..."
 
@@ -15,10 +8,12 @@ npm run format
 # Run theme sync to ensure deterministic generation
 npm run theme:sync
 
-# Check for unstaged changes after theme sync
-if [[ -n "$(git status --porcelain)" ]]; then
-  echo "❌ Theme sync generated changes. Please commit them:"
-  git status --porcelain
+# Check for non-deterministic changes in generated files only
+GENERATED_PATHS="src/themes/packs/catppuccin.synced.ts"
+if ! git diff --quiet -- $GENERATED_PATHS || [ -n "$(git ls-files --others --exclude-standard -- $GENERATED_PATHS)" ]; then
+  echo "❌ Theme sync generated changes in generated files. Please commit them:"
+  git --no-pager diff -- $GENERATED_PATHS | cat
+  git ls-files --others --exclude-standard -- $GENERATED_PATHS || true
   exit 1
 fi
 
