@@ -76,8 +76,8 @@ jobs:
           registry-url: https://registry.npmjs.org
           cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies (no semrel plugins needed locally)
+        run: npm ci --omit=dev
 
       - name: Build package
         run: npm run build
@@ -91,11 +91,11 @@ jobs:
       - name: Create dist-release directory
         run: mkdir -p dist-release
 
-      - name: Run Semantic Release
+      - name: Run Semantic Release (npx install plugins on the fly)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
+        run: npx -p semantic-release -p @semantic-release/changelog -p @semantic-release/commit-analyzer -p @semantic-release/git -p @semantic-release/github -p @semantic-release/npm -p @semantic-release/release-notes-generator semantic-release
 
       - name: Summary
         if: always()
