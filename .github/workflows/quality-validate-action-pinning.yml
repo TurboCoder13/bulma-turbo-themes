@@ -34,34 +34,4 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Validate all actions are pinned to SHA
-        run: |
-          echo "Checking for non-SHA pinned actions..."
-          EXIT_CODE=0
-
-          # Check workflow files
-          for file in .github/workflows/*.yml .github/workflows/*.yaml; do
-            if [[ -f "$file" ]]; then
-              # Look for uses: not followed by @<40-char-sha>
-              if grep -E 'uses:.*@(?![a-f0-9]{40}($| ))' "$file"; then
-                echo "❌ ERROR: Non-SHA action in $file"
-                EXIT_CODE=1
-              fi
-            fi
-          done
-
-          # Check composite action files
-          for file in .github/actions/*/action.yml \
-                       .github/actions/*/action.yaml; do
-            if [[ -f "$file" ]]; then
-              if grep -E 'uses:.*@(?![a-f0-9]{40}($| ))' "$file"; then
-                echo "❌ ERROR: Non-SHA action in $file"
-                EXIT_CODE=1
-              fi
-            fi
-          done
-
-          if [[ $EXIT_CODE -eq 0 ]]; then
-            echo "✅ All actions are properly pinned to SHA"
-          fi
-
-          exit $EXIT_CODE
+        run: ./scripts/ci/validate-action-pinning.sh
