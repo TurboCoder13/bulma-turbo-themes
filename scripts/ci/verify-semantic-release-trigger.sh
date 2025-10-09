@@ -4,10 +4,16 @@
 
 set -euo pipefail
 
-BASE_REF="${1:-origin/main}"
+BASE_REF="${1:-origin/HEAD}"
 HEAD_REF="${2:-HEAD}"
 
 echo "🔍 Checking if commits will trigger semantic release between $BASE_REF and $HEAD_REF"
+
+# Check if base ref exists, fallback to HEAD~1 if not
+if ! git rev-parse --verify "$BASE_REF" >/dev/null 2>&1; then
+  echo "⚠️  Base ref $BASE_REF not found, using HEAD~1"
+  BASE_REF="HEAD~1"
+fi
 
 # Get commit messages between base and head
 COMMITS=$(git log --pretty=format:"%s" "$BASE_REF..$HEAD_REF")
