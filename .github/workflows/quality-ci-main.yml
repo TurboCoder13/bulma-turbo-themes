@@ -63,11 +63,11 @@ jobs:
 
       - name: Validate commit messages
         if: github.event_name == 'pull_request'
-        run: ./scripts/ci/validate-commit-messages.sh origin/${{ github.base_ref }} HEAD
+        run: ./scripts/ci/validate-commit-messages.sh
 
       - name: Verify semantic release trigger
         if: github.event_name == 'pull_request'
-        run: ./scripts/ci/verify-semantic-release-trigger.sh origin/${{ github.base_ref }} HEAD
+        run: ./scripts/ci/verify-semantic-release-trigger.sh
 
       - name: Run CI pipeline
         run: ./scripts/local/build.sh --quick
