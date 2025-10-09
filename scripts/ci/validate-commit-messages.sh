@@ -1,0 +1,72 @@
+#!/bin/bash
+# Validate commit messages against Conventional Commits
+# Usage: validate-commit-messages.sh [base_ref] [head_ref]
+
+set -euo pipefail
+
+BASE_REF="${1:-origin/main}"
+HEAD_REF="${2:-HEAD}"
+
+echo "🔍 Validating commit messages between $BASE_REF and $HEAD_REF"
+
+# Get commit messages between base and head
+COMMITS=$(git log --pretty=format:"%s" "$BASE_REF..$HEAD_REF")
+
+if [ -z "$COMMITS" ]; then
+  echo "✅ No commits to validate"
+  exit 0
+fi
+
+# Conventional Commits pattern
+PATTERN="^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .+"
+
+# Allowed types (same as PR title validation)
+ALLOWED_TYPES="feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert"
+
+EXIT_CODE=0
+COMMIT_COUNT=0
+INVALID_COUNT=0
+
+while IFS= read -r commit_msg; do
+  COMMIT_COUNT=$((COMMIT_COUNT + 1))
+  
+  # Skip merge commits
+  if [[ "$commit_msg" =~ ^Merge ]]; then
+    echo "⏭️  Skipping merge commit: $commit_msg"
+    continue
+  fi
+  
+  # Check if commit message matches Conventional Commits pattern
+  if [[ ! "$commit_msg" =~ $PATTERN ]]; then
+    echo "❌ Invalid commit message: $commit_msg"
+    echo "   Expected format: type(scope): description"
+    echo "   Allowed types: $ALLOWED_TYPES"
+    INVALID_COUNT=$((INVALID_COUNT + 1))
+    EXIT_CODE=1
+  else
+    echo "✅ Valid commit: $commit_msg"
+  fi
+done <<< "$COMMITS"
+
+echo ""
+echo "📊 Commit validation summary:"
+echo "   Total commits: $COMMIT_COUNT"
+echo "   Invalid commits: $INVALID_COUNT"
+
+if [ $EXIT_CODE -eq 0 ]; then
+  echo "✅ All commit messages are valid"
+else
+  echo "❌ Found $INVALID_COUNT invalid commit messages"
+  echo ""
+  echo "💡 Commit message format:"
+  echo "   type(scope): description"
+  echo ""
+  echo "   Examples:"
+  echo "   feat: add new feature"
+  echo "   fix: resolve bug"
+  echo "   docs: update documentation"
+  echo "   feat(auth): add login functionality"
+  echo "   fix(ui): correct button styling"
+fi
+
+exit $EXIT_CODE
