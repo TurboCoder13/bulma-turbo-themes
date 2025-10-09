@@ -1,6 +1,6 @@
 title: Bulma Theme Manager Demo
 description: Minimal Jekyll site showcasing Bulma components with theme switch
-baseurl: "/bulma-turbo-themes"
+baseurl: ""
 url: "https://turbocoder13.github.io/bulma-turbo-themes"
 
 # Site metadata used by jekyll-seo-tag
