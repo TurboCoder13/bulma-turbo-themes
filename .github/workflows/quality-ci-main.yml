@@ -86,11 +86,7 @@ jobs:
 
       - name: Generate coverage summary for PR comment
         if: matrix.node == 22 && matrix.ruby == '3.3' && github.event_name == 'pull_request'
-        run: |
-          COVERAGE_SUMMARY=$(cat coverage/coverage-summary.json | jq -r '.total | "**Coverage Report**\n\n| Metric | Coverage | \n|--------|----------|\n| Lines | \(.lines.pct)% |\n| Statements | \(.statements.pct)% |\n| Functions | \(.functions.pct)% |\n| Branches | \(.branches.pct)% |"')
-          echo "$COVERAGE_SUMMARY" > coverage-comment.md
-          echo "" >> coverage-comment.md
-          echo "📊 [View full coverage report on Codecov](https://codecov.io/gh/${{ github.repository }}/pull/${{ github.event.pull_request.number }})" >> coverage-comment.md
+        run: ./scripts/ci/generate-coverage-summary.sh
 
       - name: Post coverage comment on PR
         if: matrix.node == 22 && matrix.ruby == '3.3' && github.event_name == 'pull_request' && !env.ACT
@@ -130,13 +126,10 @@ jobs:
           overwrite: true
 
       - name: Install Syft (SBOM generator)
-        run: |
-          mkdir -p .bin
-          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b ./.bin
-          echo "$(pwd)/.bin" >> $GITHUB_PATH
+        run: ./scripts/ci/install-syft.sh
 
       - name: Generate SBOM (CycloneDX JSON)
-        run: syft dir:. -o cyclonedx-json > sbom.cyclonedx.json
+        run: ./scripts/ci/generate-sbom.sh
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0

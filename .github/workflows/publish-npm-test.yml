@@ -85,18 +85,4 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Summary
-        run: |
-          TAG="${{ inputs.tag }}"
-          PACKAGE_NAME="@turbocoder13/bulma-turbo-themes"
-
-          echo "## 📦 Test Publish Complete" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Package:** $PACKAGE_NAME" >> $GITHUB_STEP_SUMMARY
-          echo "**npm tag:** $TAG" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Installation" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "npm install ${PACKAGE_NAME}@${TAG}" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "🔗 [View on npm](https://www.npmjs.com/package/${PACKAGE_NAME})" >> $GITHUB_STEP_SUMMARY
+        run: ./scripts/ci/generate-npm-test-summary.sh "${{ inputs.tag }}"

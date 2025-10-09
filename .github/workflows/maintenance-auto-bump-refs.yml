@@ -53,37 +53,14 @@ jobs:
 
       - name: Determine target SHA
         id: sha
-        run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "sha=${{ inputs.sha }}" >> $GITHUB_OUTPUT
-          else
-            echo "sha=${{ github.sha }}" >> $GITHUB_OUTPUT
-          fi
+        run: ./scripts/ci/determine-target-sha.sh
 
       - name: Update internal references
-        run: |
-          TARGET_SHA="${{ steps.sha.outputs.sha }}"
-          echo "Updating internal references to SHA: $TARGET_SHA"
-
-          # Update composite action references in workflows
-          find .github/workflows -name "*.yml" -type f -exec sed -i '' \
-            "s|uses: \.\/\.github\/actions\/\([^@]*\)@[a-f0-9]\{40\}|uses: ./.github/actions/\1@${TARGET_SHA}|g" {} \;
-
-          # Update reusable workflow references
-          find .github/workflows -name "*.yml" -type f -exec sed -i '' \
-            "s|uses: .*\/\.github\/workflows\/reusable-\([^@]*\)@[a-f0-9]\{40\}|uses: ${{ github.repository }}/.github/workflows/reusable-\1@${TARGET_SHA}|g" {} \;
+        run: ./scripts/ci/update-internal-refs.sh "${{ steps.sha.outputs.sha }}"
 
       - name: Detect changes
         id: diff
-        run: |
-          if git diff --quiet; then
-            echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "No changes detected"
-          else
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "Changes detected"
-            git diff --stat
-          fi
+        run: ./scripts/ci/detect-changes.sh
 
       - name: Create Pull Request
         if: steps.diff.outputs.has_changes == 'true'
