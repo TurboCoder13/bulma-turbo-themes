@@ -27,8 +27,4 @@ jobs:
             codeload.github.com:443
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
       - name: Skip dependency review (requires Advanced Security)
-        run: |
-          echo "Dependency review requires GitHub Advanced Security"
-          echo "This feature is not available for public repositories"
-          echo "Skipping dependency review check"
-          exit 0
+        run: ./scripts/ci/skip-dependency-review.sh
