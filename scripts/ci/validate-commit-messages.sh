@@ -18,6 +18,15 @@ if [ -n "${GITHUB_EVENT_PATH:-}" ] && command -v jq >/dev/null 2>&1; then
   fi
 fi
 
+# Ensure the base commit exists locally in shallow clones; attempt a targeted fetch
+if [ -n "$BASE_REF" ]; then
+  if ! git cat-file -e "${BASE_REF}^{commit}" >/dev/null 2>&1; then
+    echo "⚠️  Base commit $BASE_REF not present locally; attempting fetch"
+    git fetch --no-tags --depth=50 origin "$BASE_REF" >/dev/null 2>&1 || \
+    git fetch --no-tags --deepen=1000 origin >/dev/null 2>&1 || true
+  fi
+fi
+
 echo "🔍 Validating commit messages between $BASE_REF and $HEAD_REF"
 
 # Check if base ref exists, fallback to HEAD~1 if not
@@ -32,8 +41,17 @@ if ! git rev-parse --verify "$BASE_REF" >/dev/null 2>&1; then
 fi
 
 # Get commit messages between base and head
-if [ -n "$BASE_REF" ]; then
-  COMMITS=$(git log --pretty=format:"%s" "$BASE_REF..$HEAD_REF")
+if [ -n "$BASE_REF" ] && git rev-parse --verify "$BASE_REF" >/dev/null 2>&1; then
+  if git log -1 "$HEAD_REF" >/dev/null 2>&1; then
+    if git merge-base --is-ancestor "$BASE_REF" "$HEAD_REF" >/dev/null 2>&1; then
+      COMMITS=$(git log --pretty=format:"%s" "$BASE_REF..$HEAD_REF")
+    else
+      echo "⚠️  Base $BASE_REF is not an ancestor of $HEAD_REF; validating HEAD only"
+      COMMITS=$(git log --pretty=format:"%s" -1 "$HEAD_REF")
+    fi
+  else
+    COMMITS=$(git log --pretty=format:"%s" -1)
+  fi
 else
   COMMITS=$(git log --pretty=format:"%s" -1 "$HEAD_REF")
 fi
