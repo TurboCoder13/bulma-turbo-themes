@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-BASE_REF="${1:-origin/HEAD}"
+BASE_REF="${1:-HEAD~1}"
 HEAD_REF="${2:-HEAD}"
 
 # If running in GitHub Actions for a PR, prefer event payload SHAs to avoid
