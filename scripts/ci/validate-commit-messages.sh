@@ -7,16 +7,36 @@ set -euo pipefail
 BASE_REF="${1:-origin/HEAD}"
 HEAD_REF="${2:-HEAD}"
 
+# If running in GitHub Actions for a PR, prefer event payload SHAs to avoid
+# shallow clone issues where HEAD~1 or origin/HEAD may be unavailable.
+if [ -n "${GITHUB_EVENT_PATH:-}" ] && command -v jq >/dev/null 2>&1; then
+  PR_BASE_SHA=$(jq -r '.pull_request.base.sha // empty' "${GITHUB_EVENT_PATH}" 2>/dev/null || echo "")
+  PR_HEAD_SHA=$(jq -r '.pull_request.head.sha // empty' "${GITHUB_EVENT_PATH}" 2>/dev/null || echo "")
+  if [ -n "$PR_BASE_SHA" ] && [ -n "$PR_HEAD_SHA" ]; then
+    BASE_REF="$PR_BASE_SHA"
+    HEAD_REF="$PR_HEAD_SHA"
+  fi
+fi
+
 echo "🔍 Validating commit messages between $BASE_REF and $HEAD_REF"
 
 # Check if base ref exists, fallback to HEAD~1 if not
 if ! git rev-parse --verify "$BASE_REF" >/dev/null 2>&1; then
-  echo "⚠️  Base ref $BASE_REF not found, using HEAD~1"
-  BASE_REF="HEAD~1"
+  echo "⚠️  Base ref $BASE_REF not found, attempting HEAD~1"
+  if git rev-parse --verify "HEAD~1" >/dev/null 2>&1; then
+    BASE_REF="HEAD~1"
+  else
+    echo "⚠️  HEAD~1 not available; will validate only the latest commit"
+    BASE_REF=""
+  fi
 fi
 
 # Get commit messages between base and head
-COMMITS=$(git log --pretty=format:"%s" "$BASE_REF..$HEAD_REF")
+if [ -n "$BASE_REF" ]; then
+  COMMITS=$(git log --pretty=format:"%s" "$BASE_REF..$HEAD_REF")
+else
+  COMMITS=$(git log --pretty=format:"%s" -1 "$HEAD_REF")
+fi
 
 if [ -z "$COMMITS" ]; then
   echo "✅ No commits to validate"
