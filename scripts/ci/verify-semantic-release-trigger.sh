@@ -9,14 +9,34 @@ HEAD_REF="${2:-HEAD}"
 
 echo "🔍 Checking if commits will trigger semantic release between $BASE_REF and $HEAD_REF"
 
-# Check if base ref exists, fallback to HEAD~1 if not
-if ! git rev-parse --verify "$BASE_REF" >/dev/null 2>&1; then
-  echo "⚠️  Base ref $BASE_REF not found, using HEAD~1"
-  BASE_REF="HEAD~1"
+# Prefer event SHAs for PRs to avoid shallow clone issues
+if [ -n "${GITHUB_EVENT_PATH:-}" ] && command -v jq >/dev/null 2>&1; then
+  PR_BASE_SHA=$(jq -r '.pull_request.base.sha // empty' "${GITHUB_EVENT_PATH}" 2>/dev/null || echo "")
+  PR_HEAD_SHA=$(jq -r '.pull_request.head.sha // empty' "${GITHUB_EVENT_PATH}" 2>/dev/null || echo "")
+  if [ -n "$PR_BASE_SHA" ] && [ -n "$PR_HEAD_SHA" ]; then
+    BASE_REF="$PR_BASE_SHA"
+    HEAD_REF="$PR_HEAD_SHA"
+  fi
 fi
 
-# Get commit messages between base and head
-COMMITS=$(git log --pretty=format:"%s" "$BASE_REF..$HEAD_REF")
+# Ensure base commit exists locally; attempt targeted fetch on shallow clones
+if [ -n "$BASE_REF" ] && ! git cat-file -e "${BASE_REF}^{commit}" >/dev/null 2>&1; then
+  echo "⚠️  Base commit $BASE_REF not present locally; attempting fetch"
+  git fetch --no-tags --depth=50 origin "$BASE_REF" >/dev/null 2>&1 || \
+  git fetch --no-tags --deepen=1000 origin >/dev/null 2>&1 || true
+fi
+
+# Get commit messages between base and head; fallback to HEAD-only if needed
+if [ -n "$BASE_REF" ] && git rev-parse --verify "$BASE_REF" >/dev/null 2>&1; then
+  if git merge-base --is-ancestor "$BASE_REF" "$HEAD_REF" >/dev/null 2>&1; then
+    COMMITS=$(git log --pretty=format:"%s" "$BASE_REF..$HEAD_REF")
+  else
+    echo "⚠️  Base $BASE_REF is not an ancestor of $HEAD_REF; analyzing HEAD only"
+    COMMITS=$(git log --pretty=format:"%s" -1 "$HEAD_REF")
+  fi
+else
+  COMMITS=$(git log --pretty=format:"%s" -1 "$HEAD_REF")
+fi
 
 if [ -z "$COMMITS" ]; then
   echo "✅ No commits to analyze"
