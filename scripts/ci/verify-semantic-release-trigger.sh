@@ -13,6 +13,7 @@ echo "🔍 Checking if commits will trigger semantic release between $BASE_REF a
 if [ -n "${GITHUB_EVENT_PATH:-}" ] && command -v jq >/dev/null 2>&1; then
   PR_BASE_SHA=$(jq -r '.pull_request.base.sha // empty' "${GITHUB_EVENT_PATH}" 2>/dev/null || echo "")
   PR_HEAD_SHA=$(jq -r '.pull_request.head.sha // empty' "${GITHUB_EVENT_PATH}" 2>/dev/null || echo "")
+  PR_BASE_REFNAME=$(jq -r '.pull_request.base.ref // empty' "${GITHUB_EVENT_PATH}" 2>/dev/null || echo "")
   if [ -n "$PR_BASE_SHA" ] && [ -n "$PR_HEAD_SHA" ]; then
     BASE_REF="$PR_BASE_SHA"
     HEAD_REF="$PR_HEAD_SHA"
@@ -22,8 +23,15 @@ fi
 # Ensure base commit exists locally; attempt targeted fetch on shallow clones
 if [ -n "$BASE_REF" ] && ! git cat-file -e "${BASE_REF}^{commit}" >/dev/null 2>&1; then
   echo "⚠️  Base commit $BASE_REF not present locally; attempting fetch"
-  git fetch --no-tags --depth=50 origin "$BASE_REF" >/dev/null 2>&1 || \
-  git fetch --no-tags --deepen=1000 origin >/dev/null 2>&1 || true
+  if [ -n "${PR_BASE_REFNAME:-}" ]; then
+    git fetch --no-tags --depth=50 origin "$PR_BASE_REFNAME:$PR_BASE_REFNAME" >/dev/null 2>&1 || true
+    if git rev-parse --verify "$PR_BASE_REFNAME" >/dev/null 2>&1; then
+      BASE_REF="$PR_BASE_REFNAME"
+    fi
+  fi
+  if ! git cat-file -e "${BASE_REF}^{commit}" >/dev/null 2>&1; then
+    git fetch --no-tags --deepen=1000 origin >/dev/null 2>&1 || true
+  fi
 fi
 
 # Get commit messages between base and head; fallback to HEAD-only if needed
