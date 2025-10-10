@@ -40,10 +40,20 @@ if [ -n "$BASE_REF" ] && git rev-parse --verify "$BASE_REF" >/dev/null 2>&1; the
     COMMITS=$(git log --pretty=format:"%s" "$BASE_REF..$HEAD_REF")
   else
     echo "⚠️  Base $BASE_REF is not an ancestor of $HEAD_REF; analyzing HEAD only"
-    COMMITS=$(git log --pretty=format:"%s" -1 "$HEAD_REF")
+    if git rev-parse --verify "$HEAD_REF" >/dev/null 2>&1; then
+      COMMITS=$(git log --pretty=format:"%s" -1 "$HEAD_REF")
+    else
+      echo "⚠️  Head ref $HEAD_REF not found; analyzing literal HEAD"
+      COMMITS=$(git log --pretty=format:"%s" -1 HEAD)
+    fi
   fi
 else
-  COMMITS=$(git log --pretty=format:"%s" -1 "$HEAD_REF")
+  if git rev-parse --verify "$HEAD_REF" >/dev/null 2>&1; then
+    COMMITS=$(git log --pretty=format:"%s" -1 "$HEAD_REF")
+  else
+    echo "⚠️  Head ref $HEAD_REF not found; analyzing literal HEAD"
+    COMMITS=$(git log --pretty=format:"%s" -1 HEAD)
+  fi
 fi
 
 if [ -z "$COMMITS" ]; then

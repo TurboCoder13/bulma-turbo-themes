@@ -33,6 +33,12 @@ if [ -n "$BASE_REF" ] && ! git cat-file -e "${BASE_REF}^{commit}" >/dev/null 2>&
   fi
 fi
 
+# Ensure head commit exists; fallback to literal HEAD if missing (merge refs)
+if ! git cat-file -e "${HEAD_REF}^{commit}" >/dev/null 2>&1; then
+  echo "⚠️  Head commit $HEAD_REF not present; validating literal HEAD"
+  HEAD_REF="HEAD"
+fi
+
 echo "🔍 Validating commit messages between $BASE_REF and $HEAD_REF"
 
 # Check if base ref exists, fallback to HEAD~1 if not
