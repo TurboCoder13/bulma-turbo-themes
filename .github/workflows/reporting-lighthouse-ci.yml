@@ -58,6 +58,15 @@ jobs:
         run: |
           ./scripts/local/build.sh --full
 
+      - name: Debug Lighthouse output
+        if: always()
+        run: |
+          echo "Checking for Lighthouse output files..."
+          find . -name ".lighthouse" -o -name "lhci*" -o -name "*lighthouse*" 2>/dev/null | head -20 || echo "No files found"
+          echo ""
+          echo "Checking current directory contents:"
+          ls -la | head -20
+
       - name: Verify Lighthouse results
         run: |
           if [ ! -d ".lighthouse" ] || [ -z "$(ls -A .lighthouse 2>/dev/null)" ]; then
