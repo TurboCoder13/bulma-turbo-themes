@@ -70,10 +70,14 @@ jobs:
             echo "Results found in .lighthouse directory:"
             ls -la .lighthouse/
           fi
+        env:
+          LHCI_UPLOAD_TARGET: filesystem
 
       - name: Generate Lighthouse PR comment
         if: github.event_name == 'pull_request' && always()
         run: ./scripts/ci/generate-lighthouse-comment.sh
+        env:
+          LHCI_BUILD_URL: ${{ env.LHCI_BUILD_URL || 'N/A' }}
 
       - name: Post Lighthouse comment on PR
         if: github.event_name == 'pull_request' && always()
