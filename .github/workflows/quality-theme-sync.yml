@@ -44,13 +44,6 @@ jobs:
           node-version: "22"
           ruby-version: "3.3"
       - name: Run theme sync determinism check
-        run: |
-          npm run theme:sync
-          if [[ -n "$(git status --porcelain)" ]]; then
-            echo 'Non-deterministic theme sync detected:'
-            git status --porcelain
-            git --no-pager diff | cat
-            exit 1
-          fi
+        run: ./scripts/ci/theme-sync-determinism-check.sh
       - name: Run test suite (quick)
         run: npm test --silent

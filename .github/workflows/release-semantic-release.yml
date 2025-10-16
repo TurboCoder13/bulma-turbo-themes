@@ -69,6 +69,11 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
+      - name: Configure Git
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
       - name: Setup Node.js
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
@@ -99,14 +104,4 @@ jobs:
 
       - name: Summary
         if: always()
-        run: |
-          echo "## 🚀 Semantic Release Complete" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "The release process has completed." >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "If a new version was released:" >> $GITHUB_STEP_SUMMARY
-          echo "- 📝 CHANGELOG.md has been updated" >> $GITHUB_STEP_SUMMARY
-          echo "- 📦 package.json version has been bumped" >> $GITHUB_STEP_SUMMARY
-          echo "- 🏷️ Git tag has been created" >> $GITHUB_STEP_SUMMARY
-          echo "- 🎉 GitHub release has been published" >> $GITHUB_STEP_SUMMARY
-          echo "- 📮 npm package has been published" >> $GITHUB_STEP_SUMMARY
+        run: ./scripts/ci/generate-semantic-release-summary.sh

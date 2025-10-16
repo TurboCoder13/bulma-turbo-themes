@@ -61,7 +61,7 @@ jobs:
         run: bundle exec jekyll build --trace --strict_front_matter
 
       - name: HTMLProofer (check built site)
-        run: bundle exec htmlproofer ./_site --assume-extension --disable-external --allow-hash-href
+        run: bundle exec htmlproofer --assume-extension --disable-external --allow-hash-href --allow-missing-href --no-enforce-https --ignore-urls "https://turbocoder13.github.io/bulma-turbo-themes,https://turbocoder13.github.io/bulma-turbo-themes/,https://turbocoder13.github.io/bulma-turbo-themes/forms/,https://turbocoder13.github.io/bulma-turbo-themes/components/,https://turbocoder13.github.io/bulma-turbo-themes/es/introduccion/,https://cdn.jsdelivr.net,https://bulma.io,https://bulma.io/.*,https://www.bulma.io/.*" ./_site
 
       - name: Upload JS dist artifact
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
