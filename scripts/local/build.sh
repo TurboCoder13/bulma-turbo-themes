@@ -167,14 +167,14 @@ bundle exec jekyll build --trace --strict_front_matter
 # Step 8: HTMLProofer
 print_status "$BLUE" "🔍 Step 8: HTMLProofer validation..."
 print_status "$YELLOW" "  Running HTMLProofer..."
-# Ignore status code 0 (network timeouts) which occur when external links
-# cannot be reached in CI/restricted environments
+# Ignore status code 0 (network timeouts) and 301 (redirects) which occur
+# when external links are checked in CI/restricted environments
 bundle exec htmlproofer \
   --assume-extension \
   --allow-hash-href \
   --allow-missing-href \
   --no-enforce-https \
-  --ignore-status-codes 0 \
+  --ignore-status-codes 0,301 \
   ./_site
 
 # Step 9: Lighthouse performance analysis (full mode only)
