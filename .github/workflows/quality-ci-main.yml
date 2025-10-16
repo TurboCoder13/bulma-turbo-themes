@@ -14,6 +14,23 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# ============================================================================
+# ENVIRONMENT VARIABLES
+# ============================================================================
+# CHECKOUT_FETCH_DEPTH controls the depth of git history fetched by the
+# checkout action. Shallow clones (default: 1) are faster but may cause issues
+# with scripts that need commit history.
+#
+# Trade-offs:
+#   - fetch-depth: 1   (default) - Fastest, minimal bandwidth, may have issues with history-dependent checks
+#   - fetch-depth: 50  - Balanced, usually sufficient for PR scenarios
+#   - fetch-depth: 0   - Full history, slowest, resolves most edge cases
+#
+# For most PRs, depth=1 works fine. If you see "bad object" or ancestry
+# errors, increase to 50 or 0.
+env:
+  CHECKOUT_FETCH_DEPTH: 1
+
 jobs:
   build:
     name: 🏗️ Build & Quality Checks
@@ -54,6 +71,8 @@ jobs:
             get.anchore.io:443
       - name: Checkout
         uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          fetch-depth: ${{ env.CHECKOUT_FETCH_DEPTH }}
 
       - name: Setup environment
         uses: ./.github/actions/setup-env
