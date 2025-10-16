@@ -106,11 +106,12 @@ npm run build
 
 ### 5. External Link Monitoring (`reporting-link-monitoring.yml`)
 
-**Strategy: Tiered Link Validation**
+#### Strategy: Tiered Link Validation
 
 External link validation is separated from the main CI pipeline to maintain fast feedback loops while ensuring comprehensive link health monitoring:
 
 #### Tier 1: Local/Quick Builds (Internal Links Only)
+
 - **Mode**: `--disable-external`
 - **Speed**: ~0.05 seconds
 - **Validates**: Internal links, anchors, images
@@ -118,6 +119,7 @@ External link validation is separated from the main CI pipeline to maintain fast
 - **Failure Impact**: ✅ Blocks build (critical)
 
 #### Tier 2: Full CI Builds (Internal + External with Retries)
+
 - **Mode**: External links with timeouts and retries
 - **Speed**: ~10-30 seconds
 - **Validates**: All links with proper error handling
@@ -125,6 +127,7 @@ External link validation is separated from the main CI pipeline to maintain fast
 - **Failure Impact**: ❌ Non-blocking (reports only)
 
 #### Tier 3: Nightly Monitoring (Separate Workflow)
+
 - **Schedule**: Daily at 2 AM UTC
 - **Validates**: External links with 30-second timeouts
 - **Retries**: Up to 2 automatic retries per link

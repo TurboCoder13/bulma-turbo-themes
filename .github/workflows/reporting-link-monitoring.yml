@@ -67,7 +67,7 @@ jobs:
           script: |
             const fs = require('fs');
             const output = fs.readFileSync('link-check-output.txt', 'utf8');
-            
+
             // Check if there are actual failures (not just warnings)
             if (output.includes('HTML-Proofer found')) {
               github.rest.issues.create({
