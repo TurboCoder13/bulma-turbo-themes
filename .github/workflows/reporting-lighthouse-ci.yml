@@ -90,9 +90,24 @@ jobs:
           marker: lighthouse-ci-comment
 
       - name: Upload Lighthouse reports
+        if: always()
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: lighthouse-reports
           path: .lighthouse
           if-no-files-found: warn
           overwrite: true
+
+      - name: List artifacts for debugging
+        if: always()
+        run: |
+          echo "Contents of current directory:"
+          ls -la
+          echo ""
+          echo "Checking for .lighthouse directory:"
+          if [ -d ".lighthouse" ]; then
+            echo "✅ .lighthouse directory exists"
+            find .lighthouse -type f
+          else
+            echo "❌ .lighthouse directory not found"
+          fi
