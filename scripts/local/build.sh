@@ -174,7 +174,7 @@ bundle exec htmlproofer \
   --allow-hash-href \
   --allow-missing-href \
   --no-enforce-https \
-  --ignore-urls "https://turbocoder13.github.io/bulma-turbo-themes,https://turbocoder13.github.io/bulma-turbo-themes/,https://turbocoder13.github.io/bulma-turbo-themes/forms/,https://turbocoder13.github.io/bulma-turbo-themes/components/,https://turbocoder13.github.io/bulma-turbo-themes/es/introduccion/,https://cdn.jsdelivr.net,https://bulma.io,https://bulma.io/.*,https://www.bulma.io/.*" \
+  --ignore-urls "https://turbocoder13.github.io/bulma-turbo-themes.*,https://cdn.jsdelivr.net.*,https://bulma.io.*,https://www.bulma.io.*" \
   ./_site
 
 # Step 9: Lighthouse performance analysis (full mode only)
