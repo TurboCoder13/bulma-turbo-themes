@@ -5,7 +5,7 @@
 #   - GITHUB_RUN_ID: GitHub Actions run ID for artifact links
 #   - GITHUB_SHA: Current commit SHA
 #   - GITHUB_REPOSITORY: GitHub repository (owner/repo)
-# Reads from .lighthouse directory and extracts metrics
+# Reads from lighthouse-reports directory and extracts metrics
 
 set -euo pipefail
 
@@ -20,9 +20,9 @@ REPO="${GITHUB_REPOSITORY:=unknown}"
   echo ""
 
   # Check if lighthouse results exist
-  if [ -d ".lighthouse" ] && [ -n "$(ls -A .lighthouse 2>/dev/null)" ]; then
+  if [ -d "lighthouse-reports" ] && [ -n "$(ls -A lighthouse-reports 2>/dev/null)" ]; then
     # Find and parse the most recent Lighthouse JSON report
-    LATEST_REPORT=$(find .lighthouse -name "*.json" -type f | sort -r | head -1)
+    LATEST_REPORT=$(find lighthouse-reports -name "*.json" -type f | grep -v manifest | sort -r | head -1)
     
     if [ -n "$LATEST_REPORT" ]; then
       # Extract scores using jq if available

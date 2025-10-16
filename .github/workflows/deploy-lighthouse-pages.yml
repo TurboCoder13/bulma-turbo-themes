@@ -40,17 +40,17 @@ jobs:
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: lighthouse-reports
-          path: lighthouse/
+          path: lighthouse-reports/
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
 
       - name: Check if reports exist
         id: check-reports
         run: |
-          if [ -d "lighthouse" ] && [ -n "$(ls -A lighthouse 2>/dev/null)" ]; then
+          if [ -d "lighthouse-reports" ] && [ -n "$(ls -A lighthouse-reports 2>/dev/null)" ]; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
             echo "✅ Lighthouse reports found"
-            find lighthouse -type f
+            find lighthouse-reports -type f
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
             echo "⚠️ No Lighthouse reports found, skipping deployment"
@@ -64,7 +64,7 @@ jobs:
         if: steps.check-reports.outputs.exists == 'true'
         run: |
           mkdir -p _site/lighthouse
-          cp -r lighthouse/* _site/lighthouse/
+          cp -r lighthouse-reports/* _site/lighthouse/
           echo "✅ Lighthouse reports prepared for deployment"
           ls -la _site/lighthouse/
 

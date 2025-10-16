@@ -60,15 +60,15 @@ jobs:
 
       - name: Verify Lighthouse results
         run: |
-          if [ ! -d ".lighthouse" ] || [ -z "$(ls -A .lighthouse 2>/dev/null)" ]; then
+          if [ ! -d "lighthouse-reports" ] || [ -z "$(ls -A lighthouse-reports 2>/dev/null)" ]; then
             echo "❌ Lighthouse CI failed - no results generated"
             echo "This indicates Lighthouse could not run properly"
             echo "Check the build logs above for network or other errors"
             exit 1
           else
             echo "✅ Lighthouse CI completed successfully"
-            echo "Results found in .lighthouse directory:"
-            ls -la .lighthouse/
+            echo "Results found in lighthouse-reports directory:"
+            ls -la lighthouse-reports/
           fi
         env:
           LHCI_UPLOAD_TARGET: filesystem
@@ -94,7 +94,7 @@ jobs:
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: lighthouse-reports
-          path: .lighthouse
+          path: lighthouse-reports
           if-no-files-found: warn
           overwrite: true
 
@@ -104,10 +104,10 @@ jobs:
           echo "Contents of current directory:"
           ls -la
           echo ""
-          echo "Checking for .lighthouse directory:"
-          if [ -d ".lighthouse" ]; then
-            echo "✅ .lighthouse directory exists"
-            find .lighthouse -type f
+          echo "Checking for lighthouse-reports directory:"
+          if [ -d "lighthouse-reports" ]; then
+            echo "✅ lighthouse-reports directory exists"
+            find lighthouse-reports -type f
           else
-            echo "❌ .lighthouse directory not found"
+            echo "❌ lighthouse-reports directory not found"
           fi
