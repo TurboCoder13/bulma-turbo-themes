@@ -167,17 +167,32 @@ bundle exec jekyll build --trace --strict_front_matter
 # Step 8: HTMLProofer
 print_status "$BLUE" "🔍 Step 8: HTMLProofer validation..."
 print_status "$YELLOW" "  Running HTMLProofer..."
-# Ignore status code 0 (network timeouts) and 301 (redirects) which occur
-# when external links are checked in CI/restricted environments
-# Also exclude external links to the site's own GitHub Pages URL (jekyll-seo-tag canonical links)
-bundle exec htmlproofer \
-  --assume-extension \
-  --allow-hash-href \
-  --allow-missing-href \
-  --no-enforce-https \
-  --ignore-status-codes 0,301 \
-  --ignore-urls '/https:\/\/turbocoder13\.github\.io\/bulma-turbo-themes.*/' \
-  ./_site
+# Tiered validation strategy:
+# - Local/Quick builds: Only validate internal links (--disable-external)
+# - Full CI builds: Include external links with proper timeouts (see reporting-link-monitoring.yml)
+# - Separate monitoring: External links validated nightly with monitoring dashboards
+# This prevents silent failures from transient network issues while maintaining fast feedback loops
+if [ "$QUICK_MODE" = true ] || [ "$FULL_MODE" = false ]; then
+    # Quick/local builds: Skip external link validation (faster, no network dependency)
+    print_status "$YELLOW" "  Validating internal links only (external links checked separately via monitoring)..."
+    bundle exec htmlproofer \
+      --disable-external \
+      --assume-extension \
+      --allow-hash-href \
+      --allow-missing-href \
+      --no-enforce-https \
+      ./_site
+else
+    # Full CI builds: Include external validation with proper timeouts
+    print_status "$YELLOW" "  Validating internal and external links..."
+    bundle exec htmlproofer \
+      --assume-extension \
+      --allow-hash-href \
+      --allow-missing-href \
+      --no-enforce-https \
+      --typhoeus '{"timeout": 30, "max_redirects": 5}' \
+      ./_site
+fi
 
 # Step 9: Lighthouse performance analysis (full mode only)
 if [ "$FULL_MODE" = true ]; then

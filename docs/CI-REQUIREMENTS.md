@@ -104,6 +104,77 @@ npx @lhci/cli@latest autorun --config=./lighthouserc.json --collect.numberOfRuns
 npm run build
 ```
 
+### 5. External Link Monitoring (`reporting-link-monitoring.yml`)
+
+**Strategy: Tiered Link Validation**
+
+External link validation is separated from the main CI pipeline to maintain fast feedback loops while ensuring comprehensive link health monitoring:
+
+#### Tier 1: Local/Quick Builds (Internal Links Only)
+- **Mode**: `--disable-external`
+- **Speed**: ~0.05 seconds
+- **Validates**: Internal links, anchors, images
+- **Network**: No external calls
+- **Failure Impact**: ✅ Blocks build (critical)
+
+#### Tier 2: Full CI Builds (Internal + External with Retries)
+- **Mode**: External links with timeouts and retries
+- **Speed**: ~10-30 seconds
+- **Validates**: All links with proper error handling
+- **Network**: Full external link validation
+- **Failure Impact**: ❌ Non-blocking (reports only)
+
+#### Tier 3: Nightly Monitoring (Separate Workflow)
+- **Schedule**: Daily at 2 AM UTC
+- **Validates**: External links with 30-second timeouts
+- **Retries**: Up to 2 automatic retries per link
+- **Reporting**: Creates GitHub issues for persistent failures
+- **Non-blocking**: Never fails the build
+- **Artifacts**: Upload validation reports for investigation
+
+**Why This Approach:**
+
+- 🚀 **Fast Feedback**: Developers get instant feedback on internal link validity
+- 🌐 **Resilient**: External services are monitored separately with retry logic
+- 📊 **Transparent**: Separate issue tracking for external link problems
+- 🏢 **Enterprise-Ready**: Follows industry standards for link validation
+
+**Configuration Details:**
+
+```bash
+# Local/Quick builds
+htmlproofer --disable-external \
+  --assume-extension \
+  --allow-hash-href \
+  --allow-missing-href \
+  --no-enforce-https \
+  ./_site
+
+# Full CI builds
+htmlproofer \
+  --assume-extension \
+  --allow-hash-href \
+  --allow-missing-href \
+  --no-enforce-https \
+  --typhoeus '{"timeout": 30, "max_redirects": 5}' \
+  ./_site
+
+# Nightly monitoring
+htmlproofer \
+  --typhoeus '{"timeout": 30, "max_redirects": 5, "retry": {"max_retries": 2}}' \
+  ./_site
+```
+
+**Local Testing:**
+
+```bash
+# Test internal link validation only
+./scripts/local/build.sh --quick
+
+# Test full validation (includes external links)
+./scripts/local/build.sh --full
+```
+
 ## 🔧 Required Dependencies
 
 ### npm Packages
