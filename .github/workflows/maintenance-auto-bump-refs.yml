@@ -54,6 +54,10 @@ jobs:
       - name: Determine target SHA
         id: sha
         run: ./scripts/ci/determine-target-sha.sh
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_SHA: ${{ inputs.sha || '' }}
+          GITHUB_SHA: ${{ github.sha }}
 
       - name: Update internal references
         run: ./scripts/ci/update-internal-refs.sh "${{ steps.sha.outputs.sha }}"
