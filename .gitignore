@@ -27,3 +27,8 @@ vendor/
 
 # Generated badges (uploaded as CI artifacts)
 assets/static/badges/
+
+# Lighthouse CI generated reports and artifacts
+lighthouse-reports/
+.lighthouse/
+.lighthouseci/
