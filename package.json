@@ -49,7 +49,7 @@
     "ci:full": "./scripts/local/build.sh --full",
     "ci:docker": "bash ./scripts/local/ci-docker.sh",
     "ci:docker:full": "bash ./scripts/local/ci-docker.sh --full",
-    "prepare": "husky",
+    "prepare": "[ -z \"$npm_config_omit\" ] && husky || true",
     "prepublishOnly": "npm run build && npm test"
   },
   "lint-staged": {
