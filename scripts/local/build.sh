@@ -184,13 +184,15 @@ if [ "$QUICK_MODE" = true ] || [ "$FULL_MODE" = false ]; then
       ./_site
 else
     # Full CI builds: Include external validation with proper timeouts
+    # Exclude jekyll-seo-tag canonical links that point to GitHub Pages URLs
     print_status "$YELLOW" "  Validating internal and external links..."
     bundle exec htmlproofer \
       --assume-extension \
       --allow-hash-href \
       --allow-missing-href \
       --no-enforce-https \
-      --typhoeus '{"timeout": 30, "max_redirects": 5}' \
+      --typhoeus '{"timeout": 30, "maxredirs": 5}' \
+      --ignore-urls '/https:\/\/turbocoder13\.github\.io\/bulma-turbo-themes.*/' \
       ./_site
 fi
 
