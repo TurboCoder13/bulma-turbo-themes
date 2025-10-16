@@ -167,14 +167,14 @@ bundle exec jekyll build --trace --strict_front_matter
 # Step 8: HTMLProofer
 print_status "$BLUE" "🔍 Step 8: HTMLProofer validation..."
 print_status "$YELLOW" "  Running HTMLProofer..."
-# Options must precede the PATH; disable external checks and allow demo anchors
+# Ignore status code 0 (network timeouts) which occur when external links
+# cannot be reached in CI/restricted environments
 bundle exec htmlproofer \
   --assume-extension \
-  --disable-external \
   --allow-hash-href \
   --allow-missing-href \
   --no-enforce-https \
-  --ignore-urls "https://turbocoder13.github.io/bulma-turbo-themes,https://turbocoder13.github.io/bulma-turbo-themes/,https://turbocoder13.github.io/bulma-turbo-themes/forms/,https://turbocoder13.github.io/bulma-turbo-themes/components/,https://turbocoder13.github.io/bulma-turbo-themes/es/introduccion/,https://cdn.jsdelivr.net,https://bulma.io,https://bulma.io/.*,https://www.bulma.io/.*" \
+  --ignore-status-codes 0 \
   ./_site
 
 # Step 9: Lighthouse performance analysis (full mode only)
