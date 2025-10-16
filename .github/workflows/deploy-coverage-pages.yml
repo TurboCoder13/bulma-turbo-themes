@@ -47,10 +47,15 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
 
+      - name: Prepare artifacts for upload
+        run: |
+          mkdir -p _site/coverage
+          cp -r coverage/* _site/coverage/
+
       - name: Upload artifact to Pages
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
-          path: coverage/
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
