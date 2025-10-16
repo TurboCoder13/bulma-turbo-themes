@@ -1,9 +1,9 @@
 ---
-name: Deploy - Coverage to GitHub Pages
+name: Deploy - Lighthouse Reports to GitHub Pages
 
 on:
   workflow_run:
-    workflows: ["Quality Check - CI Pipeline"]
+    workflows: ["Reporting - Lighthouse CI"]
     types:
       - completed
     branches: [main]
@@ -14,12 +14,12 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages-coverage
+  group: pages-lighthouse
   cancel-in-progress: false
 
 jobs:
   deploy:
-    name: 📊 Deploy Coverage Report to Pages
+    name: 🔦 Deploy Lighthouse Reports to Pages
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
@@ -36,27 +36,45 @@ jobs:
             api.github.com:443
             uploads.github.com:443
 
-      - name: Download coverage artifact
+      - name: Download Lighthouse reports artifact
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: coverage-html
-          path: coverage/
+          name: lighthouse-reports
+          path: lighthouse-reports/
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
 
+      - name: Check if reports exist
+        id: check-reports
+        run: |
+          if [ -d "lighthouse-reports" ] && [ -n "$(ls -A lighthouse-reports 2>/dev/null)" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "✅ Lighthouse reports found"
+            find lighthouse-reports -type f
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "⚠️ No Lighthouse reports found, skipping deployment"
+          fi
+
       - name: Setup Pages
+        if: steps.check-reports.outputs.exists == 'true'
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
 
       - name: Prepare artifacts for upload
+        if: steps.check-reports.outputs.exists == 'true'
         run: |
-          mkdir -p _site/coverage
-          cp -r coverage/* _site/coverage/
+          mkdir -p _site/lighthouse
+          cp -r lighthouse-reports/* _site/lighthouse/
+          echo "✅ Lighthouse reports prepared for deployment"
+          ls -la _site/lighthouse/
 
       - name: Upload artifact to Pages
+        if: steps.check-reports.outputs.exists == 'true'
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
           path: _site
 
       - name: Deploy to GitHub Pages
+        if: steps.check-reports.outputs.exists == 'true'
         id: deployment
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
