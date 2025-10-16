@@ -169,12 +169,14 @@ print_status "$BLUE" "🔍 Step 8: HTMLProofer validation..."
 print_status "$YELLOW" "  Running HTMLProofer..."
 # Ignore status code 0 (network timeouts) and 301 (redirects) which occur
 # when external links are checked in CI/restricted environments
+# Also exclude external links to the site's own GitHub Pages URL (jekyll-seo-tag canonical links)
 bundle exec htmlproofer \
   --assume-extension \
   --allow-hash-href \
   --allow-missing-href \
   --no-enforce-https \
   --ignore-status-codes 0,301 \
+  --ignore-urls '/https:\/\/turbocoder13\.github\.io\/bulma-turbo-themes.*/' \
   ./_site
 
 # Step 9: Lighthouse performance analysis (full mode only)
