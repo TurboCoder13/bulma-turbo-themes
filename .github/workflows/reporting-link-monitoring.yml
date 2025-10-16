@@ -1,0 +1,88 @@
+name: Reporting - External Link Validation
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * *" # 2 AM UTC daily (nightly)
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: link-monitoring
+  cancel-in-progress: false
+
+jobs:
+  validate-external-links:
+    name: 🔗 Check External Links
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
+        with:
+          egress-policy: audit
+
+      - name: Checkout code
+        uses: actions/checkout@8f4b7f3caee0ee48d912419ad8e54fb1dfe81391
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@b5f43ab2aa2d2d3c32e5af3c4c1eae88b88c9f16
+        with:
+          ruby-version: "3.4"
+          bundler-cache: true
+
+      - name: Build Jekyll site
+        run: bundle exec jekyll build --trace --strict_front_matter
+
+      - name: Validate external links
+        id: link-check
+        run: |
+          bundle exec htmlproofer \
+            --assume-extension \
+            --allow-hash-href \
+            --allow-missing-href \
+            --no-enforce-https \
+            --typhoeus '{"timeout": 30, "max_redirects": 5, "retry": {"max_retries": 2}}' \
+            --report-missing-doctype false \
+            --report-sce false \
+            ./_site 2>&1 | tee link-check-output.txt || true
+
+      - name: Parse link check results
+        id: results
+        run: |
+          if grep -q "HTML-Proofer finished successfully" link-check-output.txt; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "External links validated successfully"
+          else
+            echo "status=warning" >> $GITHUB_OUTPUT
+            echo "Some external links may have issues (see full log)"
+          fi
+
+      - name: Create issue on external link failures
+        if: steps.results.outputs.status == 'warning'
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
+        with:
+          script: |
+            const fs = require('fs');
+            const output = fs.readFileSync('link-check-output.txt', 'utf8');
+
+            // Check if there are actual failures (not just warnings)
+            if (output.includes('HTML-Proofer found')) {
+              github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '🔗 External Link Issues Detected',
+                body: `## External Link Validation Report\n\n\`\`\`\n${output}\n\`\`\`\n\n**Note:** External link failures are non-blocking and may be transient.\nPlease review and investigate persistent failures.`,
+                labels: ['type:monitoring', 'priority:low']
+              });
+            }
+
+      - name: Upload link validation report
+        if: always()
+        uses: actions/upload-artifact@4cd38c97f8e4a4af96a53ead5eb3e4ecc3c7e41e
+        with:
+          name: link-validation-report
+          path: link-check-output.txt
+          retention-days: 30
