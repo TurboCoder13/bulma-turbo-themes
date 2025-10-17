@@ -68,12 +68,12 @@ const STORAGE_KEY = "bulma-theme-flavor";
 const DEFAULT_THEME = "catppuccin-mocha";
 
 function getBaseUrl(doc: Document): string {
-  const baseElement = doc.querySelector("html[data-baseurl]");
+  const baseElement = doc.documentElement;
   const raw = baseElement?.getAttribute("data-baseurl") || "";
   try {
     const u = new URL(raw, "http://localhost");
     // Only allow same-origin relative paths; strip origin used for parsing
-    return u.origin === "http://localhost" ? u.pathname.replace(/\/\+$/, "") : "";
+    return u.origin === "http://localhost" ? u.pathname.replace(/\/$/, "") : "";
   } catch {
     return "";
   }
