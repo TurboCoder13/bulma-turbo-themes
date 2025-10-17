@@ -35,6 +35,8 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "build:dev": "./build.sh --dev",
+    "build:prod": "./build.sh --prod",
     "test": "vitest run --coverage",
     "lint": "eslint . --ext .ts --max-warnings=0",
     "format": "prettier --check .",
