@@ -186,13 +186,17 @@ bundle exec jekyll build --config "$JEKYLL_CONFIG" --trace --strict_front_matter
 # Step 8: HTMLProofer
 print_status "$BLUE" "🔍 Step 8: HTMLProofer validation..."
 print_status "$YELLOW" "  Running HTMLProofer..."
-# Tiered validation strategy:
-# - Local/Quick builds: Only validate internal links (--disable-external)
-# - Full CI builds: Include external links with proper timeouts (see reporting-link-monitoring.yml)
-# - Separate monitoring: External links validated nightly with monitoring dashboards
-# This prevents silent failures from transient network issues while maintaining fast feedback loops
-if [ "$QUICK_MODE" = true ] || [ "$FULL_MODE" = false ]; then
-    # Quick/local builds: Skip external link validation (faster, no network dependency)
+# Validation strategy:
+# - Development builds: Validate internal links (--disable-external)
+# - Production builds: Skip HTMLProofer (baseurl causes false positives locally)
+# - Full CI builds: Separate dedicated workflow validates all links on GitHub Pages
+# This prevents false failures from production baseurl while maintaining code quality checks
+if [ "$PROD_MODE" = true ]; then
+    # Production builds: Skip validation (baseurl prefix makes local paths invalid)
+    # External validation happens on actual GitHub Pages deployment
+    print_status "$YELLOW" "  ⏭️  Skipping HTMLProofer for production build (validation happens on GitHub Pages)..."
+elif [ "$QUICK_MODE" = true ] || [ "$FULL_MODE" = false ]; then
+    # Quick/local dev builds: Skip external link validation (faster, no network dependency)
     print_status "$YELLOW" "  Validating internal links only (external links checked separately via monitoring)..."
     bundle exec htmlproofer \
       --disable-external \
