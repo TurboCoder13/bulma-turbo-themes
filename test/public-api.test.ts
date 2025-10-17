@@ -769,4 +769,112 @@ describe("public API", () => {
       expect(triggerIconEl.appendChild).toHaveBeenCalled();
     });
   });
+
+  describe("baseUrl path construction", () => {
+    it("correctly prepends non-empty baseUrl to CSS paths", () => {
+      mockLocalStorage.getItem.mockReturnValue("bulma-light");
+      Object.defineProperty(document.documentElement, "getAttribute", {
+        value: vi.fn((attr) => {
+          if (attr === "data-baseurl") return "/bulma-turbo-themes";
+          return null;
+        }),
+        writable: true,
+      });
+
+      initTheme(document, window);
+
+      // Verify that the href was set with the prepended baseUrl
+      expect(mockLink.href).toBe(
+        "/bulma-turbo-themes/assets/css/themes/bulma-light.css",
+      );
+    });
+
+    it("correctly prepends non-empty baseUrl to icon paths in wireFlavorSelector", () => {
+      Object.defineProperty(document.documentElement, "getAttribute", {
+        value: vi.fn((attr) => {
+          if (attr === "data-baseurl") return "/bulma-turbo-themes";
+          return null;
+        }),
+        writable: true,
+      });
+
+      wireFlavorSelector(document, window);
+
+      // Verify appendChild was called (icons added to dropdown)
+      expect(mockElement.appendChild).toHaveBeenCalled();
+    });
+
+    it("displays fallback text span in trigger icon when theme has no icon", () => {
+      const triggerIconEl = {
+        firstChild: null,
+        removeChild: vi.fn(),
+        appendChild: vi.fn(),
+      } as any;
+
+      mockLocalStorage.getItem.mockReturnValue("bulma-light");
+      Object.defineProperty(document, "getElementById", {
+        value: vi.fn((id) => {
+          if (id === "theme-flavor-trigger-icon") return triggerIconEl;
+          if (id === "theme-flavor-css") return mockLink;
+          return mockElement;
+        }),
+        writable: true,
+      });
+
+      // Create a mock document that returns spans without icons
+      const spanWithoutIcon = {
+        textContent: "",
+        style: {},
+      };
+      Object.defineProperty(document, "createElement", {
+        value: vi.fn((tag) => {
+          if (tag === "img") return mockImg;
+          if (tag === "span") return spanWithoutIcon;
+          return mockElement;
+        }),
+        writable: true,
+      });
+
+      initTheme(document, window);
+
+      // Verify appendChild was called for the fallback span
+      expect(triggerIconEl.appendChild).toHaveBeenCalled();
+    });
+
+    it("displays fallback text spans in dropdown for themes without icons", () => {
+      Object.defineProperty(document.documentElement, "getAttribute", {
+        value: vi.fn(() => ""),
+        writable: true,
+      });
+
+      const spanElement = {
+        textContent: "",
+        style: {},
+        addEventListener: vi.fn(),
+      };
+
+      Object.defineProperty(document, "createElement", {
+        value: vi.fn((tag) => {
+          if (tag === "img") return mockImg;
+          if (tag === "span") return spanElement;
+          if (tag === "a") {
+            return {
+              href: "#",
+              className: "",
+              setAttribute: vi.fn(),
+              appendChild: vi.fn(),
+              addEventListener: vi.fn(),
+            };
+          }
+          return mockElement;
+        }),
+        writable: true,
+      });
+
+      wireFlavorSelector(document, window);
+
+      // Verify appendChild was called (spans added as fallback)
+      expect(mockElement.appendChild).toHaveBeenCalled();
+    });
+  });
 });

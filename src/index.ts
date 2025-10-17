@@ -86,9 +86,10 @@ function applyTheme(doc: Document, themeId: string): void {
   const flavorLink = doc.getElementById("theme-flavor-css") as HTMLLinkElement | null;
 
   if (flavorLink) {
-    // Build a safe URL relative to base
+    // Build a safe URL relative to base by prepending baseUrl to relative path
     try {
-      const url = new URL(theme.cssFile, "http://localhost" + baseUrl);
+      const fullPath = baseUrl ? `${baseUrl}/${theme.cssFile}` : theme.cssFile;
+      const url = new URL(fullPath, "http://localhost");
       flavorLink.href = url.pathname;
     } catch {
       // Ignore invalid URL
@@ -110,7 +111,8 @@ function applyTheme(doc: Document, themeId: string): void {
       // Create and append img element (CSP-friendly)
       const img = doc.createElement("img");
       try {
-        const url = new URL(theme.icon, "http://localhost" + baseUrl);
+        const fullPath = baseUrl ? `${baseUrl}/${theme.icon}` : theme.icon;
+        const url = new URL(fullPath, "http://localhost");
         img.src = url.pathname;
       } catch {
         // Ignore invalid URL
@@ -210,7 +212,8 @@ export function wireFlavorSelector(documentObj: Document, windowObj: Window): vo
     if (theme.icon) {
       const img = documentObj.createElement("img");
       try {
-        const url = new URL(theme.icon, "http://localhost" + baseUrl);
+        const fullPath = baseUrl ? `${baseUrl}/${theme.icon}` : theme.icon;
+        const url = new URL(fullPath, "http://localhost");
         img.src = url.pathname;
       } catch {
         // Ignore invalid URL
