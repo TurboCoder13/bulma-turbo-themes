@@ -87,11 +87,13 @@ jobs:
       - name: Build package
         run: npm run build
 
-      - name: Download SBOM artifacts
+      - name: Download SBOM artifacts (if available)
+        id: sbom
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: sbom-all-formats
           path: sbom/
+        continue-on-error: true
 
       - name: Create dist-release directory
         run: mkdir -p dist-release
