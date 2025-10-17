@@ -40,6 +40,7 @@ jobs:
         with:
           node-version: "22"
           ruby-version: "3.3"
+      - run: npm run build
       - run: bundle exec jekyll build --config _config.yml,_config.production.yml
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
