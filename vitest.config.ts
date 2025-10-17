@@ -23,10 +23,10 @@ export default defineConfig({
         "src/themes/types.ts",
       ],
       thresholds: {
-        lines: 84,
+        lines: 85,
         functions: 85,
-        branches: 84,
-        statements: 84,
+        branches: 85,
+        statements: 85,
       },
     },
   },
