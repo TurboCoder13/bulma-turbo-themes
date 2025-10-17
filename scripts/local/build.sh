@@ -36,6 +36,8 @@ QUICK_MODE=false
 FULL_MODE=false
 SERVE_MODE=false
 NO_SERVE=false
+DEV_MODE=false
+PROD_MODE=false
 
 for arg in "$@"; do
     case "$arg" in
@@ -51,6 +53,12 @@ for arg in "$@"; do
         --no-serve)
             NO_SERVE=true
             ;;
+        --dev)
+            DEV_MODE=true
+            ;;
+        --prod)
+            PROD_MODE=true
+            ;;
     esac
 done
 
@@ -61,6 +69,17 @@ elif [ "$FULL_MODE" = true ]; then
     print_status "$BLUE" "🚀 Starting full CI build process..."
 else
     print_status "$BLUE" "🚀 Starting local build process..."
+fi
+
+# Determine environment
+if [ "$DEV_MODE" = true ]; then
+    print_status "$BLUE" "📍 Environment: Development (baseurl: empty)"
+    JEKYLL_CONFIG="_config.yml"
+elif [ "$PROD_MODE" = true ]; then
+    print_status "$BLUE" "📍 Environment: Production (baseurl: /bulma-turbo-themes)"
+    JEKYLL_CONFIG="_config.yml,_config.prod.yml"
+else
+    JEKYLL_CONFIG="_config.yml"
 fi
 
 # Change to project root
@@ -162,7 +181,7 @@ fi
 # Step 7: Jekyll build
 print_status "$BLUE" "🏗️  Step 7: Jekyll build..."
 print_status "$YELLOW" "  Building Jekyll site..."
-bundle exec jekyll build --trace --strict_front_matter
+bundle exec jekyll build --config "$JEKYLL_CONFIG" --trace --strict_front_matter
 
 # Step 8: HTMLProofer
 print_status "$BLUE" "🔍 Step 8: HTMLProofer validation..."
