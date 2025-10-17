@@ -28,7 +28,6 @@ collections:
 
 exclude:
   - node_modules
-  - coverage
   - vendor
   - .bundle
   - package-lock.json
@@ -37,3 +36,5 @@ exclude:
 include:
   - dist
   - assets
+  - coverage
+  - lighthouse-reports
