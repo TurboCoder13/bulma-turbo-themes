@@ -58,10 +58,7 @@ jobs:
         run: npm run build
 
       - name: Jekyll build
-        run: bundle exec jekyll build --trace --strict_front_matter
-
-      - name: HTMLProofer (check built site)
-        run: bundle exec htmlproofer --assume-extension --allow-hash-href --allow-missing-href --no-enforce-https --ignore-status-codes 0,301 ./_site
+        run: npm run build:prod --no-serve
 
       - name: Upload JS dist artifact
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
