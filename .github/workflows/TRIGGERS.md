@@ -20,9 +20,9 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 | quality-validate-action-pinning | ✅          |             | ✅           |           |        |              |
 | deploy-pages                    |             |             |              |           |        | ✅           |
 | deploy-coverage-pages           |             |             |              |           |        | ✅           |
-| publish-npm-on-tag              |             | ✅ v*.*.\*  |              |           |        |              |
+| release-version-pr              | ✅          |             |              |           | ✅     |              |
+| release-publish-pr              |             | ✅ v*.*.\*  |              |           | ✅     |              |
 | publish-npm-test                |             |             |              |           | ✅     |              |
-| release-semantic-release        | ✅          |             |              |           | ✅     |              |
 | release-auto-tag                |             |             |              |           | ✅     |              |
 | maintenance-renovate            |             |             |              | ✅ Daily  |        |              |
 | maintenance-auto-bump-refs      |             |             |              | ✅ Weekly |        |              |
@@ -124,62 +124,71 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 
 ### Publishing & Releases
 
-#### publish-npm-on-tag.yml
+#### release-version-pr.yml
 
-**Triggers:** Push tags matching `v*.*.*`  
-**Purpose:** Publishes package to npm on version tags
+**Triggers:** Push to main, Manual (workflow_dispatch)
+**Purpose:** Create a version bump PR with CHANGELOG updates
 
 **What it does:**
 
-- Runs quality and build checks
-- Generates and signs SBOM
-- Publishes to npm with provenance
-- Creates GitHub release with SBOM artifacts
+- Triggered automatically on every push to main (or manually via workflow_dispatch)
+- Checks if a version PR already exists (avoids duplicates)
+- Prepares to create a PR with:
+  - Updated package.json version
+  - Updated package-lock.json
+  - Generated/updated CHANGELOG.md
 
-**Example:** Pushing tag `v1.2.3` triggers this workflow
+**Conventional Commits Required:**
+
+- `feat:` → minor version bump
+- `fix:` → patch version bump
+- `BREAKING CHANGE` → major version bump
+
+**Use case:** Creates version bump PR for review and approval before tag creation
+
+#### release-publish-pr.yml
+
+**Triggers:** Push tags matching `v*.*.*`, Manual (workflow_dispatch)
+**Purpose:** Publish to npm and create GitHub release
+
+**What it does:**
+
+- Triggered when a version tag is created
+- Runs quality, build, and SBOM generation
+- Publishes to npm with provenance attestation
+- Creates GitHub release with signed SBOM artifacts:
+  - CycloneDX JSON/XML (with signatures)
+  - SPDX JSON (with signature)
+
+**Requirements:**
+
+- NPM_TOKEN secret must be configured (with "Authorization only" 2FA level)
+- Valid npm credentials for @turbocoder13/bulma-turbo-themes
+
+**Example:** Tag `v1.2.3` triggers full publish and release
 
 #### publish-npm-test.yml
 
-**Triggers:** Manual (workflow_dispatch)  
-**Purpose:** Test publish to npm with custom tag
+**Triggers:** Manual (workflow_dispatch)
+**Purpose:** Test npm publish with custom dist-tag
 
 **Inputs:**
 
 - `tag` - npm dist-tag (e.g., beta, next, canary)
 
-**Use case:** Testing publish process before production release
-
-#### release-semantic-release.yml
-
-**Triggers:** Push to main, Manual  
-**Purpose:** Automatic semantic versioning and releases
-
-**What it does:**
-
-- Analyzes commits since last release
-- Determines version bump (major/minor/patch)
-- Generates CHANGELOG
-- Creates GitHub release
-- Publishes to npm
-- Commits version bump
-
-**Conventional Commits Required:**
-
-- `feat:` → minor version
-- `fix:` → patch version
-- `BREAKING CHANGE` → major version
+**Use case:** Testing publish process with pre-release tags
 
 #### release-auto-tag.yml
 
-**Triggers:** Manual (workflow_dispatch)  
-**Purpose:** Manually create git tags
+**Triggers:** Manual (workflow_dispatch)
+**Purpose:** Manually create git tags (emergency/backup use)
 
 **Inputs:**
 
 - `version` - Version to tag (e.g., v1.2.3)
 - `prerelease` - Mark as pre-release
 
-**Use case:** Backup mechanism for creating releases manually
+**Use case:** Emergency tag creation when automation fails
 
 ### Maintenance
 
