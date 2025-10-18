@@ -30,7 +30,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@b5f43ab2aa2d2d3c32e5af3c4c1eae88b88c9f16
         with:
-          ruby-version: "3.4"
+          ruby-version: "3.4.7"
           bundler-cache: true
 
       - name: Build Jekyll site
