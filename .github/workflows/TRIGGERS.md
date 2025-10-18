@@ -27,7 +27,6 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 | maintenance-renovate            |             |             |              | ✅ Daily  |        |              |
 | maintenance-auto-bump-refs      |             |             |              | ✅ Weekly |        |              |
 | maintenance-pr-comment-cleanup  |             |             |              |           | ✅     |              |
-| monitoring-uptime               |             |             |              | ✅ 15min  |        |              |
 
 ## Workflow Categories
 
@@ -224,15 +223,6 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 - Runs Lighthouse CI analysis
 - Posts results comment on PRs
 - Uploads reports as artifacts
-
-### Monitoring
-
-#### monitoring-uptime.yml
-
-**Triggers:** Every 15 minutes  
-**Purpose:** Monitors website availability
-
-**Schedule:** `*/15 * * * *`
 
 ## Workflow Dependencies
 
