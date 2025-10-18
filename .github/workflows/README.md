@@ -38,10 +38,6 @@ Following py-lintro standards:
 
 - `reporting-lighthouse-ci.yml` - Lighthouse performance analysis
 
-### Monitoring
-
-- `monitoring-uptime.yml` - Site uptime health checks
-
 ### Maintenance
 
 - `maintenance-renovate.yml` - Automated dependency updates
@@ -90,12 +86,6 @@ Following py-lintro standards:
 | -------------- | ------------------------------------------------------------------------ | ------------------------ |
 | `renovate.yml` | **Maintenance - Renovate Dependencies**<br/>Automated dependency updates | Schedule (daily), Manual |
 
-### 📡 Monitoring Workflows
-
-| Workflow     | Purpose                                                   | Trigger                   |
-| ------------ | --------------------------------------------------------- | ------------------------- |
-| `uptime.yml` | **Monitoring - Uptime Check**<br/>Check site availability | Schedule (30 min), Manual |
-
 ## 🎯 Workflow Naming Convention
 
 All workflows follow the pattern: `Category - Specific Purpose`
@@ -110,7 +100,6 @@ All workflows follow the pattern: `Category - Specific Purpose`
 - **Publish** - Publishing to registries
 - **Maintenance** - Dependency updates, cleanup, automation
 - **Reporting** - Analytics, metrics, reports
-- **Monitoring** - Uptime, health checks
 - **Release** - Version management, releases
 
 ## 🔄 Common Patterns
@@ -290,4 +279,4 @@ For questions about workflows:
 
 **Last Updated:** 2025-10-05  
 **Maintained by:** @TurboCoder13  
-**Workflow Count:** 11
+**Workflow Count:** 10
