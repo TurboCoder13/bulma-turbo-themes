@@ -119,6 +119,8 @@ function applyTheme(doc: Document, themeId: string): void {
       }
       img.alt = theme.name;
       img.title = theme.name; // Tooltip on hover
+      img.width = 28;
+      img.height = 28;
       triggerIcon.appendChild(img);
     } else {
       // Fallback: show first two letters with circular background
@@ -220,6 +222,8 @@ export function wireFlavorSelector(documentObj: Document, windowObj: Window): vo
       }
       img.alt = theme.name;
       img.title = theme.name;
+      img.width = 28;
+      img.height = 28;
       item.appendChild(img);
     } else {
       // Fallback: show first two letters with styled background
