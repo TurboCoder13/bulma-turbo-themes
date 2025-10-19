@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: "Branch to deploy (default: main)"
-        required: false
+        description: "Branch to deploy"
+        required: true
         default: "main"
 
 permissions:
@@ -49,6 +49,7 @@ jobs:
           node-version: "22"
           ruby-version: "3.3"
       - run: npm run build:prod -- --no-serve
+
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
           path: _site
