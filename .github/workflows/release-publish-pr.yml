@@ -1,0 +1,151 @@
+---
+name: Release - Publish PR
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to publish (e.g., v1.2.3)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+  id-token: write
+
+concurrency:
+  group: release-publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  quality:
+    name: 🔍 Quality Gate
+    uses: ./.github/workflows/reusable-quality.yml
+    permissions:
+      contents: read
+
+  build:
+    name: 🏗️ Build & Test
+    needs: quality
+    uses: ./.github/workflows/reusable-build.yml
+    permissions:
+      contents: read
+      actions: write
+
+  sbom:
+    name: 📋 Generate & Sign SBOM
+    needs: build
+    uses: ./.github/workflows/reusable-sbom.yml
+    permissions:
+      contents: read
+      actions: write
+      id-token: write
+
+  publish:
+    name: 📦 Publish to npm
+    needs: [quality, build, sbom]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            registry.npmjs.org:443
+
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
+        with:
+          node-version: "22"
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      - name: Publish to npm
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  github-release:
+    name: 🚀 Create GitHub Release
+    needs: [publish, sbom]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            uploads.github.com:443
+
+      - name: Download SBOM artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: sbom-all-formats
+          path: sbom/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@7b4da11513bf3f43f9999e90eabced41ab8bb048
+        with:
+          files: |
+            sbom/sbom.cyclonedx.json
+            sbom/sbom.cyclonedx.json.sig
+            sbom/sbom.cyclonedx.json.cert
+            sbom/sbom.spdx.json
+            sbom/sbom.spdx.json.sig
+            sbom/sbom.spdx.json.cert
+            sbom/sbom.cyclonedx.xml
+            sbom/sbom.cyclonedx.xml.sig
+            sbom/sbom.cyclonedx.xml.cert
+          body: |
+            ## 📦 @turbocoder13/bulma-turbo-themes ${{ github.ref_name }}
+
+            Published to npm: https://www.npmjs.com/package/@turbocoder13/bulma-turbo-themes
+
+            ### 📋 Software Bill of Materials (SBOM)
+
+            This release includes signed SBOM files in multiple formats:
+            - **CycloneDX JSON**: `sbom.cyclonedx.json` (+ signature & certificate)
+            - **SPDX JSON**: `sbom.spdx.json` (+ signature & certificate)
+            - **CycloneDX XML**: `sbom.cyclonedx.xml` (+ signature & certificate)
+
+            All SBOM files are signed using [Sigstore](https://www.sigstore.dev/) keyless signing.
+
+            ### 🔒 Security
+
+            - All SBOM files are cryptographically signed
+            - npm package includes [provenance attestation](https://docs.npmjs.com/generating-provenance-statements)
+            - View [OpenSSF Scorecard](https://scorecard.dev/) for security metrics
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+
+      - name: Summary
+        run: |
+          echo "## GitHub Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Release ${{ github.ref_name }} published and released" >> $GITHUB_STEP_SUMMARY
