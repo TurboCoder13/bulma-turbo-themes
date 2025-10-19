@@ -11,7 +11,7 @@ EXIT_CODE=0
 for file in .github/workflows/*.yml .github/workflows/*.yaml; do
   if [[ -f "$file" ]]; then
     # Look for uses: not followed by @<40-char-sha>
-    if grep -E 'uses:.*@[^a-f0-9]' "$file" || grep -E 'uses:.*@[a-f0-9]{1,39}$' "$file" || grep -E 'uses:.*@[a-f0-9]{41,}' "$file"; then
+    if grep -E 'uses:.*@[^a-f0-9]' "$file" || grep -E 'uses:.*@[a-f0-9]{1,39}' "$file" || grep -E 'uses:.*@[a-f0-9]{41,}' "$file"; then
       echo "❌ ERROR: Non-SHA action in $file"
       EXIT_CODE=1
     fi
@@ -22,7 +22,7 @@ done
 for file in .github/actions/*/action.yml \
              .github/actions/*/action.yaml; do
   if [[ -f "$file" ]]; then
-    if grep -E 'uses:.*@[^a-f0-9]' "$file" || grep -E 'uses:.*@[a-f0-9]{1,39}$' "$file" || grep -E 'uses:.*@[a-f0-9]{41,}' "$file"; then
+    if grep -E 'uses:.*@[^a-f0-9]' "$file" || grep -E 'uses:.*@[a-f0-9]{1,39}' "$file" || grep -E 'uses:.*@[a-f0-9]{41,}' "$file"; then
       echo "❌ ERROR: Non-SHA action in $file"
       EXIT_CODE=1
     fi
