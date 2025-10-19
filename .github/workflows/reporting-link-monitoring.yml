@@ -81,7 +81,7 @@ jobs:
 
       - name: Upload link validation report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: link-validation-report
           path: link-check-output.txt
