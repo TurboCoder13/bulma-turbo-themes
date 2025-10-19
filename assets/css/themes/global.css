@@ -121,8 +121,6 @@ label {
 }
 .content blockquote {
   border-left: 4px solid var(--theme-blockquote-border, currentColor);
-}
-.content blockquote {
   color: var(--theme-blockquote-fg, inherit);
   background: var(--theme-blockquote-bg, transparent);
   font-style: italic;
@@ -235,28 +233,25 @@ input[type="file"]::file-selector-button:hover {
 .dropdown.is-theme .theme-flavor-trigger #theme-flavor-trigger-label {
   display: none;
 }
-
-.dropdown.is-theme .theme-flavor-trigger .icon img {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: none;
-  display: block;
-  margin: 0;
-  transform: translateZ(0);
-}
-
+.dropdown.is-theme .theme-flavor-trigger .icon img,
 .dropdown.is-theme .theme-flavor-trigger .icon span {
   width: 28px;
   height: 28px;
   border-radius: 50%;
+  display: block;
+  margin: 0;
+}
+.dropdown.is-theme .theme-flavor-trigger .icon img {
+  object-fit: cover;
+  box-shadow: none;
+  transform: translateZ(0);
+}
+.dropdown.is-theme .theme-flavor-trigger .icon span {
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
   font-weight: bold;
-  margin: 0;
 }
 #theme-flavor-dd .dropdown-content {
   max-height: 18rem;
@@ -267,8 +262,6 @@ input[type="file"]::file-selector-button:hover {
 .dropdown.is-theme .dropdown-menu {
   padding: 0.25rem;
   min-width: auto;
-}
-.dropdown.is-theme .dropdown-menu {
   opacity: 0;
   transform: translateY(-6px);
   transition:
@@ -305,18 +298,20 @@ input[type="file"]::file-selector-button:hover {
     var(--theme-surface-0, transparent) 92%,
     var(--theme-link, var(--bulma-link)) 8%
   );
+  border-color: var(--bulma-link);
+  box-shadow: 0 0 0 0.125em color-mix(in srgb, var(--bulma-link), transparent 80%);
 }
-#theme-flavor-dd .dropdown-item img {
+#theme-flavor-dd .dropdown-item img,
+#theme-flavor-dd .dropdown-item span {
   width: 28px;
   height: 28px;
   border-radius: 50%;
   display: block;
 }
-
+#theme-flavor-dd .dropdown-item img {
+  display: block;
+}
 #theme-flavor-dd .dropdown-item span {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -334,15 +329,13 @@ input[type="file"]::file-selector-button:hover {
     var(--theme-surface-0, transparent)
   );
 }
-#theme-flavor-dd .dropdown-item:hover {
-  border-color: var(--bulma-link);
-  box-shadow: 0 0 0 0.125em color-mix(in srgb, var(--bulma-link), transparent 80%);
-}
 .navbar .navbar-item:hover,
 .navbar .navbar-link:hover {
   text-decoration: underline;
   text-decoration-color: var(--theme-link, var(--bulma-link));
   text-underline-offset: 4px;
+  color: var(--theme-link, var(--bulma-link));
+  background-color: var(--theme-surface-1, transparent);
 }
 .navbar .navbar-brand > .navbar-item:hover {
   text-decoration: none;
@@ -407,11 +400,6 @@ pre.highlight code {
   box-shadow: none;
   background: none;
   color: inherit;
-}
-.navbar a.navbar-item:hover,
-.navbar .navbar-link:hover {
-  color: var(--theme-link, var(--bulma-link));
-  background-color: var(--theme-surface-1, transparent);
 }
 .card .card-content,
 .modal-card-body,

@@ -44,7 +44,8 @@ jobs:
             www.google.com:443
             android.clients.google.com:443
             chrome-devtools-frontend.appspot.com:443
-            devtools.remote:443
+            productionresultssa3.blob.core.windows.net:443
+            istanbul.js.org:443
       - name: Checkout
         uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
 
@@ -54,22 +55,14 @@ jobs:
           node-version: "22"
           ruby-version: "3.3"
 
+      - name: Clean up any existing Jekyll processes
+        run: ./scripts/ci/cleanup-jekyll-processes.sh
+
       - name: Run full CI pipeline with Lighthouse
-        run: |
-          ./scripts/local/build.sh --full
+        run: ./scripts/ci/run-lighthouse-ci.sh
 
       - name: Verify Lighthouse results
-        run: |
-          if [ ! -d "lighthouse-reports" ] || [ -z "$(ls -A lighthouse-reports 2>/dev/null)" ]; then
-            echo "❌ Lighthouse CI failed - no results generated"
-            echo "This indicates Lighthouse could not run properly"
-            echo "Check the build logs above for network or other errors"
-            exit 1
-          else
-            echo "✅ Lighthouse CI completed successfully"
-            echo "Results found in lighthouse-reports directory:"
-            ls -la lighthouse-reports/
-          fi
+        run: ./scripts/ci/verify-lighthouse-results.sh
         env:
           LHCI_UPLOAD_TARGET: filesystem
 

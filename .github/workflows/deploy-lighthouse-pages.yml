@@ -63,10 +63,10 @@ jobs:
       - name: Prepare artifacts for upload
         if: steps.check-reports.outputs.exists == 'true'
         run: |
-          mkdir -p _site/lighthouse
-          cp -r lighthouse-reports/* _site/lighthouse/
+          mkdir -p _site/lighthouse-reports
+          cp -r lighthouse-reports/* _site/lighthouse-reports/
           echo "✅ Lighthouse reports prepared for deployment"
-          ls -la _site/lighthouse/
+          ls -la _site/lighthouse-reports/
 
       - name: Upload artifact to Pages
         if: steps.check-reports.outputs.exists == 'true'
