@@ -206,16 +206,17 @@ elif [ "$QUICK_MODE" = true ] || [ "$FULL_MODE" = false ]; then
       --no-enforce-https \
       ./_site
 else
-    # Full CI builds: Include external validation with proper timeouts
-    # Exclude jekyll-seo-tag canonical links that point to GitHub Pages URLs
-    print_status "$YELLOW" "  Validating internal and external links..."
+    # Full CI builds: Skip external link validation here
+    # External links are validated separately on actual GitHub Pages deployment
+    # via the reporting-link-monitoring.yml workflow with proper retry logic
+    # This prevents false failures from transient network issues in CI
+    print_status "$YELLOW" "  Validating internal links only (external links checked separately on GitHub Pages)..."
     bundle exec htmlproofer \
+      --disable-external \
       --assume-extension \
       --allow-hash-href \
       --allow-missing-href \
       --no-enforce-https \
-      --typhoeus '{"timeout": 30, "maxredirs": 5}' \
-      --ignore-urls '/https:\/\/turbocoder13\.github\.io\/bulma-turbo-themes.*/' \
       ./_site
 fi
 
@@ -225,8 +226,27 @@ if [ "$FULL_MODE" = true ]; then
     if command_exists "npx"; then
         # Check if Lighthouse config exists
         if [ -f "lighthouserc.json" ]; then
+            print_status "$YELLOW" "  Cleaning up any existing Jekyll processes..."
+            ./scripts/ci/cleanup-jekyll-processes.sh
+            
             print_status "$YELLOW" "  Running Lighthouse CI (latest)..."
-            npx --yes @lhci/cli@latest autorun --config=./lighthouserc.json --collect.numberOfRuns=1
+            if npx --yes @lhci/cli@latest autorun --config=./lighthouserc.json --collect.numberOfRuns=1; then
+                print_status "$GREEN" "  ✅ Lighthouse CI completed successfully"
+                if [ -d "lighthouse-reports" ]; then
+                    print_status "$GREEN" "  📊 Reports generated in lighthouse-reports/"
+                    ls -la lighthouse-reports/
+                else
+                    print_status "$YELLOW" "  ⚠️  No lighthouse-reports directory found"
+                fi
+            else
+                print_status "$RED" "  ❌ Lighthouse CI failed"
+                print_status "$YELLOW" "  Checking for error logs..."
+                if [ -d ".lighthouse" ]; then
+                    print_status "$YELLOW" "  Found .lighthouse directory:"
+                    ls -la .lighthouse/
+                fi
+                exit 1
+            fi
         else
             print_status "$YELLOW" "⚠️  Lighthouse config not found, skipping..."
         fi

@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1
 # CI-like environment to run local builds/tests
 
-FROM ruby:3.4-bookworm
+FROM ruby:3.3-bookworm
 
-# Install OS deps and Node.js LTS (20.x)
+# Install OS deps and Node.js LTS (22.x)
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     curl \
@@ -13,6 +13,7 @@ RUN apt-get update \
     lsof \
     build-essential \
     locales \
+    chromium \
   && rm -rf /var/lib/apt/lists/* \
   && sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
   && locale-gen
@@ -21,8 +22,8 @@ ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8
 
-# NodeSource for Node 20
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+# NodeSource for Node 22
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
   && apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends nodejs \
   && rm -rf /var/lib/apt/lists/*
