@@ -25,10 +25,10 @@ jobs:
           egress-policy: audit
 
       - name: Checkout code
-        uses: actions/checkout@8f4b7f3caee0ee48d912419ad8e54fb1dfe81391
+        uses: actions/checkout@v4
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@b5f43ab2aa2d2d3c32e5af3c4c1eae88b88c9f16
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.4.7"
           bundler-cache: true
@@ -81,7 +81,7 @@ jobs:
 
       - name: Upload link validation report
         if: always()
-        uses: actions/upload-artifact@4cd38c97f8e4a4af96a53ead5eb3e4ecc3c7e41e
+        uses: actions/upload-artifact@v4
         with:
           name: link-validation-report
           path: link-check-output.txt
