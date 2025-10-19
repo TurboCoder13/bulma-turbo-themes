@@ -20,9 +20,9 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 | quality-validate-action-pinning | ✅          |             | ✅           |           |        |              |
 | deploy-pages                    |             |             |              |           |        | ✅           |
 | deploy-coverage-pages           |             |             |              |           |        | ✅           |
-| publish-npm-on-tag              |             | ✅ v*.*.\*  |              |           |        |              |
+| release-version-pr              | ✅          |             |              |           | ✅     |              |
+| release-publish-pr              |             | ✅ v*.*.\*  |              |           | ✅     |              |
 | publish-npm-test                |             |             |              |           | ✅     |              |
-| release-semantic-release        | ✅          |             |              |           | ✅     |              |
 | release-auto-tag                |             |             |              |           | ✅     |              |
 | maintenance-renovate            |             |             |              | ✅ Daily  |        |              |
 | maintenance-auto-bump-refs      |             |             |              | ✅ Weekly |        |              |
@@ -110,10 +110,15 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 
 #### deploy-pages.yml
 
-**Triggers:** workflow_run (after Jekyll build)  
+**Triggers:** Push to main, Manual (workflow_dispatch)  
 **Purpose:** Deploys Jekyll site to GitHub Pages
 
-**Dependencies:** Runs after successful workflow completion
+**What it does:**
+
+- Builds Jekyll site with production configuration
+- Deploys main site content to GitHub Pages
+- Handles only site deployment (no coverage/lighthouse integration)
+- Uses separate workflows for coverage and lighthouse reports
 
 #### deploy-coverage-pages.yml
 
@@ -122,64 +127,102 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 
 **Dependencies:** Runs after successful quality-ci-main on main branch
 
-### Publishing & Releases
+#### deploy-lighthouse-pages.yml
 
-#### publish-npm-on-tag.yml
+**Triggers:** workflow_run (after reporting-lighthouse-ci)  
+**Purpose:** Deploys Lighthouse performance reports to GitHub Pages
 
-**Triggers:** Push tags matching `v*.*.*`  
-**Purpose:** Publishes package to npm on version tags
+**Dependencies:** Runs after successful reporting-lighthouse-ci on main branch
 
 **What it does:**
 
-- Runs quality and build checks
-- Generates and signs SBOM
-- Publishes to npm with provenance
-- Creates GitHub release with SBOM artifacts
+- Downloads Lighthouse reports artifact from the reporting workflow
+- Deploys reports to `/lighthouse-reports` path on GitHub Pages
+- Only runs if reports are available (graceful skip if none found)
 
-**Example:** Pushing tag `v1.2.3` triggers this workflow
+### Publishing & Releases
+
+#### release-version-pr.yml
+
+**Triggers:** Push to main, Manual (workflow_dispatch)
+**Purpose:** Create a version bump PR with CHANGELOG updates
+
+**What it does:**
+
+- Triggered automatically on every push to main (or manually via workflow_dispatch)
+- Analyzes conventional commits since last tag to determine version bump
+- Checks if a version PR already exists (avoids duplicates)
+- Creates a PR with:
+  - Updated package.json version
+  - Generated/updated CHANGELOG.md with categorized changes
+  - Detailed PR description with commit analysis
+
+**Conventional Commits Analysis:**
+
+- `feat:` → minor version bump
+- `fix:` → patch version bump
+- `BREAKING CHANGE` → major version bump
+- `docs:`, `style:`, `refactor:`, `perf:`, `test:`, `chore:` → patch version bump
+
+**Use case:** Creates version bump PR for review and approval before tag creation
+
+#### release-auto-tag.yml
+
+**Triggers:** Push to main, Manual (workflow_dispatch)
+**Purpose:** Automatically create release tags after version PR merge
+
+**What it does:**
+
+- Triggered after version PR is merged to main
+- Checks if current package.json version tag exists
+- Creates and pushes git tag (e.g., v1.2.3) if missing
+- Triggers release-publish-pr workflow for npm publishing
+
+**Use case:** Completes the release automation pipeline
+
+#### release-publish-pr.yml
+
+**Triggers:** Push tags matching `v*.*.*`, Manual (workflow_dispatch)
+**Purpose:** Publish to npm and create GitHub release
+
+**What it does:**
+
+- Triggered when a version tag is created
+- Runs quality, build, and SBOM generation
+- Publishes to npm with provenance attestation
+- Creates GitHub release with signed SBOM artifacts:
+  - CycloneDX JSON/XML (with signatures)
+  - SPDX JSON (with signature)
+
+**Requirements:**
+
+- NPM_TOKEN secret must be configured (with "Authorization only" 2FA level)
+- Valid npm credentials for @turbocoder13/bulma-turbo-themes
+
+**Example:** Tag `v1.2.3` triggers full publish and release
 
 #### publish-npm-test.yml
 
-**Triggers:** Manual (workflow_dispatch)  
-**Purpose:** Test publish to npm with custom tag
+**Triggers:** Manual (workflow_dispatch)
+**Purpose:** Test npm publish with custom dist-tag
 
 **Inputs:**
 
 - `tag` - npm dist-tag (e.g., beta, next, canary)
 
-**Use case:** Testing publish process before production release
-
-#### release-semantic-release.yml
-
-**Triggers:** Push to main, Manual  
-**Purpose:** Automatic semantic versioning and releases
-
-**What it does:**
-
-- Analyzes commits since last release
-- Determines version bump (major/minor/patch)
-- Generates CHANGELOG
-- Creates GitHub release
-- Publishes to npm
-- Commits version bump
-
-**Conventional Commits Required:**
-
-- `feat:` → minor version
-- `fix:` → patch version
-- `BREAKING CHANGE` → major version
+**Use case:** Testing publish process with pre-release tags
 
 #### release-auto-tag.yml
 
-**Triggers:** Manual (workflow_dispatch)  
-**Purpose:** Manually create git tags
+**Triggers:** Manual (workflow_dispatch)
+**Purpose:** Manually create git tags (emergency/backup use)
 
 **Inputs:**
 
 - `version` - Version to tag (e.g., v1.2.3)
 - `prerelease` - Mark as pre-release
 
-**Use case:** Backup mechanism for creating releases manually
+**Use case:** Emergency tag creation when automation fails
 
 ### Maintenance
 

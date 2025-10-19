@@ -4,14 +4,13 @@ This document describes the complete release train process for bulma-turbo-theme
 
 ## 🚂 Release Train Flow
 
-The release train follows this sequence:
+The release train now follows a two-stage PR-based process:
 
-1. **Semantic PR Title** → 2. **Commit Message** → 3. **Tag Creation** → 4. **Release**
+1. **Semantic PR Title** → 2. **Commit Message** → 3. **Version PR** → 4. **Publish PR** → 5. **Release**
 
-### 1. Semantic PR Title Validation
+### 1-2. Semantic PR Title & Commit Message Validation
 
-**Workflow:** `quality-semantic-pr-title.yml`  
-**Trigger:** Pull request events (opened, edited, synchronize, reopened, ready_for_review)
+**Workflows:** `quality-semantic-pr-title.yml`, `quality-ci-main.yml`
 
 **Purpose:** Ensures PR titles follow Conventional Commits format
 
@@ -38,13 +37,6 @@ The release train follows this sequence:
 - ❌ `Add new feature` (missing type)
 - ❌ `feat add dark mode` (missing colon)
 
-### 2. Commit Message Validation
-
-**Workflow:** `quality-ci-main.yml`  
-**Trigger:** Pull request events
-
-**Purpose:** Validates that commit messages match PR titles and follow Conventional Commits
-
 **Validation Process:**
 
 1. Extracts commit messages between base branch and PR head
@@ -54,60 +46,77 @@ The release train follows this sequence:
 
 **Script:** `scripts/ci/validate-commit-messages.sh`
 
-### 3. Semantic Release Trigger Verification
+### 3. Version PR Creation
 
-**Workflow:** `quality-ci-main.yml`  
-**Trigger:** Pull request events
+**Workflow:** `release-version-pr.yml`
+**Trigger:** Push to `main` branch OR manual trigger (workflow_dispatch)
 
-**Purpose:** Analyzes if commits will trigger a semantic release
-
-**Release Rules:**
-
-- `feat:` → **Minor** version bump
-- `fix:` → **Patch** version bump
-- `perf:` → **Patch** version bump
-- `refactor:` → **Patch** version bump
-- `revert:` → **Patch** version bump
-- `build:` → **Patch** version bump
-- `BREAKING CHANGE` → **Major** version bump
-- `docs:`, `style:`, `test:`, `ci:`, `chore:` → **No release**
-
-**Script:** `scripts/ci/verify-semantic-release-trigger.sh`
-
-### 4. Automatic Tag Creation & Release
-
-**Workflow:** `release-semantic-release.yml`  
-**Trigger:** Push to `main` branch
-
-**Purpose:** Automatically creates releases based on commit analysis
+**Purpose:** Creates a version bump PR for review before tag creation
 
 **Process:**
 
 1. **Quality Gate** - Runs linting, formatting, and tests
 2. **Build** - Compiles TypeScript and builds Jekyll site
-3. **SBOM Generation** - Creates Software Bill of Materials
-4. **Semantic Release** - Analyzes commits and determines version
-5. **Tag Creation** - Creates git tag (e.g., `v1.2.3`)
-6. **CHANGELOG** - Updates CHANGELOG.md
-7. **npm Publish** - Publishes to npm registry
-8. **GitHub Release** - Creates GitHub release with SBOM artifacts
+3. **PR Creation** - Creates a PR with:
+   - Updated `package.json` version
+   - Updated `package-lock.json`
+   - Generated/updated `CHANGELOG.md`
 
-**Configuration:** `.releaserc.json`
+**Requirements:**
 
-### 5. Tag-Triggered Publishing
+- PR requires manual approval before merge
+- Conventional commit rules apply (same as step 2)
 
-**Workflow:** `publish-npm-on-tag.yml`  
-**Trigger:** Tag push (`v*.*.*`)
+**Example Workflow:**
 
-**Purpose:** Publishes to npm and creates GitHub releases
+```
+main branch push
+     ↓
+Analyze commits for version bump
+     ↓
+Create version PR (e.g., v0.3.0)
+     ↓
+Review & Approve
+     ↓
+Merge version PR → creates git tag v0.3.0
+```
+
+**Configuration:** `.releaserc.json` (used in dry-run mode only)
+
+### 4. Publish PR & Publishing
+
+**Workflows:** `release-publish-pr.yml`
+**Trigger:** Tag push (`v*.*.*`) OR manual trigger (workflow_dispatch)
+
+**Purpose:** Publishes package to npm and creates GitHub release
 
 **Process:**
 
-1. **Quality Gate** - Re-runs quality checks
-2. **Build** - Rebuilds artifacts
-3. **SBOM Generation** - Recreates SBOM files
-4. **npm Publish** - Publishes with provenance
-5. **GitHub Release** - Creates release with signed SBOM artifacts
+1. **Quality Gate** - Runs linting, formatting, and tests
+2. **Build** - Compiles TypeScript and builds Jekyll site
+3. **SBOM Generation** - Creates and signs Software Bill of Materials
+4. **npm Publish** - Publishes to npm registry with provenance
+5. **GitHub Release** - Creates GitHub release with SBOM artifacts
+
+**Requirements:**
+
+- `NPM_TOKEN` secret must be valid
+- npm account must have publish permissions for `@turbocoder13/bulma-turbo-themes`
+- 2FA must be set to "Authorization only" level
+
+### 5. Manual Override: Automatic Tag Creation
+
+**Workflow:** `release-auto-tag.yml` (Manual only)
+**Trigger:** workflow_dispatch
+
+**Purpose:** Emergency mechanism for manual tag creation if automation fails
+
+**Inputs:**
+
+- `version` - Version to tag (e.g., v1.2.3)
+- `prerelease` - Mark as pre-release
+
+**Use case:** Only use if release-version-pr workflow fails
 
 ## 🔧 Configuration Files
 
