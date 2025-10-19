@@ -6,33 +6,45 @@ permalink: /forms/
 
 <form>
   <div class="field">
-    <label class="label">Name</label>
+    <label class="label" for="name">Name</label>
     <div class="control">
-      <input class="input" type="text" placeholder="Text input" />
+      <input id="name" class="input" type="text" placeholder="Text input" />
     </div>
   </div>
 
   <div class="field">
-    <label class="label">Username</label>
+    <label class="label" for="username">Username</label>
     <div class="control">
-      <input class="input is-success" type="text" placeholder="Text input" value="bulma" />
+      <input
+        id="username"
+        class="input is-success"
+        type="text"
+        placeholder="Text input"
+        value="bulma"
+      />
     </div>
     <p class="help is-success">This username is available.</p>
   </div>
 
   <div class="field">
-    <label class="label">Email</label>
+    <label class="label" for="email">Email</label>
     <div class="control">
-      <input class="input is-danger" type="email" placeholder="Email input" value="hello@" />
+      <input
+        id="email"
+        class="input is-danger"
+        type="email"
+        placeholder="Email input"
+        value="hello@"
+      />
     </div>
     <p class="help is-danger">This email is invalid.</p>
   </div>
 
   <div class="field">
-    <label class="label">Subject</label>
+    <label class="label" for="subject">Subject</label>
     <div class="control">
       <div class="select">
-        <select>
+        <select id="subject">
           <option>Select dropdown</option>
           <option>With options</option>
         </select>
@@ -54,9 +66,9 @@ permalink: /forms/
   </div>
 
   <div class="field">
-    <label class="label">Message</label>
+    <label class="label" for="message">Message</label>
     <div class="control">
-      <textarea class="textarea" placeholder="Textarea"></textarea>
+      <textarea id="message" class="textarea" placeholder="Textarea"></textarea>
     </div>
   </div>
 
@@ -70,16 +82,14 @@ permalink: /forms/
   </div>
 
   <div class="field">
-    <div class="control">
-      <label class="radio">
-        <input type="radio" name="question" />
-        Yes
-      </label>
-      <label class="radio">
-        <input type="radio" name="question" />
-        No
-      </label>
-    </div>
+    <label class="radio">
+      <input type="radio" name="question" />
+      Yes
+    </label>
+    <label class="radio">
+      <input type="radio" name="question" />
+      No
+    </label>
   </div>
 
   <div class="field is-grouped">

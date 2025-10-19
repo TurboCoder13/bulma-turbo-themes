@@ -67,12 +67,25 @@ REPO="${GITHUB_REPOSITORY:=unknown}"
       echo "| Best Practices | $(format_score "$BEST_PRACTICES") |"
       echo "| SEO | $(format_score "$SEO") |"
       echo ""
+
+      # Check if there are assertion failures logged
+      if [ -f ".lighthouseci/runs.json" ]; then
+        echo "### ⚠️ Assertion Details"
+        echo ""
+        echo '```'
+        # Extract assertion information from Lighthouse CI output
+        if command -v jq &> /dev/null; then
+          jq -r '.[] | select(.assertionResults) | .assertionResults[] | select(.level != "pass") | "\(.url): \(.assertion) - expected: >=\(.expected), found: \(.actual)"' ".lighthouseci/runs.json" 2>/dev/null || true
+        fi
+        echo '```'
+        echo ""
+      fi
       
       echo "### 📋 View Full Reports"
       echo ""
       if [ "$REPO" != "unknown" ]; then
         echo "**Public Report:**"
-        echo "- 🔗 [📊 View Lighthouse Reports](https://turbocoder13.github.io/bulma-turbo-themes/lighthouse/)"
+          echo "- 🔗 [📊 View Lighthouse Reports](https://turbocoder13.github.io/bulma-turbo-themes/lighthouse-reports/)"
         echo ""
         echo "**Or download from artifacts:**"
         echo "- 📥 [Download from GitHub Actions](https://github.com/$REPO/actions/runs/$RUN_ID/artifacts)"
@@ -84,7 +97,7 @@ REPO="${GITHUB_REPOSITORY:=unknown}"
       echo "✅ Lighthouse CI analysis completed successfully."
       echo ""
       if [ "$REPO" != "unknown" ]; then
-        echo "📋 [View Reports](https://turbocoder13.github.io/bulma-turbo-themes/lighthouse/)"
+        echo "📋 [View Reports](https://turbocoder13.github.io/bulma-turbo-themes/lighthouse-reports/)"
       fi
     fi
   else

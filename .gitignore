@@ -30,5 +30,6 @@ assets/static/badges/
 
 # Lighthouse CI generated reports and artifacts
 lighthouse-reports/
+!lighthouse-reports/index.html
 .lighthouse/
 .lighthouseci/

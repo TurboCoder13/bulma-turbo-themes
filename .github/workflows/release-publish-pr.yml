@@ -1,17 +1,25 @@
-name: Publish - npm Production
+---
+name: Release - Publish PR
 
 on:
   push:
     tags:
       - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to publish (e.g., v1.2.3)"
+        required: true
+        type: string
 
 permissions:
-  contents: write # Write permission for creating releases
+  contents: write
+  pull-requests: write
   actions: write
-  id-token: write # Required for SBOM signing
+  id-token: write
 
 concurrency:
-  group: publish-${{ github.ref }}
+  group: release-publish-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -39,8 +47,8 @@ jobs:
       id-token: write
 
   publish:
-    name: 📦 Publish to npm Registry
-    needs: [build, sbom]
+    name: 📦 Publish to npm
+    needs: [quality, build, sbom]
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
@@ -53,29 +61,38 @@ jobs:
           allowed-endpoints: >
             github.com:443
             api.github.com:443
-            objects.githubusercontent.com:443
-            codeload.github.com:443
             registry.npmjs.org:443
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
-      - name: Setup Node.js for npm publish
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
         with:
           node-version: "22"
           registry-url: https://registry.npmjs.org
           cache: npm
-      - run: npm ci
-      - run: npm publish --access public --provenance
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      - name: Publish to npm
+        run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  release:
-    name: 🚀 Create GitHub Release with SBOM
+  github-release:
+    name: 🚀 Create GitHub Release
     needs: [publish, sbom]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: write
-      actions: read
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
@@ -87,13 +104,13 @@ jobs:
             uploads.github.com:443
 
       - name: Download SBOM artifacts
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: sbom-all-formats
           path: sbom/
 
-      - name: Create Release with SBOM artifacts
-        uses: softprops/action-gh-release@7b4da11513bf3f43f9999e90eabced41ab8bb048 # v2.2.0
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@7b4da11513bf3f43f9999e90eabced41ab8bb048
         with:
           files: |
             sbom/sbom.cyclonedx.json
@@ -119,22 +136,6 @@ jobs:
 
             All SBOM files are signed using [Sigstore](https://www.sigstore.dev/) keyless signing.
 
-            #### Verifying SBOM Signatures
-
-            To verify the SBOM signatures using cosign:
-
-            ```bash
-            # Install cosign
-            # See: https://docs.sigstore.dev/cosign/installation/
-
-            # Verify a signature (example with CycloneDX JSON)
-            cosign verify-blob sbom.cyclonedx.json \
-              --signature=sbom.cyclonedx.json.sig \
-              --certificate=sbom.cyclonedx.json.cert \
-              --certificate-identity-regexp=".*" \
-              --certificate-oidc-issuer-regexp=".*"
-            ```
-
             ### 🔒 Security
 
             - All SBOM files are cryptographically signed
@@ -143,3 +144,8 @@ jobs:
           draft: false
           prerelease: false
           generate_release_notes: true
+
+      - name: Summary
+        run: |
+          echo "## GitHub Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Release ${{ github.ref_name }} published and released" >> $GITHUB_STEP_SUMMARY
