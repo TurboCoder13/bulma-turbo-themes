@@ -46,7 +46,8 @@ function getCommitsSinceLastTag() {
     })
       .trim()
       .split("\n")
-      .filter(Boolean);
+      .filter(Boolean)
+      .filter((commit) => !commit.includes("chore(release):")); // Exclude release commits
 
     return { lastTag, commits };
   } catch {
@@ -57,7 +58,8 @@ function getCommitsSinceLastTag() {
     })
       .trim()
       .split("\n")
-      .filter(Boolean);
+      .filter(Boolean)
+      .filter((commit) => !commit.includes("chore(release):")); // Exclude release commits
 
     return { lastTag: null, commits };
   }
@@ -189,18 +191,21 @@ function createPullRequest(branchName, version, description) {
   const title = `${CONFIG.prTitlePrefix} ${version}`;
 
   try {
-    // Escape the description for shell command
-    const escapedDescription = description
-      .replace(/\\/g, "\\\\") // Escape backslashes first
-      .replace(/"/g, '\\"') // Escape double quotes
-      .replace(/\n/g, "\\n") // Escape newlines
-      .replace(/\r/g, "\\r") // Escape carriage returns
-      .replace(/\t/g, "\\t"); // Escape tabs
+    // Write description to temporary file to avoid shell escaping issues
+    const tempFile = join(projectRoot, ".pr-description.tmp");
+    writeFileSync(tempFile, description, "utf8");
 
     const prOutput = execSync(
-      `gh pr create --title "${title}" --body "${escapedDescription}" --head ${branchName} --base main`,
+      `gh pr create --title "${title}" --body-file "${tempFile}" --head ${branchName} --base main`,
       { encoding: "utf8", cwd: projectRoot },
     );
+
+    // Clean up temporary file
+    try {
+      execSync(`rm "${tempFile}"`, { cwd: projectRoot });
+    } catch {
+      // Ignore cleanup errors
+    }
 
     console.log(`✅ Created PR: ${prOutput.trim()}`);
     return prOutput.trim();
