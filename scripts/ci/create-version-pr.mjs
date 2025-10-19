@@ -46,7 +46,8 @@ function getCommitsSinceLastTag() {
     })
       .trim()
       .split("\n")
-      .filter(Boolean);
+      .filter(Boolean)
+      .filter((commit) => !commit.includes("chore(release):")); // Exclude release commits
 
     return { lastTag, commits };
   } catch {
@@ -57,7 +58,8 @@ function getCommitsSinceLastTag() {
     })
       .trim()
       .split("\n")
-      .filter(Boolean);
+      .filter(Boolean)
+      .filter((commit) => !commit.includes("chore(release):")); // Exclude release commits
 
     return { lastTag: null, commits };
   }
@@ -81,22 +83,60 @@ function checkExistingVersionPR() {
 }
 
 /**
+ * Check if remote branch exists
+ */
+function checkRemoteBranch(branchName) {
+  try {
+    execSync(`git ls-remote --heads origin ${branchName}`, {
+      cwd: projectRoot,
+      stdio: "pipe",
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Create version bump branch
  */
 function createVersionBranch(newVersion) {
   const branchName = `${CONFIG.branchPrefix}${newVersion}`;
 
+  // Check if remote branch already exists
+  if (checkRemoteBranch(branchName)) {
+    console.log(`🌿 Remote branch ${branchName} already exists`);
+    try {
+      // Checkout existing remote branch
+      execSync(`git checkout -b ${branchName} origin/${branchName}`, {
+        cwd: projectRoot,
+      });
+      console.log(`🌿 Checked out existing remote branch ${branchName}`);
+      return branchName;
+    } catch {
+      // If checkout fails, try to checkout existing local branch
+      try {
+        execSync(`git checkout ${branchName}`, { cwd: projectRoot });
+        console.log(`🌿 Checked out existing local branch ${branchName}`);
+        return branchName;
+      } catch {
+        console.error(`❌ Failed to checkout branch ${branchName}`);
+        throw new Error(`Cannot checkout existing branch ${branchName}`);
+      }
+    }
+  }
+
   try {
-    // Check if branch already exists
+    // Check if local branch already exists
     execSync(`git show-ref --verify --quiet refs/heads/${branchName}`, {
       cwd: projectRoot,
     });
-    console.log(`🌿 Branch ${branchName} already exists`);
+    console.log(`🌿 Local branch ${branchName} already exists`);
     return branchName;
   } catch {
-    // Branch doesn't exist, create it
+    // Branch doesn't exist locally or remotely, create it
     execSync(`git checkout -b ${branchName}`, { cwd: projectRoot });
-    console.log(`🌿 Created branch ${branchName}`);
+    console.log(`🌿 Created new branch ${branchName}`);
     return branchName;
   }
 }
@@ -151,18 +191,21 @@ function createPullRequest(branchName, version, description) {
   const title = `${CONFIG.prTitlePrefix} ${version}`;
 
   try {
-    // Escape the description for shell command
-    const escapedDescription = description
-      .replace(/\\/g, "\\\\") // Escape backslashes first
-      .replace(/"/g, '\\"') // Escape double quotes
-      .replace(/\n/g, "\\n") // Escape newlines
-      .replace(/\r/g, "\\r") // Escape carriage returns
-      .replace(/\t/g, "\\t"); // Escape tabs
+    // Write description to temporary file to avoid shell escaping issues
+    const tempFile = join(projectRoot, ".pr-description.tmp");
+    writeFileSync(tempFile, description, "utf8");
 
     const prOutput = execSync(
-      `gh pr create --title "${title}" --body "${escapedDescription}" --head ${branchName} --base main`,
+      `gh pr create --title "${title}" --body-file "${tempFile}" --head ${branchName} --base main`,
       { encoding: "utf8", cwd: projectRoot },
     );
+
+    // Clean up temporary file
+    try {
+      execSync(`rm "${tempFile}"`, { cwd: projectRoot });
+    } catch {
+      // Ignore cleanup errors
+    }
 
     console.log(`✅ Created PR: ${prOutput.trim()}`);
     return prOutput.trim();
