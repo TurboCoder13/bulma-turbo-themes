@@ -103,7 +103,7 @@ jobs:
           verbose: true
 
       - name: Upload coverage HTML for Pages
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: matrix.node == 22 && matrix.ruby == '3.3' && github.ref == 'refs/heads/main' && !env.ACT
         with:
           name: coverage-html
@@ -128,7 +128,7 @@ jobs:
         run: npm run coverage:badges
 
       - name: Upload coverage badges
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: matrix.node == 22 && matrix.ruby == '3.3' && always() && !env.ACT
         with:
           name: coverage-badges
@@ -137,7 +137,7 @@ jobs:
           overwrite: true
 
       - name: Upload JS dist artifact
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: matrix.node == 22 && matrix.ruby == '3.3' && always() && !env.ACT
         with:
           name: js-dist
@@ -145,7 +145,7 @@ jobs:
           overwrite: true
 
       - name: Upload built site artifact
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: matrix.node == 22 && matrix.ruby == '3.3' && always() && !env.ACT
         with:
           name: site-build
@@ -159,7 +159,7 @@ jobs:
         run: ./scripts/ci/generate-sbom.sh
 
       - name: Upload SBOM artifact
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: matrix.node == 22 && matrix.ruby == '3.3' && always() && !env.ACT
         with:
           name: sbom-cyclonedx
