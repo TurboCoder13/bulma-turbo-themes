@@ -37,6 +37,9 @@ WORKDIR /work
 COPY package.json package-lock.json* ./
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
+# Install Playwright browsers for E2E tests
+RUN npx playwright install --with-deps chromium || true
+
 # Install Ruby deps using Gemfile / Gemfile.lock
 COPY Gemfile Gemfile.lock ./
 RUN bundle _2.3.26_ install
