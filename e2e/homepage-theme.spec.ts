@@ -1,4 +1,8 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
+import {
+  takeScreenshotWithHighlight,
+  takeScreenshotWithMultipleHighlights,
+} from "./helpers";
 
 /**
  * Homepage theme switching E2E tests.
@@ -9,140 +13,128 @@ import { test, expect } from "@playwright/test";
  * - Theme persists in localStorage
  * - Visual snapshots for different themes
  */
-test.describe("Homepage Theme Switching", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-    // Wait for theme initialization
-    await page.waitForLoadState("networkidle");
+test.describe("Homepage Theme Switching @smoke", () => {
+  test.beforeEach(async ({ homePage }) => {
+    await homePage.goto();
   });
 
-  test("should display theme dropdown", async ({ page }) => {
-    const dropdown = page.getByTestId("theme-dropdown");
-    await expect(dropdown).toBeVisible();
+  test("should display theme dropdown", async ({ homePage }) => {
+    await test.step("Verify dropdown and trigger are visible", async () => {
+      await homePage.expectThemeDropdownVisible();
 
-    const trigger = page.getByTestId("theme-trigger");
-    await expect(trigger).toBeVisible();
+      // Take screenshot highlighting both elements
+      await takeScreenshotWithMultipleHighlights(
+        homePage.page,
+        [homePage.getThemeDropdown(), homePage.getThemeTrigger()],
+        "theme-dropdown-display",
+      );
+    });
   });
 
-  test("should switch to github-dark theme", async ({ page }) => {
-    // Hover over dropdown to open it (Bulma dropdown opens on hover)
-    const dropdown = page.getByTestId("theme-dropdown");
-    await dropdown.hover();
+  test("should switch to github-dark theme", async ({ homePage }) => {
+    await test.step("Open theme dropdown", async () => {
+      await homePage.openThemeDropdown();
 
-    // Wait for dropdown to be visible
-    await expect(dropdown).toHaveClass(/is-active/);
+      // Take screenshot with dropdown highlighted
+      await takeScreenshotWithHighlight(
+        homePage.page,
+        homePage.getThemeDropdown(),
+        "theme-dropdown-open",
+      );
+    });
 
-    // Click github-dark theme option
-    const githubDarkOption = page.locator('[data-theme-id="github-dark"]');
-    await githubDarkOption.click();
+    await test.step("Select github-dark theme", async () => {
+      const githubDarkOption = homePage.page.locator('[data-theme-id="github-dark"]');
+      await githubDarkOption.click();
+    });
 
-    // Wait for theme to apply
-    await page.waitForLoadState("networkidle");
+    await test.step("Verify theme applied", async () => {
+      await homePage.expectThemeApplied("github-dark");
 
-    // Verify DOM attribute updated
-    await expect(page.locator("html")).toHaveAttribute("data-flavor", "github-dark");
-
-    // Verify localStorage updated
-    const savedTheme = await page.evaluate(() =>
-      localStorage.getItem("bulma-theme-flavor"),
-    );
-    expect(savedTheme).toBe("github-dark");
-
-    // Wait for CSS to load
-    const themeCss = page.locator("#theme-flavor-css");
-    await expect(themeCss).toHaveAttribute("href", /github-dark\.css/);
+      // Take screenshot with theme CSS element highlighted
+      const themeCss = homePage.page.locator("#theme-flavor-css");
+      await takeScreenshotWithHighlight(
+        homePage.page,
+        themeCss,
+        "github-dark-theme-applied",
+      );
+    });
   });
 
-  test("should switch to catppuccin-latte theme", async ({ page }) => {
-    // Hover over dropdown to open it
-    const dropdown = page.getByTestId("theme-dropdown");
-    await dropdown.hover();
+  test("should switch to catppuccin-latte theme", async ({ homePage }) => {
+    await test.step("Open theme dropdown", async () => {
+      await homePage.openThemeDropdown();
+    });
 
-    // Wait for dropdown to be visible
-    await expect(dropdown).toHaveClass(/is-active/);
+    await test.step("Select catppuccin-latte theme", async () => {
+      const latteOption = homePage.page.locator('[data-theme-id="catppuccin-latte"]');
+      await latteOption.click();
+    });
 
-    // Click catppuccin-latte theme option
-    const latteOption = page.locator('[data-theme-id="catppuccin-latte"]');
-    await latteOption.click();
+    await test.step("Verify theme applied", async () => {
+      await homePage.expectThemeApplied("catppuccin-latte");
 
-    // Wait for theme to apply
-    await page.waitForLoadState("networkidle");
-
-    // Verify DOM attribute updated
-    await expect(page.locator("html")).toHaveAttribute(
-      "data-flavor",
-      "catppuccin-latte",
-    );
-
-    // Verify localStorage updated
-    const savedTheme = await page.evaluate(() =>
-      localStorage.getItem("bulma-theme-flavor"),
-    );
-    expect(savedTheme).toBe("catppuccin-latte");
-
-    // Wait for CSS to load
-    const themeCss = page.locator("#theme-flavor-css");
-    await expect(themeCss).toHaveAttribute("href", /catppuccin-latte\.css/);
+      // Take screenshot with theme CSS element highlighted
+      const themeCss = homePage.page.locator("#theme-flavor-css");
+      await takeScreenshotWithHighlight(
+        homePage.page,
+        themeCss,
+        "catppuccin-latte-theme-applied",
+      );
+    });
   });
 
-  test("should persist theme selection after page reload", async ({ page }) => {
-    // Set theme to github-dark
-    const dropdown = page.getByTestId("theme-dropdown");
-    await dropdown.hover();
+  test("should persist theme selection after page reload", async ({ homePage }) => {
+    await test.step("Switch to github-dark theme", async () => {
+      await homePage.switchToTheme("github-dark");
+    });
 
-    const githubDarkOption = page.locator('[data-theme-id="github-dark"]');
-    await githubDarkOption.click();
+    await test.step("Verify theme persists after reload", async () => {
+      await homePage.verifyThemePersistence("github-dark");
 
-    await page.waitForLoadState("networkidle");
-
-    // Reload page
-    await page.reload();
-
-    // Wait for theme initialization
-    await page.waitForLoadState("networkidle");
-
-    // Verify theme persisted
-    await expect(page.locator("html")).toHaveAttribute("data-flavor", "github-dark");
-
-    const savedTheme = await page.evaluate(() =>
-      localStorage.getItem("bulma-theme-flavor"),
-    );
-    expect(savedTheme).toBe("github-dark");
+      // Take screenshot showing persisted theme
+      const htmlElement = homePage.page.locator("html");
+      await takeScreenshotWithHighlight(
+        homePage.page,
+        htmlElement,
+        "theme-persisted-after-reload",
+      );
+    });
   });
 
-  test("should take visual snapshot of github-dark theme", async ({ page }) => {
-    // Switch to github-dark
-    const dropdown = page.getByTestId("theme-dropdown");
-    await dropdown.hover();
+  test("should take visual snapshot of github-dark theme @visual", async ({
+    homePage,
+  }) => {
+    await test.step("Switch to github-dark theme", async () => {
+      await homePage.switchToTheme("github-dark");
+    });
 
-    const githubDarkOption = page.locator('[data-theme-id="github-dark"]');
-    await githubDarkOption.click();
+    await test.step("Take visual snapshot", async () => {
+      // Wait for CSS to be fully applied
+      const themeCss = homePage.page.locator("#theme-flavor-css");
+      await expect(themeCss).toHaveAttribute("href", /github-dark\.css/);
 
-    await page.waitForLoadState("networkidle");
-
-    // Wait for CSS to fully load
-    await page.waitForTimeout(500);
-
-    // Take snapshot of the main content area
-    const mainContent = page.getByTestId("main-content");
-    await expect(mainContent).toHaveScreenshot("homepage-github-dark.png");
+      // Take snapshot of the main content area
+      const mainContent = homePage.getMainContent();
+      await expect(mainContent).toHaveScreenshot("homepage-github-dark.png");
+    });
   });
 
-  test("should take visual snapshot of catppuccin-latte theme", async ({ page }) => {
-    // Switch to catppuccin-latte
-    const dropdown = page.getByTestId("theme-dropdown");
-    await dropdown.hover();
+  test("should take visual snapshot of catppuccin-latte theme @visual", async ({
+    homePage,
+  }) => {
+    await test.step("Switch to catppuccin-latte theme", async () => {
+      await homePage.switchToTheme("catppuccin-latte");
+    });
 
-    const latteOption = page.locator('[data-theme-id="catppuccin-latte"]');
-    await latteOption.click();
+    await test.step("Take visual snapshot", async () => {
+      // Wait for CSS to be fully applied
+      const themeCss = homePage.page.locator("#theme-flavor-css");
+      await expect(themeCss).toHaveAttribute("href", /catppuccin-latte\.css/);
 
-    await page.waitForLoadState("networkidle");
-
-    // Wait for CSS to fully load
-    await page.waitForTimeout(500);
-
-    // Take snapshot of the main content area
-    const mainContent = page.getByTestId("main-content");
-    await expect(mainContent).toHaveScreenshot("homepage-catppuccin-latte.png");
+      // Take snapshot of the main content area
+      const mainContent = homePage.getMainContent();
+      await expect(mainContent).toHaveScreenshot("homepage-catppuccin-latte.png");
+    });
   });
 });
