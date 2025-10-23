@@ -1,4 +1,8 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
+import {
+  takeScreenshotWithHighlight,
+  takeScreenshotWithMultipleHighlights,
+} from "./helpers";
 
 /**
  * Navigation smoke tests.
@@ -8,106 +12,123 @@ import { test, expect } from "@playwright/test";
  * - Clicking links navigates correctly
  * - Active state updates appropriately
  */
-test.describe("Navigation Smoke Tests", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-    await page.waitForLoadState("networkidle");
+test.describe("Navigation Smoke Tests @smoke", () => {
+  test.beforeEach(async ({ basePage }) => {
+    await basePage.goto("/");
   });
 
-  test("should display all navbar links", async ({ page }) => {
-    const homeLink = page.getByTestId("nav-home");
-    const componentsLink = page.getByTestId("nav-components");
-    const formsLink = page.getByTestId("nav-forms");
+  test("should display all navbar links", async ({ basePage }) => {
+    await test.step("Verify all navbar links are visible", async () => {
+      const links = basePage.getAllNavLinks();
 
-    await expect(homeLink).toBeVisible();
-    await expect(componentsLink).toBeVisible();
-    await expect(formsLink).toBeVisible();
+      await basePage.expectNavLinkVisible("home");
+      await basePage.expectNavLinkVisible("components");
+      await basePage.expectNavLinkVisible("forms");
+
+      // Take screenshot highlighting all navbar links
+      await takeScreenshotWithMultipleHighlights(
+        basePage.page,
+        [links.home, links.components, links.forms],
+        "navbar-links-display",
+      );
+    });
   });
 
-  test("should navigate to Components page", async ({ page }) => {
-    const componentsLink = page.getByTestId("nav-components");
+  test("should navigate to Components page", async ({ basePage }) => {
+    const componentsLink = basePage.getNavLink("components");
 
-    await componentsLink.click();
+    await test.step("Take screenshot before navigation", async () => {
+      await takeScreenshotWithHighlight(
+        basePage.page,
+        componentsLink,
+        "before-navigate-components",
+      );
+    });
 
-    // Wait for navigation
-    await page.waitForLoadState("networkidle");
+    await test.step("Navigate to Components page", async () => {
+      await basePage.navigateToPage("components");
+    });
 
-    // Verify URL
-    expect(page.url()).toContain("/components");
+    await test.step("Verify navigation successful", async () => {
+      await basePage.expectUrl(/\/components/);
 
-    // Wait for page to fully load including scripts
-    await page.waitForTimeout(500);
+      // Verify the link is still visible (navbar is present)
+      const activeComponent = basePage.getNavLink("components");
+      await expect(activeComponent).toBeVisible();
 
-    // Verify active state - reinitNavbar might not run on navigation
-    // So we check if the URL matches instead
-    const activeComponent = page.getByTestId("nav-components");
-    const hasActiveClass = await activeComponent.evaluate((el) =>
-      el.classList.contains("is-active"),
-    );
-
-    // If is-active is not set, check that URL is correct (manual verification)
-    if (!hasActiveClass) {
-      console.log("Navbar active state not applied, but URL navigation successful");
-    }
-
-    // At minimum, verify the link exists and page loaded
-    await expect(activeComponent).toBeVisible();
+      // Take screenshot after navigation
+      await takeScreenshotWithHighlight(
+        basePage.page,
+        activeComponent,
+        "after-navigate-components",
+      );
+    });
   });
 
-  test("should navigate to Forms page", async ({ page }) => {
-    const formsLink = page.getByTestId("nav-forms");
+  test("should navigate to Forms page", async ({ basePage }) => {
+    const formsLink = basePage.getNavLink("forms");
 
-    await formsLink.click();
+    await test.step("Take screenshot before navigation", async () => {
+      await takeScreenshotWithHighlight(
+        basePage.page,
+        formsLink,
+        "before-navigate-forms",
+      );
+    });
 
-    // Wait for navigation
-    await page.waitForLoadState("networkidle");
+    await test.step("Navigate to Forms page", async () => {
+      await basePage.navigateToPage("forms");
+    });
 
-    // Verify URL
-    expect(page.url()).toContain("/forms");
+    await test.step("Verify navigation successful", async () => {
+      await basePage.expectUrl(/\/forms/);
 
-    // Wait for page to fully load
-    await page.waitForTimeout(500);
+      // Verify the link is still visible (navbar is present)
+      const activeForm = basePage.getNavLink("forms");
+      await expect(activeForm).toBeVisible();
 
-    // Verify active state
-    const activeForm = page.getByTestId("nav-forms");
-    const hasActiveClass = await activeForm.evaluate((el) =>
-      el.classList.contains("is-active"),
-    );
-
-    if (!hasActiveClass) {
-      console.log("Navbar active state not applied, but URL navigation successful");
-    }
-
-    await expect(activeForm).toBeVisible();
+      // Take screenshot after navigation
+      await takeScreenshotWithHighlight(
+        basePage.page,
+        activeForm,
+        "after-navigate-forms",
+      );
+    });
   });
 
-  test("should navigate back to Home page", async ({ page }) => {
-    // First navigate to Components
-    const componentsLink = page.getByTestId("nav-components");
-    await componentsLink.click();
-    await page.waitForLoadState("networkidle");
+  test("should navigate back to Home page", async ({ basePage }) => {
+    await test.step("First navigate to Components", async () => {
+      await basePage.navigateToPage("components");
+      await basePage.expectUrl(/\/components/);
+    });
 
-    // Then navigate to Home
-    const homeLink = page.getByTestId("nav-home");
-    await homeLink.click();
-    await page.waitForLoadState("networkidle");
+    const homeLink = basePage.getNavLink("home");
 
-    // Verify URL
-    expect(page.url()).toMatch(/\/$/);
+    await test.step("Take screenshot before navigating back", async () => {
+      await takeScreenshotWithHighlight(
+        basePage.page,
+        homeLink,
+        "before-navigate-home",
+      );
+    });
 
-    // Wait for page to fully load
-    await page.waitForTimeout(500);
+    await test.step("Navigate back to Home", async () => {
+      await basePage.navigateToPage("home");
+    });
 
-    // Verify active state on home
-    const activeHome = page.getByTestId("nav-home");
-    const hasActiveClass = await activeHome.evaluate((el) =>
-      el.classList.contains("is-active"),
-    );
+    await test.step("Verify navigation to home successful", async () => {
+      await basePage.expectUrl(/\/$/);
 
-    if (!hasActiveClass) {
-      console.log("Navbar active state not applied, but URL navigation successful");
-    }
+      // Verify the link is still visible (navbar is present)
+      const activeHome = basePage.getNavLink("home");
+      await expect(activeHome).toBeVisible();
 
-    await expect(activeHome).toBeVisible();
+      // Take screenshot after navigating back
+      await takeScreenshotWithHighlight(
+        basePage.page,
+        activeHome,
+        "after-navigate-home",
+      );
+    });
   });
 });
