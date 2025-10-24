@@ -78,6 +78,9 @@ export default defineConfig({
     timeout: 10000,
   },
 
+  // Snapshot path template - use platform-agnostic paths
+  snapshotPathTemplate: "{testDir}/homepage-theme-snapshots/{arg}.png",
+
   // Test timeout
   timeout: 30000,
 });

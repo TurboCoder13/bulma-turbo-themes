@@ -116,7 +116,7 @@ test.describe("Homepage Theme Switching @smoke", () => {
 
       // Take snapshot of the main content area
       const mainContent = homePage.getMainContent();
-      await expect(mainContent).toHaveScreenshot("homepage-github-dark.png");
+      await expect(mainContent).toHaveScreenshot("homepage-github-dark");
     });
   });
 
@@ -134,7 +134,7 @@ test.describe("Homepage Theme Switching @smoke", () => {
 
       // Take snapshot of the main content area
       const mainContent = homePage.getMainContent();
-      await expect(mainContent).toHaveScreenshot("homepage-catppuccin-latte.png");
+      await expect(mainContent).toHaveScreenshot("homepage-catppuccin-latte");
     });
   });
 });
