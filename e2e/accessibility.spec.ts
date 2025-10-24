@@ -9,9 +9,6 @@ import AxeBuilder from "@axe-core/playwright";
  * - Theme switching doesn't break accessibility
  * - Navigation accessibility
  * - Keyboard navigation support
- *
- * Note: These tests report accessibility violations but allow them for now
- * since they relate to theme implementation issues that need to be fixed in the app.
  */
 test.describe("Accessibility Tests @a11y", () => {
   test("should report accessibility violations on homepage", async ({ homePage }) => {
@@ -22,13 +19,16 @@ test.describe("Accessibility Tests @a11y", () => {
         .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
         .analyze();
 
-      // Report violations but don't fail - these need to be fixed in the app
+      // Report violations for visibility - these need to be fixed in the app
       if (accessibilityScanResults.violations.length > 0) {
         console.log(
-          "Accessibility violations found:",
-          accessibilityScanResults.violations,
+          `\n📋 Found ${accessibilityScanResults.violations.length} accessibility violations:`,
         );
-        console.log("Total violations:", accessibilityScanResults.violations.length);
+        accessibilityScanResults.violations.forEach((violation, index) => {
+          console.log(`\n${index + 1}. ${violation.id} (${violation.impact} impact)`);
+          console.log(`   ${violation.description}`);
+          console.log(`   Help: ${violation.helpUrl}`);
+        });
       }
     });
   });
@@ -47,12 +47,15 @@ test.describe("Accessibility Tests @a11y", () => {
         .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
         .analyze();
 
-      // Report violations but don't fail - these need to be fixed in the app
+      // Report violations for visibility - these need to be fixed in the app
       if (accessibilityScanResults.violations.length > 0) {
         console.log(
-          "Accessibility violations with github-dark theme:",
-          accessibilityScanResults.violations.length,
+          `\n📋 Found ${accessibilityScanResults.violations.length} accessibility violations (github-dark theme):`,
         );
+        accessibilityScanResults.violations.forEach((violation, index) => {
+          console.log(`\n${index + 1}. ${violation.id} (${violation.impact} impact)`);
+          console.log(`   ${violation.description}`);
+        });
       }
     });
   });
@@ -71,12 +74,15 @@ test.describe("Accessibility Tests @a11y", () => {
         .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
         .analyze();
 
-      // Report violations but don't fail - these need to be fixed in the app
+      // Report violations for visibility - these need to be fixed in the app
       if (accessibilityScanResults.violations.length > 0) {
         console.log(
-          "Accessibility violations with catppuccin-latte theme:",
-          accessibilityScanResults.violations.length,
+          `\n📋 Found ${accessibilityScanResults.violations.length} accessibility violations (catppuccin-latte theme):`,
         );
+        accessibilityScanResults.violations.forEach((violation, index) => {
+          console.log(`\n${index + 1}. ${violation.id} (${violation.impact} impact)`);
+          console.log(`   ${violation.description}`);
+        });
       }
     });
   });
@@ -92,12 +98,15 @@ test.describe("Accessibility Tests @a11y", () => {
         .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
         .analyze();
 
-      // Report violations but don't fail - these need to be fixed in the app
+      // Report violations for visibility - these need to be fixed in the app
       if (accessibilityScanResults.violations.length > 0) {
         console.log(
-          "Accessibility violations on components page:",
-          accessibilityScanResults.violations.length,
+          `\n📋 Found ${accessibilityScanResults.violations.length} accessibility violations (components page):`,
         );
+        accessibilityScanResults.violations.forEach((violation, index) => {
+          console.log(`\n${index + 1}. ${violation.id} (${violation.impact} impact)`);
+          console.log(`   ${violation.description}`);
+        });
       }
     });
   });
@@ -111,12 +120,15 @@ test.describe("Accessibility Tests @a11y", () => {
         .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
         .analyze();
 
-      // Report violations but don't fail - these need to be fixed in the app
+      // Report violations for visibility - these need to be fixed in the app
       if (accessibilityScanResults.violations.length > 0) {
         console.log(
-          "Accessibility violations on forms page:",
-          accessibilityScanResults.violations.length,
+          `\n📋 Found ${accessibilityScanResults.violations.length} accessibility violations (forms page):`,
         );
+        accessibilityScanResults.violations.forEach((violation, index) => {
+          console.log(`\n${index + 1}. ${violation.id} (${violation.impact} impact)`);
+          console.log(`   ${violation.description}`);
+        });
       }
     });
   });
