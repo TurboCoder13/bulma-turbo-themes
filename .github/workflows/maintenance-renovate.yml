@@ -31,7 +31,7 @@ jobs:
             registry.npmjs.org:443
             rubygems.org:443
       - name: Checkout repository
-        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: Run Renovate
         uses: renovatebot/github-action@bf21d623a81a349d57109049960248ab12c62431 # v40
