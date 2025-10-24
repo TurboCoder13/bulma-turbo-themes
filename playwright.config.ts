@@ -26,6 +26,9 @@ export default defineConfig({
   // Reporter configuration
   reporter: process.env.CI ? "github" : "html",
 
+  // Skip visual tests in CI due to platform-specific rendering differences
+  testMatch: process.env.CI ? /^(?!.*@visual).*\.spec\.ts$/ : undefined,
+
   // Browser projects
   projects: [
     {
@@ -51,9 +54,6 @@ export default defineConfig({
 
     // Disable animations for more stable tests
     actionTimeout: 10000,
-
-    // Emulate reduced motion for consistency
-    reducedMotion: "reduce",
   },
 
   // Web server configuration - builds and serves the Jekyll site
