@@ -245,6 +245,9 @@ if [ "$FULL_MODE" = true ]; then
             print_status "$YELLOW" "  Cleaning up any existing Jekyll processes..."
             ./scripts/ci/cleanup-jekyll-processes.sh
             
+            # Add additional cleanup to ensure port is fully free
+            sleep 2
+            
             print_status "$YELLOW" "  Running Lighthouse CI (latest)..."
             if npx --yes @lhci/cli@latest autorun --config=./lighthouserc.json --collect.numberOfRuns=1; then
                 print_status "$GREEN" "  ✅ Lighthouse CI completed successfully"
