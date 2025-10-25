@@ -183,6 +183,22 @@ print_status "$BLUE" "🏗️  Step 7: Jekyll build..."
 print_status "$YELLOW" "  Building Jekyll site..."
 bundle exec jekyll build --config "$JEKYLL_CONFIG" --trace --strict_front_matter
 
+# Step 7.5: E2E tests with Playwright (skip in quick mode)
+if [ "$QUICK_MODE" = false ] && command_exists "npx"; then
+    if npm list @playwright/test &>/dev/null; then
+        print_status "$BLUE" "🎭 Step 7.5: E2E tests with Playwright..."
+        print_status "$YELLOW" "  Running E2E tests..."
+        if npm run e2e:ci; then
+            print_status "$GREEN" "  ✅ E2E tests passed"
+        else
+            print_status "$RED" "  ❌ E2E tests failed"
+            exit 1
+        fi
+    else
+        print_status "$YELLOW" "⚠️  Playwright not installed, skipping E2E tests..."
+    fi
+fi
+
 # Step 8: HTMLProofer
 print_status "$BLUE" "🔍 Step 8: HTMLProofer validation..."
 print_status "$YELLOW" "  Running HTMLProofer..."
@@ -229,6 +245,9 @@ if [ "$FULL_MODE" = true ]; then
             print_status "$YELLOW" "  Cleaning up any existing Jekyll processes..."
             ./scripts/ci/cleanup-jekyll-processes.sh
             
+            # Add additional cleanup to ensure port is fully free
+            sleep 2
+            
             print_status "$YELLOW" "  Running Lighthouse CI (latest)..."
             if npx --yes @lhci/cli@latest autorun --config=./lighthouserc.json --collect.numberOfRuns=1; then
                 print_status "$GREEN" "  ✅ Lighthouse CI completed successfully"
@@ -274,6 +293,9 @@ print_status "$GREEN" "  ✅ Theme synchronization passed"
 print_status "$GREEN" "  ✅ TypeScript build passed"
 print_status "$GREEN" "  ✅ Tests with coverage passed"
 print_status "$GREEN" "  ✅ Jekyll build passed"
+if [ "$QUICK_MODE" = false ] && command_exists "npx" && npm list @playwright/test &>/dev/null; then
+    print_status "$GREEN" "  ✅ E2E tests passed"
+fi
 print_status "$GREEN" "  ✅ HTMLProofer validation passed"
 if [ "$FULL_MODE" = true ]; then
     print_status "$GREEN" "  ✅ Lighthouse performance analysis passed"

@@ -71,13 +71,20 @@
     <nav class="navbar is-spaced" role="navigation" aria-label="main navigation">
       <div class="container">
         <div class="navbar-brand">
-          <a class="navbar-item" href="{{ '/' | relative_url }}"> {{ site.title }} </a>
+          <a
+            class="navbar-item"
+            href="{{ '/' | relative_url }}"
+            data-testid="navbar-brand"
+          >
+            {{ site.title }}
+          </a>
           <button
             class="navbar-burger"
             aria-label="menu"
             aria-expanded="false"
             data-target="navbarBasicExample"
             type="button"
+            data-testid="navbar-burger"
           >
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
@@ -87,11 +94,25 @@
 
         <div id="navbarBasicExample" class="navbar-menu">
           <div class="navbar-start">
-            <a class="navbar-item" href="{{ '/' | relative_url }}">Home</a>
-            <a class="navbar-item" href="{{ '/components/' | relative_url }}">
+            <a
+              class="navbar-item"
+              href="{{ '/' | relative_url }}"
+              data-testid="nav-home"
+              >Home</a
+            >
+            <a
+              class="navbar-item"
+              href="{{ '/components/' | relative_url }}"
+              data-testid="nav-components"
+            >
               Components
             </a>
-            <a class="navbar-item" href="{{ '/forms/' | relative_url }}">Forms</a>
+            <a
+              class="navbar-item"
+              href="{{ '/forms/' | relative_url }}"
+              data-testid="nav-forms"
+              >Forms</a
+            >
           </div>
           <div class="navbar-end">
             <div class="navbar-item">
@@ -105,18 +126,28 @@
                   aria-hidden="true"
                 ></span>
               </div>
-              <div class="dropdown is-right is-theme" id="theme-flavor-dd">
+              <div
+                class="dropdown is-right is-theme"
+                id="theme-flavor-dd"
+                data-testid="theme-dropdown"
+              >
                 <div class="dropdown-trigger">
                   <button
                     class="button is-small is-rounded is-flavor-trigger theme-flavor-trigger"
                     aria-haspopup="true"
                     aria-controls="theme-flavor-menu"
                     aria-label="Theme"
+                    data-testid="theme-trigger"
                   >
                     <span class="icon is-small" id="theme-flavor-trigger-icon"></span>
                   </button>
                 </div>
-                <div class="dropdown-menu" id="theme-flavor-menu" role="menu">
+                <div
+                  class="dropdown-menu"
+                  id="theme-flavor-menu"
+                  role="menu"
+                  data-testid="theme-menu"
+                >
                   <div class="dropdown-content" id="theme-flavor-items"></div>
                 </div>
               </div>
@@ -127,7 +158,7 @@
     </nav>
 
     <section class="section">
-      <div class="container content">
+      <div class="container content" data-testid="main-content">
         <h1 class="title">{{ page.title | default: site.title }}</h1>
         {{ content }}
       </div>

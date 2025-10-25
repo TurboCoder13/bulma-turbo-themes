@@ -1,0 +1,222 @@
+name: Quality Check - E2E Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: write
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CHECKOUT_FETCH_DEPTH: 1
+  NODE_VERSION: 22
+  RUBY_VERSION: "3.3"
+
+jobs:
+  e2e:
+    name: 🎭 E2E Tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Harden Runner
+        if: ${{ !env.ACT }}
+        uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            uploads.github.com:443
+            objects.githubusercontent.com:443
+            codeload.github.com:443
+            rubygems.org:443
+            api.rubygems.org:443
+            index.rubygems.org:443
+            bundler.rubygems.org:443
+            registry.npmjs.org:443
+            npmjs.org:443
+            packages.microsoft.com:443
+            azure.archive.ubuntu.com:80
+            azure.archive.ubuntu.com:443
+            archive.ubuntu.com:80
+            archive.ubuntu.com:443
+            security.ubuntu.com:80
+            security.ubuntu.com:443
+            motd.ubuntu.com:443
+            esm.ubuntu.com:443
+
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          fetch-depth: ${{ env.CHECKOUT_FETCH_DEPTH }}
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          node-version: "${{ env.NODE_VERSION }}"
+          ruby-version: "${{ env.RUBY_VERSION }}"
+
+      - name: Install Playwright browsers
+        run: npm run e2e:install
+
+      - name: Build Jekyll site
+        run: npm run e2e:prep
+
+      - name: Run E2E tests
+        run: npm run e2e:ci
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: e2e-test-results
+          path: test-results/
+          retention-days: 30
+          if-no-files-found: ignore
+
+  e2e-smoke:
+    name: 🔥 E2E Smoke Tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Harden Runner
+        if: ${{ !env.ACT }}
+        uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            uploads.github.com:443
+            objects.githubusercontent.com:443
+            codeload.github.com:443
+            rubygems.org:443
+            api.rubygems.org:443
+            index.rubygems.org:443
+            bundler.rubygems.org:443
+            registry.npmjs.org:443
+            npmjs.org:443
+            packages.microsoft.com:443
+            azure.archive.ubuntu.com:80
+            azure.archive.ubuntu.com:443
+            archive.ubuntu.com:80
+            archive.ubuntu.com:443
+            security.ubuntu.com:80
+            security.ubuntu.com:443
+            motd.ubuntu.com:443
+            esm.ubuntu.com:443
+
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          fetch-depth: ${{ env.CHECKOUT_FETCH_DEPTH }}
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          node-version: "${{ env.NODE_VERSION }}"
+          ruby-version: "${{ env.RUBY_VERSION }}"
+
+      - name: Install Playwright browsers
+        run: npm run e2e:install
+
+      - name: Build Jekyll site
+        run: npm run e2e:prep
+
+      - name: Run smoke tests
+        run: npm run e2e:smoke
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: playwright-smoke-report
+          path: playwright-report/
+          retention-days: 30
+          if-no-files-found: ignore
+
+  e2e-accessibility:
+    name: ♿ E2E Accessibility Tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Harden Runner
+        if: ${{ !env.ACT }}
+        uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            uploads.github.com:443
+            objects.githubusercontent.com:443
+            codeload.github.com:443
+            rubygems.org:443
+            api.rubygems.org:443
+            index.rubygems.org:443
+            bundler.rubygems.org:443
+            registry.npmjs.org:443
+            npmjs.org:443
+            packages.microsoft.com:443
+            azure.archive.ubuntu.com:80
+            azure.archive.ubuntu.com:443
+            archive.ubuntu.com:80
+            archive.ubuntu.com:443
+            security.ubuntu.com:80
+            security.ubuntu.com:443
+            motd.ubuntu.com:443
+            esm.ubuntu.com:443
+
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          fetch-depth: ${{ env.CHECKOUT_FETCH_DEPTH }}
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          node-version: "${{ env.NODE_VERSION }}"
+          ruby-version: "${{ env.RUBY_VERSION }}"
+
+      - name: Install Playwright browsers
+        run: npm run e2e:install
+
+      - name: Build Jekyll site
+        run: npm run e2e:prep
+
+      - name: Run accessibility tests
+        run: npm run e2e:a11y
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: playwright-a11y-report
+          path: playwright-report/
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: e2e-a11y-results
+          path: test-results/
+          retention-days: 30
+          if-no-files-found: ignore
