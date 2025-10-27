@@ -217,12 +217,15 @@ allowed-endpoints: >
   objects.githubusercontent.com:443
   codeload.github.com:443
   registry.npmjs.org:443
+  cdn.playwright.dev:443
+  playwright.download.prss.microsoft.com:443
 ```
 
 **Rationale:**
 
 - GitHub: Code checkout
 - npm: Installing Lighthouse CI
+- Playwright: Downloading browser binaries for E2E tests
 
 ### Deploy Pages Workflows
 

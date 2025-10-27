@@ -55,6 +55,8 @@ jobs:
             chrome-devtools-frontend.appspot.com:443
             productionresultssa3.blob.core.windows.net:443
             istanbul.js.org:443
+            cdn.playwright.dev:443
+            playwright.download.prss.microsoft.com:443
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
