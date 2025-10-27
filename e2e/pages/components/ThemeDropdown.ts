@@ -26,8 +26,18 @@ export class ThemeDropdown {
    * Open the dropdown by hovering.
    */
   async open(): Promise<void> {
+    // Wait for dropdown to be visible
+    await this.dropdown.waitFor({ state: "visible" });
+    // Move to the dropdown to trigger mouseenter
     await this.dropdown.hover();
-    await expect(this.dropdown).toHaveClass(/is-active/);
+    // Wait for is-active class to appear
+    await this.page.waitForFunction(
+      () => {
+        const dd = document.getElementById("theme-flavor-dd");
+        return dd && dd.classList.contains("is-active");
+      },
+      { timeout: 5000 },
+    );
   }
 
   /**

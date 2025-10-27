@@ -82,8 +82,20 @@ export class BasePage {
    */
   async openThemeDropdown(): Promise<void> {
     const dropdown = this.getThemeDropdown();
+    // Wait for dropdown to be in the DOM and initialized
+    await dropdown.waitFor({ state: "visible" });
+    // Ensure the trigger button is also visible
+    await this.getThemeTrigger().waitFor({ state: "visible" });
+    // Move to the dropdown to trigger mouseenter
     await dropdown.hover();
-    await expect(dropdown).toHaveClass(/is-active/);
+    // Wait for is-active class to appear with a longer timeout
+    await this.page.waitForFunction(
+      () => {
+        const dd = document.getElementById("theme-flavor-dd");
+        return dd && dd.classList.contains("is-active");
+      },
+      { timeout: 5000 },
+    );
   }
 
   /**
