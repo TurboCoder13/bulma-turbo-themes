@@ -34,9 +34,7 @@ export default defineConfig({
 
   // Reporter configuration
   // Use github reporter for inline annotations + html for deployment
-  reporter: process.env.CI
-    ? (["github", "html"] as unknown as "github" | "html")
-    : "html",
+  reporter: process.env.CI ? [["github"], ["html"]] : "html",
 
   // Browser projects
   projects: [
