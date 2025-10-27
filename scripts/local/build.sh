@@ -199,6 +199,17 @@ if [ "$QUICK_MODE" = false ] && command_exists "npx"; then
     fi
 fi
 
+# Rebuild Jekyll after E2E tests to include reports in _site (all modes where E2E runs)
+if [ "$QUICK_MODE" = false ] && [ -d "playwright-report" ]; then
+    print_status "$YELLOW" "  Rebuilding Jekyll to include test reports..."
+    bundle exec jekyll build --config "$JEKYLL_CONFIG" --trace --strict_front_matter
+    
+    # Copy reports to simplified directory names in _site for shorter URLs
+    print_status "$YELLOW" "  Creating simplified report paths..."
+    [ -d "playwright-report" ] && cp -r playwright-report _site/playwright || true
+    [ -d "lighthouse-reports" ] && cp -r lighthouse-reports _site/lighthouse || true
+fi
+
 # Step 8: HTMLProofer
 print_status "$BLUE" "🔍 Step 8: HTMLProofer validation..."
 print_status "$YELLOW" "  Running HTMLProofer..."
