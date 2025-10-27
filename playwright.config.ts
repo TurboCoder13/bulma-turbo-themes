@@ -1,4 +1,13 @@
 import { defineConfig, devices } from "@playwright/test";
+import * as os from "os";
+
+/**
+ * Detect the platform for snapshot storage
+ * Values: 'darwin' (macOS), 'linux', or 'win32'
+ */
+const platform = os.platform();
+const platformName =
+  platform === "darwin" ? "macos" : platform === "win32" ? "windows" : "linux";
 
 /**
  * Playwright configuration for E2E tests.
@@ -25,9 +34,6 @@ export default defineConfig({
 
   // Reporter configuration
   reporter: process.env.CI ? "github" : "html",
-
-  // Skip visual tests in CI due to platform-specific rendering differences
-  testMatch: process.env.CI ? /^(?!.*@visual).*\.spec\.ts$/ : undefined,
 
   // Browser projects
   projects: [
@@ -68,18 +74,20 @@ export default defineConfig({
   expect: {
     // Visual comparison settings
     toHaveScreenshot: {
+      // Strict tolerance now possible with platform-specific snapshots
       maxDiffPixels: 100,
       threshold: 0.2,
       // Disable animations in screenshots
       animations: "disabled",
+      maxDiffPixelRatio: 0.2,
     },
 
     // Default timeout for assertions
     timeout: 10000,
   },
 
-  // Snapshot path template - use platform-agnostic paths
-  snapshotPathTemplate: "{testDir}/homepage-theme-snapshots/{arg}.png",
+  // Snapshot path template - platform-specific paths for strict comparison
+  snapshotPathTemplate: `{testDir}/homepage-theme-snapshots/${platformName}/{arg}.png`,
 
   // Test timeout
   timeout: 30000,
