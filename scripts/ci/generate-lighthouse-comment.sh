@@ -85,19 +85,27 @@ REPO="${GITHUB_REPOSITORY:=unknown}"
       echo ""
       if [ "$REPO" != "unknown" ]; then
         echo "**Public Report:**"
-          echo "- 🔗 [📊 View Lighthouse Reports](https://turbocoder13.github.io/bulma-turbo-themes/lighthouse-reports/)"
+          echo "- 🔗 [📊 View Lighthouse Reports](https://turbocoder13.github.io/bulma-turbo-themes/lighthouse/)"
         echo ""
         echo "**Or download from artifacts:**"
         echo "- 📥 [Download from GitHub Actions](https://github.com/$REPO/actions/runs/$RUN_ID/artifacts)"
       else
-        echo "- Check the workflow artifacts for detailed Lighthouse reports"
+        echo "**Local Development:**"
+        echo "- 🔗 [View Reports](http://localhost:4000/lighthouse/)"
+        echo "- 🔗 [Standalone server](http://localhost:3001/lighthouse/) (run \`./scripts/local/serve-reports.sh\`)"
+        echo ""
+        echo "**Note:** Run \`./scripts/ci/run-lighthouse-ci.sh\` to generate reports first."
       fi
       echo ""
     else
       echo "✅ Lighthouse CI analysis completed successfully."
       echo ""
       if [ "$REPO" != "unknown" ]; then
-        echo "📋 [View Reports](https://turbocoder13.github.io/bulma-turbo-themes/lighthouse-reports/)"
+        echo "📋 [View Reports](https://turbocoder13.github.io/bulma-turbo-themes/lighthouse/)"
+      else
+        echo "📋 [View Reports](http://localhost:4000/lighthouse/)"
+        echo ""
+        echo "**Note:** Run \`./scripts/ci/run-lighthouse-ci.sh\` to generate reports first."
       fi
     fi
   else
