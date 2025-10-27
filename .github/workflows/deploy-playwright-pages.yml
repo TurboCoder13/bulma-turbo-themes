@@ -63,10 +63,10 @@ jobs:
       - name: Prepare artifacts for upload
         if: steps.check-reports.outputs.exists == 'true'
         run: |
-          mkdir -p _site/playwright-report
-          cp -r playwright-report/* _site/playwright-report/
+          mkdir -p _site/playwright
+          cp -r playwright-report/* _site/playwright/
           echo "✅ Playwright reports prepared for deployment"
-          ls -la _site/playwright-report/
+          ls -la _site/playwright/
 
       - name: Upload artifact to Pages
         if: steps.check-reports.outputs.exists == 'true'
