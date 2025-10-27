@@ -38,3 +38,4 @@ include:
   - assets
   - coverage
   - lighthouse-reports
+  - playwright-report
