@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
-      - uses: ossf/scorecard-action@2a21071f18aab4c0226332dcce19187d3ca03051
+      - uses: ossf/scorecard-action@ee561a865e0aaf9a797139ae811086dd8d96dca3
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           results_file: results.sarif
