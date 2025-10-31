@@ -82,6 +82,23 @@ Generate and post coverage report comments to PRs.
 - Inputs: `coverage/coverage-summary.json`
 - Variables: `GITHUB_TOKEN`, `PR_NUMBER`, `GITHUB_REPOSITORY`
 
+### `generate-playwright-comment.sh`
+
+Generate Playwright E2E test report comments for PRs.
+
+**Usage:**
+
+```bash
+./scripts/ci/generate-playwright-comment.sh
+```
+
+**Environment:**
+
+- Inputs: `playwright-report/` directory, `test-results/` directory
+- Variables: `GITHUB_RUN_ID`, `GITHUB_SHA`, `GITHUB_REPOSITORY`
+- Outputs: `playwright-comment.md` file
+- Features: Auto-detects local vs CI environment and generates appropriate report URLs
+
 ## 🛠️ Local Development Scripts (`local/`)
 
 Scripts for local development workflows:

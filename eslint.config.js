@@ -45,7 +45,13 @@ export default [
     },
   },
   {
-    files: ["test/**/*.ts", "vitest.config.ts", "**/*.mjs"],
+    files: [
+      "test/**/*.ts",
+      "e2e/**/*.ts",
+      "vitest.config.ts",
+      "playwright.config.ts",
+      "**/*.mjs",
+    ],
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {

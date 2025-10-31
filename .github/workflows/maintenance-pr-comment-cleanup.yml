@@ -52,6 +52,9 @@ jobs:
               '<!-- allstar-comment -->',
               '<!-- lighthouse-ci-comment -->',
               '<!-- coverage-report -->',
+              '<!-- playwright-e2e-comment -->',
+              '<!-- playwright-e2e-smoke-comment -->',
+              '<!-- playwright-e2e-a11y-comment -->',
             ];
 
             // Get all comments

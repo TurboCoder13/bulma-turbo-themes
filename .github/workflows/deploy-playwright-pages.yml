@@ -1,9 +1,9 @@
 ---
-name: Deploy - Lighthouse Reports to GitHub Pages
+name: Deploy - Playwright Reports to GitHub Pages
 
 on:
   workflow_run:
-    workflows: ["Reporting - Lighthouse CI"]
+    workflows: ["Quality Check - E2E Tests"]
     types:
       - completed
     branches: [main]
@@ -14,12 +14,12 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages-lighthouse
+  group: pages-playwright
   cancel-in-progress: false
 
 jobs:
   deploy:
-    name: 🔦 Deploy Lighthouse Reports to Pages
+    name: 🎭 Deploy Playwright Reports to Pages
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
@@ -36,24 +36,24 @@ jobs:
             api.github.com:443
             uploads.github.com:443
 
-      - name: Download Lighthouse reports artifact
+      - name: Download Playwright report artifact
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: lighthouse-reports
-          path: lighthouse-reports/
+          name: playwright-report
+          path: playwright-report/
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
 
       - name: Check if reports exist
         id: check-reports
         run: |
-          if [ -d "lighthouse-reports" ] && [ -n "$(ls -A lighthouse-reports 2>/dev/null)" ]; then
+          if [ -d "playwright-report" ] && [ -n "$(ls -A playwright-report 2>/dev/null)" ]; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
-            echo "✅ Lighthouse reports found"
-            find lighthouse-reports -type f
+            echo "✅ Playwright reports found"
+            find playwright-report -type f
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
-            echo "⚠️ No Lighthouse reports found, skipping deployment"
+            echo "⚠️ No Playwright reports found, skipping deployment"
           fi
 
       - name: Setup Pages
@@ -63,10 +63,10 @@ jobs:
       - name: Prepare artifacts for upload
         if: steps.check-reports.outputs.exists == 'true'
         run: |
-          mkdir -p _site/lighthouse
-          cp -r lighthouse-reports/* _site/lighthouse/
-          echo "✅ Lighthouse reports prepared for deployment"
-          ls -la _site/lighthouse/
+          mkdir -p _site/playwright
+          cp -r playwright-report/* _site/playwright/
+          echo "✅ Playwright reports prepared for deployment"
+          ls -la _site/playwright/
 
       - name: Upload artifact to Pages
         if: steps.check-reports.outputs.exists == 'true'

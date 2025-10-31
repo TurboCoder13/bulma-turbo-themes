@@ -59,12 +59,35 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 ```
 
+## Testing
+
+This project includes comprehensive testing:
+
+- **Unit Tests**: Vitest with coverage reporting
+- **E2E Tests**: Playwright with Page Object Model pattern
+- **Accessibility Tests**: axe-core integration for WCAG compliance
+- **Visual Regression**: Playwright screenshots and snapshots
+
+Run tests:
+
+```bash
+npm test              # Unit tests with coverage
+npm run e2e           # All E2E tests
+npm run e2e:smoke     # Smoke tests only
+npm run e2e:visual    # Visual regression tests
+npm run e2e:a11y      # Accessibility tests
+npm run e2e:ui        # Playwright UI mode
+```
+
+For detailed E2E testing documentation, see `docs/E2E-TESTING.md`.
+
 ## Documentation
 
 - Code of Conduct: see `CODE_OF_CONDUCT.md`
 - Contributing Guide: see `CONTRIBUTING.md`
 - Security Policy: see `SECURITY.md`
 - Release process: see `RELEASE.md`
+- E2E Testing: see `docs/E2E-TESTING.md`
 - Workflows & Actions: see `.github/workflows/README.md` and `.github/actions/README.md`
 - Scripts: see `scripts/README.md`
 
