@@ -110,7 +110,7 @@ jobs:
           path: sbom/
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@7b4da11513bf3f43f9999e90eabced41ab8bb048
+        uses: softprops/action-gh-release@00362bea6fa45e7091e03f6bd4ccd5cb6a17eb5e
         with:
           files: |
             sbom/sbom.cyclonedx.json
