@@ -10,12 +10,12 @@ on:
         description: Node.js version to use
         type: string
         required: false
-        default: "22"
+        default: '22'
       ruby-version:
         description: Ruby version to use
         type: string
         required: false
-        default: "3.3"
+        default: '3.3'
 
 permissions:
   contents: read
@@ -27,23 +27,31 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: block
           allowed-endpoints: >
             github.com:443
             api.github.com:443
+            raw.githubusercontent.com:443
             objects.githubusercontent.com:443
             codeload.github.com:443
+            github-releases.githubusercontent.com:443
+            release-assets.githubusercontent.com:443
             registry.npmjs.org:443
             npmjs.org:443
             rubygems.org:443
             api.rubygems.org:443
             index.rubygems.org:443
             bundler.rubygems.org:443
+            rubygems.global.ssl.fastly.net:443
+            cache.ruby-lang.org:443
+            pypi.org:443
+            files.pythonhosted.org:443
 
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        # v5.0.0
 
       - name: Setup environment
         uses: ./.github/actions/setup-env
@@ -62,3 +70,18 @@ jobs:
 
       - name: CSS lint (Stylelint)
         run: npm run stylelint
+
+      - name: Shellcheck (non-blocking)
+        continue-on-error: true
+        run: |
+          if command -v sudo >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y shellcheck
+          else
+            echo "sudo not available; attempting shellcheck without install"
+          fi
+          files=$(git ls-files '*.sh' || true)
+          if [ -n "$files" ]; then
+            shellcheck -S style -x "$files" || true
+          else
+            echo "No shell scripts found"
+          fi

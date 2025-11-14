@@ -19,7 +19,7 @@
   border: 1px solid rgb(0 0 0 / 15%);
 }
 
-.buttons.has-addons .button.is-rounded[aria-pressed="true"],
+.buttons.has-addons .button.is-rounded[aria-pressed='true'],
 .buttons.has-addons .button.is-rounded.is-active {
   border-color: transparent;
   background-color: #00d1b2;

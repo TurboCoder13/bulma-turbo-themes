@@ -1,9 +1,5 @@
 <!doctype html>
-<html
-  lang="{{ site.lang | default: 'en' }}"
-  data-theme="auto"
-  data-baseurl="{{ site.baseurl }}"
->
+<html lang="{{ site.lang | default: 'en' }}" data-theme="auto" data-baseurl="{{ site.baseurl }}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -59,7 +55,7 @@
     <link rel="stylesheet" href="{{ '/assets/css/custom.css' | relative_url }}" />
     <script type="module" src="{{ '/dist/index.js' | relative_url }}"></script>
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
+      document.addEventListener('DOMContentLoaded', () => {
         // Initialize navbar highlighting
         if (window.initNavbar) {
           window.initNavbar(document);
@@ -71,13 +67,17 @@
     <nav class="navbar is-spaced" role="navigation" aria-label="main navigation">
       <div class="container">
         <div class="navbar-brand">
-          <a class="navbar-item" href="{{ '/' | relative_url }}"> {{ site.title }} </a>
+          <a class="navbar-item" href="{{ '/' | relative_url }}" data-testid="navbar-brand">
+            {{ site.title }}
+          </a>
           <button
             class="navbar-burger"
             aria-label="menu"
             aria-expanded="false"
             data-target="navbarBasicExample"
             type="button"
+            data-testid="navbar-burger"
+            style="min-width: 24px; min-height: 24px"
           >
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
@@ -87,17 +87,135 @@
 
         <div id="navbarBasicExample" class="navbar-menu">
           <div class="navbar-start">
-            <a class="navbar-item" href="{{ '/' | relative_url }}">Home</a>
-            <a class="navbar-item" href="{{ '/components/' | relative_url }}">
+            <a class="navbar-item" href="{{ '/' | relative_url }}" data-testid="nav-home">Home</a>
+            <a
+              class="navbar-item"
+              href="{{ '/components/' | relative_url }}"
+              data-testid="nav-components"
+            >
               Components
             </a>
-            <a class="navbar-item" href="{{ '/forms/' | relative_url }}">Forms</a>
+            <a class="navbar-item" href="{{ '/forms/' | relative_url }}" data-testid="nav-forms"
+              >Forms</a
+            >
+            <div class="navbar-item has-dropdown is-hoverable">
+              <button
+                class="navbar-link"
+                id="nav-reports-trigger"
+                type="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+                aria-controls="nav-reports-menu"
+                data-testid="nav-reports"
+              >
+                Reports
+              </button>
+              <div
+                class="navbar-dropdown"
+                id="nav-reports-menu"
+                aria-labelledby="nav-reports-trigger"
+              >
+                <a
+                  class="navbar-item"
+                  href="{{ '/coverage/' | relative_url }}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Coverage (opens in new tab)"
+                  data-testid="nav-reports-coverage"
+                >
+                  Coverage
+                  <span
+                    class="icon is-small"
+                    style="margin-left: 0.25rem; display: inline-flex"
+                    aria-hidden="true"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                  </span>
+                </a>
+                <a
+                  class="navbar-item"
+                  href="{{ '/playwright/' | relative_url }}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Playwright (opens in new tab)"
+                  data-testid="nav-reports-playwright"
+                >
+                  Playwright
+                  <span
+                    class="icon is-small"
+                    style="margin-left: 0.25rem; display: inline-flex"
+                    aria-hidden="true"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                  </span>
+                </a>
+                <a
+                  class="navbar-item"
+                  href="{{ '/lighthouse/' | relative_url }}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Lighthouse (opens in new tab)"
+                  data-testid="nav-reports-lighthouse"
+                >
+                  Lighthouse
+                  <span
+                    class="icon is-small"
+                    style="margin-left: 0.25rem; display: inline-flex"
+                    aria-hidden="true"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                  </span>
+                </a>
+              </div>
+            </div>
           </div>
           <div class="navbar-end">
             <div class="navbar-item">
               <div class="control has-icons-left">
                 <div class="select is-rounded is-small is-hidden" aria-hidden="true">
-                  <select id="theme-flavor-select" aria-label="Theme flavor"></select>
+                  <select id="theme-flavor-select" aria-label="Theme flavor" disabled></select>
                 </div>
                 <span
                   class="icon is-small is-left"
@@ -105,18 +223,28 @@
                   aria-hidden="true"
                 ></span>
               </div>
-              <div class="dropdown is-right is-theme" id="theme-flavor-dd">
+              <div
+                class="dropdown is-right is-theme"
+                id="theme-flavor-dd"
+                data-testid="theme-dropdown"
+              >
                 <div class="dropdown-trigger">
                   <button
                     class="button is-small is-rounded is-flavor-trigger theme-flavor-trigger"
                     aria-haspopup="true"
                     aria-controls="theme-flavor-menu"
                     aria-label="Theme"
+                    data-testid="theme-trigger"
                   >
                     <span class="icon is-small" id="theme-flavor-trigger-icon"></span>
                   </button>
                 </div>
-                <div class="dropdown-menu" id="theme-flavor-menu" role="menu">
+                <div
+                  class="dropdown-menu"
+                  id="theme-flavor-menu"
+                  role="menu"
+                  data-testid="theme-menu"
+                >
                   <div class="dropdown-content" id="theme-flavor-items"></div>
                 </div>
               </div>
@@ -127,7 +255,7 @@
     </nav>
 
     <section class="section">
-      <div class="container content">
+      <div class="container content" data-testid="main-content">
         <h1 class="title">{{ page.title | default: site.title }}</h1>
         {{ content }}
       </div>

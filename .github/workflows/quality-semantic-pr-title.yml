@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
+      - uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: block
           allowed-endpoints: >
@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - name: Validate PR title
         id: semantic
-        uses: TurboCoder13/py-lintro/.github/actions/semantic-pr-title-check@1e25709a5570816d6d34ecef168a6a5b117070e9
+        uses: TurboCoder13/py-lintro/.github/actions/semantic-pr-title-check@26ca3005789de794c838179da3fd340771f3d3a2
         with:
           types: |
             chore
@@ -42,8 +42,8 @@ jobs:
             revert
             style
             test
-          require-scope: "false"
-          comment-on-fail: "true"
+          require-scope: 'false'
+          comment-on-fail: 'true'
       - name: Fail if invalid
         if: steps.semantic.outputs.ok != 'true'
         run: exit 1

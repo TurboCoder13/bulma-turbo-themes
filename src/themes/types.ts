@@ -79,7 +79,7 @@ export interface ThemeFlavor {
   id: string;
   label: string;
   vendor: string;
-  appearance: "light" | "dark";
+  appearance: 'light' | 'dark';
   iconUrl?: string;
   tokens: ThemeTokens;
 }

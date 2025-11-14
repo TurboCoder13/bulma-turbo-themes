@@ -1,11 +1,11 @@
 title: Bulma Theme Manager Demo
 description: Minimal Jekyll site showcasing Bulma components with theme switch
-baseurl: ""
-url: "https://turbocoder13.github.io"
+baseurl: ''
+url: 'https://turbocoder13.github.io'
 
 # Site metadata used by jekyll-seo-tag
-logo: "/assets/img/bulma-logo.png"
-lang: "en"
+logo: '/assets/img/bulma-logo.png'
+lang: 'en'
 
 theme: null
 
@@ -26,6 +26,16 @@ collections:
     output: true
     permalink: /es/:name/
 
+defaults:
+  - scope:
+      path: playwright-report
+    values:
+      sitemap: false
+  - scope:
+      path: coverage
+    values:
+      sitemap: false
+
 exclude:
   - node_modules
   - vendor
@@ -37,4 +47,5 @@ include:
   - dist
   - assets
   - coverage
+  - playwright-report
   - lighthouse-reports

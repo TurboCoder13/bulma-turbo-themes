@@ -147,10 +147,10 @@ Reusable workflows accept parameters for flexibility:
 inputs:
   node-version:
     type: string
-    default: "22"
+    default: '22'
   ruby-version:
     type: string
-    default: "3.3"
+    default: '3.3'
 ```
 
 ### Artifact Passing
@@ -175,7 +175,7 @@ Workflows pass data via artifacts:
 ### Implementation Notes
 
 1. **reusable-quality.yml**
-   - Runs ESLint, Prettier, TypeScript type checking
+   - Runs ESLint, lintro (formatting), TypeScript type checking
    - Validates with stylelint and markdownlint (when configured)
    - Fast execution (~5 minutes)
    - No artifacts produced

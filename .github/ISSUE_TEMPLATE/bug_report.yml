@@ -2,7 +2,7 @@
 name: Bug report
 description: Create a report to help us improve bulma-turbo-themes
 labels: [bug, needs-triage]
-title: "[Bug]: "
+title: '[Bug]: '
 body:
   - type: markdown
     attributes:
@@ -55,26 +55,26 @@ body:
     id: env-os
     attributes:
       label: Operating System
-      placeholder: "Example: macOS 14.2, Windows 11, Ubuntu 22.04"
+      placeholder: 'Example: macOS 14.2, Windows 11, Ubuntu 22.04'
 
   - type: input
     id: env-browser
     attributes:
       label: Browser & Version
-      placeholder: "Example: Chrome 120, Safari 17, Firefox 121"
+      placeholder: 'Example: Chrome 120, Safari 17, Firefox 121'
 
   - type: input
     id: env-node
     attributes:
       label: Node.js version
-      placeholder: "Example: 22.0.0 (run `node --version`)"
+      placeholder: 'Example: 22.0.0 (run `node --version`)'
 
   - type: input
     id: env-package
     attributes:
       label: Package version
       description: What version of @turbocoder13/bulma-turbo-themes are you using?
-      placeholder: "Example: 0.1.0 (check package.json or npm list)"
+      placeholder: 'Example: 0.1.0 (check package.json or npm list)'
 
   - type: textarea
     id: additional
