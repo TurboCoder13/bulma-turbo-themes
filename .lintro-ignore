@@ -1,0 +1,32 @@
+# Exclude generated and built content directories from linting
+
+# Jekyll build output
+_site/**
+_site/*
+
+# Ruby/Bundler generated content
+vendor/**
+.bundle/**
+
+# Node.js dependencies
+node_modules/**
+
+# Build artifacts
+dist/**
+coverage/**
+
+# Cache directories
+.jekyll-cache/**
+.sass-cache/**
+.jekyll-metadata
+playwright/.cache/**
+.lintro/**
+
+# Test and report artifacts
+test-results/**
+playwright-report/**
+lighthouse-reports/**
+e2e/snapshots/**
+
+# Generated badges
+assets/static/badges/**

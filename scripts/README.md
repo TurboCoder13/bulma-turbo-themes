@@ -82,6 +82,70 @@ Generate and post coverage report comments to PRs.
 - Inputs: `coverage/coverage-summary.json`
 - Variables: `GITHUB_TOKEN`, `PR_NUMBER`, `GITHUB_REPOSITORY`
 
+### `validate-action-pinning.sh`
+
+Validate all actions are pinned to SHA hashes.
+
+**Usage:**
+
+```bash
+./scripts/ci/validate-action-pinning.sh
+```
+
+**Environment:**
+
+- Checks: All workflow and action files for SHA pinning compliance
+- Exits: Non-zero if any actions are not properly pinned
+
+### `update-action-versions.sh`
+
+Update GitHub Action version hashes in workflow files.
+
+**Usage:**
+
+```bash
+# Preview updates to latest versions
+./scripts/ci/update-action-versions.sh --latest --dry-run
+
+# Update all actions to latest SHAs
+./scripts/ci/update-action-versions.sh --latest
+
+# Update specific actions
+./scripts/ci/update-action-versions.sh --action actions/checkout@abc123def456... --action actions/setup-node@fed654cba321...
+
+# Update from mapping file (one ACTION@SHA per line)
+./scripts/ci/update-action-versions.sh --file actions.txt
+
+# Skip internal actions
+./scripts/ci/update-action-versions.sh --latest --skip-internal
+```
+
+**Options:**
+
+- `--dry-run` - Preview changes without modifying files
+- `--latest` - Fetch and update all actions to latest SHAs from GitHub API
+- `--action NAME@SHA` - Update specific action(s) (can be used multiple times)
+- `--file PATH` - Read action→SHA mappings from file (one per line: ACTION@SHA)
+- `--preserve-comments` - Keep version comments intact (default: true)
+- `--no-preserve-comments` - Remove version comments when updating
+- `--skip-internal` - Skip internal actions (./.github/actions/\*)
+- `--help` - Show help message
+
+**Environment:**
+
+- Requires: `curl` or `wget` for GitHub API calls
+- Variables: `GITHUB_TOKEN` (optional, increases API rate limit)
+- Variables: `GITHUB_API_URL` (optional, defaults to https://api.github.com)
+- Updates: All `.github/workflows/*.yml` files
+
+**Features:**
+
+- Fetches latest commit SHAs from GitHub API
+- Preserves YAML formatting and optional version comments
+- Validates SHA format (40 hex characters)
+- Supports dry-run mode for preview
+- Handles rate limiting with small delays between API calls
+
 ## 🛠️ Local Development Scripts (`local/`)
 
 Scripts for local development workflows:

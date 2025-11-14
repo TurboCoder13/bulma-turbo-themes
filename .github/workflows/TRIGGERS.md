@@ -44,8 +44,8 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 
 **What it does:**
 
-- Matrix builds across Node 18/20/22 and Ruby 3.3/3.4
-- Runs linters (ESLint, Prettier, Markdown, Stylelint)
+- Matrix builds across Node 20/22 and Ruby 3.3/3.4
+- Runs linters (ESLint, lintro, Markdown, Stylelint)
 - Executes tests with coverage
 - Builds TypeScript and Jekyll site
 - Validates HTML
