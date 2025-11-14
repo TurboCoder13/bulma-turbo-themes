@@ -24,7 +24,8 @@ npm run ci
 **Required Steps:**
 
 - ✅ ESLint linting (`npm run lint`)
-- ✅ Prettier formatting (`npm run format`)
+- ✅ Lintro formatting (`uv run lintro fmt`)
+- ✅ Lintro linting (`uv run lintro chk`)
 - ✅ Markdown linting (`npm run mdlint`)
 - ✅ CSS linting (`npm run stylelint`)
 - ✅ TypeScript build (`npm run build`)
@@ -67,19 +68,19 @@ npm test --silent
 
 **Required Steps:**
 
-- ✅ Build site (`./build.sh --no-serve`)
+- ✅ Build site (`./scripts/local/build.sh --no-serve`)
 - ✅ Run Lighthouse CI (`npx @lhci/cli@latest autorun`)
 
 **Dependencies:**
 
-- `build.sh` script in root
+- `scripts/local/build.sh` script
 - `lighthouserc.json` configuration
 - `npx @lhci/cli@latest` available in environment
 
 **Local Testing:**
 
 ```bash
-./build.sh --no-serve
+./scripts/local/build.sh --no-serve
 npx @lhci/cli@latest autorun --config=./lighthouserc.json --collect.numberOfRuns=1
 ```
 
@@ -220,7 +221,6 @@ scripts/
 │   ├── build.sh             # Build script
 │   └── clean.sh              # Cleanup script
 └── sync-catppuccin.mjs       # Theme sync script
-build.sh                      # Root build script
 lighthouserc.json             # Lighthouse configuration
 ```
 
@@ -270,8 +270,8 @@ npm audit
 
 ### 4. Lighthouse Failures
 
-**Cause:** Missing `build.sh` script
-**Fix:** Create root-level build.sh that calls scripts/local/build.sh
+**Cause:** Missing `scripts/local/build.sh` script
+**Fix:** Ensure `scripts/local/build.sh` exists and is executable
 
 ### 5. TypeScript Compilation Failures
 
@@ -299,7 +299,7 @@ npm run format
 npm run theme:sync
 npm run build
 npm test
-./build.sh --no-serve
+./scripts/local/build.sh --no-serve
 ```
 
 ### Environment Differences

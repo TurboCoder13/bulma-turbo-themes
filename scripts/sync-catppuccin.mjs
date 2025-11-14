@@ -3,7 +3,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import prettier from "prettier";
+import { execSync } from "node:child_process";
 import { flavors as catFlavors } from "@catppuccin/palette";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -116,41 +116,48 @@ const pkg = buildPackage();
 function formatObject(obj, indent = 0) {
   const spaces = "  ".repeat(indent);
   if (Array.isArray(obj)) {
-    return `[\n${obj.map((item) => `${spaces}  ${formatObject(item, indent + 1)}`).join(",\n")}\n${spaces}]`;
+    const items = obj.map((item) => `${spaces}  ${formatObject(item, indent + 1)}`).join(",\n");
+    return `[\n${items},\n${spaces}]`;
   } else if (obj && typeof obj === "object") {
     const entries = Object.entries(obj);
     if (entries.length === 0) return "{}";
-    return `{\n${entries
+    const items = entries
       .map(([key, value]) => {
         const formattedValue = formatObject(value, indent + 1);
         return `${spaces}  ${key}: ${formattedValue}`;
       })
-      .join(",\n")}\n${spaces}}`;
+      .join(",\n");
+    return `{\n${items},\n${spaces}}`;
   } else if (typeof obj === "string") {
     // Escape backslashes first, then quotes and control characters
     const escaped = obj
       .replace(/\\/g, "\\\\")
-      .replace(/"/g, '\\"')
+      .replace(/'/g, "\\'")
       .replace(/\n/g, "\\n")
       .replace(/\r/g, "\\r")
       .replace(/\t/g, "\\t");
-    return `"${escaped}"`;
+    return `'${escaped}'`;
   } else {
     return String(obj);
   }
 }
 
-const rawContent = `import type { ThemePackage } from "../types.js";
+const rawContent = `import type { ThemePackage } from '../types.js';
 
 export const catppuccinSynced: ThemePackage = ${formatObject(pkg)} as const;
 `;
 
-// Format with Prettier using repository configuration
-const prettierConfig = (await prettier.resolveConfig(projectRoot)) ?? {};
-const formatted = await prettier.format(rawContent, {
-  ...prettierConfig,
-  parser: "typescript",
-});
+// Write file first, then format with lintro
+fs.writeFileSync(outPath, rawContent, "utf8");
 
-fs.writeFileSync(outPath, formatted, "utf8");
+// Format with lintro using repository configuration
+try {
+  execSync(`uv run lintro fmt "${outPath}"`, {
+    cwd: projectRoot,
+    stdio: "inherit",
+  });
+} catch {
+  console.warn(`Warning: lintro fmt failed for ${outPath}, file written but may not be formatted`);
+}
+
 console.log(`Wrote ${outPath}`);

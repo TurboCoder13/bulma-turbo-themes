@@ -39,7 +39,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: block
           allowed-endpoints: >
@@ -48,20 +48,18 @@ jobs:
             registry.npmjs.org:443
 
       - name: Checkout
-        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
           persist-credentials: true
 
       - name: Configure Git
-        run: |
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
+        run: ./scripts/ci/configure-git.sh
 
       - name: Setup Node.js
-        uses: actions/setup-node@dda4788290998366da86b6a4f497909644397bb2
+        uses: actions/setup-node@dda4788290998366da86b6a4f497909644397bb2 # v6.0.0
         with:
-          node-version: "22"
+          node-version: 22
           registry-url: https://registry.npmjs.org
           cache: npm
 
@@ -70,29 +68,20 @@ jobs:
 
       - name: Check for existing version PR
         id: check-pr
-        run: |
-          existing_pr=$(gh pr list --state=open --search "chore(release): version" --json number --jq ".[0].number" 2>/dev/null || echo "")
-          if [ -n "$existing_pr" ]; then
-            echo "pr_exists=true" >> "$GITHUB_OUTPUT"
-            echo "pr_number=$existing_pr" >> "$GITHUB_OUTPUT"
-          fi
+        run: ./scripts/ci/check-existing-version-pr.sh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create version PR
         if: steps.check-pr.outputs.pr_exists != 'true'
-        run: |
-          node scripts/ci/create-version-pr.mjs
+        run: node scripts/ci/create-version-pr.mjs
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Summary
+      - name: Generate Version PR Summary
         if: always()
-        run: |
-          echo "## Release Version PR Status" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ steps.check-pr.outputs.pr_exists }}" = "true" ]; then
-            echo "ℹ️ Version PR already exists: #${{ steps.check-pr.outputs.pr_number }}" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "✅ Version PR creation attempted" >> $GITHUB_STEP_SUMMARY
-            echo "📋 Check the logs above for details" >> $GITHUB_STEP_SUMMARY
-          fi
+        shell: bash
+        run: ./scripts/ci/generate-version-pr-summary.sh
+        env:
+          PR_EXISTS: ${{ steps.check-pr.outputs.pr_exists }}
+          PR_NUMBER: ${{ steps.check-pr.outputs.pr_number }}

@@ -1,9 +1,10 @@
+---
 name: Reporting - External Link Validation
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 2 * * *" # 2 AM UTC daily (nightly)
+    - cron: '0 2 * * *' # 2 AM UTC daily (nightly)
 
 permissions:
   contents: read
@@ -20,17 +21,17 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: audit
 
       - name: Checkout code
-        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@d5126b9b3579e429dd52e51e68624dda2e05be25
+        uses: ruby/setup-ruby@d5126b9b3579e429dd52e51e68624dda2e05be25 # v1.267.0
         with:
-          ruby-version: "3.4.7"
+          ruby-version: '3.4.7'
           bundler-cache: true
 
       - name: Build Jekyll site
@@ -51,14 +52,7 @@ jobs:
 
       - name: Parse link check results
         id: results
-        run: |
-          if grep -q "HTML-Proofer finished successfully" link-check-output.txt; then
-            echo "status=success" >> $GITHUB_OUTPUT
-            echo "External links validated successfully"
-          else
-            echo "status=warning" >> $GITHUB_OUTPUT
-            echo "Some external links may have issues (see full log)"
-          fi
+        run: ./scripts/ci/parse-link-check-results.sh
 
       - name: Create issue on external link failures
         if: steps.results.outputs.status == 'warning'
@@ -74,8 +68,9 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 title: '🔗 External Link Issues Detected',
-                body: `## External Link Validation Report\n\n\`\`\`\n${output}\n\`\`\`\n\n**Note:** External link failures are non-blocking and may be transient.\nPlease review and investigate persistent failures.`,
-                labels: ['type:monitoring', 'priority:low']
+                body:
+                  `## External Link Validation Report\n\n\`\`\`\n${output}\n\`\`\`\n\n**Note:** External link failures are non-blocking and may be transient.\nPlease review and investigate persistent failures.`,
+                labels: ['type:monitoring', 'priority:low'],
               });
             }
 

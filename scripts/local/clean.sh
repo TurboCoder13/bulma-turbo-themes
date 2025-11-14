@@ -101,7 +101,24 @@ find . -name "*.temp" -type f -delete 2>/dev/null || true
 
 echo -e "${BLUE}🧪 Cleaning test artifacts...${NC}"
 
-# Remove any test output files
+# Remove test report directories
+safe_remove "playwright-report" "Playwright test reports"
+safe_remove "lighthouse-reports" "Lighthouse performance reports"
+
+# Remove Lighthouse CI artifacts
+safe_remove ".lighthouse" "Lighthouse CI cache"
+safe_remove ".lighthouseci" "Lighthouse CI artifacts"
+
+# Remove Playwright cache and artifacts
+safe_remove "playwright/.cache" "Playwright cache"
+safe_remove "playwright" "Playwright artifacts"
+
+# Remove CI-generated comment files
+safe_remove_file "playwright-comment.md" "Playwright PR comment file"
+safe_remove_file "lighthouse-comment.md" "Lighthouse PR comment file"
+safe_remove_file "coverage-comment.md" "Coverage PR comment file"
+
+# Remove any other test output files
 find . -name "test-results" -type d -exec rm -rf {} + 2>/dev/null || true
 find . -name "*.test.log" -type f -delete 2>/dev/null || true
 
@@ -113,6 +130,13 @@ echo "   • _site/ (Jekyll build output)"
 echo "   • .jekyll-cache/ (Jekyll cache)"
 echo "   • dist/ (TypeScript build output)"
 echo "   • coverage/ (Test coverage reports)"
+echo "   • playwright-report/ (Playwright test reports)"
+echo "   • lighthouse-reports/ (Lighthouse performance reports)"
+echo "   • .lighthouse/ (Lighthouse CI cache)"
+echo "   • .lighthouseci/ (Lighthouse CI artifacts)"
+echo "   • playwright/ (Playwright artifacts and cache)"
+echo "   • test-results/ (Test result artifacts)"
+echo "   • *-comment.md (CI-generated PR comment files)"
 echo "   • .bundle/ (Ruby bundle cache)"
 echo "   • vendor/ (Vendor build artifacts)"
 echo "   • node_modules/ (Node.js dependencies)"

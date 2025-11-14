@@ -3,6 +3,12 @@
 # Build script for bulma-turbo-themes Jekyll site
 # This script handles both local development and CI workflows
 # Usage: ./scripts/local/build.sh [--quick|--full|--serve|--no-serve]
+#
+# Environment Variables:
+#   PORT_RELEASE_CHECK_INTERVAL - Time between port checks in seconds (default: 0.5)
+#   PORT_RELEASE_TIMEOUT - Maximum time to wait for port release in seconds (default: 5)
+#   PORT_TO_CHECK - Port number to check for availability (default: 4000)
+#   PORT_RELEASE_STRICT - Exit with error if port not released within timeout (default: false)
 
 set -e  # Exit on any error
 
@@ -25,39 +31,193 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Check for lsof availability
+if ! command_exists "lsof"; then
+    print_status "$YELLOW" "⚠️  lsof not found, using portable port check alternative"
+    LSOF_AVAILABLE=false
+else
+    LSOF_AVAILABLE=true
+fi
+
 # Function to check if port is available
+# Uses lsof if available, otherwise falls back to bash /dev/tcp probe
 port_available() {
     local port="$1"
-    ! lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1
+    
+    if [ "$LSOF_AVAILABLE" = true ]; then
+        # Use lsof for accurate port checking
+        if lsof -Pi :"$port" -sTCP:LISTEN -t >/dev/null 2>&1; then
+            return 1
+        else
+            return 0
+        fi
+    else
+        # Prefer nc (netcat) if available
+        if command_exists "nc"; then
+            if nc -z 127.0.0.1 "$port" >/dev/null 2>&1; then
+                # Connection succeeded → port in use
+                return 1
+            else
+                return 0
+            fi
+        fi
+        # Prefer ss (socket statistics) if available
+        if command_exists "ss"; then
+            if ss -ltn 2>/dev/null | awk '{print $4}' | grep -qE ":(^|.*:)${port}$"; then
+                return 1
+            else
+                return 0
+            fi
+        fi
+        # Portable fallback: bash /dev/tcp probe
+        # This works on bash 2.04+ and doesn't require external tools
+        # Redirect to /dev/tcp/127.0.0.1/port; ensure FDs are closed
+        if exec 3<>/dev/tcp/127.0.0.1/"$port" 2>/dev/null; then
+            # Port is in use (connection succeeded)
+            exec 3<&-
+            exec 3>&-
+            return 1
+        else
+            # Port is available (connection failed)
+            # Close FDs defensively if they were opened partially
+            exec 3<&- 2>/dev/null || true
+            exec 3>&- 2>/dev/null || true
+            return 0
+        fi
+    fi
 }
 
-# Parse command line arguments
+# Configuration for port release checking
+# PORT_RELEASE_CHECK_INTERVAL: Time between port checks (default: 0.5s)
+# PORT_RELEASE_TIMEOUT: Maximum time to wait for port release (default: 5s)
+# PORT_TO_CHECK: Port number to check (default: 4000)
+export PORT_RELEASE_CHECK_INTERVAL="${PORT_RELEASE_CHECK_INTERVAL:-0.5}"
+export PORT_RELEASE_TIMEOUT="${PORT_RELEASE_TIMEOUT:-5}"
+export PORT_TO_CHECK="${PORT_TO_CHECK:-4000}"
+
+# Function to wait for port to be released
+wait_for_port_release() {
+    local port="${PORT_TO_CHECK}"
+    local interval="${PORT_RELEASE_CHECK_INTERVAL}"
+    local timeout="${PORT_RELEASE_TIMEOUT}"
+    # Validate numeric (integer or decimal) and reject zero/sub-millisecond values
+    case "$timeout" in
+        ''|*[!0-9.]*|*\..*\..*)
+            print_status "$RED" "❌ Invalid timeout value: $timeout (must be a positive decimal number)"
+            exit 1
+            ;;
+    esac
+    case "$interval" in
+        ''|*[!0-9.]*|*\..*\..*)
+            print_status "$RED" "❌ Invalid interval value: $interval (must be a positive decimal number)"
+            exit 1
+            ;;
+    esac
+
+    # Reject zero values (0, 0.0, 0.00, etc.) at validation time
+    # Use awk to handle decimal comparison properly
+    if awk "BEGIN {exit !($timeout <= 0)}"; then
+        print_status "$RED" "❌ Invalid timeout: $timeout seconds (must be ≥ 0.001)"
+        exit 1
+    fi
+    if awk "BEGIN {exit !($interval <= 0)}"; then
+        print_status "$RED" "❌ Invalid interval: $interval seconds (must be ≥ 0.001)"
+        exit 1
+    fi
+
+    # Convert to integer milliseconds using awk for safe decimal arithmetic
+    local timeout_ms interval_ms
+    timeout_ms=$(awk "BEGIN {printf \"%.0f\", $timeout * 1000}")
+    interval_ms=$(awk "BEGIN {printf \"%.0f\", $interval * 1000}")
+
+    # Validate converted values (should not be needed if validation above works, but safety check)
+    if [ "$timeout_ms" -le 0 ]; then
+        print_status "$RED" "❌ Invalid timeout: $timeout seconds (rounds to ≤ 0ms, must be ≥ 0.001)"
+        exit 1
+    fi
+    if [ "$interval_ms" -le 0 ]; then
+        print_status "$RED" "❌ Invalid interval: $interval seconds (rounds to ≤ 0ms, must be ≥ 0.001)"
+        exit 1
+    fi
+
+    # Ceiling division for attempt count
+    local max_attempts=$(( (timeout_ms + interval_ms - 1) / interval_ms ))
+    local attempt=0
+
+    print_status "$YELLOW" "  Waiting for port $port to be released (timeout: ${timeout}s, interval: ${interval}s)..."
+
+    while [ $attempt -lt $max_attempts ]; do
+        if port_available "$port"; then
+            print_status "$GREEN" "  ✅ Port $port is now free"
+            return 0
+        fi
+        sleep "$interval"
+        attempt=$((attempt + 1))
+    done
+
+    # Final check after timeout
+    if ! port_available "$port"; then
+        if [ "${PORT_RELEASE_STRICT:-false}" = true ]; then
+            print_status "$RED" "❌ Port $port still in use after ${timeout}s"
+            return 1
+        fi
+        print_status "$YELLOW" "  ⚠️  Port $port may still be in use after ${timeout}s timeout, continuing anyway..."
+    else
+        print_status "$GREEN" "  ✅ Port $port is now free"
+    fi
+
+    return 0
+}
+
+# Initialize variables
 QUICK_MODE=false
 FULL_MODE=false
 SERVE_MODE=false
 NO_SERVE=false
 DEV_MODE=false
 PROD_MODE=false
+SKIP_E2E=false
+SKIP_LH=false
 
-for arg in "$@"; do
-    case "$arg" in
+# Parse command-line arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
         --quick)
             QUICK_MODE=true
+            shift
             ;;
         --full)
             FULL_MODE=true
+            shift
             ;;
         --serve)
             SERVE_MODE=true
+            shift
             ;;
         --no-serve)
             NO_SERVE=true
+            shift
             ;;
         --dev)
             DEV_MODE=true
+            shift
             ;;
         --prod)
             PROD_MODE=true
+            shift
+            ;;
+        --skip-e2e)
+            SKIP_E2E=true
+            shift
+            ;;
+        --skip-lh)
+            SKIP_LH=true
+            shift
+            ;;
+        *)
+            print_status "$RED" "❌ Unknown option: $1"
+            print_status "$YELLOW" "Usage: $0 [--quick|--full|--serve|--no-serve|--dev|--prod|--skip-e2e|--skip-lh]"
+            exit 1
             ;;
     esac
 done
@@ -99,7 +259,12 @@ fi
 print_status "$BLUE" "📦 Step 1: Installing dependencies..."
 
 # Check required commands
-for cmd in npm bundle git; do
+required_cmds=("npm" "git")
+if [ "$QUICK_MODE" = false ]; then
+    required_cmds+=("bundle")
+fi
+
+for cmd in "${required_cmds[@]}"; do
     if ! command_exists "$cmd"; then
         print_status "$RED" "❌ Required command not found: $cmd"
         exit 1
@@ -118,9 +283,13 @@ else
     print_status "$YELLOW" "⚠️  Skipping Node.js steps (no package.json found)."
 fi
 
-# Install Ruby dependencies
-print_status "$YELLOW" "  Installing Ruby dependencies..."
-bundle install
+# Install Ruby dependencies (skip in quick mode)
+if [ "$QUICK_MODE" = false ]; then
+    print_status "$YELLOW" "  Installing Ruby dependencies..."
+    bundle install
+else
+    print_status "$YELLOW" "  Skipping Ruby dependencies (quick mode)..."
+fi
 
 # Step 2: Linting and formatting
 print_status "$BLUE" "🔍 Step 2: Linting and formatting..."
@@ -128,8 +297,33 @@ if [ -f "package.json" ]; then
     print_status "$YELLOW" "  Running ESLint..."
     npm run lint
     
-    print_status "$YELLOW" "  Checking Prettier formatting..."
-    npm run format
+    print_status "$YELLOW" "  Checking code formatting with lintro..."
+    if ! uv run lintro check --tools black,darglint,prettier,ruff,yamllint,actionlint,bandit 2>/dev/null; then
+        print_status "$RED" "❌ Code formatting check failed"
+        print_status "$YELLOW" "  Run 'npm run format:write' to fix formatting issues automatically"
+        exit 1
+    fi
+    
+    print_status "$YELLOW" "  Validating YAML files with lintro..."
+    if command_exists "uv"; then
+        # Validate YAML files using lintro chk (hadolint excluded due to Dockerfile issues now resolved)
+        if ! uv run lintro chk --tools yamllint,actionlint .github/workflows .github/actions 2>/dev/null; then
+            print_status "$YELLOW" "⚠️  lintro validation found issues (non-blocking)"
+        fi
+    else
+        print_status "$YELLOW" "⚠️  uv not available, skipping YAML validation"
+    fi
+    
+    print_status "$YELLOW" "  Validating GitHub Action pinning..."
+    if [ -f "scripts/ci/validate-action-pinning.sh" ]; then
+        if ! ./scripts/ci/validate-action-pinning.sh; then
+            print_status "$RED" "❌ Action pinning validation failed"
+            print_status "$YELLOW" "  Some GitHub Actions are not properly pinned to SHA"
+            exit 1
+        fi
+    else
+        print_status "$YELLOW" "⚠️  Action pinning validation script not found"
+    fi
     
     print_status "$YELLOW" "  Running Markdown lint..."
     npm run mdlint
@@ -147,10 +341,10 @@ if [ -f "package.json" ] && grep -q '"theme:sync"' package.json >/dev/null 2>&1;
     # Check for diffs limited to generated files to avoid unrelated local edits
     GENERATED_PATHS=("src/themes/packs/catppuccin.synced.ts")
     if ! git diff --quiet -- "${GENERATED_PATHS[@]}" \
-        || [[ -n "$(git ls-files --others --exclude-standard -- ${GENERATED_PATHS[*]})" ]]; then
+        || [[ -n "$(git ls-files --others --exclude-standard -- "${GENERATED_PATHS[@]}")" ]]; then
         print_status "$RED" "❌ Non-deterministic theme sync detected in generated files:"
         git --no-pager diff -- "${GENERATED_PATHS[@]}" | cat
-        git ls-files --others --exclude-standard -- ${GENERATED_PATHS[*]} || true
+        git ls-files --others --exclude-standard -- "${GENERATED_PATHS[@]}" || true
         exit 1
     else
         print_status "$GREEN" "✅ Theme sync is deterministic"
@@ -164,16 +358,33 @@ if [ -f "package.json" ] && grep -q '"build"' package.json >/dev/null 2>&1; then
     npm run build
 fi
 
-# Step 5: Tests with coverage
-print_status "$BLUE" "🧪 Step 5: Tests with coverage..."
+# Step 5: Unit tests with coverage
+print_status "$BLUE" "🧪 Step 5: Unit tests with coverage..."
 if [ -f "package.json" ] && grep -q '"test"' package.json >/dev/null 2>&1; then
-    print_status "$YELLOW" "  Running tests..."
-    npm test --silent
+    print_status "$YELLOW" "  Node.js version: $(node --version)"
+    print_status "$YELLOW" "  Running unit tests with coverage..."
+    if npm test; then
+        print_status "$GREEN" "  ✅ Unit tests passed with coverage"
+        if [ -d "coverage" ]; then
+            print_status "$GREEN" "  📊 Coverage reports generated in coverage/"
+            ls -la coverage/
+
+            # Generate coverage badges if script exists
+            if [ -f "scripts/ci/coverage-badges.mjs" ]; then
+                print_status "$YELLOW" "  Generating coverage badges..."
+                node scripts/ci/coverage-badges.mjs
+                print_status "$GREEN" "  ✅ Coverage badges generated in assets/static/badges/"
+            fi
+        fi
+    else
+        print_status "$RED" "  ❌ Unit tests failed"
+        exit 1
+    fi
 fi
 
 # Step 6: CSS budget check
-print_status "$BLUE" "📊 Step 6: CSS budget check..."
 if [ -f "package.json" ] && grep -q '"css:budget"' package.json >/dev/null 2>&1; then
+    print_status "$BLUE" "💰 Step 6: CSS budget check..."
     print_status "$YELLOW" "  Running CSS budget check..."
     npm run css:budget
 fi
@@ -183,8 +394,29 @@ print_status "$BLUE" "🏗️  Step 7: Jekyll build..."
 print_status "$YELLOW" "  Building Jekyll site..."
 bundle exec jekyll build --config "$JEKYLL_CONFIG" --trace --strict_front_matter
 
-# Step 8: HTMLProofer
-print_status "$BLUE" "🔍 Step 8: HTMLProofer validation..."
+# Step 8: E2E tests with Playwright (skip in quick mode or if --skip-e2e flag is set)
+if [ "$QUICK_MODE" = false ] && [ "$SKIP_E2E" = false ] && command_exists "npx"; then
+    if npm list @playwright/test &>/dev/null; then
+        print_status "$BLUE" "🎭 Step 8: E2E tests with Playwright..."
+        # Ensure Playwright browsers are installed before E2E
+        print_status "$YELLOW" "  Ensuring Playwright browsers are installed..."
+        npx --yes playwright install chromium >/dev/null 2>&1 || true
+        print_status "$YELLOW" "  Running E2E tests..."
+        if npm run e2e:ci; then
+            print_status "$GREEN" "  ✅ E2E tests passed"
+        else
+            print_status "$RED" "  ❌ E2E tests failed"
+            exit 1
+        fi
+    else
+        print_status "$YELLOW" "⚠️  Playwright not installed, skipping E2E tests..."
+    fi
+elif [ "$SKIP_E2E" = true ]; then
+    print_status "$YELLOW" "⏭️  Skipping E2E tests (--skip-e2e flag set)..."
+fi
+
+# Step 9: HTMLProofer
+print_status "$BLUE" "🔍 Step 9: HTMLProofer validation..."
 print_status "$YELLOW" "  Running HTMLProofer..."
 # Validation strategy:
 # - Development builds: Validate internal links (--disable-external)
@@ -204,6 +436,7 @@ elif [ "$QUICK_MODE" = true ] || [ "$FULL_MODE" = false ]; then
       --allow-hash-href \
       --allow-missing-href \
       --no-enforce-https \
+      --ignore-urls "/lighthouse/,/playwright/" \
       ./_site
 else
     # Full CI builds: Skip external link validation here
@@ -217,26 +450,33 @@ else
       --allow-hash-href \
       --allow-missing-href \
       --no-enforce-https \
+      --ignore-urls "/lighthouse/,/playwright/" \
       ./_site
 fi
 
-# Step 9: Lighthouse performance analysis (full mode only)
-if [ "$FULL_MODE" = true ]; then
-    print_status "$BLUE" "📊 Step 9: Lighthouse performance analysis..."
+# Step 10: Lighthouse performance analysis (dev/prod/full unless skipped)
+LIGHTHOUSE_RAN=false
+LIGHTHOUSE_PASSED=false
+if [ "$QUICK_MODE" = false ] && [ "$SKIP_LH" = false ] && { [ "$DEV_MODE" = true ] || [ "$PROD_MODE" = true ] || [ "$FULL_MODE" = true ]; }; then
+    print_status "$BLUE" "📊 Step 10: Lighthouse performance analysis..."
     if command_exists "npx"; then
         # Check if Lighthouse config exists
         if [ -f "lighthouserc.json" ]; then
             print_status "$YELLOW" "  Cleaning up any existing Jekyll processes..."
             ./scripts/ci/cleanup-jekyll-processes.sh
             
+            wait_for_port_release || exit 1
+            
             print_status "$YELLOW" "  Running Lighthouse CI (latest)..."
             if npx --yes @lhci/cli@latest autorun --config=./lighthouserc.json --collect.numberOfRuns=1; then
                 print_status "$GREEN" "  ✅ Lighthouse CI completed successfully"
+                LIGHTHOUSE_RAN=true
                 if [ -d "lighthouse-reports" ]; then
                     print_status "$GREEN" "  📊 Reports generated in lighthouse-reports/"
                     ls -la lighthouse-reports/
+                    LIGHTHOUSE_PASSED=true
                 else
-                    print_status "$YELLOW" "  ⚠️  No lighthouse-reports directory found"
+                    print_status "$YELLOW" "  ⚠️  No lighthouse-reports directory found (reports may not have been generated)"
                 fi
             else
                 print_status "$RED" "  ❌ Lighthouse CI failed"
@@ -255,9 +495,9 @@ if [ "$FULL_MODE" = true ]; then
     fi
 fi
 
-# Step 10: Security checks (full mode only)
+# Step 11: Security checks (full mode only)
 if [ "$FULL_MODE" = true ]; then
-    print_status "$BLUE" "🔒 Step 10: Security checks..."
+    print_status "$BLUE" "🔒 Step 11: Security checks..."
     if command_exists "npm"; then
         print_status "$YELLOW" "  Running npm audit..."
         npm audit --audit-level=moderate || print_status "$YELLOW" "⚠️  npm audit found issues"
@@ -266,16 +506,30 @@ if [ "$FULL_MODE" = true ]; then
     fi
 fi
 
+# Step 12: Final Jekyll build to include all reports
+print_status "$BLUE" "🏗️  Step 12: Final Jekyll build (including all reports)..."
+print_status "$YELLOW" "  Rebuilding Jekyll to include all test reports..."
+print_status "$YELLOW" "  The Jekyll plugin simplify_urls.rb will automatically create simplified paths (/coverage/, /playwright/, /lighthouse/)"
+if ! bundle exec jekyll build --config "$JEKYLL_CONFIG" --trace --strict_front_matter; then
+    print_status "$RED" "  ❌ Failed to rebuild Jekyll with reports"
+    exit 1
+fi
+print_status "$GREEN" "  ✅ All reports included in site (available at /coverage/, /playwright/, /lighthouse/)"
+
 # Summary
 print_status "$GREEN" "✅ CI pipeline completed successfully!"
 print_status "$BLUE" "📋 Summary:"
 print_status "$GREEN" "  ✅ Linting and formatting passed"
 print_status "$GREEN" "  ✅ Theme synchronization passed"
 print_status "$GREEN" "  ✅ TypeScript build passed"
-print_status "$GREEN" "  ✅ Tests with coverage passed"
+print_status "$GREEN" "  ✅ Unit tests with coverage passed"
+print_status "$GREEN" "  ✅ CSS budget check passed"
 print_status "$GREEN" "  ✅ Jekyll build passed"
+if [ "$QUICK_MODE" = false ] && [ "$SKIP_E2E" = false ] && command_exists "npx" && npm list @playwright/test &>/dev/null; then
+    print_status "$GREEN" "  ✅ E2E tests passed"
+fi
 print_status "$GREEN" "  ✅ HTMLProofer validation passed"
-if [ "$FULL_MODE" = true ]; then
+if [ "$LIGHTHOUSE_RAN" = true ] && [ "$LIGHTHOUSE_PASSED" = true ]; then
     print_status "$GREEN" "  ✅ Lighthouse performance analysis passed"
     print_status "$GREEN" "  ✅ Security checks passed"
 fi
