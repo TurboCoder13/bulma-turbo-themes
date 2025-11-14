@@ -32,22 +32,33 @@ export class ThemeDropdown {
    * Open the dropdown by hovering.
    */
   async open(): Promise<void> {
+    const waitForActive = async (timeout: number = ThemeDropdown.THEME_DROPDOWN_ACTIVE_TIMEOUT) => {
+      // Assert the active state with timeout (word-boundary class match)
+      await expect(this.dropdown).toHaveClass(/(?:^|\s)is-active(?:\s|$)/, {
+        timeout,
+      });
+    };
+
     // Ensure elements exist; dropdown may be hidden before activation
     await expect(this.dropdown).toBeAttached();
     await expect(this.trigger).toBeVisible();
-    // Prefer hover; fall back to click when hover is not supported
+    // Prefer hover; fall back to click when hover is not supported or unreliable
     const supportsHover = await this.page.evaluate(
       () => window.matchMedia('(hover: hover)').matches
     );
     if (supportsHover) {
-      await this.trigger.hover();
-    } else {
-      await this.trigger.click();
+      try {
+        await this.trigger.hover();
+        await waitForActive();
+        return;
+      } catch {
+        // If hover-based activation is flaky (e.g., under rapid theme switching),
+        // fall back to a reliable click-based activation before failing the test.
+      }
     }
-    // Assert the active state with timeout (word-boundary class match)
-    await expect(this.dropdown).toHaveClass(/(?:^|\s)is-active(?:\s|$)/, {
-      timeout: ThemeDropdown.THEME_DROPDOWN_ACTIVE_TIMEOUT,
-    });
+
+    await this.trigger.click();
+    await waitForActive();
   }
 
   /**

@@ -32,11 +32,17 @@ const platformName = platform === 'darwin' ? 'macos' : platform === 'win32' ? 'w
  */
 const snapshotDir = process.env.PLAYWRIGHT_SNAPSHOT_DIR || 'snapshots';
 
+const isCI = !!process.env.CI;
+
 /**
  * Playwright configuration for E2E tests.
  *
  * Runs against a statically served Jekyll _site directory.
  * Uses chromium by default.
+ *
+ * CI policy:
+ * - No retries in CI to ensure any flaky failure marks the workflow as failed.
+ * - Local runs can still be configured via PLAYWRIGHT_RETRIES if needed.
  *
  * @see https://playwright.dev/docs/test-configuration
  */
@@ -47,17 +53,19 @@ export default defineConfig({
   fullyParallel: true,
 
   // Configure workers
-  workers: process.env.CI ? 2 : undefined,
+  workers: isCI ? 2 : undefined,
 
   // Fail the build on CI if you accidentally left test.only in the source code
-  forbidOnly: !!process.env.CI,
+  forbidOnly: isCI,
 
-  // Retry on CI, not locally
-  retries: process.env.CI ? 2 : 0,
+  // Retry policy
+  // - CI: no retries so that any failure (including flakes) fails the job
+  // - Local: default 0 retries, but configurable via PLAYWRIGHT_RETRIES
+  retries: process.env.PLAYWRIGHT_RETRIES ? Number(process.env.PLAYWRIGHT_RETRIES) : 0,
 
   // Reporter configuration
   // Use github reporter for inline annotations + html for deployment
-  reporter: process.env.CI
+  reporter: isCI
     ? [['github'], ['html', { outputFolder: 'playwright-report' }]]
     : [['html', { outputFolder: 'playwright-report' }]],
 

@@ -69,6 +69,7 @@ jobs:
             api.rubygems.org:443
             index.rubygems.org:443
             bundler.rubygems.org:443
+            cache.ruby-lang.org:443
             pypi.org:443
             files.pythonhosted.org:443
             cdn.jsdelivr.net:443
