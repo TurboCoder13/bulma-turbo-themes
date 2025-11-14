@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+set -e
 # Run quick CI checks before commit
 echo "🔍 Running pre-commit CI checks..."
 
@@ -10,10 +12,10 @@ npm run theme:sync
 
 # Check for non-deterministic changes in generated files only
 GENERATED_PATHS="src/themes/packs/catppuccin.synced.ts"
-if ! git diff --quiet -- $GENERATED_PATHS || [ -n "$(git ls-files --others --exclude-standard -- $GENERATED_PATHS)" ]; then
+if ! git diff --quiet -- "$GENERATED_PATHS" || [ -n "$(git ls-files --others --exclude-standard -- "$GENERATED_PATHS")" ]; then
   echo "❌ Theme sync generated changes in generated files. Please commit them:"
-  git --no-pager diff -- $GENERATED_PATHS | cat
-  git ls-files --others --exclude-standard -- $GENERATED_PATHS || true
+  git --no-pager diff -- "$GENERATED_PATHS" | cat
+  git ls-files --others --exclude-standard -- "$GENERATED_PATHS" || true
   exit 1
 fi
 
@@ -21,6 +23,6 @@ fi
 npm run build
 
 # Run tests
-npm test --silent
+npm test --silent || exit 1
 
 echo "✅ Pre-commit checks passed!"

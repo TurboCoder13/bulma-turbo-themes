@@ -120,15 +120,6 @@ Merge version PR → creates git tag v0.3.0
 
 ## 🔧 Configuration Files
 
-### `.releaserc.json`
-
-Semantic Release configuration defining:
-
-- Release rules for commit types
-- CHANGELOG generation
-- npm publishing settings
-- GitHub release assets
-
 ### `.github/workflows/quality-semantic-pr-title.yml`
 
 PR title validation using `TurboCoder13/py-lintro` action
@@ -137,13 +128,21 @@ PR title validation using `TurboCoder13/py-lintro` action
 
 Main CI pipeline with commit validation and release trigger verification
 
-### `.github/workflows/release-semantic-release.yml`
+### `.github/workflows/release-version-pr.yml`
 
-Automatic semantic release workflow
+Creates the version bump PR after `main` changes pass the quality and build gates.
 
-### `.github/workflows/publish-npm-on-tag.yml`
+### `.github/workflows/release-auto-tag.yml`
 
-Tag-triggered publishing workflow
+Creates a git tag (for example, `v0.4.0`) from the approved version PR when `package.json` changes are merged to `main`.
+
+### `.github/workflows/release-publish-pr.yml`
+
+Tag-triggered publish workflow that re-runs quality and build checks, generates SBOMs, publishes to npm, and creates the GitHub release.
+
+### `.github/workflows/publish-npm-test.yml`
+
+Manual publish workflow for pushing test/beta builds to npm under a non-`latest` dist-tag (for example, `beta`).
 
 ## 📋 Release Types
 
@@ -212,13 +211,15 @@ These commit types do not trigger releases:
 
 1. Check commit types against release rules
 2. Ensure commits are on `main` branch
-3. Verify semantic release workflow ran successfully
+3. Verify the version PR and auto-tag workflows ran successfully:
+   - `release-version-pr.yml` created a version PR
+   - `release-auto-tag.yml` created a `v*.*.*` tag after the version PR was merged
 
 ### Tag Created But No Release
 
-1. Check `publish-npm-on-tag.yml` workflow
-2. Verify npm token permissions
-3. Check GitHub release creation
+1. Check `release-publish-pr.yml` workflow (for tagged releases) or `publish-npm-test.yml` (for manual test publishes)
+2. Verify npm token permissions and that `NPM_TOKEN` is configured in repository secrets
+3. Check that the GitHub release job completed and attached SBOM artifacts correctly
 
 ## 📚 Best Practices
 
@@ -228,6 +229,7 @@ These commit types do not trigger releases:
 2. **Match PR Title to Commits** - Ensure consistency
 3. **Test Locally** - Run `npm run ci:quick` before pushing
 4. **Review Release Impact** - Understand what your changes will trigger
+5. **Run E2E Tests When Touching UI/Theme Logic** - Use `npm run e2e:ci` (no retries by default) to catch flakes locally instead of relying on CI.
 
 ### For Maintainers
 
@@ -235,6 +237,7 @@ These commit types do not trigger releases:
 2. **Review SBOM Signatures** - Verify security artifacts
 3. **Check npm Publishing** - Verify package availability
 4. **Update Documentation** - Keep this guide current
+5. **Watch for E2E Failures** - Playwright runs in CI with retries disabled; any failure (including flaky tests) will fail the workflow and should be investigated before releasing.
 
 ## 🔗 Related Documentation
 
@@ -242,3 +245,4 @@ These commit types do not trigger releases:
 - [CI-REQUIREMENTS.md](../docs/CI-REQUIREMENTS.md) - CI pipeline details
 - [LOCAL-CI-SETUP.md](../docs/LOCAL-CI-SETUP.md) - Local development setup
 - [Workflows README](../.github/workflows/README.md) - Workflow documentation
+- [E2E TESTING](../docs/E2E-TESTING.md) - End-to-end testing and flakiness policy

@@ -17,8 +17,22 @@ npm run ci
 # Run CI in Docker (CI-parity: Ubuntu + Ruby 3.3 + Node 20)
 npm run ci:docker
 
-# Full CI in Docker (includes Lighthouse)
+# Full CI in Docker (includes Lighthouse --full builds)
 npm run ci:docker:full
+```
+
+### Run Local Build (dev/prod) with Lighthouse
+
+```bash
+# Dev build (runs Lighthouse)
+./scripts/local/build.sh --dev
+
+# Prod build (runs Lighthouse)
+./scripts/local/build.sh --prod
+
+# Skip Lighthouse explicitly
+./scripts/local/build.sh --dev --skip-lh
+./scripts/local/build.sh --prod --skip-lh
 ```
 
 ## 📋 What Gets Tested
@@ -26,7 +40,7 @@ npm run ci:docker:full
 ### Core Checks (Always Run)
 
 - ✅ **ESLint** - Code linting
-- ✅ **Prettier** - Code formatting
+- ✅ **lintro** - Code formatting
 - ✅ **TypeScript** - Type checking and compilation
 - ✅ **Tests** - Unit tests with coverage
 - ✅ **Theme Sync** - Deterministic theme generation
@@ -36,7 +50,10 @@ npm run ci:docker:full
 ### Optional Checks
 
 - 🧹 **Cleanup** - Clean build artifacts (skipped in quick mode)
-- 📊 **Lighthouse** - Performance analysis (skipped in quick mode)
+- 📊 **Lighthouse** - Performance analysis
+  - Included in `--full` builds and `ci:full` commands
+  - Runs by default in `--dev` and `--prod` builds
+  - Skipped in `--quick` mode and when `--skip-lh` is provided
 - 🔒 **Security** - npm audit for vulnerabilities
 
 ## 🔧 Configuration Files
@@ -162,7 +179,7 @@ npm run format
 npm run theme:sync
 npm run build
 npm test
-./build.sh --no-serve
+./scripts/local/build.sh --no-serve
 ```
 
 ## 📚 Additional Resources

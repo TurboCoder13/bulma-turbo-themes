@@ -3,7 +3,7 @@ name: Deploy - Coverage to GitHub Pages
 
 on:
   workflow_run:
-    workflows: ["Quality Check - CI Pipeline"]
+    workflows: ['Quality Check - CI Pipeline']
     types:
       - completed
     branches: [main]
@@ -28,7 +28,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: block
           allowed-endpoints: >
@@ -48,9 +48,7 @@ jobs:
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
 
       - name: Prepare artifacts for upload
-        run: |
-          mkdir -p _site/coverage
-          cp -r coverage/* _site/coverage/
+        run: ./scripts/ci/copy-directory-to-site.sh coverage coverage
 
       - name: Upload artifact to Pages
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0

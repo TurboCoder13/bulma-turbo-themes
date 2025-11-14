@@ -4,13 +4,17 @@ description: Set up Node.js and Ruby with caching and install dependencies
 
 inputs:
   node-version:
-    description: "Node.js version to use"
+    description: 'Node.js version to use'
     required: false
-    default: "22"
+    default: '22'
   ruby-version:
-    description: "Ruby version to use"
+    description: 'Ruby version to use'
     required: false
-    default: "3.3.9"
+    default: '3.3.9'
+  skip-ruby:
+    description: 'Skip Ruby setup (for Node.js-only workflows)'
+    required: false
+    default: 'false'
 
 runs:
   using: composite
@@ -21,11 +25,40 @@ runs:
         node-version: ${{ inputs.node-version }}
         cache: npm
 
+    - name: Verify Node.js version
+      shell: bash
+      run: ./scripts/ci/verify-node-version.sh "${{ inputs.node-version }}"
+
     - name: Setup Ruby
-      uses: ruby/setup-ruby@0481980f17b760ef6bca5e8c55809102a0af1e5a # v1
+      if: inputs.skip-ruby != 'true'
+      uses: ruby/setup-ruby@d5126b9b3579e429dd52e51e68624dda2e05be25 # v1.267.0
       with:
         ruby-version: ${{ inputs.ruby-version }}
+        bundler: '2.3.26'
         bundler-cache: true
+
+    - name: Verify Ruby and Bundler setup
+      if: inputs.skip-ruby != 'true'
+      shell: bash
+      run: ./scripts/ci/verify-ruby-setup.sh
+
+    - name: Install Ruby dependencies
+      if: inputs.skip-ruby != 'true'
+      shell: bash
+      run: ./scripts/ci/install-ruby-deps.sh
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41 # v7.1.2
+      with:
+        enable-cache: true
+
+    - name: Install Python via uv
+      shell: bash
+      run: ./scripts/ci/setup-python-uv.sh
+
+    - name: Install CI dependencies
+      shell: bash
+      run: ./scripts/ci/install-ci-deps.sh
 
     - name: Install Node.js dependencies
       shell: bash

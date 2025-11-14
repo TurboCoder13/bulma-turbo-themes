@@ -1,5 +1,5 @@
 ---
-name: "Release Tracking"
+name: 'Release Tracking'
 about: Track the steps for an upcoming release
 labels: release
 ---

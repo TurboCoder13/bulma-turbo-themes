@@ -7,12 +7,40 @@
 #   - GITHUB_REPOSITORY: GitHub repository (owner/repo)
 # Reads from lighthouse-reports directory and extracts metrics
 
-set -euo pipefail
+set -uo pipefail
 
 # Get run ID from environment or GitHub context
 RUN_ID="${GITHUB_RUN_ID:=unknown}"
-COMMIT_SHA="${GITHUB_SHA:=unknown}"
 REPO="${GITHUB_REPOSITORY:=unknown}"
+
+# Parse repository into owner and repo name for GitHub Pages URL
+# Builds dynamic GitHub Pages URL: https://<owner>.github.io/<repo>/lighthouse/
+# Handles user pages repos (where repo name equals owner.github.io)
+PAGES_URL=""
+if [ "$REPO" != "unknown" ] && [ -n "$REPO" ]; then
+  # Trim whitespace from REPO
+  REPO=$(echo "$REPO" | xargs)
+  # Validate that REPO contains a slash before splitting
+  if [[ "$REPO" == */* ]]; then
+    REPO_OWNER="${REPO%%/*}"
+    REPO_NAME="${REPO#*/}"
+    # Ensure both owner and name are non-empty after splitting
+    if [ -n "$REPO_OWNER" ] && [ -n "$REPO_NAME" ]; then
+      # Normalize owner to lowercase for GitHub Pages domain
+      REPO_OWNER=$(echo "$REPO_OWNER" | tr '[:upper:]' '[:lower:]')
+      # Check if this is a user pages repo (repo name equals owner.github.io, case-insensitive)
+      REPO_NAME_LOWER=$(echo "$REPO_NAME" | tr '[:upper:]' '[:lower:]')
+      if [ "$REPO_NAME_LOWER" = "${REPO_OWNER}.github.io" ]; then
+        # User pages: https://<owner>.github.io/lighthouse/
+        PAGES_URL="https://${REPO_OWNER}.github.io/lighthouse/"
+      else
+        # Project pages: https://<owner>.github.io/<RepoName>/lighthouse/
+        # Preserve repository name casing because GitHub Pages paths are case-sensitive
+        PAGES_URL="https://${REPO_OWNER}.github.io/${REPO_NAME}/lighthouse/"
+      fi
+    fi
+  fi
+fi
 
 # Initialize comment
 {
@@ -27,11 +55,28 @@ REPO="${GITHUB_REPOSITORY:=unknown}"
     if [ -n "$LATEST_REPORT" ]; then
       # Extract scores using jq if available
       if command -v jq &> /dev/null; then
-        PERFORMANCE=$(jq '.categories.performance.score * 100 | round' "$LATEST_REPORT" 2>/dev/null || echo "N/A")
-        ACCESSIBILITY=$(jq '.categories.accessibility.score * 100 | round' "$LATEST_REPORT" 2>/dev/null || echo "N/A")
-        BEST_PRACTICES=$(jq '.categories["best-practices"].score * 100 | round' "$LATEST_REPORT" 2>/dev/null || echo "N/A")
-        SEO=$(jq '.categories.seo.score * 100 | round' "$LATEST_REPORT" 2>/dev/null || echo "N/A")
+        # Extract actual scores from the latest Lighthouse report
+        PERFORMANCE=$(jq -r '.categories.performance.score * 100 | round' "$LATEST_REPORT" 2>/dev/null || echo "N/A")
+        ACCESSIBILITY=$(jq -r '.categories.accessibility.score * 100 | round' "$LATEST_REPORT" 2>/dev/null || echo "N/A")
+        BEST_PRACTICES=$(jq -r '.categories["best-practices"].score * 100 | round' "$LATEST_REPORT" 2>/dev/null || echo "N/A")
+        SEO=$(jq -r '.categories.seo.score * 100 | round' "$LATEST_REPORT" 2>/dev/null || echo "N/A")
+
+        # Validate that scores are numeric and within range
+        validate_score() {
+          local score=$1
+          if [[ "$score" =~ ^[0-9]+$ ]] && [ "$score" -ge 0 ] && [ "$score" -le 100 ]; then
+            echo "$score"
+          else
+            echo "N/A"
+          fi
+        }
+
+        PERFORMANCE=$(validate_score "$PERFORMANCE")
+        ACCESSIBILITY=$(validate_score "$ACCESSIBILITY")
+        BEST_PRACTICES=$(validate_score "$BEST_PRACTICES")
+        SEO=$(validate_score "$SEO")
       else
+        echo "⚠️ jq not available for score extraction"
         PERFORMANCE="N/A"
         ACCESSIBILITY="N/A"
         BEST_PRACTICES="N/A"
@@ -83,21 +128,32 @@ REPO="${GITHUB_REPOSITORY:=unknown}"
       
       echo "### 📋 View Full Reports"
       echo ""
-      if [ "$REPO" != "unknown" ]; then
+      if [ "$REPO" != "unknown" ] && [ -n "$PAGES_URL" ]; then
         echo "**Public Report:**"
-          echo "- 🔗 [📊 View Lighthouse Reports](https://turbocoder13.github.io/bulma-turbo-themes/lighthouse-reports/)"
+        echo "- 🔗 [📊 View Lighthouse Reports]($PAGES_URL)"
         echo ""
         echo "**Or download from artifacts:**"
         echo "- 📥 [Download from GitHub Actions](https://github.com/$REPO/actions/runs/$RUN_ID/artifacts)"
+      elif [ "$REPO" != "unknown" ]; then
+        echo "**Download from artifacts:**"
+        echo "- 📥 [Download from GitHub Actions](https://github.com/$REPO/actions/runs/$RUN_ID/artifacts)"
       else
-        echo "- Check the workflow artifacts for detailed Lighthouse reports"
+        echo "**Local Development:**"
+        echo "- 🔗 [View Reports](http://localhost:4000/lighthouse/)"
+        echo "- 🔗 [Standalone server](http://localhost:3001/lighthouse/) (run \`./scripts/local/serve-reports.sh\`)"
+        echo ""
+        echo "**Note:** Run \`./scripts/ci/run-lighthouse-ci.sh\` to generate reports first."
       fi
       echo ""
     else
       echo "✅ Lighthouse CI analysis completed successfully."
       echo ""
-      if [ "$REPO" != "unknown" ]; then
-        echo "📋 [View Reports](https://turbocoder13.github.io/bulma-turbo-themes/lighthouse-reports/)"
+      if [ "$REPO" != "unknown" ] && [ -n "$PAGES_URL" ]; then
+        echo "📋 [View Reports]($PAGES_URL)"
+      else
+        echo "📋 [View Reports](http://localhost:4000/lighthouse/)"
+        echo ""
+        echo "**Note:** Run \`./scripts/ci/run-lighthouse-ci.sh\` to generate reports first."
       fi
     fi
   else
@@ -107,8 +163,8 @@ REPO="${GITHUB_REPOSITORY:=unknown}"
   echo ""
   echo "---"
   if [ "$RUN_ID" != "unknown" ]; then
-    echo "*Generated by Lighthouse CI* | [View workflow run](https://github.com/$REPO/actions/runs/$RUN_ID)"
+    echo "Generated by Lighthouse CI | [View workflow run](https://github.com/$REPO/actions/runs/$RUN_ID)"
   else
-    echo "*Generated by Lighthouse CI*"
+    echo "Generated by Lighthouse CI"
   fi
-} > lighthouse-comment.md
+} > lighthouse-comment.md || { echo "Error: Failed to write lighthouse-comment.md" >&2; exit 1; }

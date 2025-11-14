@@ -1,0 +1,77 @@
+---
+name: Deploy - Playwright Reports to GitHub Pages
+
+on:
+  workflow_run:
+    workflows: ['Quality Check - E2E Tests']
+    types:
+      - completed
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  actions: read
+concurrency:
+  group: pages-playwright
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: 🎭 Deploy Playwright Reports to Pages
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            codeload.github.com:443
+            raw.githubusercontent.com:443
+            objects.githubusercontent.com:443
+            uploads.github.com:443
+            actions.githubusercontent.com:443
+            pkg.actions.githubusercontent.com:443
+            token.actions.githubusercontent.com:443
+      - name: Download Playwright report artifact
+        uses: actions/download-artifact@f093f21ca4cfa7c75ccbbc2be54da76a0c7e1f05 # v6.0.0
+        with:
+          name: playwright-report
+          path: playwright-report/
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Verify artifact download
+        run: ./scripts/ci/verify-playwright-artifact.sh
+
+      - name: Check if reports exist
+        id: check-reports
+        run: ./scripts/ci/check-directory-exists.sh playwright-report
+
+      - name: Setup Pages
+        if: steps.check-reports.outputs.exists == 'true'
+        uses: actions/configure-pages@d5606572c479bee637007364c6b4800ac4fc8573 # v5.0.0
+
+      - name: Prepare artifacts for upload
+        if: steps.check-reports.outputs.exists == 'true'
+        run: ./scripts/ci/copy-directory-to-site.sh playwright-report playwright
+
+      - name: Upload artifact to Pages
+        if: steps.check-reports.outputs.exists == 'true'
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        if: steps.check-reports.outputs.exists == 'true'
+        id: deployment
+        uses: actions/deploy-pages@854d7aa1b99e4509c4d1b53d69b7ba4eaf39215a # v4.0.5

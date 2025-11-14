@@ -112,8 +112,8 @@ Most workflows use the `setup-env` composite action:
 - name: Setup environment
   uses: ./.github/actions/setup-env
   with:
-    node-version: "22"
-    ruby-version: "3.3"
+    node-version: '22'
+    ruby-version: '3.4.7'
 ```
 
 ### Permissions
@@ -153,7 +153,7 @@ jobs:
 **Full Quality Gate:**
 
 1. Lint code (ESLint)
-2. Check formatting (Prettier)
+2. Check formatting (lintro)
 3. Lint markdown files
 4. Build TypeScript
 5. Run tests with coverage
@@ -163,7 +163,7 @@ jobs:
 9. Run HTMLProofer
 10. Generate SBOM
 
-**Matrix Testing:** Node 18/20/22 × Ruby 3.3/3.4
+**Matrix Testing:** Node 20/22 × Ruby 3.3/3.4
 
 ### Renovate (`renovate.yml`)
 

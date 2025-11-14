@@ -1,3 +1,5 @@
 assets/css/themes/*.css
 
 coverage/**
+lighthouse-reports/**
+playwright-report/**

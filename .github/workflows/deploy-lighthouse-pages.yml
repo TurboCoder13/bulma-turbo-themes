@@ -3,7 +3,7 @@ name: Deploy - Lighthouse Reports to GitHub Pages
 
 on:
   workflow_run:
-    workflows: ["Reporting - Lighthouse CI"]
+    workflows: ['Reporting - Lighthouse CI']
     types:
       - completed
     branches: [main]
@@ -28,7 +28,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: block
           allowed-endpoints: >
@@ -46,15 +46,7 @@ jobs:
 
       - name: Check if reports exist
         id: check-reports
-        run: |
-          if [ -d "lighthouse-reports" ] && [ -n "$(ls -A lighthouse-reports 2>/dev/null)" ]; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-            echo "✅ Lighthouse reports found"
-            find lighthouse-reports -type f
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-            echo "⚠️ No Lighthouse reports found, skipping deployment"
-          fi
+        run: ./scripts/ci/check-directory-exists.sh lighthouse-reports
 
       - name: Setup Pages
         if: steps.check-reports.outputs.exists == 'true'
@@ -62,11 +54,7 @@ jobs:
 
       - name: Prepare artifacts for upload
         if: steps.check-reports.outputs.exists == 'true'
-        run: |
-          mkdir -p _site/lighthouse-reports
-          cp -r lighthouse-reports/* _site/lighthouse-reports/
-          echo "✅ Lighthouse reports prepared for deployment"
-          ls -la _site/lighthouse-reports/
+        run: ./scripts/ci/copy-directory-to-site.sh lighthouse-reports lighthouse
 
       - name: Upload artifact to Pages
         if: steps.check-reports.outputs.exists == 'true'

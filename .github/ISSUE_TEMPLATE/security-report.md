@@ -1,5 +1,5 @@
 ---
-name: "Security Report"
+name: 'Security Report'
 about: Report a security vulnerability (private channels preferred)
 labels: security
 ---
