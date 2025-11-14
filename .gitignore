@@ -30,6 +30,15 @@ assets/static/badges/
 
 # Lighthouse CI generated reports and artifacts
 lighthouse-reports/
-!lighthouse-reports/index.html
 .lighthouse/
 .lighthouseci/
+lighthouse/
+
+# Playwright E2E test artifacts
+test-results/
+playwright-report/
+playwright/.cache/
+playwright/
+e2e/snapshots/
+.lintro
+.bin/

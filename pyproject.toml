@@ -1,0 +1,13 @@
+[tool.uv]
+dev-dependencies = [
+    "lintro",
+]
+
+[tool.lintro]
+exclude = ["_site/"]
+
+[tool.lintro.tool.hadolint]
+exclude = ["_site/Dockerfile"]
+
+[tool.lintro.tool.actionlint]
+exclude = ["vendor/**"]

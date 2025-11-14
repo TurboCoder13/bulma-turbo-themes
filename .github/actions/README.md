@@ -21,8 +21,8 @@ Set up Node.js and Ruby with dependency caching.
 - name: Setup environment
   uses: ./.github/actions/setup-env
   with:
-    node-version: "22"
-    ruby-version: "3.3"
+    node-version: '22'
+    ruby-version: '3.3'
 ```
 
 **What it does:**
@@ -53,7 +53,7 @@ Post or update a comment on a pull request.
   uses: ./.github/actions/post-pr-comment
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
-    marker: "coverage-report"
+    marker: 'coverage-report'
     comment-body: |
       ## Coverage Report
       - Lines: 85%
@@ -80,11 +80,11 @@ Instead of repeating 10+ lines of setup code in every workflow, use a single act
 ```yaml
 - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
   with:
-    node-version: "22"
+    node-version: '22'
     cache: npm
-- uses: ruby/setup-ruby@0481980f17b760ef6bca5e8c55809102a0af1e5a # v1
+- uses: ruby/setup-ruby@d5126b9b3579e429dd52e51e68624dda2e05be25 # v1.267.0
   with:
-    ruby-version: "3.3"
+    ruby-version: '3.3'
     bundler-cache: true
 - run: npm ci
 ```
@@ -122,13 +122,13 @@ description: Brief description of what this action does
 
 inputs:
   input-name:
-    description: "Description of the input"
+    description: 'Description of the input'
     required: true
-    default: "optional-default-value"
+    default: 'optional-default-value'
 
 outputs:
   output-name:
-    description: "Description of the output"
+    description: 'Description of the output'
     value: ${{ steps.step-id.outputs.value }}
 
 runs:

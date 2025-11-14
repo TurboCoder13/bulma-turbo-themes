@@ -1,51 +1,51 @@
 /* SPDX-License-Identifier: MIT */
-html[data-flavor="github-dark"] .highlight {
+html[data-flavor='github-dark'] .highlight {
   background: var(--syntax-bg);
   color: var(--syntax-fg);
 }
-html[data-flavor="github-dark"] .highlight pre,
-html[data-flavor="github-dark"] pre.highlight {
+html[data-flavor='github-dark'] .highlight pre,
+html[data-flavor='github-dark'] pre.highlight {
   background: transparent;
   color: var(--syntax-fg);
 }
-html[data-flavor="github-dark"] .highlight code {
+html[data-flavor='github-dark'] .highlight code {
   background: transparent;
   color: var(--syntax-fg);
 }
-html[data-flavor="github-dark"] .highlight .c,
-html[data-flavor="github-dark"] .highlight .cm,
-html[data-flavor="github-dark"] .highlight .c1 {
+html[data-flavor='github-dark'] .highlight .c,
+html[data-flavor='github-dark'] .highlight .cm,
+html[data-flavor='github-dark'] .highlight .c1 {
   color: var(--syntax-comment);
 }
-html[data-flavor="github-dark"] .highlight .k,
-html[data-flavor="github-dark"] .highlight .kc,
-html[data-flavor="github-dark"] .highlight .kd {
+html[data-flavor='github-dark'] .highlight .k,
+html[data-flavor='github-dark'] .highlight .kc,
+html[data-flavor='github-dark'] .highlight .kd {
   color: var(--syntax-keyword);
 }
-html[data-flavor="github-dark"] .highlight .s,
-html[data-flavor="github-dark"] .highlight .s1,
-html[data-flavor="github-dark"] .highlight .sb,
-html[data-flavor="github-dark"] .highlight .sd,
-html[data-flavor="github-dark"] .highlight .s2 {
+html[data-flavor='github-dark'] .highlight .s,
+html[data-flavor='github-dark'] .highlight .s1,
+html[data-flavor='github-dark'] .highlight .sb,
+html[data-flavor='github-dark'] .highlight .sd,
+html[data-flavor='github-dark'] .highlight .s2 {
   color: var(--syntax-string);
 }
-html[data-flavor="github-dark"] .highlight .m,
-html[data-flavor="github-dark"] .highlight .mi,
-html[data-flavor="github-dark"] .highlight .mf,
-html[data-flavor="github-dark"] .highlight .mh {
+html[data-flavor='github-dark'] .highlight .m,
+html[data-flavor='github-dark'] .highlight .mi,
+html[data-flavor='github-dark'] .highlight .mf,
+html[data-flavor='github-dark'] .highlight .mh {
   color: var(--syntax-number);
 }
-html[data-flavor="github-dark"] .highlight .nt,
-html[data-flavor="github-dark"] .highlight .na {
+html[data-flavor='github-dark'] .highlight .nt,
+html[data-flavor='github-dark'] .highlight .na {
   color: var(--syntax-attr);
 }
-html[data-flavor="github-dark"] .highlight .nn,
-html[data-flavor="github-dark"] .highlight .nc,
-html[data-flavor="github-dark"] .highlight .no,
-html[data-flavor="github-dark"] .highlight .nf {
+html[data-flavor='github-dark'] .highlight .nn,
+html[data-flavor='github-dark'] .highlight .nc,
+html[data-flavor='github-dark'] .highlight .no,
+html[data-flavor='github-dark'] .highlight .nf {
   color: var(--syntax-title);
 }
-html[data-flavor="github-dark"] {
+html[data-flavor='github-dark'] {
   --bulma-body-background-color: #0d1117;
   --bulma-body-color: #c9d1d9;
   --bulma-primary-h: 131;
@@ -58,11 +58,11 @@ html[data-flavor="github-dark"] {
   --bulma-danger: #f85149;
   --bulma-border: #30363d;
   --theme-font-sans:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji";
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji';
   --theme-font-mono:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
   --theme-text: #c9d1d9;
   --theme-text-muted: #8b949e;
   --theme-link: #58a6ff;

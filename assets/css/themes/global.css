@@ -33,16 +33,7 @@ body,
 .content h6 {
   font-family: var(
     --theme-font-serif,
-    var(
-      --theme-font-sans,
-      system-ui,
-      -apple-system,
-      Segoe UI,
-      Roboto,
-      Helvetica,
-      Arial,
-      sans-serif
-    )
+    var(--theme-font-sans, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif)
   );
 }
 code,
@@ -55,8 +46,8 @@ samp {
     SFMono-Regular,
     Menlo,
     Consolas,
-    "Liberation Mono",
-    "Courier New",
+    'Liberation Mono',
+    'Courier New',
     monospace
   );
 }
@@ -136,10 +127,10 @@ hr {
     );
   background: none;
 }
-input[type="checkbox"],
-input[type="radio"],
+input[type='checkbox'],
+input[type='radio'],
 progress,
-input[type="range"] {
+input[type='range'] {
   accent-color: var(--theme-link, var(--bulma-link));
 }
 .input:invalid,
@@ -179,14 +170,14 @@ input:-webkit-autofill {
   box-shadow: 0 0 0 1000px var(--theme-surface-1, transparent) inset !important;
   filter: none;
 }
-input[type="file"]::file-selector-button {
+input[type='file']::file-selector-button {
   background: color-mix(in srgb, var(--theme-link, var(--bulma-link)) 10%, transparent);
   border: 1px solid var(--theme-link, var(--bulma-link));
   color: var(--theme-text, inherit);
   padding: 0.35rem 0.6rem;
   border-radius: 0.4rem;
 }
-input[type="file"]::file-selector-button:hover {
+input[type='file']::file-selector-button:hover {
   background: color-mix(in srgb, var(--theme-link, var(--bulma-link)) 18%, transparent);
 }
 #theme-flavor-select {
@@ -319,8 +310,7 @@ input[type="file"]::file-selector-button:hover {
   font-weight: bold;
 }
 #theme-flavor-dd .dropdown-item.is-active img {
-  box-shadow: 0 0 0 2px
-    color-mix(in srgb, var(--theme-link, var(--bulma-link)) 60%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-link, var(--bulma-link)) 60%, transparent);
 }
 #theme-flavor-dd .dropdown-item.is-active {
   background-color: color-mix(
@@ -347,8 +337,7 @@ input[type="file"]::file-selector-button:hover {
   background: color-mix(in srgb, var(--theme-link, var(--bulma-link)) 8%, transparent);
   border-bottom: 3px solid var(--theme-link, var(--bulma-link));
   border-radius: 0.5rem 0.5rem 0 0;
-  box-shadow: 0 4px 14px
-    color-mix(in srgb, var(--theme-link, var(--bulma-link)) 22%, transparent);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--theme-link, var(--bulma-link)) 22%, transparent);
 }
 .content code {
   color: var(--theme-code-fg, inherit);
@@ -439,4 +428,33 @@ pre.highlight code {
 .select:not(.is-success):not(.is-danger) select:focus {
   border-color: var(--bulma-link);
   box-shadow: 0 0 0 0.125em color-mix(in srgb, var(--bulma-link), transparent 80%);
+}
+
+/* Accessibility contrast fixes (Axe) */
+[data-flavor='catppuccin-latte'] .navbar-item,
+[data-flavor='catppuccin-latte'] .has-text-centered > p,
+[data-flavor='catppuccin-latte'] a.navbar-item,
+[data-flavor='catppuccin-latte'] .title,
+[data-flavor='catppuccin-latte'] h1,
+[data-flavor='catppuccin-latte'] h2,
+[data-flavor='catppuccin-latte'] h3,
+[data-flavor='catppuccin-latte'] h4 {
+  color: #1e293b; /* strong slate for >=4.5:1 on light bg */
+}
+
+[data-flavor='catppuccin-latte'] .button.is-text,
+[data-flavor='catppuccin-latte'] .button.is-ghost,
+[data-flavor='catppuccin-latte'] .navbar-item.is-active {
+  color: #0b66d6; /* deeper blue for >=4.5:1 on light bg */
+}
+
+[data-flavor='github-dark'] strong,
+[data-flavor='github-dark'] th,
+[data-flavor='github-dark'] .has-text-centered > p {
+  color: #c9d1d9; /* github-dark foreground */
+}
+
+[data-flavor='github-dark'] .button.is-text,
+[data-flavor='github-dark'] .button.is-ghost {
+  color: #58a6ff; /* accessible link blue on dark bg */
 }

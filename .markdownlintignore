@@ -8,3 +8,5 @@ _site/
 dist/
 coverage/
 .git/
+playwright-report/
+lighthouse-reports/

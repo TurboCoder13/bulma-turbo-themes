@@ -2,7 +2,7 @@
 name: Feature request
 description: Suggest an idea or enhancement for bulma-turbo-themes
 labels: [enhancement, needs-triage]
-title: "[Feature]: "
+title: '[Feature]: '
 body:
   - type: markdown
     attributes:
@@ -16,7 +16,7 @@ body:
     attributes:
       label: Feature summary
       description: A clear and concise one-line description of the feature
-      placeholder: "Example: Add dark mode support to all themes"
+      placeholder: 'Example: Add dark mode support to all themes'
     validations:
       required: true
 

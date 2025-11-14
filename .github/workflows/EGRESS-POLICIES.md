@@ -135,19 +135,35 @@ allowed-endpoints: >
 allowed-endpoints: >
   github.com:443
   api.github.com:443
+  uploads.github.com:443
+  pipelines.actions.githubusercontent.com:443
   objects.githubusercontent.com:443
   codeload.github.com:443
+  registry.npmjs.org:443
+  npmjs.org:443
+  raw.githubusercontent.com:443
+  github-releases.githubusercontent.com:443
+  release-assets.githubusercontent.com:443
+  rubygems.org:443
+  api.rubygems.org:443
+  index.rubygems.org:443
+  bundler.rubygems.org:443
+  rubygems.global.ssl.fastly.net:443
+  cache.ruby-lang.org:443
+  pypi.org:443
+  files.pythonhosted.org:443
   codecov.io:443
   api.codecov.io:443
   uploader.codecov.io:443
-  storage.googleapis.com:443
 ```
 
 **Rationale:**
 
-- GitHub: Code checkout, artifacts
+- GitHub: Code checkout, artifacts, workflow orchestration
+- npm: Installing and resolving Node.js dependencies
+- Ruby: Installing Ruby and Bundler (RubyGems endpoints and Ruby tarball cache)
+- Python: Installing Python tooling via `uv` and PyPI
 - Codecov: Coverage upload
-- Google Storage: Codecov data storage
 
 ### SBOM Generation Workflow
 
@@ -174,14 +190,14 @@ allowed-endpoints: >
 ### npm Publish Workflow
 
 ```yaml
-# publish-npm-on-tag.yml, publish-npm-test.yml
+# release-publish-pr.yml, publish-npm-test.yml
 allowed-endpoints: >
   github.com:443
   api.github.com:443
+  uploads.github.com:443
   objects.githubusercontent.com:443
   codeload.github.com:443
   registry.npmjs.org:443
-  uploads.github.com:443
 ```
 
 **Rationale:**
@@ -217,17 +233,44 @@ allowed-endpoints: >
   objects.githubusercontent.com:443
   codeload.github.com:443
   registry.npmjs.org:443
+  playwright.azureedge.net:443
+  playwright-akamai.azureedge.net:443
+  playwright-verizon.azureedge.net:443
 ```
 
 **Rationale:**
 
 - GitHub: Code checkout
 - npm: Installing Lighthouse CI
+- Playwright: Downloading browser binaries for E2E tests
 
 ### Deploy Pages Workflows
 
 ```yaml
-# deploy-pages.yml, deploy-coverage-pages.yml
+# deploy-pages.yml (build job with optional E2E tests)
+allowed-endpoints: >
+  github.com:443
+  api.github.com:443
+  objects.githubusercontent.com:443
+  codeload.github.com:443
+  github-releases.githubusercontent.com:443
+  release-assets.githubusercontent.com:443
+  registry.npmjs.org:443
+  npmjs.org:443
+  rubygems.org:443
+  api.rubygems.org:443
+  index.rubygems.org:443
+  bundler.rubygems.org:443
+  rubygems.global.ssl.fastly.net:443
+  pypi.org:443
+  files.pythonhosted.org:443
+  cdn.playwright.dev:443
+  playwright.download.prss.microsoft.com:443
+  playwright.azureedge.net:443
+  playwright-akamai.azureedge.net:443
+  playwright-verizon.azureedge.net:443
+
+# deploy-coverage-pages.yml
 allowed-endpoints: >
   github.com:443
   api.github.com:443
@@ -237,6 +280,7 @@ allowed-endpoints: >
 **Rationale:**
 
 - GitHub: Artifact download, Pages deployment
+- Playwright: Browser downloads when `deploy-pages.yml` is run with `run-e2e-tests: true`
 
 ## Adding New Endpoints
 

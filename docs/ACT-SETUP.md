@@ -22,7 +22,33 @@ docker ps     # Should connect successfully
 
 ## Quick Start
 
-### Test the Main CI Workflow
+### Automated Workflow Testing
+
+The easiest way to test all workflows is using the automated script:
+
+```bash
+# Test all testable workflows
+npm run test:workflows
+
+# Test only quality workflows (faster)
+npm run test:workflows:quick
+
+# Test a specific workflow
+npm run test:workflows:single -- quality-ci-main.yml
+
+# With verbose output
+./scripts/local/test-workflows-act.sh --verbose
+```
+
+The script automatically:
+
+- Detects your system architecture (Apple Silicon vs Intel/Linux)
+- Discovers all workflow files
+- Tests workflows with appropriate event types (`push` or `pull_request`)
+- Skips workflows that require GitHub-specific features
+- Provides a summary report
+
+### Manual Testing
 
 For Apple M-series Macs:
 
@@ -117,6 +143,33 @@ npm run ci:full
 | Artifacts     | Not uploaded  | Skipped upload steps       |
 | Best use      | Daily testing | Workflow syntax validation |
 
+## Workflow Testability
+
+### Testable Workflows
+
+These workflows can be tested locally with ACT:
+
+- ✅ `quality-ci-main.yml` - Main CI pipeline
+- ✅ `quality-e2e.yml` - E2E tests
+- ✅ `quality-theme-sync.yml` - Theme sync validation
+- ✅ `quality-semantic-pr-title.yml` - PR title validation (requires PR event)
+- ✅ `quality-validate-action-pinning.yml` - Action pinning check
+- ✅ `reporting-lighthouse-ci.yml` - Lighthouse CI
+- ✅ `security-sbom.yml` - SBOM generation
+
+### Skipped Workflows
+
+These workflows are skipped during automated testing because they require GitHub-specific features:
+
+- ⏭️ `security-codeql.yml` - Requires GitHub CodeQL API
+- ⏭️ `security-dependency-review.yml` - Requires GitHub API
+- ⏭️ `security-scorecards.yml` - Requires GitHub API
+- ⏭️ `deploy-*.yml` - Require GitHub Pages API
+- ⏭️ `publish-npm-test.yml` - Manual trigger only
+- ⏭️ `release-*.yml` - Require GitHub API
+- ⏭️ `maintenance-*.yml` - Schedule or manual triggers only
+- ⏭️ `reusable-*.yml` - Called by other workflows, tested indirectly
+
 ## Recommended Workflow
 
 ### For Development
@@ -133,11 +186,16 @@ npm run ci:full
 
 ### Before Changing CI Workflows
 
-Use act to validate changes:
+Use ACT to validate workflow changes:
 
 ```bash
-# Edit .github/workflows/quality-ci-main.yml
-# Then test locally:
+# Test all workflows automatically
+npm run test:workflows
+
+# Or test a specific workflow
+npm run test:workflows:single -- quality-ci-main.yml
+
+# For manual testing:
 act -W .github/workflows/quality-ci-main.yml --container-architecture linux/arm64 -j build
 ```
 
@@ -181,6 +239,16 @@ If tests pass locally but fail in act:
 1. Check Node/Ruby version differences
 2. Run with exact versions: `node --version`, `ruby --version`
 3. Use `npm run ci:docker` for Ubuntu 24.04 environment
+4. Run with `--verbose` flag to see detailed output: `npm run test:workflows:single -- quality-ci-main.yml --verbose`
+
+### Workflow Not Found
+
+If a workflow is not found:
+
+1. Ensure the workflow file exists in `.github/workflows/`
+2. Check the filename matches exactly (case-sensitive)
+3. Use `act --list` to see all available workflows
+4. Verify the workflow has `push` or `pull_request` triggers (manual/schedule-only workflows are skipped)
 
 ## Local Test Results
 
@@ -188,7 +256,7 @@ All core CI checks currently pass locally:
 
 ```
 ✅ ESLint linting - 0 warnings
-✅ Prettier formatting - All files conform
+✅ Code formatting with lintro - All files conform
 ✅ Markdown linting - All files pass
 ✅ CSS linting - All styles pass
 ✅ TypeScript build - Compilation successful
