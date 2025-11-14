@@ -5,15 +5,15 @@ on:
   push:
     branches: [main]
     paths:
-      - "package.json"
+      - 'package.json'
   workflow_dispatch:
     inputs:
       version:
-        description: "The version to tag (e.g., v1.2.3)"
+        description: 'The version to tag (e.g., v1.2.3)'
         required: true
         type: string
       prerelease:
-        description: "Is this a prerelease? (true/false)"
+        description: 'Is this a prerelease? (true/false)'
         required: false
         type: boolean
         default: false
@@ -51,7 +51,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: block
           allowed-endpoints: >
@@ -61,12 +61,16 @@ jobs:
             pipelines.actions.githubusercontent.com:443
             objects.githubusercontent.com:443
             codeload.github.com:443
+            github-releases.githubusercontent.com:443
+            release-assets.githubusercontent.com:443
             registry.npmjs.org:443
             npmjs.org:443
             rubygems.org:443
             api.rubygems.org:443
             index.rubygems.org:443
             bundler.rubygems.org:443
+            pypi.org:443
+            files.pythonhosted.org:443
             cdn.jsdelivr.net:443
             bulma.io:443
             www.google.com:443
@@ -75,18 +79,16 @@ jobs:
             productionresultssa3.blob.core.windows.net:443
 
       - name: Checkout
-        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: Setup environment
         uses: ./.github/actions/setup-env
         with:
-          node-version: "22"
-          ruby-version: "3.3"
+          node-version: '22'
+          ruby-version: '3.4.7'
 
       - name: Clean up any existing Jekyll processes
-        run: |
-          pkill -f jekyll || true
-          lsof -ti:4000 | xargs kill -9 2>/dev/null || true
+        run: ./scripts/ci/cleanup-jekyll-processes.sh
 
       - name: Run full CI pipeline with Lighthouse
         run: ./scripts/ci/run-lighthouse-ci.sh
@@ -98,7 +100,7 @@ jobs:
 
       - name: Upload Lighthouse reports
         if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: lighthouse-reports
           path: lighthouse-reports
@@ -114,7 +116,7 @@ jobs:
       contents: write
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: block
           allowed-endpoints: >
@@ -122,7 +124,7 @@ jobs:
             api.github.com:443
 
       - name: Checkout
-        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
           persist-credentials: true
@@ -131,9 +133,9 @@ jobs:
         run: ./scripts/ci/configure-git.sh
 
       - name: Setup Node.js
-        uses: actions/setup-node@dda4788290998366da86b6a4f497909644397bb2
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6
         with:
-          node-version: "22"
+          node-version: '22'
           cache: npm
 
       - name: Install dependencies
@@ -141,26 +143,26 @@ jobs:
 
       - name: Check version change
         id: version-check
-        run: ./scripts/ci/check-version-change.sh "${{ github.event.inputs.version }}"
+        run: >
+          ./scripts/ci/check-version-change.sh
+          "${{ github.event.inputs.version }}"
 
       - name: Create release tag
-        if: steps.version-check.outputs.version_changed == 'true' && steps.version-check.outputs.tag_exists == 'false'
-        run: ./scripts/ci/create-release-tag.sh "${{ steps.version-check.outputs.current_version }}" "${{ github.event.inputs.prerelease }}"
+        if: >
+          steps.version-check.outputs.version_changed == 'true' &&
+          steps.version-check.outputs.tag_exists == 'false'
+        run: >
+          ./scripts/ci/create-release-tag.sh
+          "${{ steps.version-check.outputs.current_version }}"
+          "${{ github.event.inputs.prerelease }}"
 
-      - name: Summary
+      - name: Generate Auto Tag Summary
         if: always()
-        run: |
-          echo "## Auto Tag Summary" >> $GITHUB_STEP_SUMMARY
-          if [ -n "${{ github.event.inputs.version }}" ]; then
-            echo "🔧 **Manual Dispatch**" >> $GITHUB_STEP_SUMMARY
-            echo "- Version: ${{ steps.version-check.outputs.current_version }}" >> $GITHUB_STEP_SUMMARY
-            echo "- Prerelease: ${{ github.event.inputs.prerelease }}" >> $GITHUB_STEP_SUMMARY
-          fi
-          if [ "${{ steps.version-check.outputs.version_changed }}" = "false" ]; then
-            echo "ℹ️ Version unchanged, no tag needed" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ steps.version-check.outputs.tag_exists }}" = "true" ]; then
-            echo "ℹ️ Tag v${{ steps.version-check.outputs.current_version }} already exists" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "✅ Created tag v${{ steps.version-check.outputs.current_version }}" >> $GITHUB_STEP_SUMMARY
-            echo "🚀 This will trigger the release-publish-pr workflow" >> $GITHUB_STEP_SUMMARY
-          fi
+        shell: bash
+        run: ./scripts/ci/generate-auto-tag-summary.sh
+        env:
+          VERSION_INPUT: ${{ github.event.inputs.version }}
+          CURRENT_VERSION: ${{ steps.version-check.outputs.current_version }}
+          VERSION_CHANGED: ${{ steps.version-check.outputs.version_changed }}
+          TAG_EXISTS: ${{ steps.version-check.outputs.tag_exists }}
+          PRERELEASE: ${{ github.event.inputs.prerelease }}

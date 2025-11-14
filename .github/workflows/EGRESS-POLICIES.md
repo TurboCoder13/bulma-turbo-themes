@@ -217,12 +217,16 @@ allowed-endpoints: >
   objects.githubusercontent.com:443
   codeload.github.com:443
   registry.npmjs.org:443
+  playwright.azureedge.net:443
+  playwright-akamai.azureedge.net:443
+  playwright-verizon.azureedge.net:443
 ```
 
 **Rationale:**
 
 - GitHub: Code checkout
 - npm: Installing Lighthouse CI
+- Playwright: Downloading browser binaries for E2E tests
 
 ### Deploy Pages Workflows
 

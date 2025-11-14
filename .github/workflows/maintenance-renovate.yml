@@ -3,7 +3,7 @@ name: Maintenance - Renovate Dependencies
 
 on:
   schedule:
-    - cron: "0 22 * * *"
+    - cron: '0 22 * * *'
   workflow_dispatch:
 
 permissions:
@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@92c522aaa6f53af082553dedc1596c80b71aba33
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: block
           allowed-endpoints: >
@@ -31,10 +31,10 @@ jobs:
             registry.npmjs.org:443
             rubygems.org:443
       - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@71cf2267d89c5cb81562390fa70a37fa40b1305e # v5.0.0
 
       - name: Run Renovate
-        uses: renovatebot/github-action@bf21d623a81a349d57109049960248ab12c62431 # v40
+        uses: renovatebot/github-action@d95d81f73fa732730e67728884c34adaff0123b8 # v44.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           configurationFile: renovate.json
