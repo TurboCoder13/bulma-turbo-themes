@@ -246,7 +246,6 @@ should_skip_workflow() {
     "release-publish-pr.yml"          # Requires GitHub API
     "maintenance-renovate.yml"        # Schedule only
     "maintenance-auto-bump-refs.yml"  # Schedule only
-    "maintenance-pr-comment-cleanup.yml" # Manual trigger only
   )
 
   for pattern in "${skip_patterns[@]}"; do

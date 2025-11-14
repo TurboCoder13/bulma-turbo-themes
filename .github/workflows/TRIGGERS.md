@@ -26,7 +26,6 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 | release-auto-tag                |             |             |              |           | ✅     |              |
 | maintenance-renovate            |             |             |              | ✅ Daily  |        |              |
 | maintenance-auto-bump-refs      |             |             |              | ✅ Weekly |        |              |
-| maintenance-pr-comment-cleanup  |             |             |              |           | ✅     |              |
 
 ## Workflow Categories
 
@@ -240,19 +239,6 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 
 **Schedule:** Every Monday at 03:00 UTC
 
-#### maintenance-pr-comment-cleanup.yml
-
-**Triggers:** Manual (workflow_dispatch)  
-**Purpose:** Cleans up automated PR comments
-
-**Inputs:**
-
-- `pr_number` - PR to clean
-- `dry_run` - Preview without deleting
-- `marker` - Filter by comment marker
-
-**Use case:** Remove stale bot comments from PRs
-
 ### Reporting
 
 #### reporting-lighthouse-ci.yml
@@ -295,8 +281,7 @@ These workflows can only be triggered manually via GitHub UI or API:
 
 1. **publish-npm-test** - Test npm publish
 2. **release-auto-tag** - Create version tag
-3. **maintenance-pr-comment-cleanup** - Clean PR comments
-4. **security-sbom** - Generate SBOM (also auto-triggers)
+3. **security-sbom** - Generate SBOM (also auto-triggers)
 
 To trigger manually:
 
