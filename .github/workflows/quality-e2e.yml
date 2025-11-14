@@ -1,0 +1,141 @@
+---
+name: Quality Check - E2E Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: write
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CHECKOUT_FETCH_DEPTH: 1
+  NODE_VERSION: 22
+  RUBY_VERSION: '3.4.7'
+
+jobs:
+  e2e-matrix:
+    name: ${{ matrix.display_name }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: ${{ matrix.timeout }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: e2e
+            display_name: '🎭 E2E Tests'
+            run_command: 'npm run e2e:ci'
+            timeout: 30
+            artifact_prefix: 'playwright'
+            comment_marker: 'playwright-e2e-comment'
+            comment_file: 'playwright-e2e-comment.md'
+          - id: smoke
+            display_name: '🔥 E2E Smoke Tests'
+            run_command: 'npm run e2e:smoke'
+            timeout: 15
+            artifact_prefix: 'playwright-smoke'
+            comment_marker: 'playwright-e2e-smoke-comment'
+            comment_file: 'playwright-e2e-smoke-comment.md'
+          - id: a11y
+            display_name: '♿ E2E Accessibility Tests'
+            run_command: 'npm run e2e:a11y'
+            timeout: 15
+            artifact_prefix: 'playwright-a11y'
+            comment_marker: 'playwright-e2e-a11y-comment'
+            comment_file: 'playwright-e2e-a11y-comment.md'
+    steps:
+      - name: Harden Runner
+        if: ${{ !env.ACT }}
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            uploads.github.com:443
+            objects.githubusercontent.com:443
+            codeload.github.com:443
+            github-releases.githubusercontent.com:443
+            release-assets.githubusercontent.com:443
+            rubygems.org:443
+            api.rubygems.org:443
+            index.rubygems.org:443
+            bundler.rubygems.org:443
+            rubygems.global.ssl.fastly.net:443
+            pypi.org:443
+            files.pythonhosted.org:443
+            registry.npmjs.org:443
+            npmjs.org:443
+            cdn.playwright.dev:443
+            playwright.download.prss.microsoft.com:443
+            playwright.azureedge.net:443
+            playwright-akamai.azureedge.net:443
+            playwright-verizon.azureedge.net:443
+            packages.microsoft.com:443
+            azure.archive.ubuntu.com:443
+            archive.ubuntu.com:443
+            security.ubuntu.com:443
+            motd.ubuntu.com:443
+            esm.ubuntu.com:443
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: ${{ env.CHECKOUT_FETCH_DEPTH }}
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          node-version: '${{ env.NODE_VERSION }}'
+          ruby-version: '${{ env.RUBY_VERSION }}'
+      - name: Install Playwright browsers
+        run: npm run e2e:install
+      - name: Build Jekyll site
+        run: npm run e2e:prep
+      - name: Run tests
+        run: ${{ matrix.run_command }}
+      - name: Generate Playwright PR comment
+        if: github.event_name == 'pull_request' && always()
+        run: ./scripts/ci/generate-playwright-comment.sh
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          COMMENT_MARKER: ${{ matrix.comment_marker }}
+          COMMENT_FILE: ${{ matrix.comment_file }}
+      - name: Post Playwright comment on PR
+        if: github.event_name == 'pull_request' && always()
+        uses: ./.github/actions/post-pr-comment
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          comment-file: ${{ matrix.comment_file }}
+          marker: ${{ matrix.comment_marker }}
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: ${{ matrix.artifact_prefix }}-report
+          path: playwright-report/
+          retention-days: 30
+          if-no-files-found: ignore
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: e2e-${{ matrix.id }}-results
+          path: test-results/
+          retention-days: 30
+          if-no-files-found: ignore
+      - name: Validate action pinning (strict)
+        if: matrix.id == 'e2e'
+        run: ./scripts/ci/validate-action-pinning.sh --strict
+      - name: Validate action SHAs (strict)
+        if: matrix.id == 'e2e'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./scripts/ci/validate-action-shas.sh --strict
