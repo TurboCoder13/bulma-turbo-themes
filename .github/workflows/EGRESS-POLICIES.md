@@ -231,7 +231,30 @@ allowed-endpoints: >
 ### Deploy Pages Workflows
 
 ```yaml
-# deploy-pages.yml, deploy-coverage-pages.yml
+# deploy-pages.yml (build job with optional E2E tests)
+allowed-endpoints: >
+  github.com:443
+  api.github.com:443
+  objects.githubusercontent.com:443
+  codeload.github.com:443
+  github-releases.githubusercontent.com:443
+  release-assets.githubusercontent.com:443
+  registry.npmjs.org:443
+  npmjs.org:443
+  rubygems.org:443
+  api.rubygems.org:443
+  index.rubygems.org:443
+  bundler.rubygems.org:443
+  rubygems.global.ssl.fastly.net:443
+  pypi.org:443
+  files.pythonhosted.org:443
+  cdn.playwright.dev:443
+  playwright.download.prss.microsoft.com:443
+  playwright.azureedge.net:443
+  playwright-akamai.azureedge.net:443
+  playwright-verizon.azureedge.net:443
+
+# deploy-coverage-pages.yml
 allowed-endpoints: >
   github.com:443
   api.github.com:443
@@ -241,6 +264,7 @@ allowed-endpoints: >
 **Rationale:**
 
 - GitHub: Artifact download, Pages deployment
+- Playwright: Browser downloads when `deploy-pages.yml` is run with `run-e2e-tests: true`
 
 ## Adding New Endpoints
 
