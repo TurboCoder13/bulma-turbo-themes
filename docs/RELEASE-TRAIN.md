@@ -113,19 +113,34 @@ Merge version PR → creates git tag v0.3.0
 - npm account must have publish permissions for `@turbocoder13/bulma-turbo-themes`
 - 2FA must be set to "Authorization only" level
 
-### 5. Manual Override: Automatic Tag Creation
+### 4.5 Auto Tag Creation
 
-**Workflow:** `release-auto-tag.yml` (Manual only)
-**Trigger:** workflow_dispatch
+**Workflow:** `release-auto-tag.yml`
+**Trigger:** Push to main with package.json changes, Manual (workflow_dispatch)
 
-**Purpose:** Emergency mechanism for manual tag creation if automation fails
+**Purpose:** Automatically creates git tag after version PR merge
 
-**Inputs:**
+**Process:**
+
+1. Detects package.json version change
+2. Checks if tag already exists
+3. Creates and pushes tag (e.g., v1.2.3)
+4. Triggers publish workflow
+
+**Optimization:**
+
+- Skips all quality gates (trust-and-skip pattern)
+- Tag creation completes in < 2 minutes (was 15-20 minutes before optimization)
+- Uses protected main branch as quality assurance
+
+**Manual Override:**
+
+Available via workflow_dispatch for emergency tag creation:
 
 - `version` - Version to tag (e.g., v1.2.3)
 - `prerelease` - Mark as pre-release
 
-**Use case:** Only use if release-version-pr workflow fails
+**Use case:** Automatically triggered by version PR merge; manual trigger available for emergencies
 
 ## 🚀 CI/CD Optimization Strategy
 
@@ -171,6 +186,38 @@ Each workflow runs independently on PRs and main branch, enabling:
 - Faster feedback (parallel execution)
 - Easier debugging (isolated test failures)
 - Selective reruns (only rerun failed workflow)
+
+## 🔄 Workflow Execution Strategy
+
+### Parallel Execution on Main
+
+When code merges to main, multiple workflows trigger simultaneously:
+
+- `quality-ci-main.yml` - Validation
+- `quality-e2e.yml` - E2E tests
+- `reporting-lighthouse-ci.yml` - Performance analysis
+- `release-version-pr.yml` - Version PR creation (if needed)
+
+**This is by design:**
+
+- ✅ Parallel execution is faster than sequential
+- ✅ Each workflow has different purpose
+- ✅ Isolated failures (one failing doesn't block others)
+- ✅ CI resources handle parallelization efficiently
+
+### Sequential Execution in Release Train
+
+After version PR is merged:
+
+1. `release-auto-tag.yml` - Creates tag (< 2 minutes)
+2. `release-publish-pr.yml` - Publishes (triggered by tag)
+3. `deploy-pages.yml` - Deploys site (after CI completes)
+
+**This is sequential by necessity:**
+
+- Tag must exist before publishing
+- Package must be published before announcing
+- Fresh build ensures package matches tagged code exactly
 
 ## 🔧 Configuration Files
 

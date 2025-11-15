@@ -153,7 +153,7 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 
 #### release-auto-tag.yml
 
-**Triggers:** Push to main, Manual (workflow_dispatch)
+**Triggers:** Push to main (package.json changes), Manual (workflow_dispatch)
 **Purpose:** Automatically create release tags after version PR merge
 
 **What it does:**
@@ -163,7 +163,10 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 - Creates and pushes git tag (e.g., v1.2.3) if missing
 - Triggers release-publish-pr workflow for npm publishing
 
-**Use case:** Completes the release automation pipeline
+**Optimization:** Skips all quality gates (trust-and-skip pattern)
+**Speed:** Tag creation completes in < 2 minutes (was 15-20 minutes before optimization)
+
+**Use case:** Completes the release automation pipeline; manual trigger available for emergencies
 
 #### release-publish-pr.yml
 
@@ -199,19 +202,9 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 
 - `tag` - npm dist-tag (e.g., beta, next, canary)
 
+**Optimization:** Skips quality and build jobs (trust-and-skip pattern), keeps SBOM for publish testing
+
 **Use case:** Testing publish process with pre-release tags
-
-#### release-auto-tag.yml
-
-**Triggers:** Manual (workflow_dispatch)
-**Purpose:** Manually create git tags (emergency/backup use)
-
-**Inputs:**
-
-- `version` - Version to tag (e.g., v1.2.3)
-- `prerelease` - Mark as pre-release
-
-**Use case:** Emergency tag creation when automation fails
 
 ### Maintenance
 
@@ -245,22 +238,51 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 
 ## Workflow Dependencies
 
+### Release Train (Sequential)
+
 ```
-release-publish-pr
-└── reusable-sbom (only)
+version PR merged → main
+  ↓
+release-auto-tag.yml (creates tag)
+  ↓ (tag push triggers)
+release-publish-pr.yml (publishes to npm)
+  └── reusable-sbom (only dependency)
+```
 
-release-version-pr
-(no dependencies - trusts PR validation)
+### PR Validation (Parallel)
 
-quality-ci-main
-quality-e2e
-reporting-lighthouse-ci
-└── deploy-pages (via workflow_run, downloads artifacts from all 3)
+```
+PR opened/updated
+  ↓ (all run in parallel)
+  ├── quality-ci-main.yml
+  ├── quality-e2e.yml
+  ├── reporting-lighthouse-ci.yml
+  └── quality-semantic-pr-title.yml
+```
 
-publish-npm-test
-├── reusable-quality
-├── reusable-build
-└── reusable-sbom
+### Main Branch Validation (Parallel)
+
+```
+Merge to main
+  ↓ (all run in parallel)
+  ├── quality-ci-main.yml
+  ├── quality-e2e.yml
+  ├── reporting-lighthouse-ci.yml
+  └── release-version-pr.yml (if release-worthy commits)
+```
+
+### Optimized Workflows (Trust-and-Skip)
+
+- `release-version-pr.yml` - No dependencies
+- `release-auto-tag.yml` - No dependencies
+- `release-publish-pr.yml` - Only SBOM
+- `publish-npm-test.yml` - Only SBOM
+
+### Pages Deployment
+
+```
+quality-ci-main, quality-e2e, reporting-lighthouse-ci
+  └── deploy-pages (via workflow_run, downloads artifacts from all 3)
 ```
 
 **Note:** Release workflows use the **trust-and-skip pattern** to avoid duplicate quality checks. All validation happens in PR workflows before code reaches main.
