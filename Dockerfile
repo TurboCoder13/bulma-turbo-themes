@@ -46,6 +46,20 @@ RUN apt-get update \
   && rm -rf Python-3.13.0* \
   && rm -rf /var/lib/apt/lists/*
 
+# Install hadolint (Dockerfile linter) for lintro checks
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN HADOLINT_VERSION="2.14.0" \
+  && BIN_NAME="hadolint-linux-$(uname -m | sed 's/x86_64/x86_64/;s/amd64/x86_64/;s/arm64/arm64/;s/aarch64/arm64/')" \
+  && URL="https://github.com/hadolint/hadolint/releases/download/v${HADOLINT_VERSION}/${BIN_NAME}" \
+  && CHECKSUM_URL="${URL}.sha256" \
+  && echo "📦 Installing hadolint v${HADOLINT_VERSION} from ${URL}..." \
+  && curl -sSfL "${URL}" -o /usr/local/bin/hadolint \
+  && curl -sSfL "${CHECKSUM_URL}" -o /tmp/hadolint.sha256 \
+  && echo "$(cat /tmp/hadolint.sha256 | cut -d' ' -f1)  /usr/local/bin/hadolint" | sha256sum -c - \
+  && rm /tmp/hadolint.sha256 \
+  && chmod +x /usr/local/bin/hadolint
+SHELL ["/bin/sh", "-c"]
+
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8
@@ -83,6 +97,9 @@ RUN bundle _2.3.26_ install
 
 # Copy the rest of the repo
 COPY . .
+
+# Ensure local tool bin is on PATH for any tools installed there
+ENV PATH="/work/.bin:${PATH}"
 
 # Default command runs the quick CI (no serve, no lighthouse)
 CMD ["/bin/bash", "-lc", "./scripts/local/build.sh --quick --no-serve"]
