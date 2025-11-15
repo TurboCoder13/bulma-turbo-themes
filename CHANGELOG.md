@@ -14,6 +14,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 ### 🐛 Fixed
 
+- add actions:write permission for workflow_dispatch triggers
+
+## [0.5.2] - 2025-11-15
+
+### 🐛 Fixed
+
 - trigger publish workflows directly after tag creation
 
 ## [0.5.1] - 2025-11-15
