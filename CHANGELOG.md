@@ -10,6 +10,13 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.5.3] - 2025-11-15
+
+### 🐛 Fixed
+
+- handle existing PR gracefully in version bump workflow
+- add actions:write permission for workflow_dispatch triggers
+
 ## [0.5.2] - 2025-11-15
 
 ### 🐛 Fixed
