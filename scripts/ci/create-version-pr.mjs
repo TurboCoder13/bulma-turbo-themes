@@ -221,6 +221,24 @@ function generatePRDescription(commits, version, bumpType, lastTag) {
 function createPullRequest(branchName, version, description) {
   const title = `${CONFIG.prTitlePrefix} ${version}`;
 
+  // Check if PR already exists for this branch
+  try {
+    const existingPR = execSync(
+      `gh pr list --head ${branchName} --base main --json number,url,title --jq '.[0]'`,
+      { encoding: "utf8", cwd: projectRoot },
+    );
+    
+    if (existingPR && existingPR.trim() !== "") {
+      const prData = JSON.parse(existingPR);
+      console.log(`ℹ️  PR already exists for branch ${branchName}`);
+      console.log(`   #${prData.number}: ${prData.title}`);
+      console.log(`   URL: ${prData.url}`);
+      return prData.url;
+    }
+  } catch {
+    // No existing PR found, continue to create one
+  }
+
   try {
     // Write description to temporary file to avoid shell escaping issues
     const tempFile = join(projectRoot, ".pr-description.tmp");
@@ -241,6 +259,21 @@ function createPullRequest(branchName, version, description) {
     console.log(`✅ Created PR: ${prOutput.trim()}`);
     return prOutput.trim();
   } catch (error) {
+    // Check if error is about PR already existing
+    if (error.message.includes("already exists")) {
+      console.log(`ℹ️  PR already exists for branch ${branchName}`);
+      // Try to get the existing PR URL
+      try {
+        const existingPR = execSync(
+          `gh pr list --head ${branchName} --base main --json url --jq '.[0].url'`,
+          { encoding: "utf8", cwd: projectRoot },
+        );
+        return existingPR.trim();
+      } catch {
+        // If we can't get URL, just return a message
+        return `PR already exists for ${branchName}`;
+      }
+    }
     console.error(`❌ Failed to create PR: ${error.message}`);
     throw error;
   }
