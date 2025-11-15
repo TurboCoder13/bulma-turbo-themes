@@ -12,6 +12,10 @@ echo "🚀 Starting Lighthouse build pipeline..."
 # Run the lighthouse-specific build pipeline (skips tests)
 ./scripts/ci/build-for-lighthouse.sh
 
+echo "🔦 Running Lighthouse CI..."
+# Lighthouse CI will start the Jekyll server automatically based on lighthouserc.json
+npx @lhci/cli@0.15.x autorun
+
 echo "🔍 Checking if Lighthouse reports were generated..."
 if [ -d "lighthouse-reports" ]; then
   echo "✅ lighthouse-reports directory exists"
