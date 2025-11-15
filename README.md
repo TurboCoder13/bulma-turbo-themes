@@ -15,6 +15,7 @@ Modern, accessible theme packs and a drop-in theme selector for Bulma 1.x.
 [![Download SBOM](https://img.shields.io/badge/SBOM-download_latest-blue?logo=github)](https://github.com/TurboCoder13/bulma-turbo-themes/actions/workflows/security-sbom.yml)
 
 [![npm](https://img.shields.io/npm/v/%40turbocoder13%2Fbulma-turbo-themes)](https://www.npmjs.com/package/@turbocoder13/bulma-turbo-themes)
+[![RubyGems](https://img.shields.io/gem/v/bulma-turbo-themes.svg)](https://rubygems.org/gems/bulma-turbo-themes)
 
 ## Features
 
@@ -23,16 +24,90 @@ Modern, accessible theme packs and a drop-in theme selector for Bulma 1.x.
 - Inline or link-based CSS delivery; CSP-friendly
 - Tested with coverage, Lighthouse CI, and stylelint
 
+## Installation
+
+### For Jekyll Sites (Recommended)
+
+Install as a Ruby gem:
+
+```ruby
+# Gemfile
+gem "bulma-turbo-themes", "~> 0.4"
+```
+
+```yaml
+# _config.yml
+theme: bulma-turbo-themes
+```
+
+Then run:
+
+```bash
+bundle install
+bundle exec jekyll serve
+```
+
+Assets are automatically available - no copying needed!
+
+### For Non-Jekyll Projects
+
+Install via npm:
+
+```bash
+npm install @turbocoder13/bulma-turbo-themes
+```
+
 ## Quick start
 
-1. Install and include CSS links
+### Jekyll Sites
+
+1. Install the gem (see above)
+2. Include CSS links in your layout:
+
+```html
+<link
+  id="theme-global-css"
+  rel="stylesheet"
+  href="{{ '/assets/css/themes/global.css' | relative_url }}"
+/>
+<link id="theme-flavor-css" rel="stylesheet" href="#" />
+```
+
+1. Add selector markup and initialize:
+
+```html
+<div class="dropdown is-right is-theme" id="theme-flavor-dd">
+  <div class="dropdown-trigger">
+    <button id="theme-flavor-trigger" aria-haspopup="true">
+      <span id="theme-flavor-trigger-icon"></span>
+      <span id="theme-flavor-trigger-label"></span>
+    </button>
+  </div>
+  <div class="dropdown-menu" id="theme-flavor-menu" role="menu">
+    <div class="dropdown-content" id="theme-flavor-items"></div>
+  </div>
+  <div class="select is-hidden"><select id="theme-flavor-select"></select></div>
+  <span id="theme-flavor-icon"></span>
+</div>
+```
+
+```html
+<script src="{{ '/assets/js/theme-selector.js' | relative_url }}"></script>
+```
+
+### Non-Jekyll Projects
+
+1. Copy CSS files from `node_modules/@turbocoder13/bulma-turbo-themes/assets/css/themes/` to your project:
+   - `global.css` (required)
+   - Flavor CSS files (e.g., `catppuccin-mocha.css`, `dracula.css`, `github-dark.css`) - copy the ones you want to use
+2. Include CSS links (adjust paths to match your project structure):
 
 ```html
 <link id="theme-global-css" rel="stylesheet" href="/assets/css/themes/global.css" />
 <link id="theme-flavor-css" rel="stylesheet" href="#" />
 ```
 
-1. Add selector markup and initialize
+1. Add selector markup and initialize:
 
 ```html
 <div class="dropdown is-right is-theme" id="theme-flavor-dd">
@@ -54,7 +129,7 @@ Modern, accessible theme packs and a drop-in theme selector for Bulma 1.x.
 import { initTheme, wireFlavorSelector } from '@turbocoder13/bulma-turbo-themes';
 
 document.addEventListener('DOMContentLoaded', () => {
-  initTheme(document, window, { styleMode: 'auto' });
+  initTheme(document, window);
   wireFlavorSelector(document, window);
 });
 ```
