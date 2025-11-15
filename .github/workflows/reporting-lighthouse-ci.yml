@@ -76,8 +76,9 @@ jobs:
       - name: Clean up any existing Jekyll processes
         run: ./scripts/ci/cleanup-jekyll-processes.sh
 
-      - name: Run full CI pipeline with Lighthouse
+      - name: Build site for Lighthouse analysis
         run: ./scripts/ci/run-lighthouse-ci.sh
+        # Uses streamlined build script that skips tests (they run in separate workflows)
 
       - name: Verify Lighthouse results
         run: ./scripts/ci/verify-lighthouse-results.sh
