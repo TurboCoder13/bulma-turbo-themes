@@ -42,3 +42,6 @@ playwright/
 e2e/snapshots/
 .lintro
 .bin/
+
+# Ruby gem build artifacts
+*.gem
