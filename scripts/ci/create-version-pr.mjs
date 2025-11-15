@@ -87,12 +87,15 @@ function checkExistingVersionPR() {
  */
 function checkRemoteBranch(branchName) {
   try {
-    execSync(`git ls-remote --heads origin ${branchName}`, {
+    const output = execSync(`git ls-remote --heads origin ${branchName}`, {
+      encoding: "utf8",
       cwd: projectRoot,
       stdio: "pipe",
-    });
-    return true;
+    }).trim();
+    // Branch exists only if output is non-empty
+    return output.length > 0;
   } catch {
+    // Command failed or branch doesn't exist
     return false;
   }
 }
@@ -122,26 +125,34 @@ function createVersionBranch(newVersion) {
       console.log(`🌿 Checked out existing remote branch ${branchName}`);
       return branchName;
     } catch (error) {
-      console.warn(
-        `⚠️  Failed to checkout remote branch ${branchName}: ${error.message}`,
-      );
-      // If checkout fails, try to checkout existing local branch
-      try {
-        execSync(`git checkout ${branchName}`, { cwd: projectRoot });
-        console.log(`🌿 Checked out existing local branch ${branchName}`);
-        return branchName;
-      } catch (localError) {
-        console.error(
-          `❌ Failed to checkout branch ${branchName} (both remote and local attempts failed)`,
+      // Re-check if branch actually exists (might have been deleted between check and fetch)
+      if (!checkRemoteBranch(branchName)) {
+        console.log(
+          `ℹ️  Remote branch ${branchName} no longer exists (may have been deleted), will create new branch`,
         );
-        console.error(`   Remote error: ${error.message}`);
-        console.error(`   Local error: ${localError.message}`);
-        throw new Error(
-          `Cannot checkout existing branch ${branchName}. ` +
-            `The remote branch exists but cannot be checked out. ` +
-            `This may indicate the branch points to an unreachable commit or there's a git state issue. ` +
-            `Consider manually deleting the remote branch and retrying.`,
+        // Fall through to create new branch logic below
+      } else {
+        // Branch exists but fetch/checkout failed - try local branch as fallback
+        console.warn(
+          `⚠️  Failed to fetch/checkout remote branch ${branchName}: ${error.message}`,
         );
+        try {
+          execSync(`git checkout ${branchName}`, { cwd: projectRoot });
+          console.log(`🌿 Checked out existing local branch ${branchName}`);
+          return branchName;
+        } catch (localError) {
+          console.error(
+            `❌ Failed to checkout branch ${branchName} (both remote and local attempts failed)`,
+          );
+          console.error(`   Remote error: ${error.message}`);
+          console.error(`   Local error: ${localError.message}`);
+          throw new Error(
+            `Cannot checkout existing branch ${branchName}. ` +
+              `The remote branch exists but cannot be checked out. ` +
+              `This may indicate the branch points to an unreachable commit or there's a git state issue. ` +
+              `Consider manually deleting the remote branch and retrying.`,
+          );
+        }
       }
     }
   }
