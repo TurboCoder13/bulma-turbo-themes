@@ -54,6 +54,22 @@ trap 'rm -rf "${TMP_DIR}"' EXIT
 echo "  Downloading hadolint from ${URL}..."
 curl -sSfL "${URL}" -o "${TMP_DIR}/${BIN_NAME}"
 
+CHECKSUM_URL="${URL}.sha256"
+echo "  Downloading checksum from ${CHECKSUM_URL}..."
+curl -sSfL "${CHECKSUM_URL}" -o "${TMP_DIR}/${BIN_NAME}.sha256"
+
+echo "  Verifying checksum..."
+EXPECTED_CHECKSUM="$(cut -d' ' -f1 "${TMP_DIR}/${BIN_NAME}.sha256")"
+ACTUAL_CHECKSUM="$(sha256sum "${TMP_DIR}/${BIN_NAME}" | cut -d' ' -f1)"
+
+if [ "${EXPECTED_CHECKSUM}" != "${ACTUAL_CHECKSUM}" ]; then
+  echo "❌ Checksum verification failed!"
+  echo "  Expected: ${EXPECTED_CHECKSUM}"
+  echo "  Actual:   ${ACTUAL_CHECKSUM}"
+  exit 1
+fi
+echo "  Checksum verified successfully"
+
 HADOLINT_BIN="${INSTALL_DIR%/}/hadolint"
 cp "${TMP_DIR}/${BIN_NAME}" "${HADOLINT_BIN}"
 chmod +x "${HADOLINT_BIN}"
