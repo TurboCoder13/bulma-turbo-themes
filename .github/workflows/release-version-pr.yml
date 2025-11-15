@@ -15,23 +15,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  quality:
-    name: 🔍 Quality Gate
-    uses: ./.github/workflows/reusable-quality.yml
-    permissions:
-      contents: read
-
-  build:
-    name: 🏗️ Build & Test
-    needs: quality
-    uses: ./.github/workflows/reusable-build.yml
-    permissions:
-      contents: read
-      actions: write
-
   version-pr:
     name: 📝 Create Version PR
-    needs: [quality, build]
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
