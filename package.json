@@ -37,6 +37,8 @@
     "build": "tsc -p tsconfig.json",
     "build:dev": "./scripts/local/build.sh --dev",
     "build:prod": "./scripts/local/build.sh --prod",
+    "build:gem": "./scripts/build-gem.sh",
+    "build:all": "npm run build && npm run build:gem",
     "test": "vitest run --coverage",
     "lint": "eslint . --ext .ts --max-warnings=0",
     "format": "uv run lintro check",
