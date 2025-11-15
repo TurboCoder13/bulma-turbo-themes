@@ -2,7 +2,10 @@
 name: Deploy - GitHub Pages
 
 on:
-  push:
+  workflow_run:
+    workflows: ['Quality Check - CI Pipeline']
+    types:
+      - completed
     branches: [main]
   workflow_dispatch:
     inputs:
@@ -10,16 +13,12 @@ on:
         description: 'Branch to deploy (default: main)'
         required: false
         default: 'main'
-      run-e2e-tests:
-        description: 'Run E2E tests during build (default: false)'
-        required: false
-        default: 'false'
-        type: boolean
 
 permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 concurrency:
   group: 'pages'
@@ -30,6 +29,7 @@ jobs:
     name: 🏗️ Build Site
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
@@ -51,25 +51,25 @@ jobs:
             rubygems.global.ssl.fastly.net:443
             pypi.org:443
             files.pythonhosted.org:443
-            cdn.playwright.dev:443
-            playwright.download.prss.microsoft.com:443
-            playwright.azureedge.net:443
-            playwright-akamai.azureedge.net:443
-            playwright-verizon.azureedge.net:443
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          ref: ${{ github.event.inputs.branch || github.ref }}
+          ref: ${{ github.event.workflow_run.head_sha || github.event.inputs.branch || github.ref }}
       - name: Setup environment
         uses: ./.github/actions/setup-env
         with:
           node-version: '22'
           ruby-version: '3.4.7'
-      - name: Install Playwright browsers
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.run-e2e-tests == 'true'
-        run: npm run e2e:install
-      - name: Build site
-        run: ./scripts/ci/build-with-conditional-e2e.sh "${{ github.event_name }}" "${{ github.event.inputs.run-e2e-tests }}"
-
+      - name: Build TypeScript
+        run: npm run build
+      - name: Build Jekyll site
+        run: npm run build:ci:jekyll
+      - name: Download test artifacts
+        if: github.event_name == 'workflow_run'
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./scripts/ci/download-test-artifacts.sh "${{ github.event.workflow_run.head_sha }}"
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:
           path: _site
@@ -90,6 +90,7 @@ jobs:
           allowed-endpoints: >
             github.com:443
             api.github.com:443
+            uploads.github.com:443
             registry.npmjs.org:443
             npmjs.org:443
       - id: deployment
