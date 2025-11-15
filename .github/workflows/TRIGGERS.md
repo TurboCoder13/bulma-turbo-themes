@@ -140,6 +140,8 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
   - Generated/updated CHANGELOG.md with categorized changes
   - Detailed PR description with commit analysis
 
+**Optimization:** Skips quality gates and build checks (trust-and-skip pattern)
+
 **Conventional Commits Analysis:**
 
 - `feat:` → minor version bump
@@ -171,11 +173,15 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 **What it does:**
 
 - Triggered when a version tag is created
-- Runs quality, build, and SBOM generation
+- Generates and signs SBOM (Software Bill of Materials)
+- Performs fresh build for npm publishing
 - Publishes to npm with provenance attestation
 - Creates GitHub release with signed SBOM artifacts:
   - CycloneDX JSON/XML (with signatures)
   - SPDX JSON (with signature)
+
+**Optimization:** Skips redundant quality gates (trust-and-skip pattern)
+**Fresh Build:** Ensures published package matches exact tagged code
 
 **Requirements:**
 
@@ -240,15 +246,11 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 ## Workflow Dependencies
 
 ```
-publish-npm-on-tag
-├── reusable-quality
-├── reusable-build
-└── reusable-sbom
+release-publish-pr
+└── reusable-sbom (only)
 
-release-semantic-release
-├── reusable-quality
-├── reusable-build
-└── reusable-sbom
+release-version-pr
+(no dependencies - trusts PR validation)
 
 quality-ci-main
 quality-e2e
@@ -260,6 +262,8 @@ publish-npm-test
 ├── reusable-build
 └── reusable-sbom
 ```
+
+**Note:** Release workflows use the **trust-and-skip pattern** to avoid duplicate quality checks. All validation happens in PR workflows before code reaches main.
 
 ## Manual Workflows
 
