@@ -324,7 +324,7 @@ function main() {
 
     // Commit changes
     execSync("git add package.json CHANGELOG.md", { cwd: projectRoot });
-    execSync(`git commit -m "chore(release): version ${nextVersion}"`, {
+    execSync(`git commit --no-verify -m "chore(release): version ${nextVersion}"`, {
       cwd: projectRoot,
     });
     console.log(`💾 Committed version bump changes`);
