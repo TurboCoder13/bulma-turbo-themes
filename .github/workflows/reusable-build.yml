@@ -64,7 +64,7 @@ jobs:
         run: npm run build
 
       - name: Jekyll build
-        run: npm run build:prod -- --skip-e2e --no-serve
+        run: npm run build:ci:jekyll
 
       - name: Upload JS dist artifact
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0

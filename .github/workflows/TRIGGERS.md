@@ -18,8 +18,7 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 | quality-theme-sync              | ✅          |             | ✅           |           |        |              |
 | quality-semantic-pr-title       |             |             | ✅           |           |        |              |
 | quality-validate-action-pinning | ✅          |             | ✅           |           |        |              |
-| deploy-pages                    |             |             |              |           |        | ✅           |
-| deploy-coverage-pages           |             |             |              |           |        | ✅           |
+| deploy-pages                    |             |             |              |           | ✅     | ✅           |
 | release-version-pr              | ✅          |             |              |           | ✅     |              |
 | release-publish-pr              |             | ✅ v*.*.\*  |              |           | ✅     |              |
 | publish-npm-test                |             |             |              |           | ✅     |              |
@@ -109,35 +108,20 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 
 #### deploy-pages.yml
 
-**Triggers:** Push to main, Manual (workflow_dispatch)  
-**Purpose:** Deploys Jekyll site to GitHub Pages
+**Triggers:** workflow_run (after Quality Check - CI Pipeline), Manual (workflow_dispatch)  
+**Purpose:** Deploys Jekyll site to GitHub Pages with test reports
 
 **What it does:**
 
-- Builds Jekyll site with production configuration
-- Deploys main site content to GitHub Pages
-- Handles only site deployment (no coverage/lighthouse integration)
-- Uses separate workflows for coverage and lighthouse reports
+- Builds Jekyll site with production configuration (no E2E tests)
+- Downloads test report artifacts from all 3 test workflows:
+  - Coverage reports from `Quality Check - CI Pipeline`
+  - Playwright reports from `Quality Check - E2E Tests`
+  - Lighthouse reports from `Reporting - Lighthouse CI`
+- Merges reports into site before deployment
+- Deploys complete site to GitHub Pages
 
-#### deploy-coverage-pages.yml
-
-**Triggers:** workflow_run (after quality-ci-main)  
-**Purpose:** Deploys coverage reports to GitHub Pages
-
-**Dependencies:** Runs after successful quality-ci-main on main branch
-
-#### deploy-lighthouse-pages.yml
-
-**Triggers:** workflow_run (after reporting-lighthouse-ci)  
-**Purpose:** Deploys Lighthouse performance reports to GitHub Pages
-
-**Dependencies:** Runs after successful reporting-lighthouse-ci on main branch
-
-**What it does:**
-
-- Downloads Lighthouse reports artifact from the reporting workflow
-- Deploys reports to `/lighthouse-reports` path on GitHub Pages
-- Only runs if reports are available (graceful skip if none found)
+**Dependencies:** Waits for test workflows to complete, then downloads their artifacts
 
 ### Publishing & Releases
 
@@ -267,7 +251,9 @@ release-semantic-release
 └── reusable-sbom
 
 quality-ci-main
-└── deploy-coverage-pages (via workflow_run)
+quality-e2e
+reporting-lighthouse-ci
+└── deploy-pages (via workflow_run, downloads artifacts from all 3)
 
 publish-npm-test
 ├── reusable-quality
