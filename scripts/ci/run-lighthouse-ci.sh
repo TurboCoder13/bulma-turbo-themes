@@ -3,11 +3,14 @@ set -euo pipefail
 
 # Run Lighthouse CI with proper error handling and debugging
 # Usage: run-lighthouse-ci.sh
+#
+# This script uses a streamlined build process that skips tests
+# (tests run in separate workflows to avoid duplication)
 
-echo "🚀 Starting full CI pipeline with Lighthouse..."
+echo "🚀 Starting Lighthouse build pipeline..."
 
-# Run the full build pipeline
-./scripts/local/build.sh --full
+# Run the lighthouse-specific build pipeline (skips tests)
+./scripts/ci/build-for-lighthouse.sh
 
 echo "🔍 Checking if Lighthouse reports were generated..."
 if [ -d "lighthouse-reports" ]; then
