@@ -15,7 +15,7 @@ Modern, accessible theme packs and a drop-in theme selector for Bulma 1.x.
 [![Download SBOM](https://img.shields.io/badge/SBOM-download_latest-blue?logo=github)](https://github.com/TurboCoder13/bulma-turbo-themes/actions/workflows/security-sbom.yml)
 
 [![npm](https://img.shields.io/npm/v/%40turbocoder13%2Fbulma-turbo-themes)](https://www.npmjs.com/package/@turbocoder13/bulma-turbo-themes)
-[![RubyGems](https://img.shields.io/gem/v/bulma-turbo-themes)](https://rubygems.org/gems/bulma-turbo-themes)
+[![RubyGems](https://img.shields.io/gem/v/bulma-turbo-themes.svg)](https://rubygems.org/gems/bulma-turbo-themes)
 
 ## Features
 
@@ -97,8 +97,10 @@ npm install @turbocoder13/bulma-turbo-themes
 
 ### Non-Jekyll Projects
 
-1. Copy CSS files from `node_modules/@turbocoder13/bulma-turbo-themes/assets/css/themes/` to your project
-2. Include CSS links:
+1. Copy CSS files from `node_modules/@turbocoder13/bulma-turbo-themes/assets/css/themes/` to your project:
+   - `global.css` (required)
+   - Flavor CSS files (e.g., `catppuccin-mocha.css`, `dracula.css`, `github-dark.css`) - copy the ones you want to use
+2. Include CSS links (adjust paths to match your project structure):
 
 ```html
 <link id="theme-global-css" rel="stylesheet" href="/assets/css/themes/global.css" />

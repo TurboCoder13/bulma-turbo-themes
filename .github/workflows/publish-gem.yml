@@ -80,7 +80,7 @@ jobs:
           cache: npm
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@bd86f8e6c9e0e5b0c0e0e0e0e0e0e0e0e0e0e0e0 # v1.200.0
+        uses: ruby/setup-ruby@217c988b8c2bf2bacb2d5c78a7e7b18f8c34daed # v1.200.0
         with:
           ruby-version: '3.3'
           bundler-cache: true

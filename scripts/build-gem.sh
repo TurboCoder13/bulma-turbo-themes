@@ -40,9 +40,12 @@ print_status "$YELLOW" "  Syncing version from package.json..."
 VERSION=$(node -p "require('./package.json').version")
 VERSION_FILE="lib/bulma-turbo-themes/version.rb"
 if [ -f "$VERSION_FILE" ]; then
-    # Update version in version.rb
-    sed -i.bak "s/VERSION = \".*\"/VERSION = \"$VERSION\"/" "$VERSION_FILE"
-    rm -f "${VERSION_FILE}.bak"
+    # Update version in version.rb (portable sed for macOS/Linux)
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' "s/VERSION = \".*\"/VERSION = \"$VERSION\"/" "$VERSION_FILE"
+    else
+        sed -i "s/VERSION = \".*\"/VERSION = \"$VERSION\"/" "$VERSION_FILE"
+    fi
     print_status "$GREEN" "  ✅ Version synced to $VERSION"
 else
     print_status "$RED" "  ❌ Version file not found: $VERSION_FILE"
