@@ -73,7 +73,7 @@ npm install @turbocoder13/bulma-turbo-themes
 <link id="theme-flavor-css" rel="stylesheet" href="#" />
 ```
 
-3. Add selector markup and initialize:
+1. Add selector markup and initialize:
 
 ```html
 <div class="dropdown is-right is-theme" id="theme-flavor-dd">
@@ -107,7 +107,7 @@ npm install @turbocoder13/bulma-turbo-themes
 <link id="theme-flavor-css" rel="stylesheet" href="#" />
 ```
 
-3. Add selector markup and initialize:
+1. Add selector markup and initialize:
 
 ```html
 <div class="dropdown is-right is-theme" id="theme-flavor-dd">
