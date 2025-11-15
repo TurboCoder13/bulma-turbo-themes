@@ -82,7 +82,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@217c988b8c2bf2bacb2d5c78a7e7b18f8c34daed # v1.200.0
         with:
-          ruby-version: '3.3'
+          ruby-version: '3.4.7'
           bundler-cache: true
 
       - name: Install dependencies
