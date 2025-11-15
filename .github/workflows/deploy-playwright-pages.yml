@@ -43,7 +43,7 @@ jobs:
             pkg.actions.githubusercontent.com:443
             token.actions.githubusercontent.com:443
       - name: Download Playwright report artifact
-        uses: actions/download-artifact@f093f21ca4cfa7c75ccbbc2be54da76a0c7e1f05 # v6.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: playwright-report
           path: playwright-report/
