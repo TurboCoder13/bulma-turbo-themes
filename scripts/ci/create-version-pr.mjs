@@ -107,21 +107,41 @@ function createVersionBranch(newVersion) {
   if (checkRemoteBranch(branchName)) {
     console.log(`🌿 Remote branch ${branchName} already exists`);
     try {
+      // Fetch the remote branch explicitly to ensure refs are available locally
+      console.log(`📥 Fetching remote branch ${branchName}...`);
+      execSync(`git fetch origin ${branchName}`, {
+        cwd: projectRoot,
+        stdio: "pipe",
+      });
+      console.log(`✅ Successfully fetched remote branch ${branchName}`);
+
       // Checkout existing remote branch
       execSync(`git checkout -b ${branchName} origin/${branchName}`, {
         cwd: projectRoot,
       });
       console.log(`🌿 Checked out existing remote branch ${branchName}`);
       return branchName;
-    } catch {
+    } catch (error) {
+      console.warn(
+        `⚠️  Failed to checkout remote branch ${branchName}: ${error.message}`,
+      );
       // If checkout fails, try to checkout existing local branch
       try {
         execSync(`git checkout ${branchName}`, { cwd: projectRoot });
         console.log(`🌿 Checked out existing local branch ${branchName}`);
         return branchName;
-      } catch {
-        console.error(`❌ Failed to checkout branch ${branchName}`);
-        throw new Error(`Cannot checkout existing branch ${branchName}`);
+      } catch (localError) {
+        console.error(
+          `❌ Failed to checkout branch ${branchName} (both remote and local attempts failed)`,
+        );
+        console.error(`   Remote error: ${error.message}`);
+        console.error(`   Local error: ${localError.message}`);
+        throw new Error(
+          `Cannot checkout existing branch ${branchName}. ` +
+            `The remote branch exists but cannot be checked out. ` +
+            `This may indicate the branch points to an unreachable commit or there's a git state issue. ` +
+            `Consider manually deleting the remote branch and retrying.`,
+        );
       }
     }
   }
