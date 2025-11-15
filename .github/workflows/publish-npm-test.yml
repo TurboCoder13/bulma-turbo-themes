@@ -20,23 +20,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  quality:
-    name: 🔍 Quality Gate
-    uses: ./.github/workflows/reusable-quality.yml
-    permissions:
-      contents: read
-
-  build:
-    name: 🏗️ Build & Test
-    needs: quality
-    uses: ./.github/workflows/reusable-build.yml
-    permissions:
-      contents: read
-      actions: write
-
   sbom:
     name: 📋 Generate & Sign SBOM
-    needs: build
+    # Uses trust-and-skip pattern: manual test workflow, keeps SBOM for publish testing
     uses: ./.github/workflows/reusable-sbom.yml
     permissions:
       contents: read
@@ -45,7 +31,7 @@ jobs:
 
   publish:
     name: 📦 Publish to npm (Test)
-    needs: [build, sbom]
+    needs: [sbom]
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:

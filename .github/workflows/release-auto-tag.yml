@@ -26,91 +26,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  quality:
-    name: 🔍 Quality Gate
-    uses: ./.github/workflows/reusable-quality.yml
-    permissions:
-      contents: read
-
-  build:
-    name: 🏗️ Build & Test
-    needs: quality
-    uses: ./.github/workflows/reusable-build.yml
-    permissions:
-      contents: read
-      actions: write
-
-  lighthouse:
-    name: 📊 Lighthouse Performance
-    needs: build
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    permissions:
-      contents: read
-      actions: write
-      pull-requests: write
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
-        with:
-          egress-policy: block
-          allowed-endpoints: >
-            github.com:443
-            api.github.com:443
-            uploads.github.com:443
-            pipelines.actions.githubusercontent.com:443
-            objects.githubusercontent.com:443
-            codeload.github.com:443
-            github-releases.githubusercontent.com:443
-            release-assets.githubusercontent.com:443
-            registry.npmjs.org:443
-            npmjs.org:443
-            rubygems.org:443
-            api.rubygems.org:443
-            index.rubygems.org:443
-            bundler.rubygems.org:443
-            cache.ruby-lang.org:443
-            pypi.org:443
-            files.pythonhosted.org:443
-            cdn.jsdelivr.net:443
-            bulma.io:443
-            www.google.com:443
-            android.clients.google.com:443
-            chrome-devtools-frontend.appspot.com:443
-            productionresultssa3.blob.core.windows.net:443
-
-      - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-
-      - name: Setup environment
-        uses: ./.github/actions/setup-env
-        with:
-          node-version: '22'
-          ruby-version: '3.4.7'
-
-      - name: Clean up any existing Jekyll processes
-        run: ./scripts/ci/cleanup-jekyll-processes.sh
-
-      - name: Run full CI pipeline with Lighthouse
-        run: ./scripts/ci/run-lighthouse-ci.sh
-
-      - name: Verify Lighthouse results
-        run: ./scripts/ci/verify-lighthouse-results.sh
-        env:
-          LHCI_UPLOAD_TARGET: filesystem
-
-      - name: Upload Lighthouse reports
-        if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
-        with:
-          name: lighthouse-reports
-          path: lighthouse-reports
-          if-no-files-found: warn
-          overwrite: true
-
   auto-tag:
     name: 🏷️ Auto Create Release Tag
-    needs: [quality, build, lighthouse]
+    # Uses trust-and-skip pattern: version PR already validated code quality
+    # Skips quality, build, and lighthouse jobs to avoid duplication
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
