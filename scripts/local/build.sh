@@ -538,14 +538,23 @@ fi
 if [ "$QUICK_MODE" = false ] && [ "$FULL_MODE" = false ]; then
     print_status "$BLUE" "🚀 Ready for CI! You can now push with confidence."
     
+    # Detect CI environment (GitHub Actions, GitLab CI, Jenkins, etc.)
+    CI_ENV=false
+    if [ -n "${GITHUB_ACTIONS:-}" ] || [ -n "${CI:-}" ]; then
+        CI_ENV=true
+    fi
+    
     # Allow non-interactive flag: --serve or --no-serve
     response_prompted=false
     if [ "$SERVE_MODE" = true ]; then
         response="y"
         response_prompted=true
-    elif [ "$NO_SERVE" = true ]; then
+    elif [ "$NO_SERVE" = true ] || [ "$CI_ENV" = true ]; then
         response="n"
         response_prompted=true
+        if [ "$CI_ENV" = true ]; then
+            print_status "$YELLOW" "  ⏭️  Skipping serve prompt (CI environment detected)"
+        fi
     fi
 
     if [ "$response_prompted" = false ]; then
