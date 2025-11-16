@@ -10,6 +10,20 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.6.2] - 2025-11-16
+
+### 🐛 Fixed
+
+- add missing network endpoints for publish workflows
+- Lighthouse reports not appearing on site and deploy-pages Ruby version
+
+## [0.6.2] - 2025-11-16
+
+### 🐛 Fixed
+
+- add missing network endpoints for publish workflows
+- Lighthouse reports not appearing on site and deploy-pages Ruby version
+
 ## [0.6.1] - 2025-11-16
 
 ### 🐛 Fixed
