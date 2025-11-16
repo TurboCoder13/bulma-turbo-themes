@@ -44,7 +44,28 @@ TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "${TMP_DIR}"' EXIT
 
 echo "  Downloading actionlint from ${URL}..."
-curl -sSfL "${URL}" -o "${TMP_DIR}/${TAR_NAME}"
+
+# Retry logic for rate limits (429) or transient failures
+MAX_RETRIES=3
+RETRY_DELAY=5
+
+for attempt in $(seq 1 ${MAX_RETRIES}); do
+  if curl -sSfL "${URL}" -o "${TMP_DIR}/${TAR_NAME}"; then
+    echo "  ✅ Download successful"
+    break
+  else
+    EXIT_CODE=$?
+    if [ ${attempt} -lt ${MAX_RETRIES} ]; then
+      echo "  ⚠️  Download failed (attempt ${attempt}/${MAX_RETRIES}), retrying in ${RETRY_DELAY}s..."
+      sleep ${RETRY_DELAY}
+      RETRY_DELAY=$((RETRY_DELAY * 2))  # Exponential backoff
+    else
+      echo "  ❌ Download failed after ${MAX_RETRIES} attempts"
+      exit ${EXIT_CODE}
+    fi
+  fi
+done
+
 tar -xzf "${TMP_DIR}/${TAR_NAME}" -C "${INSTALL_DIR}"
 
 ACTIONLINT_BIN="${INSTALL_DIR%/}/actionlint"
