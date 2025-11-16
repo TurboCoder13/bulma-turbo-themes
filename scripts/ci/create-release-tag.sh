@@ -31,4 +31,6 @@ if [ -n "${GITHUB_EVENT_INPUTS_VERSION:-}" ]; then
     echo "- Prerelease: $PRERELEASE" >> "$GITHUB_STEP_SUMMARY"
 fi
 echo "✅ Created tag v$VERSION" >> "$GITHUB_STEP_SUMMARY"
-echo "🚀 This will trigger the release-publish-pr workflow" >> "$GITHUB_STEP_SUMMARY"
+echo "🚀 Tag push will automatically trigger:" >> "$GITHUB_STEP_SUMMARY"
+echo "  - 📦 npm publish workflow (release-publish-pr.yml)" >> "$GITHUB_STEP_SUMMARY"
+echo "  - 💎 RubyGem publish workflow (publish-gem.yml)" >> "$GITHUB_STEP_SUMMARY"
