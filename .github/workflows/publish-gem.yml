@@ -83,28 +83,8 @@ jobs:
       - name: Build npm package
         run: npm run build
 
-      - name: Build gem
-        run: npm run build:gem
-
-      - name: Find gem file
-        id: gem-file
-        run: |
-          GEM_FILE=$(find . -maxdepth 1 -name "bulma-turbo-themes-*.gem" -type f | head -1)
-          if [ -z "$GEM_FILE" ]; then
-            echo "❌ No gem file found"
-            exit 1
-          fi
-          echo "file=$GEM_FILE" >> "$GITHUB_OUTPUT"
-          echo "Found gem file: $GEM_FILE"
-
-      - name: Configure RubyGems credentials
-        uses: rubygems/configure-rubygems-credentials@bc6dd217f8a4f919d6835fcfefd470ef821f5c44 # v1.0.0
-        with:
-          role-to-assume: rw
-
-      - name: Publish to RubyGems
-        run: |
-          gem push ${{ steps.gem-file.outputs.file }}
+      - name: Release to RubyGems
+        uses: rubygems/release-gem@a25424ba2ba8b387abc8ef40807c2c85b96cbe32 # v1
 
       - name: Summary
         run: |
