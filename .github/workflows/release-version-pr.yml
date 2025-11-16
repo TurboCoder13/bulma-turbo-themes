@@ -38,10 +38,28 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
+      - name: Guard - Check if last commit is a release
+        id: guard
+        run: |
+          chmod +x scripts/ci/guard-release-commit.sh
+          if scripts/ci/guard-release-commit.sh; then
+            echo "is_release=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_release=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skip if release commit
+        if: steps.guard.outputs.is_release == 'true'
+        run: |
+          echo "⏭️  Skipping version PR - last commit was a release (prevents infinite loop)"
+          exit 0
+
       - name: Configure Git
+        if: steps.guard.outputs.is_release != 'true'
         run: ./scripts/ci/configure-git.sh
 
       - name: Setup Node.js
+        if: steps.guard.outputs.is_release != 'true'
         uses: actions/setup-node@dda4788290998366da86b6a4f497909644397bb2 # v6.0.0
         with:
           node-version: 22
@@ -49,16 +67,18 @@ jobs:
           cache: npm
 
       - name: Install dependencies
+        if: steps.guard.outputs.is_release != 'true'
         run: npm ci
 
       - name: Check for existing version PR
+        if: steps.guard.outputs.is_release != 'true'
         id: check-pr
         run: ./scripts/ci/check-existing-version-pr.sh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create version PR
-        if: steps.check-pr.outputs.pr_exists != 'true'
+        if: steps.guard.outputs.is_release != 'true' && steps.check-pr.outputs.pr_exists != 'true'
         run: node scripts/ci/create-version-pr.mjs
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
