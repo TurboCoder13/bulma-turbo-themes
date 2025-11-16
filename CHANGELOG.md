@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.7.2] - 2025-11-16
+
+### 🐛 Fixed
+
+- allow release assets for gem publish
+
 ## [0.7.1] - 2025-11-16
 
 ### 🐛 Fixed
