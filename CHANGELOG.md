@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.7.0] - 2025-11-16
+
+### ✨ Added
+
+- implement enterprise-level build/publish separation
+
 ## [0.6.5] - 2025-11-16
 
 ### 🐛 Fixed
