@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.6.4] - 2025-11-16
+
+### 🐛 Fixed
+
+- use configure-rubygems-credentials for OIDC auth
+
 ## [0.6.3] - 2025-11-16
 
 ### 🐛 Fixed
