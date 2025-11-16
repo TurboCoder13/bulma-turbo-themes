@@ -35,6 +35,7 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: write
+      actions: write
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
@@ -48,7 +49,15 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
-          persist-credentials: true
+          persist-credentials: false
+
+      - name: Create GitHub App installation token
+        id: app-token
+        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
+        with:
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
 
       - name: Configure Git
         run: ./scripts/ci/configure-git.sh
@@ -68,7 +77,16 @@ jobs:
           ./scripts/ci/check-version-change.sh
           "${{ github.event.inputs.version }}"
 
-      - name: Create release tag
+      - name: Configure git authentication with app token
+        if: >
+          steps.version-check.outputs.version_changed == 'true' &&
+          steps.version-check.outputs.tag_exists == 'false'
+        run: |
+          git config --global user.name "bulma-turbo-themes-release-bot[bot]"
+          git config --global user.email "bulma-turbo-themes-release-bot[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git"
+
+      - name: Create and push release tag
         if: >
           steps.version-check.outputs.version_changed == 'true' &&
           steps.version-check.outputs.tag_exists == 'false'
@@ -76,26 +94,6 @@ jobs:
           ./scripts/ci/create-release-tag.sh
           "${{ steps.version-check.outputs.current_version }}"
           "${{ github.event.inputs.prerelease }}"
-
-      - name: Trigger npm publish workflow
-        if: >
-          steps.version-check.outputs.version_changed == 'true' &&
-          steps.version-check.outputs.tag_exists == 'false'
-        run: >
-          gh workflow run release-publish-pr.yml
-          -f tag=v${{ steps.version-check.outputs.current_version }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Trigger gem publish workflow
-        if: >
-          steps.version-check.outputs.version_changed == 'true' &&
-          steps.version-check.outputs.tag_exists == 'false'
-        run: >
-          gh workflow run publish-gem.yml
-          -f tag=v${{ steps.version-check.outputs.current_version }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate Auto Tag Summary
         if: always()
