@@ -16,6 +16,16 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - use GitHub App for release automation matching py-lintro pattern
 
+### 🐛 Fixed
+
+- prevent version PR infinite loop and add download retry logic
+
+## [0.6.0] - 2025-11-16
+
+### ✨ Added
+
+- use GitHub App for release automation matching py-lintro pattern
+
 ## [0.6.0] - 2025-11-15
 
 ### ✨ Added
