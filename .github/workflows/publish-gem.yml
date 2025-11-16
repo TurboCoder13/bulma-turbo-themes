@@ -97,10 +97,14 @@ jobs:
           echo "file=$GEM_FILE" >> "$GITHUB_OUTPUT"
           echo "Found gem file: $GEM_FILE"
 
-      - name: Publish to RubyGems
-        uses: rubygems/release-gem@1c162a739e8b4cb21a676e97b087e8268d8fc40b
+      - name: Configure RubyGems credentials
+        uses: rubygems/configure-rubygems-credentials@bc6dd217f8a4f919d6835fcfefd470ef821f5c44 # v1.0.0
         with:
-          setup-trusted-publisher: true
+          role-to-assume: rw
+
+      - name: Publish to RubyGems
+        run: |
+          gem push ${{ steps.gem-file.outputs.file }}
 
       - name: Summary
         run: |
