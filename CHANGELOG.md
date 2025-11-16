@@ -10,6 +10,16 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.6.3] - 2025-11-16
+
+### 🐛 Fixed
+
+- use OIDC trusted publisher for RubyGems release
+
+### 🔧 Changed
+
+- resolve workflow failures in gem publishing and release creation
+
 ## [0.6.2] - 2025-11-16
 
 ### 🐛 Fixed
