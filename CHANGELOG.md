@@ -10,6 +10,14 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.6.5] - 2025-11-16
+
+### 🐛 Fixed
+
+- add Rakefile and build-gem.sh documentation
+- improve Rakefile with best practices
+- add Rakefile and use release-gem action for trusted publishing
+
 ## [0.6.4] - 2025-11-16
 
 ### 🐛 Fixed
