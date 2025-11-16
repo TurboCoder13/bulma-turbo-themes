@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.6.1] - 2025-11-16
+
+### 🐛 Fixed
+
+- add missing id-token permission and correct Ruby version
+
 ## [0.6.0] - 2025-11-16
 
 ### ✨ Added
