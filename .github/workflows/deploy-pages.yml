@@ -58,7 +58,7 @@ jobs:
         uses: ./.github/actions/setup-env
         with:
           node-version: '22'
-          ruby-version: '3.4.7'
+          ruby-version: '3.3.6'
       - name: Build TypeScript
         run: npm run build
       - name: Build Jekyll site
