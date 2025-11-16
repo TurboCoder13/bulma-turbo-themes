@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.7.1] - 2025-11-16
+
+### 🐛 Fixed
+
+- add cache.ruby-lang.org to publish job egress policy
+
 ## [0.7.0] - 2025-11-16
 
 ### ✨ Added
