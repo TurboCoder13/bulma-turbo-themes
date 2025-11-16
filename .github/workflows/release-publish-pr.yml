@@ -136,4 +136,8 @@ jobs:
 
       - name: Summary
         shell: bash
-        run: ./scripts/ci/write-summary.sh "## GitHub Release Summary\n✅ Release ${{ github.ref_name }} published and released"
+        run: |
+          {
+            echo "## GitHub Release Summary"
+            echo "✅ Release ${{ github.ref_name }} published and released"
+          } >> "$GITHUB_STEP_SUMMARY"
