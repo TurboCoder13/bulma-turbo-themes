@@ -6,13 +6,52 @@ This directory contains automation scripts for the bulma-turbo-themes project, o
 
 ```
 scripts/
-├── README.md          # This file
-├── ci/                # CI/CD automation scripts
-├── local/             # Local development scripts
-├── utils/             # Shared utility functions
-├── generate-css.mjs   # Generate CSS theme files
-└── sync-catppuccin.mjs # Sync Catppuccin themes
+├── README.md           # This file
+├── ci/                 # CI/CD automation scripts
+├── local/              # Local development scripts
+├── utils/              # Shared utility functions
+├── build-gem.sh        # Build Ruby gem package
+├── generate-css.mjs    # Generate CSS theme files
+├── sync-catppuccin.mjs # Sync Catppuccin themes
+└── e2e-serve.mjs       # E2E test server
 ```
+
+## 🔨 Build Scripts
+
+Top-level scripts for building packages:
+
+### `build-gem.sh`
+
+Build the Ruby gem package for distribution to RubyGems.org.
+
+**Usage:**
+
+```bash
+./scripts/build-gem.sh
+# or via npm
+npm run build:gem
+# or via Rake
+rake build:gem
+```
+
+**What it does:**
+
+1. Verifies npm build artifacts exist
+2. Syncs version from `package.json` to `lib/bulma-turbo-themes/version.rb`
+3. Copies JavaScript bundle to `assets/js/`
+4. Verifies all required assets are present
+5. Builds the gem using `gem build bulma-turbo-themes.gemspec`
+
+**Output:**
+
+- Creates `bulma-turbo-themes-VERSION.gem` in project root
+
+**Environment:**
+
+- Requires: Ruby, gem command
+- Requires: npm build completed (`dist/` directory must exist)
+
+**Note:** This script is integrated with the Rakefile and is called by the `rake build` task used in the gem publishing workflow.
 
 ## 🤖 CI Scripts (`ci/`)
 
