@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.8.1] - 2025-11-16
+
+### 🐛 Fixed
+
+- update OpenSSF badge to Best Practices (#104)
+
 ## [0.8.0] - 2025-11-16
 
 ### ✨ Added
