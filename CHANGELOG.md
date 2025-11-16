@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.8.0] - 2025-11-16
+
+### ✨ Added
+
+- include layouts and data files in gem
+
 ## [0.7.4] - 2025-11-16
 
 ### 🐛 Fixed
