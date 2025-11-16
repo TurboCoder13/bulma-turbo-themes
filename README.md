@@ -10,7 +10,7 @@ Modern, accessible theme packs and a drop-in theme selector for Bulma 1.x.
 [![Lighthouse](https://img.shields.io/github/actions/workflow/status/TurboCoder13/bulma-turbo-themes/reporting-lighthouse-ci.yml?label=lighthouse&branch=main)](https://github.com/TurboCoder13/bulma-turbo-themes/actions/workflows/reporting-lighthouse-ci.yml?query=branch%3Amain)
 
 [![CodeQL](https://github.com/TurboCoder13/bulma-turbo-themes/actions/workflows/security-codeql.yml/badge.svg?branch=main)](https://github.com/TurboCoder13/bulma-turbo-themes/actions/workflows/security-codeql.yml?query=branch%3Amain)
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/TurboCoder13/bulma-turbo-themes/badge)](https://scorecard.dev/viewer/?uri=github.com/TurboCoder13/bulma-turbo-themes)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/11471/badge)](https://www.bestpractices.dev/projects/11471)
 [![SBOM](https://img.shields.io/badge/SBOM-enabled-brightgreen)](SECURITY.md)
 [![Download SBOM](https://img.shields.io/badge/SBOM-download_latest-blue?logo=github)](https://github.com/TurboCoder13/bulma-turbo-themes/actions/workflows/security-sbom.yml)
 
