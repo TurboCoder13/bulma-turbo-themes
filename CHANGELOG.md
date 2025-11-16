@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.8.2] - 2025-11-16
+
+### 🐛 Fixed
+
+- correct JavaScript reference in gem layout (#106)
+
 ## [0.8.1] - 2025-11-16
 
 ### 🐛 Fixed
