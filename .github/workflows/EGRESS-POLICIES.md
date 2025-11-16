@@ -180,6 +180,7 @@ allowed-endpoints: >
   registry.npmjs.org:443
   npmjs.org:443
   cache.ruby-lang.org:443
+  rubygems-downloads.global.ssl.fastly.net:443
   rubygems.org:443
   api.rubygems.org:443
   index.rubygems.org:443
@@ -194,6 +195,7 @@ allowed-endpoints: >
 - npm: Building the companion npm package
 - RubyGems endpoints: Bundler installs and gem publishing
 - cache.ruby-lang.org: Source tarballs when toolcache misses
+- rubygems-downloads.global.ssl.fastly.net: Bundler gem payload download CDN
 
 ### SBOM Generation Workflow
 
