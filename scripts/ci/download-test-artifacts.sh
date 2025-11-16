@@ -63,8 +63,9 @@ find_workflow_run() {
   local workflow_name="$1"
   local commit_sha="$2"
   
-  gh api repos/"${GITHUB_REPOSITORY}"/actions/runs \
-    --jq ".workflow_runs[] | select(.name == \"${workflow_name}\" and .head_sha == \"${commit_sha}\" and .conclusion == \"success\") | .id" \
+  # Use head_sha query parameter for efficient filtering (avoids pagination issues)
+  gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${commit_sha}&per_page=100" \
+    --jq ".workflow_runs[] | select(.name == \"${workflow_name}\" and .conclusion == \"success\") | .id" \
     | head -1
 }
 
