@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.7.4] - 2025-11-16
+
+### 🐛 Fixed
+
+- add missing RubyGems endpoints to build job egress policy
+
 ## [0.7.3] - 2025-11-16
 
 ### 🐛 Fixed
