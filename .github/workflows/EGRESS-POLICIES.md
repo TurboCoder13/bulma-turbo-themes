@@ -45,6 +45,7 @@ allowed-endpoints: >
   api.github.com:443
   objects.githubusercontent.com:443
   codeload.github.com:443
+  release-assets.githubusercontent.com:443
   uploads.github.com:443
 ```
 
@@ -164,6 +165,35 @@ allowed-endpoints: >
 - Ruby: Installing Ruby and Bundler (RubyGems endpoints and Ruby tarball cache)
 - Python: Installing Python tooling via `uv` and PyPI
 - Codecov: Coverage upload
+
+### Publish Gem Workflow
+
+```yaml
+# publish-gem.yml
+allowed-endpoints: >
+  github.com:443
+  api.github.com:443
+  objects.githubusercontent.com:443
+  codeload.github.com:443
+  release-assets.githubusercontent.com:443
+  pipelines.actions.githubusercontent.com:443
+  registry.npmjs.org:443
+  npmjs.org:443
+  cache.ruby-lang.org:443
+  rubygems.org:443
+  api.rubygems.org:443
+  index.rubygems.org:443
+  bundler.rubygems.org:443
+  rubygems.global.ssl.fastly.net:443
+```
+
+**Rationale:**
+
+- GitHub: Checkout, workflow coordination, downloading custom actions
+- Release assets: GitHub-hosted Ruby toolcache tarballs used by `ruby/setup-ruby`
+- npm: Building the companion npm package
+- RubyGems endpoints: Bundler installs and gem publishing
+- cache.ruby-lang.org: Source tarballs when toolcache misses
 
 ### SBOM Generation Workflow
 
