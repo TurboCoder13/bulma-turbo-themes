@@ -10,6 +10,16 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.8.2] - 2025-11-18
+
+### 🐛 Fixed
+
+- correct JavaScript reference in gem layout (#106)
+
+### 🔧 Changed
+
+- update actions/setup-node digest to 2028fbc (#108)
+
 ## [0.8.2] - 2025-11-16
 
 ### 🐛 Fixed
