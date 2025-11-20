@@ -18,6 +18,19 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 ### 🔧 Changed
 
+- update renovatebot/github-action digest to 4ebebab (#111)
+- update actions/setup-node digest to 633bb92 (#110)
+- update peter-evans/create-pull-request digest to 271a8d0 (#109)
+- update actions/setup-node digest to 2028fbc (#108)
+
+## [0.8.2] - 2025-11-20
+
+### 🐛 Fixed
+
+- correct JavaScript reference in gem layout (#106)
+
+### 🔧 Changed
+
 - update actions/setup-node digest to 633bb92 (#110)
 - update peter-evans/create-pull-request digest to 271a8d0 (#109)
 - update actions/setup-node digest to 2028fbc (#108)
