@@ -10,6 +10,25 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.8.2] - 2025-11-25
+
+### 🐛 Fixed
+
+- correct JavaScript reference in gem layout (#106)
+
+### 🔧 Changed
+
+- update peter-evans/create-pull-request action to v7.0.9 (#121)
+- update renovatebot/github-action action to v44.0.3 (#119)
+- update astral-sh/setup-uv action to v7.1.4 (#118)
+- update github/codeql-action action to v4.31.4 (#115)
+- update actions/checkout action to v5.0.1 (#114)
+- update dependency lint-staged to v16.2.7 (#74)
+- update renovatebot/github-action digest to 4ebebab (#111)
+- update actions/setup-node digest to 633bb92 (#110)
+- update peter-evans/create-pull-request digest to 271a8d0 (#109)
+- update actions/setup-node digest to 2028fbc (#108)
+
 ## [0.8.2] - 2025-11-23
 
 ### 🐛 Fixed
