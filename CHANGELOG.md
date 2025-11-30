@@ -10,6 +10,33 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.8.2] - 2025-11-30
+
+### 🐛 Fixed
+
+- correct JavaScript reference in gem layout (#106)
+
+### 🔧 Changed
+
+- update ruby/setup-ruby action to v1.268.0 (#132)
+- update dependency happy-dom to v20.0.11 (#129)
+- update actions/setup-node digest to b9b25d4 (#128)
+- update actions/create-github-app-token action to v1.12.0 (#127)
+- update vitest monorepo to v4.0.14 (#126)
+- update renovatebot/github-action action to v44.0.4 (#124)
+- update github/codeql-action action to v4.31.5 (#123)
+- update vitest monorepo to v4.0.13 (#122)
+- update peter-evans/create-pull-request action to v7.0.9 (#121)
+- update renovatebot/github-action action to v44.0.3 (#119)
+- update astral-sh/setup-uv action to v7.1.4 (#118)
+- update github/codeql-action action to v4.31.4 (#115)
+- update actions/checkout action to v5.0.1 (#114)
+- update dependency lint-staged to v16.2.7 (#74)
+- update renovatebot/github-action digest to 4ebebab (#111)
+- update actions/setup-node digest to 633bb92 (#110)
+- update peter-evans/create-pull-request digest to 271a8d0 (#109)
+- update actions/setup-node digest to 2028fbc (#108)
+
 ## [0.8.2] - 2025-11-29
 
 ### 🐛 Fixed
