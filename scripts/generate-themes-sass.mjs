@@ -24,41 +24,8 @@ try {
 }
 
 const { flavors } = registryMod;
-const { generateBulmaUse } = bulmaMod;
-
-// Convert hex color to HSL values
-function hexToHsl(hex) {
-  // Remove # if present
-  hex = hex.replace('#', '');
-
-  // Parse hex to RGB
-  const r = parseInt(hex.slice(0, 2), 16) / 255;
-  const g = parseInt(hex.slice(2, 4), 16) / 255;
-  const b = parseInt(hex.slice(4, 6), 16) / 255;
-
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  let h, s, l = (max + min) / 2;
-
-  if (max === min) {
-    h = s = 0; // achromatic
-  } else {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-      case g: h = (b - r) / d + 2; break;
-      case b: h = (r - g) / d + 4; break;
-    }
-    h /= 6;
-  }
-
-  return {
-    h: Math.round(h * 360),
-    s: Math.round(s * 100),
-    l: Math.round(l * 100)
-  };
-}
+// Import hexToHsl from shared bulma module to avoid duplication
+const { generateBulmaUse, hexToHsl } = bulmaMod;
 
 // Convert HSL object to Sass HSL function call
 function hslToSass(hsl) {
@@ -311,9 +278,8 @@ flavors.forEach((flavor) => {
   const fontFaceDeclarations = generateFontFaceDeclarations(tokens.typography.webFonts);
 
   // Generate Bulma @use statement with colors and config
-  let bulmaUseStatement = generateBulmaUse(themeColors, flavor.bulma);
-  // Fix: Use bulma/sass instead of bulma/bulma to ensure variables are forwarded and configurable
-  bulmaUseStatement = bulmaUseStatement.replace("'bulma/bulma'", "'bulma/sass'");
+  // Note: generateBulmaUse now correctly emits 'bulma/sass' directly
+  const bulmaUseStatement = generateBulmaUse(themeColors, flavor.bulma);
 
   // Sass requires @use statements to come before any other rules
   // Plain CSS @import url() statements will be compiled to the top of the output CSS
