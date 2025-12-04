@@ -21,11 +21,34 @@
         try {
           var STORAGE_KEY = 'bulma-theme-flavor';
           var DEFAULT_THEME = 'catppuccin-mocha';
+          // Valid theme IDs - must match THEMES array in theme-selector.js
+          var VALID_THEMES = [
+            'bulma-light', 'bulma-dark',
+            'catppuccin-latte', 'catppuccin-frappe', 'catppuccin-macchiato', 'catppuccin-mocha',
+            'dracula',
+            'github-light', 'github-dark'
+          ];
           var savedTheme = localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;
+          // Validate theme ID against allowed list to prevent invalid class/URL injection
+          if (VALID_THEMES.indexOf(savedTheme) === -1) {
+            savedTheme = DEFAULT_THEME;
+          }
           var themeClass = 'theme-' + savedTheme;
 
-          // Apply theme class immediately
-          document.documentElement.className = themeClass;
+          // Apply theme class using classList to preserve existing classes
+          // First remove any existing theme classes
+          var classList = document.documentElement.classList;
+          var classesToRemove = [];
+          for (var i = 0; i < classList.length; i++) {
+            if (classList[i].indexOf('theme-') === 0) {
+              classesToRemove.push(classList[i]);
+            }
+          }
+          classesToRemove.forEach(function(cls) {
+            classList.remove(cls);
+          });
+          // Add the new theme class
+          classList.add(themeClass);
 
           // Preload theme CSS for faster loading
           var baseUrl = document.documentElement.getAttribute('data-baseurl') || '';
