@@ -97,10 +97,10 @@ function generateFontFamilyList(fontArray, forSassMap = false) {
       return forSassMap ? "''" : '';
     }
     
-    // For SCSS maps, escape single quotes and wrap in single quotes
+    // For SCSS maps, escape backslashes first, then single quotes, and wrap in single quotes
     // For CSS custom properties, return as-is
     if (forSassMap) {
-      const escaped = cleaned.replace(/'/g, "\\'");
+      const escaped = cleaned.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
       return `'${escaped}'`;
     }
     return cleaned;
@@ -113,7 +113,7 @@ function generateFontFamilyList(fontArray, forSassMap = false) {
   }
   
   if (forSassMap) {
-    const escaped = fontStr.replace(/'/g, "\\'");
+    const escaped = fontStr.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
     return `'${escaped}'`;
   }
   return fontStr;
@@ -239,7 +239,14 @@ function generateFontImports(webFonts) {
   if (!webFonts || webFonts.length === 0) return '';
 
   const imports = webFonts
-    .filter(url => url.includes('fonts.googleapis.com'))
+    .filter(url => {
+      try {
+        const urlObj = new URL(url);
+        return urlObj.host === 'fonts.googleapis.com';
+      } catch {
+        return false;
+      }
+    })
     .map(url => `@import url('${url}');`)
     .join('\n');
 

@@ -6,7 +6,7 @@ import type { ThemeFlavor } from './types.js';
 // Helper function to generate syntax highlighting CSS
 function generateSyntaxHighlightingCSS(flavor: ThemeFlavor): string {
   const { tokens } = flavor;
-  const escapedId = CSS.escape ? CSS.escape(flavor.id) : flavor.id.replace(/[<>"'&]/g, '\\$&');
+  const escapedId = CSS.escape ? CSS.escape(flavor.id) : flavor.id.replace(/[<>"'&\\]/g, '\\$&');
 
   // Extract syntax colors from theme tokens
   const syntaxColors = {
@@ -104,7 +104,7 @@ function hexToHsl(hex: string): { h: number; s: number; l: number } {
 // Helper function to generate theme CSS variables
 function generateThemeCSSVariables(flavor: ThemeFlavor): string {
   const { tokens } = flavor;
-  const escapedId = CSS.escape ? CSS.escape(flavor.id) : flavor.id.replace(/[<>"'&]/g, '\\$&');
+  const escapedId = CSS.escape ? CSS.escape(flavor.id) : flavor.id.replace(/[<>"'&\\]/g, '\\$&');
 
   // Convert HSL values to CSS format
   const primaryHsl = hexToHsl(tokens.brand.primary);

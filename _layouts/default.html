@@ -29,7 +29,14 @@
 
           // Preload theme CSS for faster loading
           var baseUrl = document.documentElement.getAttribute('data-baseurl') || '';
-          var themePath = baseUrl + '/assets/css/themes/' + savedTheme + '.css';
+          // Sanitize baseUrl to prevent XSS attacks
+          function sanitizeUrlPath(path) {
+            if (!path) return '';
+            // Remove or encode dangerous characters that could be interpreted as HTML/JS
+            return path.replace(/[<>"'`&]/g, '').replace(/\\/g, '');
+          }
+          var sanitizedBaseUrl = sanitizeUrlPath(baseUrl);
+          var themePath = sanitizedBaseUrl + '/assets/css/themes/' + savedTheme + '.css';
 
           // Create preload link
           var preloadLink = document.createElement('link');
