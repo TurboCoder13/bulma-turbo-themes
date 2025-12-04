@@ -23,8 +23,8 @@ if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
     echo "Bootstrap development environment"
     echo ""
     echo "This script will:"
-    echo "  - Check for required tools (node, npm, ruby, bundle)"
-    echo "  - Install Node.js dependencies"
+    echo "  - Check for required tools (bun, node, ruby, bundle)"
+    echo "  - Install dependencies with Bun"
     echo "  - Install Ruby dependencies"
     echo "  - Set up git hooks (husky)"
     echo ""
@@ -58,27 +58,39 @@ cd "$(git rev-parse --show-toplevel 2>/dev/null || echo ".")"
 echo ""
 log_info "✓ Checking required tools..."
 
-# Check for required tools
+# Check for required tools and detect package manager
 MISSING_TOOLS=()
 
+# Detect package manager (prefer bun, fall back to npm)
+if command_exists bun; then
+    PKG_MGR="bun"
+    PKG_RUN="bun run"
+    BUN_VERSION=$(bun --version)
+    log_success "  ✓ bun $BUN_VERSION (primary package manager)"
+elif command_exists npm; then
+    PKG_MGR="npm"
+    PKG_RUN="npm run"
+    NPM_VERSION=$(npm --version)
+    log_success "  ✓ npm $NPM_VERSION"
+    log_warn "  ⚠ bun not found (install for faster builds: https://bun.sh)"
+else
+    MISSING_TOOLS+=("bun or npm")
+    log_error "  ✗ No package manager found"
+fi
+
 if ! command_exists node; then
-    MISSING_TOOLS+=("node")
-    log_error "  ✗ node not found"
+    if [ "$PKG_MGR" != "bun" ]; then
+        MISSING_TOOLS+=("node")
+        log_error "  ✗ node not found"
+    else
+        log_warn "  ⚠ node not found (optional, bun provides Node.js compatibility)"
+    fi
 else
     NODE_VERSION=$(node --version)
     log_success "  ✓ node $NODE_VERSION"
 fi
 
-if ! command_exists npm; then
-    MISSING_TOOLS+=("npm")
-    log_error "  ✗ npm not found"
-else
-    NPM_VERSION=$(npm --version)
-    log_success "  ✓ npm $NPM_VERSION"
-fi
-
 if ! command_exists ruby; then
-    MISSING_TOOLS+=("ruby")
     log_warn "  ⚠ ruby not found (optional for Jekyll demo site)"
 else
     RUBY_VERSION=$(ruby --version | cut -d' ' -f2)
@@ -86,7 +98,6 @@ else
 fi
 
 if ! command_exists bundle; then
-    MISSING_TOOLS+=("bundle")
     log_warn "  ⚠ bundle not found (optional for Jekyll demo site)"
 else
     BUNDLE_VERSION=$(bundle --version | cut -d' ' -f3)
@@ -101,15 +112,23 @@ if [ ${#MISSING_TOOLS[@]} -gt 0 ]; then
 fi
 
 echo ""
-log_info "📦 Installing Node.js dependencies..."
+log_info "📦 Installing dependencies with $PKG_MGR..."
 
-if [ -f "package-lock.json" ]; then
-    npm ci
+if [ "$PKG_MGR" = "bun" ]; then
+    if [ -f "bun.lock" ]; then
+        bun install --frozen-lockfile
+    else
+        bun install
+    fi
 else
-    npm install
+    if [ -f "package-lock.json" ]; then
+        npm ci
+    else
+        npm install
+    fi
 fi
 
-log_success "✅ Node.js dependencies installed"
+log_success "✅ Dependencies installed with $PKG_MGR"
 
 # Install Ruby dependencies if Gemfile exists
 if [ -f "Gemfile" ] && command_exists bundle; then
@@ -125,7 +144,7 @@ if [ "$SKIP_GIT_HOOKS" = false ] && [ -d ".git" ]; then
     log_info "🪝 Setting up git hooks..."
     
     if grep -q '"prepare"' package.json 2>/dev/null; then
-        npm run prepare >/dev/null 2>&1 || true
+        $PKG_RUN prepare >/dev/null 2>&1 || true
         log_success "✅ Git hooks configured"
     else
         log_warn "⚠️  No prepare script found; skipping git hooks setup"

@@ -45,8 +45,10 @@ safe_kill_processes() {
   fi
 }
 
-# Kill Jekyll processes
+# Kill Jekyll processes (more aggressive)
 safe_kill_processes "jekyll" "Jekyll"
+# Also kill any processes containing "serve" that might be Jekyll
+safe_kill_processes "serve.*port.*4000" "Jekyll serve on port 4000"
 
 # Wait for cleanup to take effect
 sleep 1
@@ -83,6 +85,16 @@ free_port() {
 
 # Free port 4000
 free_port 4000
+
+# Extra aggressive cleanup - try to kill any remaining processes on port 4000
+if command -v lsof &>/dev/null; then
+  pids=$(lsof -ti:4000 2>/dev/null || true)
+  if [ -n "$pids" ]; then
+    echo "  Extra cleanup: Killing remaining processes on port 4000: $pids"
+    echo "$pids" | xargs -r kill -9 2>/dev/null || true
+    sleep 1
+  fi
+fi
 
 # Wait for processes to fully terminate
 sleep 2

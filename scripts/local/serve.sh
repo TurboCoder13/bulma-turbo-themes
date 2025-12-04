@@ -81,11 +81,18 @@ print_status "$YELLOW" "💡 Press Ctrl+C to stop the server"
 print_status "$BLUE" "🔄 Live reload is enabled - changes will auto-refresh"
 echo ""
 
+# Detect package manager for TypeScript watch
+if command_exists "bun"; then
+  PKG_RUN="bun run"
+elif command_exists "npm"; then
+  PKG_RUN="npm run"
+fi
+
 # Start Jekyll server with live reload and optional TypeScript watch in parallel
 if [ "$start_ts_watch" = true ]; then
   if grep -q '"ts:watch"' package.json >/dev/null 2>&1; then
     print_status "$BLUE" "⚡ Starting TypeScript watcher (tsc --watch)"
-    (npm run ts:watch >/dev/null 2>&1 &)
+    ($PKG_RUN ts:watch >/dev/null 2>&1 &)
   fi
 fi
 bundle exec jekyll serve --port $local_port --livereload --incremental
