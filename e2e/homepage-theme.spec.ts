@@ -32,7 +32,7 @@ test.describe('Homepage Theme Switching @smoke', () => {
     });
   });
 
-  const themesToTest = ['github-dark', 'catppuccin-latte'];
+  const themesToTest = ['catppuccin-mocha', 'catppuccin-latte'];
 
   for (const theme of themesToTest) {
     test(`should switch to ${theme} theme`, async ({ homePage }) => {
@@ -41,8 +41,10 @@ test.describe('Homepage Theme Switching @smoke', () => {
       });
 
       await test.step('Verify theme applied and take screenshot', async () => {
-        // Verify data-flavor attribute on html element
-        await expect(homePage.page.locator('html')).toHaveAttribute('data-flavor', theme);
+        // Verify theme CSS class on html element
+        await expect(homePage.page.locator('html')).toHaveClass(
+          new RegExp(`(?:^|\\s)theme-${theme}(?:\\s|$)`)
+        );
 
         // Verify localStorage contains the theme
         const storedTheme = await homePage.page.evaluate(() =>
@@ -50,8 +52,8 @@ test.describe('Homepage Theme Switching @smoke', () => {
         );
         expect(storedTheme).toBe(theme);
 
-        // Verify theme CSS href attribute matches selected theme
-        const themeCss = homePage.getThemeCss();
+        // Verify theme CSS is loaded (dynamically added link element)
+        const themeCss = homePage.page.locator(`link[data-theme-id="${theme}"]`);
         // Escape all regex special chars
         const escapedTheme = theme.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         await expect(themeCss).toHaveAttribute(
@@ -69,12 +71,12 @@ test.describe('Homepage Theme Switching @smoke', () => {
   }
 
   test('should persist theme selection after page reload', async ({ homePage }) => {
-    await test.step('Switch to github-dark theme', async () => {
-      await homePage.switchToTheme('github-dark');
+    await test.step('Switch to catppuccin-mocha theme', async () => {
+      await homePage.switchToTheme('catppuccin-mocha');
     });
 
     await test.step('Verify theme persists after reload', async () => {
-      await homePage.verifyThemePersistence('github-dark');
+      await homePage.verifyThemePersistence('catppuccin-mocha');
 
       // Take screenshot showing persisted theme
       const htmlElement = homePage.page.locator('html');
@@ -82,7 +84,7 @@ test.describe('Homepage Theme Switching @smoke', () => {
     });
   });
 
-  const themes = ['github-dark', 'catppuccin-latte'];
+  const themes = ['catppuccin-mocha', 'catppuccin-latte'];
 
   for (const theme of themes) {
     test(`should take visual snapshot of ${theme} theme @visual`, async ({ homePage }) => {
@@ -92,7 +94,7 @@ test.describe('Homepage Theme Switching @smoke', () => {
 
       await test.step('Take visual snapshot', async () => {
         // Wait for CSS to be fully applied
-        const themeCss = homePage.getThemeCss();
+        const themeCss = homePage.page.locator(`link[data-theme-id="${theme}"]`);
         // Escape all regex special chars
         const escapedTheme = theme.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         await expect(themeCss).toHaveAttribute(
