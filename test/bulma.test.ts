@@ -124,7 +124,7 @@ describe('generateBulmaUse', () => {
 
   it('returns basic use statement for empty config', () => {
     const output = generateBulmaUse(defaultColors);
-    expect(output).toContain("@use 'bulma/bulma' with (");
+    expect(output).toContain("@use 'bulma/sass' with (");
     expect(output).toContain('$primary: hsl(');
     expect(output).toContain('$link: hsl(');
     expect(output).toContain('$info: hsl(');
@@ -139,7 +139,7 @@ describe('generateBulmaUse', () => {
     };
     const output = generateBulmaUse(defaultColors, config);
     expect(output).toContain('$mobile: 768px;');
-    expect(output).toContain("@use 'bulma/bulma' with (");
+    expect(output).toContain("@use 'bulma/sass' with (");
     expect(output).toContain('$primary: hsl(');
   });
 });

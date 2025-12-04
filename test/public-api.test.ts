@@ -1201,7 +1201,6 @@ describe('public API', () => {
     Object.defineProperty(document, 'getElementById', {
       value: vi.fn((id) => {
         if (id === 'theme-flavor-menu') return mockElement;
-        if (id === 'theme-flavor-menu') return mockDropdown;
         if (id === 'theme-flavor-trigger') return mockElement;
         return null;
       }),
