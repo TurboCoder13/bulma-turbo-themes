@@ -1,61 +1,116 @@
+const THEME_FAMILIES = {
+  bulma: { name: 'Bulma', description: 'Classic Bulma themes' },
+  catppuccin: { name: 'Catppuccin', description: 'Soothing pastel themes' },
+  github: { name: 'GitHub', description: 'GitHub-inspired themes' },
+  dracula: { name: 'Dracula', description: 'Dark vampire aesthetic' },
+};
 const THEMES = [
+  // Bulma themes
   {
     id: 'bulma-light',
-    name: 'Bulma Light',
+    name: 'Light',
+    description: 'Classic Bulma look with a bright, neutral palette.',
     cssFile: 'assets/css/themes/bulma-light.css',
     icon: 'assets/img/bulma-logo.png',
+    family: 'bulma',
+    appearance: 'light',
+    colors: { bg: '#ffffff', surface: '#f5f5f5', accent: '#00d1b2', text: '#363636' },
   },
   {
     id: 'bulma-dark',
-    name: 'Bulma Dark',
+    name: 'Dark',
+    description: 'Dark Bulma theme tuned for low-light reading.',
     cssFile: 'assets/css/themes/bulma-dark.css',
-    icon: 'assets/img/bulma-logo-dark.png',
+    icon: 'assets/img/bulma-logo.png',
+    family: 'bulma',
+    appearance: 'dark',
+    colors: { bg: '#1a1a2e', surface: '#252540', accent: '#00d1b2', text: '#f5f5f5' },
   },
+  // Catppuccin themes
   {
     id: 'catppuccin-latte',
-    name: 'Catppuccin Latte',
+    name: 'Latte',
+    description: 'Light, soft Catppuccin palette for daytime use.',
     cssFile: 'assets/css/themes/catppuccin-latte.css',
     icon: 'assets/img/catppuccin-logo-latte.png',
+    family: 'catppuccin',
+    appearance: 'light',
+    colors: { bg: '#eff1f5', surface: '#e6e9ef', accent: '#8839ef', text: '#4c4f69' },
   },
   {
     id: 'catppuccin-frappe',
-    name: 'Catppuccin Frappé',
+    name: 'Frappé',
+    description: 'Balanced dark Catppuccin theme for focused work.',
     cssFile: 'assets/css/themes/catppuccin-frappe.css',
     icon: 'assets/img/catppuccin-logo-latte.png',
+    family: 'catppuccin',
+    appearance: 'dark',
+    colors: { bg: '#303446', surface: '#414559', accent: '#ca9ee6', text: '#c6d0f5' },
   },
   {
     id: 'catppuccin-macchiato',
-    name: 'Catppuccin Macchiato',
+    name: 'Macchiato',
+    description: 'Deep, atmospheric Catppuccin variant with rich contrast.',
     cssFile: 'assets/css/themes/catppuccin-macchiato.css',
     icon: 'assets/img/catppuccin-logo-macchiato.png',
+    family: 'catppuccin',
+    appearance: 'dark',
+    colors: { bg: '#24273a', surface: '#363a4f', accent: '#c6a0f6', text: '#cad3f5' },
   },
   {
     id: 'catppuccin-mocha',
-    name: 'Catppuccin Mocha',
+    name: 'Mocha',
+    description: 'Cozy, high-contrast Catppuccin theme for late-night sessions.',
     cssFile: 'assets/css/themes/catppuccin-mocha.css',
     icon: 'assets/img/catppuccin-logo-macchiato.png',
+    family: 'catppuccin',
+    appearance: 'dark',
+    colors: { bg: '#1e1e2e', surface: '#313244', accent: '#cba6f7', text: '#cdd6f4' },
   },
+  // Dracula theme
   {
     id: 'dracula',
-    name: 'Dracula',
+    name: 'Classic',
+    description: 'Iconic Dracula dark theme with vibrant accents.',
     cssFile: 'assets/css/themes/dracula.css',
     icon: 'assets/img/dracula-logo.png',
+    family: 'dracula',
+    appearance: 'dark',
+    colors: { bg: '#282a36', surface: '#44475a', accent: '#bd93f9', text: '#f8f8f2' },
   },
+  // GitHub themes
   {
     id: 'github-light',
-    name: 'GitHub Light',
+    name: 'Light',
+    description: 'GitHub-inspired light theme suited for documentation and UI heavy pages.',
     cssFile: 'assets/css/themes/github-light.css',
     icon: 'assets/img/github-logo-light.png',
+    family: 'github',
+    appearance: 'light',
+    colors: { bg: '#ffffff', surface: '#f6f8fa', accent: '#0969da', text: '#1f2328' },
   },
   {
     id: 'github-dark',
-    name: 'GitHub Dark',
+    name: 'Dark',
+    description: 'GitHub dark theme optimized for code-heavy views.',
     cssFile: 'assets/css/themes/github-dark.css',
     icon: 'assets/img/github-logo-dark.png',
+    family: 'github',
+    appearance: 'dark',
+    colors: { bg: '#0d1117', surface: '#161b22', accent: '#58a6ff', text: '#c9d1d9' },
   },
 ];
 const STORAGE_KEY = 'bulma-theme-flavor';
 const DEFAULT_THEME = 'catppuccin-mocha';
+function getCurrentThemeFromClasses(element) {
+  const classList = Array.from(element.classList);
+  for (const className of classList) {
+    if (className.startsWith('theme-')) {
+      return className.substring(6); // Remove 'theme-' prefix
+    }
+  }
+  return null;
+}
 function getBaseUrl(doc) {
   const baseElement = doc.documentElement;
   const raw = baseElement?.getAttribute('data-baseurl') || '';
@@ -67,77 +122,114 @@ function getBaseUrl(doc) {
     return '';
   }
 }
-function applyTheme(doc, themeId) {
+async function applyTheme(doc, themeId) {
   const theme = THEMES.find((t) => t.id === themeId) || THEMES.find((t) => t.id === DEFAULT_THEME);
   const baseUrl = getBaseUrl(doc);
-  const flavorLink = doc.getElementById('theme-flavor-css');
-  if (flavorLink) {
-    // Build a safe URL relative to base by prepending baseUrl to relative path
-    try {
-      const fullPath = baseUrl ? `${baseUrl}/${theme.cssFile}` : theme.cssFile;
-      const url = new URL(fullPath, 'http://localhost');
-      flavorLink.href = url.pathname;
-    } catch {
-      // Ignore invalid URL
-    }
+  // Add loading state to trigger button
+  const trigger = doc.getElementById('theme-flavor-trigger');
+  if (trigger) {
+    trigger.classList.add('is-loading');
   }
-  doc.documentElement.setAttribute('data-flavor', themeId);
-  // Update trigger button icon
-  const triggerIcon = doc.getElementById('theme-flavor-trigger-icon');
-  if (triggerIcon) {
-    // Clear existing content first
-    while (triggerIcon.firstChild) {
-      triggerIcon.removeChild(triggerIcon.firstChild);
-    }
-    if (theme.icon) {
-      // Create and append img element (CSP-friendly)
-      const img = doc.createElement('img');
-      try {
-        const fullPath = baseUrl ? `${baseUrl}/${theme.icon}` : theme.icon;
-        const url = new URL(fullPath, 'http://localhost');
-        img.src = url.pathname;
-      } catch {
-        // Ignore invalid URL
+  try {
+    // Apply theme class immediately (before CSS loading)
+    // This ensures the theme is applied even if CSS loading fails
+    const classList = Array.from(doc.documentElement.classList);
+    classList.forEach((className) => {
+      if (className.startsWith('theme-')) {
+        doc.documentElement.classList.remove(className);
       }
-      img.alt = theme.name;
-      img.title = theme.name; // Tooltip on hover
-      img.width = 28;
-      img.height = 28;
-      triggerIcon.appendChild(img);
-    } else {
-      // Fallback: show first two letters with circular background
-      const span = doc.createElement('span');
-      span.textContent = theme.name.substring(0, 2).toUpperCase();
-      span.style.fontSize = '12px';
-      span.style.fontWeight = 'bold';
-      span.style.color = 'var(--theme-text, inherit)';
-      span.style.display = 'flex';
-      span.style.alignItems = 'center';
-      span.style.justifyContent = 'center';
-      span.style.width = '28px';
-      span.style.height = '28px';
-      span.style.borderRadius = '50%';
-      span.style.backgroundColor = 'var(--theme-surface-1, #f5f5f5)';
-      span.style.border = '1px solid var(--theme-border, #ddd)';
-      span.title = theme.name; // Tooltip on hover
-      triggerIcon.appendChild(span);
+    });
+    // Add the new theme class (use resolved theme.id, not the input themeId)
+    doc.documentElement.classList.add(`theme-${theme.id}`);
+    // Lazy load theme CSS if not already loaded
+    const themeLinkId = `theme-${theme.id}-css`;
+    let themeLink = doc.getElementById(themeLinkId);
+    if (!themeLink) {
+      themeLink = doc.createElement('link');
+      themeLink.id = themeLinkId;
+      themeLink.rel = 'stylesheet';
+      themeLink.type = 'text/css';
+      themeLink.setAttribute('data-theme-id', theme.id);
+      try {
+        const fullPath = baseUrl ? `${baseUrl}/${theme.cssFile}` : theme.cssFile;
+        const url = new URL(fullPath, 'http://localhost');
+        themeLink.href = url.pathname;
+      } catch {
+        console.warn(`Invalid theme CSS path for ${theme.id}`);
+        // Theme class already applied, so we can return successfully
+        return;
+      }
+      // Add to document head
+      doc.head.appendChild(themeLink);
+      // Wait for CSS to load (but don't fail if it doesn't load)
+      try {
+        await new Promise((resolve, reject) => {
+          themeLink.onload = () => resolve();
+          themeLink.onerror = () => reject(new Error(`Failed to load theme ${theme.id}`));
+          // Timeout after 10 seconds
+          setTimeout(() => reject(new Error(`Theme ${theme.id} load timeout`)), 10000);
+        });
+      } catch (error) {
+        // CSS loading failed, but theme class is already applied
+        // Log the error but don't throw - theme switching should still work
+        console.warn(`Theme CSS failed to load for ${theme.id}:`, error);
+      }
+    }
+    // Clean up old theme CSS links (keep current and base themes)
+    const themeLinks = doc.querySelectorAll('link[id^="theme-"][id$="-css"]');
+    themeLinks.forEach((link) => {
+      const linkThemeId =
+        link.getAttribute('data-theme-id') || link.id.replace('theme-', '').replace('-css', '');
+      if (linkThemeId !== theme.id && linkThemeId !== 'base') {
+        link.remove();
+      }
+    });
+    // Update trigger button icon with theme's icon image
+    const triggerIcon = doc.getElementById('theme-flavor-trigger-icon');
+    if (triggerIcon && theme.icon) {
+      const iconPath = baseUrl ? `${baseUrl}/${theme.icon}` : theme.icon;
+      triggerIcon.src = iconPath;
+      triggerIcon.alt = `${THEME_FAMILIES[theme.family].name} ${theme.name}`;
+      triggerIcon.title = `${THEME_FAMILIES[theme.family].name} ${theme.name}`;
+    }
+    // Update active state in dropdown
+    const dropdownItems = doc.querySelectorAll('#theme-flavor-menu .dropdown-item.theme-item');
+    dropdownItems.forEach((item) => {
+      if (item.getAttribute('data-theme-id') === theme.id) {
+        item.classList.add('is-active');
+        item.setAttribute('aria-checked', 'true');
+      } else {
+        item.classList.remove('is-active');
+        item.setAttribute('aria-checked', 'false');
+      }
+    });
+  } finally {
+    // Remove loading state
+    if (trigger) {
+      trigger.classList.remove('is-loading');
     }
   }
-  // Update active state in dropdown
-  const dropdownItems = doc.querySelectorAll('#theme-flavor-items .dropdown-item');
-  dropdownItems.forEach((item) => {
-    if (item.getAttribute('data-theme-id') === themeId) {
-      item.classList.add('is-active');
-      item.setAttribute('aria-checked', 'true');
-    } else {
-      item.classList.remove('is-active');
-      item.setAttribute('aria-checked', 'false');
-    }
-  });
 }
-export function initTheme(documentObj, windowObj) {
+export async function initTheme(documentObj, windowObj) {
+  // Check if theme was already applied by blocking script
+  const initialTheme = windowObj.__INITIAL_THEME__;
   const savedTheme = windowObj.localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;
-  applyTheme(documentObj, savedTheme);
+  // If blocking script already applied theme and it matches saved, just load CSS if needed
+  if (initialTheme && initialTheme === savedTheme) {
+    const currentTheme = getCurrentThemeFromClasses(documentObj.documentElement);
+    if (currentTheme === savedTheme) {
+      // Theme class already applied by blocking script, just ensure CSS is loaded
+      const themeLinkId = `theme-${savedTheme}-css`;
+      const themeLink = documentObj.getElementById(themeLinkId);
+      if (!themeLink) {
+        // CSS not loaded yet, load it now
+        await applyTheme(documentObj, savedTheme);
+      }
+      return;
+    }
+  }
+  // Otherwise, apply theme normally
+  await applyTheme(documentObj, savedTheme);
 }
 export function initNavbar(documentObj) {
   const currentPath = documentObj.location.pathname;
@@ -197,13 +289,18 @@ export function initNavbar(documentObj) {
     }
   }
 }
-window.initNavbar = initNavbar;
+// Only assign to window in browser context
+if (typeof window !== 'undefined') {
+  window.initNavbar = initNavbar;
+}
 export function wireFlavorSelector(documentObj, windowObj) {
   const abortController = new AbortController();
+  const dropdownContent = documentObj.getElementById('theme-flavor-menu');
+  const trigger = documentObj.getElementById('theme-flavor-trigger');
+  // Get the outer dropdown container (navbar-item has-dropdown) for active state toggling
+  const dropdown = trigger?.closest('.navbar-item.has-dropdown');
+  const selectEl = documentObj.getElementById('theme-flavor-select');
   const baseUrl = getBaseUrl(documentObj);
-  const dropdownContent = documentObj.getElementById('theme-flavor-items');
-  const trigger = documentObj.querySelector('.theme-flavor-trigger');
-  const dropdown = documentObj.getElementById('theme-flavor-dd');
   if (!dropdownContent || !trigger || !dropdown) {
     return {
       cleanup: () => {
@@ -216,70 +313,141 @@ export function wireFlavorSelector(documentObj, windowObj) {
   // Get current theme to set initial aria-checked state
   const currentThemeId =
     windowObj.localStorage.getItem(STORAGE_KEY) ||
-    documentObj.documentElement.getAttribute('data-flavor') ||
+    getCurrentThemeFromClasses(documentObj.documentElement) ||
     DEFAULT_THEME;
-  // Populate dropdown with theme options
-  THEMES.forEach((theme) => {
-    const item = documentObj.createElement('a');
-    item.href = '#';
-    item.className = 'dropdown-item';
-    item.setAttribute('data-theme-id', theme.id);
-    item.setAttribute('role', 'menuitemradio');
-    item.setAttribute('aria-label', theme.name);
-    item.setAttribute('tabindex', '-1');
-    const isActive = theme.id === currentThemeId;
-    item.setAttribute('aria-checked', String(isActive));
-    if (isActive) {
-      item.classList.add('is-active');
+  // Keep optional native select (DDL) in sync with current theme
+  if (selectEl) {
+    // Clear any existing options
+    while (selectEl.firstChild) {
+      selectEl.removeChild(selectEl.firstChild);
     }
-    if (theme.icon) {
-      const img = documentObj.createElement('img');
-      try {
-        const fullPath = baseUrl ? `${baseUrl}/${theme.icon}` : theme.icon;
-        const url = new URL(fullPath, 'http://localhost');
-        img.src = url.pathname;
-      } catch {
-        // Ignore invalid URL
+    THEMES.forEach((theme) => {
+      const option = documentObj.createElement('option');
+      option.value = theme.id;
+      option.textContent = theme.name;
+      if (theme.id === currentThemeId) {
+        option.selected = true;
       }
-      img.alt = theme.name;
-      img.title = theme.name;
-      img.width = 28;
-      img.height = 28;
-      item.appendChild(img);
-    } else {
-      // Fallback: show first two letters with styled background
-      const span = documentObj.createElement('span');
-      span.textContent = theme.name.substring(0, 2);
-      span.style.fontSize = '14px';
-      span.style.fontWeight = 'bold';
-      span.style.color = 'var(--theme-text, inherit)';
-      item.appendChild(span);
-    }
-    // Always include a visually hidden full name for screen readers
-    const srOnly = documentObj.createElement('span');
-    srOnly.textContent = theme.name;
-    srOnly.style.position = 'absolute';
-    srOnly.style.width = '1px';
-    srOnly.style.height = '1px';
-    srOnly.style.padding = '0';
-    srOnly.style.margin = '-1px';
-    srOnly.style.overflow = 'hidden';
-    srOnly.style.clip = 'rect(0, 0, 0, 0)';
-    srOnly.style.whiteSpace = 'nowrap';
-    srOnly.style.border = '0';
-    item.appendChild(srOnly);
-    item.addEventListener('click', (e) => {
-      e.preventDefault();
-      applyTheme(documentObj, theme.id);
-      windowObj.localStorage.setItem(STORAGE_KEY, theme.id);
-      closeDropdown({ restoreFocus: true });
+      selectEl.appendChild(option);
     });
-    menuItems.push(item);
-    dropdownContent.appendChild(item);
+    // Enable select when JS is active
+    selectEl.disabled = false;
+    // Allow changing theme via native select
+    selectEl.addEventListener(
+      'change',
+      (event) => {
+        const target = event.target;
+        const selectedThemeId = target?.value || DEFAULT_THEME;
+        windowObj.localStorage.setItem(STORAGE_KEY, selectedThemeId);
+        applyTheme(documentObj, selectedThemeId).catch((error) => {
+          console.error(`Failed to apply theme ${selectedThemeId}:`, error);
+        });
+      },
+      { signal: abortController.signal }
+    );
+  }
+  // Populate dropdown with grouped theme options
+  const families = Object.keys(THEME_FAMILIES);
+  let animationDelay = 0;
+  families.forEach((familyKey) => {
+    const familyThemes = THEMES.filter((t) => t.family === familyKey);
+    if (familyThemes.length === 0) return;
+    const familyMeta = THEME_FAMILIES[familyKey];
+    // Create family group container
+    const group = documentObj.createElement('div');
+    group.className = 'theme-family-group';
+    group.setAttribute('role', 'group');
+    group.setAttribute('aria-labelledby', `theme-family-${familyKey}`);
+    if (group.style && typeof group.style.setProperty === 'function') {
+      group.style.setProperty('--animation-delay', `${animationDelay}ms`);
+    }
+    animationDelay += 30;
+    // Create family header
+    const header = documentObj.createElement('div');
+    header.className = 'theme-family-header';
+    header.id = `theme-family-${familyKey}`;
+    const headerTitle = documentObj.createElement('span');
+    headerTitle.className = 'theme-family-name';
+    headerTitle.textContent = familyMeta.name;
+    header.appendChild(headerTitle);
+    group.appendChild(header);
+    // Create themes container
+    const themesContainer = documentObj.createElement('div');
+    themesContainer.className = 'theme-family-items';
+    familyThemes.forEach((theme) => {
+      const item = documentObj.createElement('button');
+      item.type = 'button';
+      item.className = 'dropdown-item theme-item';
+      item.setAttribute('data-theme-id', theme.id);
+      item.setAttribute('data-appearance', theme.appearance);
+      item.setAttribute('role', 'menuitemradio');
+      item.setAttribute(
+        'aria-label',
+        `${familyMeta.name} ${theme.name} (${theme.appearance}). ${theme.description}`
+      );
+      item.setAttribute('tabindex', '-1');
+      const isActive = theme.id === currentThemeId;
+      item.setAttribute('aria-checked', String(isActive));
+      if (isActive) {
+        item.classList.add('is-active');
+      }
+      // Icon
+      const icon = documentObj.createElement('img');
+      icon.className = 'theme-icon';
+      if (theme.icon) {
+        const iconPath = baseUrl ? `${baseUrl}/${theme.icon}` : theme.icon;
+        icon.src = iconPath;
+        icon.alt = `${familyMeta.name} ${theme.name}`;
+      }
+      icon.width = 24;
+      icon.height = 24;
+      item.appendChild(icon);
+      // Text content
+      const copy = documentObj.createElement('div');
+      copy.className = 'theme-copy';
+      const titleEl = documentObj.createElement('span');
+      titleEl.className = 'theme-title';
+      titleEl.textContent = `${familyMeta.name} · ${theme.name}`;
+      copy.appendChild(titleEl);
+      const descriptionEl = documentObj.createElement('span');
+      descriptionEl.className = 'theme-description';
+      descriptionEl.textContent = theme.description;
+      copy.appendChild(descriptionEl);
+      item.appendChild(copy);
+      // Checkmark for active state
+      const check = documentObj.createElement('span');
+      check.className = 'theme-check';
+      check.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+      item.appendChild(check);
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Always update localStorage and close dropdown, even if CSS loading fails
+        windowObj.localStorage.setItem(STORAGE_KEY, theme.id);
+        if (selectEl) {
+          selectEl.value = theme.id;
+          // Notify any listeners watching the native select
+          // The change event will trigger applyTheme via the change listener
+          const changeEvent = new Event('change', { bubbles: true });
+          selectEl.dispatchEvent(changeEvent);
+        } else {
+          // If selectEl doesn't exist, apply theme directly
+          applyTheme(documentObj, theme.id).catch((error) => {
+            console.error(`Failed to apply theme ${theme.id}:`, error);
+          });
+        }
+        closeDropdown({ restoreFocus: true });
+      });
+      menuItems.push(item);
+      themesContainer.appendChild(item);
+    });
+    group.appendChild(themesContainer);
+    dropdownContent.appendChild(group);
   });
   // Update aria-expanded on trigger
   const updateAriaExpanded = (expanded) => {
-    trigger.setAttribute('aria-expanded', String(expanded));
+    if (trigger) {
+      trigger.setAttribute('aria-expanded', String(expanded));
+    }
   };
   // Focus management
   const focusMenuItem = (index) => {
@@ -294,73 +462,59 @@ export function wireFlavorSelector(documentObj, windowObj) {
     item.focus();
     currentIndex = index;
   };
-  const openDropdown = () => {
-    dropdown.classList.add('is-active');
-    updateAriaExpanded(true);
-    currentIndex = -1;
-  };
   const closeDropdown = (options = {}) => {
     const { restoreFocus = true } = options;
-    dropdown.classList.remove('is-active');
+    if (dropdown) {
+      dropdown.classList.remove('is-active');
+    }
     updateAriaExpanded(false);
     menuItems.forEach((menuItem) => {
       menuItem.setAttribute('tabindex', '-1');
     });
     currentIndex = -1;
-    if (restoreFocus) {
+    if (restoreFocus && trigger) {
       // Only restore focus to trigger when explicitly requested (e.g., selection or Esc)
       trigger.focus();
     }
   };
-  // Open dropdown on hover
-  dropdown.addEventListener(
-    'mouseenter',
-    () => {
-      openDropdown();
-    },
-    { signal: abortController.signal }
-  );
-  // Close dropdown when mouse leaves
-  dropdown.addEventListener(
-    'mouseleave',
-    () => {
-      // Only close if not keyboard navigating
-      if (currentIndex === -1) {
-        closeDropdown();
-      }
-    },
-    { signal: abortController.signal }
-  );
   // Toggle dropdown helper function
   const toggleDropdown = (focusFirst = false) => {
+    if (!dropdown) return;
     const isActive = dropdown.classList.toggle('is-active');
     updateAriaExpanded(isActive);
     if (!isActive) {
       currentIndex = -1;
       menuItems.forEach((menuItem) => {
-        menuItem.setAttribute('tabindex', '-1');
-        menuItem.setAttribute('aria-checked', String(menuItem.classList.contains('is-active')));
+        if (menuItem && typeof menuItem.setAttribute === 'function') {
+          menuItem.setAttribute('tabindex', '-1');
+          const isActiveItem =
+            menuItem.classList && typeof menuItem.classList.contains === 'function'
+              ? menuItem.classList.contains('is-active')
+              : false;
+          menuItem.setAttribute('aria-checked', String(isActiveItem));
+        }
       });
     } else if (focusFirst && menuItems.length > 0) {
-      // ...rest of the existing logic
       // When opening via keyboard, focus first item
       focusMenuItem(0);
     }
   };
   // Toggle dropdown on trigger click (for touch devices)
-  trigger.addEventListener(
-    'click',
-    (e) => {
-      e.preventDefault();
-      toggleDropdown();
-    },
-    { signal: abortController.signal }
-  );
+  if (trigger) {
+    trigger.addEventListener(
+      'click',
+      (e) => {
+        e.preventDefault();
+        toggleDropdown();
+      },
+      { signal: abortController.signal }
+    );
+  }
   // Close dropdown when clicking outside
   documentObj.addEventListener(
     'click',
     (e) => {
-      if (!dropdown.contains(e.target)) {
+      if (dropdown && !dropdown.contains(e.target)) {
         // Close on any outside click; do not steal focus from the newly clicked element
         closeDropdown({ restoreFocus: false });
       }
@@ -371,59 +525,62 @@ export function wireFlavorSelector(documentObj, windowObj) {
   documentObj.addEventListener(
     'keydown',
     (e) => {
-      if (e.key === 'Escape' && dropdown.classList.contains('is-active')) {
+      if (e.key === 'Escape' && dropdown && dropdown.classList.contains('is-active')) {
         closeDropdown({ restoreFocus: true });
       }
     },
     { signal: abortController.signal }
   );
   // Keyboard navigation
-  trigger.addEventListener(
-    'keydown',
-    (e) => {
-      const key = e.key;
-      if (key === 'Enter' || key === ' ') {
-        e.preventDefault();
-        const wasActive = dropdown.classList.contains('is-active');
-        if (wasActive) {
-          // If already open, close it
-          toggleDropdown(false);
-        } else {
-          // If closed, open and focus first item
-          toggleDropdown(true);
-        }
-      } else if (key === 'ArrowDown') {
-        e.preventDefault();
-        if (!dropdown.classList.contains('is-active')) {
-          dropdown.classList.add('is-active');
-          updateAriaExpanded(true);
-          focusMenuItem(0); // Focus first item when opening
-        } else {
-          // If currentIndex is -1 (dropdown opened via mouse or not yet initialized), focus first item
-          if (currentIndex < 0) {
-            focusMenuItem(0);
+  if (trigger) {
+    trigger.addEventListener(
+      'keydown',
+      (e) => {
+        if (!dropdown) return;
+        const key = e.key;
+        if (key === 'Enter' || key === ' ') {
+          e.preventDefault();
+          const wasActive = dropdown.classList.contains('is-active');
+          if (wasActive) {
+            // If already open, close it
+            toggleDropdown(false);
           } else {
-            const nextIndex = currentIndex < menuItems.length - 1 ? currentIndex + 1 : 0;
-            focusMenuItem(nextIndex);
+            // If closed, open and focus first item
+            toggleDropdown(true);
+          }
+        } else if (key === 'ArrowDown') {
+          e.preventDefault();
+          if (!dropdown.classList.contains('is-active')) {
+            dropdown.classList.add('is-active');
+            updateAriaExpanded(true);
+            focusMenuItem(0); // Focus first item when opening
+          } else {
+            // If currentIndex is -1 (dropdown opened via mouse or not yet initialized), focus first item
+            if (currentIndex < 0) {
+              focusMenuItem(0);
+            } else {
+              const nextIndex = currentIndex < menuItems.length - 1 ? currentIndex + 1 : 0;
+              focusMenuItem(nextIndex);
+            }
+          }
+        } else if (key === 'ArrowUp') {
+          e.preventDefault();
+          if (!dropdown.classList.contains('is-active')) {
+            dropdown.classList.add('is-active');
+            updateAriaExpanded(true);
+            // Start from last item when opening with ArrowUp
+            focusMenuItem(menuItems.length - 1);
+          } else {
+            // If currentIndex is -1 (dropdown opened via mouse), start from last
+            const startIndex = currentIndex < 0 ? menuItems.length - 1 : currentIndex;
+            const prevIndex = startIndex > 0 ? startIndex - 1 : menuItems.length - 1;
+            focusMenuItem(prevIndex);
           }
         }
-      } else if (key === 'ArrowUp') {
-        e.preventDefault();
-        if (!dropdown.classList.contains('is-active')) {
-          dropdown.classList.add('is-active');
-          updateAriaExpanded(true);
-          // Start from last item when opening with ArrowUp
-          focusMenuItem(menuItems.length - 1);
-        } else {
-          // If currentIndex is -1 (dropdown opened via mouse), start from last
-          const startIndex = currentIndex < 0 ? menuItems.length - 1 : currentIndex;
-          const prevIndex = startIndex > 0 ? startIndex - 1 : menuItems.length - 1;
-          focusMenuItem(prevIndex);
-        }
-      }
-    },
-    { signal: abortController.signal }
-  );
+      },
+      { signal: abortController.signal }
+    );
+  }
   // Keyboard navigation on menu items
   menuItems.forEach((item, index) => {
     item.addEventListener(
@@ -457,6 +614,10 @@ export function wireFlavorSelector(documentObj, windowObj) {
   });
   // Initialize aria-expanded
   updateAriaExpanded(false);
+  // For navbar dropdown, ensure proper initial state
+  if (dropdown) {
+    dropdown.classList.remove('is-active');
+  }
   return {
     cleanup: () => {
       abortController.abort();
@@ -475,20 +636,21 @@ export function enhanceAccessibility(documentObj) {
 if (typeof document !== 'undefined' && typeof window !== 'undefined') {
   document.addEventListener('DOMContentLoaded', () => {
     console.warn('Theme switcher initializing...');
-    try {
-      initTheme(document, window);
-      const { cleanup } = wireFlavorSelector(document, window);
-      enhanceAccessibility(document);
-      // Register cleanup to run on teardown
-      const pagehideHandler = () => {
-        cleanup();
-        window.removeEventListener('pagehide', pagehideHandler);
-      };
-      window.addEventListener('pagehide', pagehideHandler);
-      console.warn('Theme switcher initialized successfully');
-    } catch (error) {
-      console.error('Theme switcher initialization failed:', error);
-    }
+    initTheme(document, window)
+      .then(() => {
+        const { cleanup } = wireFlavorSelector(document, window);
+        enhanceAccessibility(document);
+        // Register cleanup to run on teardown
+        const pagehideHandler = () => {
+          cleanup();
+          window.removeEventListener('pagehide', pagehideHandler);
+        };
+        window.addEventListener('pagehide', pagehideHandler);
+        console.warn('Theme switcher initialized successfully');
+      })
+      .catch((error) => {
+        console.error('Theme switcher initialization failed:', error);
+      });
   });
 }
 //# sourceMappingURL=index.js.map
