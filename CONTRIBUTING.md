@@ -4,10 +4,48 @@ Thanks for contributing! Please follow these guidelines to keep things smooth.
 
 ## Development setup
 
-- Requirements: Node 20+, npm; Ruby + Bundler for the demo site
-- Install dependencies: `npm ci` and `bundle install`
-- Build TS and CSS: `npm run build`
-- Run site (optional): `./scripts/local/serve.sh --no-build`
+### Prerequisites
+
+- **Bun** (recommended): 1.3+ - [Install Bun](https://bun.sh/docs/installation)
+- **Node.js** (alternative): 22+ with npm
+- **Ruby**: 3.3+ with Bundler (for Jekyll demo site)
+- **uv**: Python package manager (for lintro)
+
+### Quick Start with Bun (Recommended)
+
+```bash
+# Install dependencies (5-10x faster than npm)
+bun install
+bundle install
+
+# Build everything
+bun run build           # TypeScript compilation
+bun run build:themes    # Generate CSS themes
+
+# Run the dev server
+bun run serve           # Builds and serves with live reload
+```
+
+### Alternative: npm
+
+```bash
+npm ci
+bundle install
+npm run build
+npm run build:themes
+npm run serve
+```
+
+### Build Commands
+
+| Command                   | Description                                      |
+| ------------------------- | ------------------------------------------------ |
+| `bun run build`           | Compile TypeScript to JavaScript                 |
+| `bun run build:themes`    | Generate CSS theme files in `assets/css/themes/` |
+| `bun run build:ci:jekyll` | Build Jekyll site for CI                         |
+| `bun run serve`           | Build and serve with live reload                 |
+
+**Note:** CSS theme files in `assets/css/themes/` are build artifacts and are git-ignored. They are automatically generated during the build process and should not be committed to version control.
 
 ### Available Rake tasks
 
@@ -28,9 +66,21 @@ Most developers will use `npm run build:gem` which handles the full build proces
 
 ## Testing and linting
 
-- Run tests with coverage: `npm test`
-- Lint code: `npm run lint` and `npm run stylelint`
-- Format: `npm run format`
+```bash
+# Run tests with coverage
+bun run test
+
+# Lint code
+bun run lint        # ESLint for TypeScript
+bun run stylelint   # Stylelint for CSS
+bun run mdlint      # Markdownlint for docs
+
+# Format code
+bun run format      # Check formatting
+bun run format:write # Auto-fix formatting
+```
+
+All commands work with both `bun run` and `npm run`.
 
 ## Commits and PRs
 

@@ -2,6 +2,7 @@
 
 Modern, accessible theme packs and a drop-in theme selector for Bulma 1.x.
 
+[![Bun](https://img.shields.io/badge/bun-1.3+-black?logo=bun)](https://bun.sh/)
 [![Node.js](https://img.shields.io/badge/node.js-22-green)](https://nodejs.org/)
 [![Coverage](https://codecov.io/gh/TurboCoder13/bulma-turbo-themes/branch/main/graph/badge.svg)](https://codecov.io/gh/TurboCoder13/bulma-turbo-themes)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
@@ -23,6 +24,9 @@ Modern, accessible theme packs and a drop-in theme selector for Bulma 1.x.
 - Accessible theme selector with keyboard and screen reader support
 - Inline or link-based CSS delivery; CSP-friendly
 - Tested with coverage, Lighthouse CI, and stylelint
+- Advanced Bulma customization (breakpoints, spacing, shadows, mixins)
+- Lazy-loaded themes with performance optimizations
+- Full Bulma Sass variable integration
 
 ## Installation
 
@@ -49,11 +53,19 @@ bundle exec jekyll serve
 
 Assets are automatically available - no copying needed!
 
+### Advanced Theming
+
+For advanced customization options including custom breakpoints, spacing, shadows, and Bulma mixins, see the [Advanced Theming Guide](docs/ADVANCED-THEMING.md).
+
 ### For Non-Jekyll Projects
 
-Install via npm:
+Install via Bun (recommended) or npm:
 
 ```bash
+# Using Bun (recommended - 5-10x faster)
+bun add @turbocoder13/bulma-turbo-themes
+
+# Using npm
 npm install @turbocoder13/bulma-turbo-themes
 ```
 
@@ -76,18 +88,24 @@ npm install @turbocoder13/bulma-turbo-themes
 1. Add selector markup and initialize:
 
 ```html
-<div class="dropdown is-right is-theme" id="theme-flavor-dd">
-  <div class="dropdown-trigger">
-    <button id="theme-flavor-trigger" aria-haspopup="true">
-      <span id="theme-flavor-trigger-icon"></span>
-      <span id="theme-flavor-trigger-label"></span>
-    </button>
-  </div>
-  <div class="dropdown-menu" id="theme-flavor-menu" role="menu">
+<div class="navbar-item has-dropdown is-hoverable">
+  <button
+    class="navbar-link"
+    id="theme-flavor-trigger"
+    type="button"
+    aria-haspopup="true"
+    aria-expanded="false"
+    aria-controls="theme-flavor-menu"
+  >
+    <span class="icon is-small" id="theme-flavor-trigger-icon"></span>
+    Theme
+  </button>
+  <div class="navbar-dropdown" id="theme-flavor-menu" aria-labelledby="theme-flavor-trigger">
     <div class="dropdown-content" id="theme-flavor-items"></div>
   </div>
-  <div class="select is-hidden"><select id="theme-flavor-select"></select></div>
-  <span id="theme-flavor-icon"></span>
+</div>
+<div class="select is-rounded is-small is-hidden">
+  <select id="theme-flavor-select" aria-label="Theme flavor" disabled></select>
 </div>
 ```
 
@@ -110,18 +128,24 @@ npm install @turbocoder13/bulma-turbo-themes
 1. Add selector markup and initialize:
 
 ```html
-<div class="dropdown is-right is-theme" id="theme-flavor-dd">
-  <div class="dropdown-trigger">
-    <button id="theme-flavor-trigger" aria-haspopup="true">
-      <span id="theme-flavor-trigger-icon"></span>
-      <span id="theme-flavor-trigger-label"></span>
-    </button>
-  </div>
-  <div class="dropdown-menu" id="theme-flavor-menu" role="menu">
+<div class="navbar-item has-dropdown is-hoverable">
+  <button
+    class="navbar-link"
+    id="theme-flavor-trigger"
+    type="button"
+    aria-haspopup="true"
+    aria-expanded="false"
+    aria-controls="theme-flavor-menu"
+  >
+    <span class="icon is-small" id="theme-flavor-trigger-icon"></span>
+    Theme
+  </button>
+  <div class="navbar-dropdown" id="theme-flavor-menu" aria-labelledby="theme-flavor-trigger">
     <div class="dropdown-content" id="theme-flavor-items"></div>
   </div>
-  <div class="select is-hidden"><select id="theme-flavor-select"></select></div>
-  <span id="theme-flavor-icon"></span>
+</div>
+<div class="select is-rounded is-small is-hidden">
+  <select id="theme-flavor-select" aria-label="Theme flavor" disabled></select>
 </div>
 ```
 
@@ -146,15 +170,52 @@ This project includes comprehensive testing:
 Run tests:
 
 ```bash
+# Using Bun (recommended)
+bun run test          # Unit tests with coverage
+bun run e2e           # All E2E tests
+bun run e2e:smoke     # Smoke tests only
+bun run e2e:visual    # Visual regression tests
+bun run e2e:a11y      # Accessibility tests
+bun run e2e:ui        # Playwright UI mode
+
+# Using npm (also works)
 npm test              # Unit tests with coverage
 npm run e2e           # All E2E tests
-npm run e2e:smoke     # Smoke tests only
-npm run e2e:visual    # Visual regression tests
-npm run e2e:a11y      # Accessibility tests
-npm run e2e:ui        # Playwright UI mode
 ```
 
 For detailed E2E testing documentation, see `docs/E2E-TESTING.md`.
+
+## Development Setup
+
+### Prerequisites
+
+- **Bun** 1.3+ (recommended) - [Install Bun](https://bun.sh/docs/installation)
+- **Node.js** 22+ (alternative)
+- **Ruby** 3.3+ with Bundler (for Jekyll demo site)
+
+### Quick Start
+
+```bash
+# Clone and install
+git clone https://github.com/TurboCoder13/bulma-turbo-themes.git
+cd bulma-turbo-themes
+bun install
+bundle install
+
+# Build and serve
+bun run build
+bun run build:themes
+bun run serve
+```
+
+### Why Bun?
+
+This project uses [Bun](https://bun.sh/) as its primary JavaScript runtime for:
+
+- **5-10x faster** package installation
+- **10x faster** script startup time
+- **~40% reduction** in CI build times
+- Full npm compatibility (works with all existing packages)
 
 ## Documentation
 
