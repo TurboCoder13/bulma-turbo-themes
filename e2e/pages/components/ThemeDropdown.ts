@@ -1,5 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
-import { escapeCssAttributeSelector } from '../../helpers';
+import { escapeCssAttributeSelector, escapeRegex } from '../../helpers';
 
 /**
  * Theme dropdown component object.
@@ -72,8 +72,11 @@ export class ThemeDropdown {
     await expect(this.dropdown).not.toHaveClass(/(?:^|\s)is-active(?:\s|$)/, {
       timeout: ThemeDropdown.THEME_DROPDOWN_ACTIVE_TIMEOUT,
     });
-    // Verify theme was applied by checking data-flavor attribute on html element
-    await expect(this.page.locator('html')).toHaveAttribute('data-flavor', themeId);
+    // Verify theme was applied by checking theme CSS class on html element
+    const escapedThemeId = escapeRegex(themeId);
+    await expect(this.page.locator('html')).toHaveClass(
+      new RegExp(`(?:^|\\s)theme-${escapedThemeId}(?:\\s|$)`)
+    );
   }
 
   /**
