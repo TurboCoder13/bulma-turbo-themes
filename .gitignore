@@ -6,6 +6,7 @@ node_modules/
 coverage/
 dist/*.map
 dist/
+# npm lock file (migrated to Bun)
 package-lock.json
 Gemfile.lock
 _site/
@@ -16,6 +17,7 @@ vendor/
 .DS_Store
 Gemfile.lock
 *.log
+# Note: bun.lock is tracked (not ignored) for reproducible builds
 
 _site/
 .sass-cache/
@@ -45,3 +47,11 @@ e2e/snapshots/
 
 # Ruby gem build artifacts
 *.gem
+
+# Generated CSS theme files (built in CI)
+assets/css/themes/*.css
+
+# Auto-generated SCSS theme files
+src/scss/_themes.scss
+IMPLEMENTATION-PLAN-PERFORMANCE.md
+plan-performance-improvements.md
