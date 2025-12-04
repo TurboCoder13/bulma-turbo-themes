@@ -149,7 +149,8 @@ export function generateBulmaUse(colors: ThemeColors, config?: BulmaConfig): str
   const configStr = config ? generateBulmaConfig(config) : '';
 
   // Build the @use statement with color configuration
-  const colorConfig = `@use 'bulma/bulma' with (
+  // Use 'bulma/sass' to ensure variables are properly forwarded and configurable
+  const colorConfig = `@use 'bulma/sass' with (
   $primary: hsl(${primaryHsl.h}, ${primaryHsl.s}%, ${primaryHsl.l}%),
   $link: hsl(${linkHsl.h}, ${linkHsl.s}%, ${linkHsl.l}%),
   $info: hsl(${infoHsl.h}, ${infoHsl.s}%, ${infoHsl.l}%),

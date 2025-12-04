@@ -2,6 +2,7 @@
 // CSS generation functions for theme flavors
 
 import type { ThemeFlavor } from './types.js';
+import { hexToHsl } from './bulma.js';
 
 // Helper function to generate syntax highlighting CSS
 function generateSyntaxHighlightingCSS(flavor: ThemeFlavor): string {
@@ -68,51 +69,23 @@ html[data-flavor='${escapedId}'] .highlight .nf {
 }`;
 }
 
-// Helper function to convert hex color to HSL components
-function hexToHsl(hex: string): { h: number; s: number; l: number } {
-  hex = hex.replace('#', '');
-  const r = parseInt(hex.slice(0, 2), 16) / 255;
-  const g = parseInt(hex.slice(2, 4), 16) / 255;
-  const b = parseInt(hex.slice(4, 6), 16) / 255;
-
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  let h = 0,
-    s = 0;
-  const l = (max + min) / 2;
-
-  if (max !== min) {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r:
-        h = (g - b) / d + (g < b ? 6 : 0);
-        break;
-      case g:
-        h = (b - r) / d + 2;
-        break;
-      case b:
-        h = (r - g) / d + 4;
-        break;
-    }
-    h /= 6;
-  }
-
-  return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
-}
-
 // Helper function to generate theme CSS variables
 function generateThemeCSSVariables(flavor: ThemeFlavor): string {
   const { tokens } = flavor;
   const escapedId = CSS.escape ? CSS.escape(flavor.id) : flavor.id.replace(/[<>"'&\\]/g, '\\$&');
 
-  // Convert HSL values to CSS format
+  // Convert hex colors to HSL for CSS format
   const primaryHsl = hexToHsl(tokens.brand.primary);
-  const linkHsl = `hsl(${tokens.accent.link})`;
-  const infoHsl = `hsl(${tokens.state.info})`;
-  const successHsl = `hsl(${tokens.state.success})`;
-  const warningHsl = `hsl(${tokens.state.warning})`;
-  const dangerHsl = `hsl(${tokens.state.danger})`;
+  const linkHslObj = hexToHsl(tokens.accent.link);
+  const infoHslObj = hexToHsl(tokens.state.info);
+  const successHslObj = hexToHsl(tokens.state.success);
+  const warningHslObj = hexToHsl(tokens.state.warning);
+  const dangerHslObj = hexToHsl(tokens.state.danger);
+  const linkHsl = `hsl(${linkHslObj.h}, ${linkHslObj.s}%, ${linkHslObj.l}%)`;
+  const infoHsl = `hsl(${infoHslObj.h}, ${infoHslObj.s}%, ${infoHslObj.l}%)`;
+  const successHsl = `hsl(${successHslObj.h}, ${successHslObj.s}%, ${successHslObj.l}%)`;
+  const warningHsl = `hsl(${warningHslObj.h}, ${warningHslObj.s}%, ${warningHslObj.l}%)`;
+  const dangerHsl = `hsl(${dangerHslObj.h}, ${dangerHslObj.s}%, ${dangerHslObj.l}%)`;
 
   return `html[data-flavor='${escapedId}'] {
   --bulma-body-background-color: ${tokens.background.base};
