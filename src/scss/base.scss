@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MIT
+// Shared base CSS with Bulma framework - no theme-specific styling
+
+// Configure Bulma with default theme variables (will be overridden by CSS custom properties)
+$primary: hsl(220, 91%, 54%);
+$link: hsl(217, 91%, 60%);
+$info: hsl(204, 94%, 64%);
+$success: hsl(142, 71%, 45%);
+$warning: hsl(38, 92%, 50%);
+$danger: hsl(0, 84%, 60%);
+
+// Import Bulma framework with base variables
+@use 'bulma/bulma';
+
+// Import our shared utilities and base overrides
+@use 'variables';
+@use 'custom/overrides';
+@use 'custom/hacks';

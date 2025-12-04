@@ -1,0 +1,147 @@
+// SPDX-License-Identifier: MIT
+// Theme-specific Bulma configuration for bulma-dark
+@use 'bulma/sass' with (
+  $primary: hsl(171, 100%, 41%),
+  $link: hsl(229, 53%, 53%),
+  $info: hsl(207, 61%, 53%),
+  $success: hsl(153, 53%, 53%),
+  $warning: hsl(44, 100%, 77%),
+  $danger: hsl(348, 86%, 61%)
+);
+
+// Import custom overrides and hacks
+@use 'custom/overrides';
+@use 'custom/hacks';
+
+// Web font imports (compiled to top of CSS output)
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap');
+
+
+
+// Theme-specific overrides using Bulma's generated CSS variables
+// Note: Bulma automatically generates --bulma-primary-* CSS variables (00-100 shades)
+// and --bulma-primary-soft, --bulma-primary-bold variants from the Sass variables above
+.theme-bulma-dark {
+  --bulma-body-background-color: #141414;
+  --bulma-body-color: #f5f5f5;
+  --bulma-border: #363636;
+  --theme-font-sans: "Nunito Sans", BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --theme-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --theme-text: #f5f5f5;
+  --theme-text-muted: #dbdbdb;
+  --theme-h1: #00d1b2;
+  --theme-h2: #7289da;
+  --theme-h3: #5dade2;
+  --theme-h4: #58d68d;
+  --theme-h5: #f7dc6f;
+  --theme-h6: #f1948a;
+  --theme-link: hsl(229, 53%, 53%);
+  --theme-blockquote-border: #363636;
+  --theme-blockquote-fg: #dbdbdb;
+  --theme-blockquote-bg: #1f1f1f;
+  --theme-code-fg: #f14668;
+  --theme-code-bg: #2b2b2b;
+  --theme-pre-fg: #f5f5f5;
+  --theme-pre-bg: #2b2b2b;
+  --theme-table-border: #363636;
+  --theme-table-stripe: #1f1f1f;
+  --theme-table-thead-bg: #2b2b2b;
+  --theme-selection-fg: #f5f5f5;
+  --theme-selection-bg: #3273dc;
+  --syntax-fg: #f14668;
+  --syntax-bg: #2b2b2b;
+  --syntax-keyword: #00d1b2;
+  --syntax-string: hsl(153, 53%, 53%);
+  --syntax-number: hsl(44, 100%, 77%);
+  --syntax-comment: #dbdbdb;
+  --syntax-title: hsl(207, 61%, 53%);
+  --syntax-attr: hsl(229, 53%, 53%);
+  --theme-surface-0: #141414;
+  --theme-surface-1: #1f1f1f;
+  --theme-surface-2: #2b2b2b;
+  color-scheme: dark;
+}
+
+/* Advanced theme component customizations using Bulma's generated color palette */
+.theme-bulma-dark .button.is-theme-primary {
+  background-color: hsl(var(--bulma-primary));
+  border-color: hsl(var(--bulma-primary));
+  color: hsl(var(--bulma-primary-invert));
+}
+
+.theme-bulma-dark .button.is-theme-link {
+  background-color: hsl(var(--bulma-link));
+  border-color: hsl(var(--bulma-link));
+  color: hsl(var(--bulma-link-invert));
+}
+
+.theme-bulma-dark .notification.is-theme-primary {
+  background-color: hsl(var(--bulma-primary-light));
+  border-left-color: hsl(var(--bulma-primary));
+  color: hsl(var(--bulma-primary-dark));
+}
+
+.theme-bulma-dark .has-theme-gradient-primary {
+  background: linear-gradient(to right, hsl(var(--bulma-primary)), hsl(var(--bulma-primary-95)));
+}
+
+.theme-bulma-dark .has-theme-gradient-link {
+  background: linear-gradient(to right, hsl(var(--bulma-link)), hsl(var(--bulma-link-95)));
+}
+
+/* Syntax highlighting for this theme */
+.theme-bulma-dark .highlight {
+  background: var(--syntax-bg);
+  color: var(--syntax-fg);
+}
+
+.theme-bulma-dark .highlight pre,
+.theme-bulma-dark pre.highlight {
+  background: transparent;
+  color: var(--syntax-fg);
+}
+
+.theme-bulma-dark .highlight code {
+  background: transparent;
+  color: var(--syntax-fg);
+}
+
+.theme-bulma-dark .highlight .c,
+.theme-bulma-dark .highlight .cm,
+.theme-bulma-dark .highlight .c1 {
+  color: var(--syntax-comment);
+}
+
+.theme-bulma-dark .highlight .k,
+.theme-bulma-dark .highlight .kc,
+.theme-bulma-dark .highlight .kd {
+  color: var(--syntax-keyword);
+}
+
+.theme-bulma-dark .highlight .s,
+.theme-bulma-dark .highlight .s1,
+.theme-bulma-dark .highlight .sb,
+.theme-bulma-dark .highlight .sd,
+.theme-bulma-dark .highlight .s2 {
+  color: var(--syntax-string);
+}
+
+.theme-bulma-dark .highlight .m,
+.theme-bulma-dark .highlight .mi,
+.theme-bulma-dark .highlight .mf,
+.theme-bulma-dark .highlight .mh {
+  color: var(--syntax-number);
+}
+
+.theme-bulma-dark .highlight .nt,
+.theme-bulma-dark .highlight .na {
+  color: var(--syntax-attr);
+}
+
+.theme-bulma-dark .highlight .nn,
+.theme-bulma-dark .highlight .nc,
+.theme-bulma-dark .highlight .no,
+.theme-bulma-dark .highlight .nf {
+  color: var(--syntax-title);
+}

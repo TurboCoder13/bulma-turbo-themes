@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: MIT
+// Browser-specific fixes and hacks
+
+@use '../variables' as *;
+
+// Firefox-specific form validation fixes
+input:-moz-ui-invalid,
+select:-moz-ui-invalid {
+  border-color: $danger;
+  box-shadow: none;
+}
+
+// WebKit autofill styling
+input:-webkit-autofill {
+  -webkit-text-fill-color: $theme-text;
+  box-shadow: 0 0 0 1000px $theme-surface-1 inset !important;
+  filter: none;
+}
+
+// File selector button (WebKit/Blink)
+input[type='file']::file-selector-button {
+  background: color-mix(in srgb, $theme-link 10%, transparent);
+  border: 1px solid $theme-link;
+  color: $theme-text;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.4rem;
+}
+
+input[type='file']::file-selector-button:hover {
+  background: color-mix(in srgb, $theme-link 18%, transparent);
+}
+
+// Selection styling
+::selection {
+  background: $theme-selection-bg;
+  color: $theme-selection-fg;
+}
+
+::-moz-selection {
+  background: $theme-selection-bg;
+  color: $theme-selection-fg;
+}
