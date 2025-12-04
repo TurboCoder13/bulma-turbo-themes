@@ -1,0 +1,147 @@
+// SPDX-License-Identifier: MIT
+// Theme-specific Bulma configuration for catppuccin-latte
+@use 'bulma/sass' with (
+  $primary: hsl(220, 91%, 54%),
+  $link: hsl(220, 91%, 54%),
+  $info: hsl(197, 97%, 46%),
+  $success: hsl(109, 58%, 40%),
+  $warning: hsl(35, 77%, 49%),
+  $danger: hsl(347, 87%, 44%)
+);
+
+// Import custom overrides and hacks
+@use 'custom/overrides';
+@use 'custom/hacks';
+
+// Web font imports (compiled to top of CSS output)
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+
+
+// Theme-specific overrides using Bulma's generated CSS variables
+// Note: Bulma automatically generates --bulma-primary-* CSS variables (00-100 shades)
+// and --bulma-primary-soft, --bulma-primary-bold variants from the Sass variables above
+.theme-catppuccin-latte {
+  --bulma-body-background-color: #eff1f5;
+  --bulma-body-color: #4c4f69;
+  --bulma-border: #9ca0b0;
+  --theme-font-sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --theme-font-mono: JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --theme-text: #4c4f69;
+  --theme-text-muted: #6c6f85;
+  --theme-h1: #40a02b;
+  --theme-h2: #1e66f5;
+  --theme-h3: #209fb5;
+  --theme-h4: #df8e1d;
+  --theme-h5: #8839ef;
+  --theme-h6: #d20f39;
+  --theme-link: hsl(220, 91%, 54%);
+  --theme-blockquote-border: #8c8fa1;
+  --theme-blockquote-fg: #4c4f69;
+  --theme-blockquote-bg: #e6e9ef;
+  --theme-code-fg: #4c4f69;
+  --theme-code-bg: #ccd0da;
+  --theme-pre-fg: #4c4f69;
+  --theme-pre-bg: #ccd0da;
+  --theme-table-border: #8c8fa1;
+  --theme-table-stripe: #ccd0da;
+  --theme-table-thead-bg: #bcc0cc;
+  --theme-selection-fg: #4c4f69;
+  --theme-selection-bg: #8c8fa1;
+  --syntax-fg: #4c4f69;
+  --syntax-bg: #ccd0da;
+  --syntax-keyword: #1e66f5;
+  --syntax-string: hsl(109, 58%, 40%);
+  --syntax-number: hsl(35, 77%, 49%);
+  --syntax-comment: #6c6f85;
+  --syntax-title: hsl(197, 97%, 46%);
+  --syntax-attr: hsl(220, 91%, 54%);
+  --theme-surface-0: #eff1f5;
+  --theme-surface-1: #e6e9ef;
+  --theme-surface-2: #dce0e8;
+  color-scheme: light;
+}
+
+/* Advanced theme component customizations using Bulma's generated color palette */
+.theme-catppuccin-latte .button.is-theme-primary {
+  background-color: hsl(var(--bulma-primary));
+  border-color: hsl(var(--bulma-primary));
+  color: hsl(var(--bulma-primary-invert));
+}
+
+.theme-catppuccin-latte .button.is-theme-link {
+  background-color: hsl(var(--bulma-link));
+  border-color: hsl(var(--bulma-link));
+  color: hsl(var(--bulma-link-invert));
+}
+
+.theme-catppuccin-latte .notification.is-theme-primary {
+  background-color: hsl(var(--bulma-primary-light));
+  border-left-color: hsl(var(--bulma-primary));
+  color: hsl(var(--bulma-primary-dark));
+}
+
+.theme-catppuccin-latte .has-theme-gradient-primary {
+  background: linear-gradient(to right, hsl(var(--bulma-primary)), hsl(var(--bulma-primary-95)));
+}
+
+.theme-catppuccin-latte .has-theme-gradient-link {
+  background: linear-gradient(to right, hsl(var(--bulma-link)), hsl(var(--bulma-link-95)));
+}
+
+/* Syntax highlighting for this theme */
+.theme-catppuccin-latte .highlight {
+  background: var(--syntax-bg);
+  color: var(--syntax-fg);
+}
+
+.theme-catppuccin-latte .highlight pre,
+.theme-catppuccin-latte pre.highlight {
+  background: transparent;
+  color: var(--syntax-fg);
+}
+
+.theme-catppuccin-latte .highlight code {
+  background: transparent;
+  color: var(--syntax-fg);
+}
+
+.theme-catppuccin-latte .highlight .c,
+.theme-catppuccin-latte .highlight .cm,
+.theme-catppuccin-latte .highlight .c1 {
+  color: var(--syntax-comment);
+}
+
+.theme-catppuccin-latte .highlight .k,
+.theme-catppuccin-latte .highlight .kc,
+.theme-catppuccin-latte .highlight .kd {
+  color: var(--syntax-keyword);
+}
+
+.theme-catppuccin-latte .highlight .s,
+.theme-catppuccin-latte .highlight .s1,
+.theme-catppuccin-latte .highlight .sb,
+.theme-catppuccin-latte .highlight .sd,
+.theme-catppuccin-latte .highlight .s2 {
+  color: var(--syntax-string);
+}
+
+.theme-catppuccin-latte .highlight .m,
+.theme-catppuccin-latte .highlight .mi,
+.theme-catppuccin-latte .highlight .mf,
+.theme-catppuccin-latte .highlight .mh {
+  color: var(--syntax-number);
+}
+
+.theme-catppuccin-latte .highlight .nt,
+.theme-catppuccin-latte .highlight .na {
+  color: var(--syntax-attr);
+}
+
+.theme-catppuccin-latte .highlight .nn,
+.theme-catppuccin-latte .highlight .nc,
+.theme-catppuccin-latte .highlight .no,
+.theme-catppuccin-latte .highlight .nf {
+  color: var(--syntax-title);
+}

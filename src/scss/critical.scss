@@ -1,0 +1,169 @@
+// SPDX-License-Identifier: MIT
+// Critical CSS - Above-the-fold styles for optimal loading
+
+// Import base Bulma utilities only (no components)
+@use 'bulma/sass/utilities/initial-variables' as iv;
+@use 'bulma/sass/utilities/functions' as fn;
+@use 'bulma/sass/utilities/mixins' as mx;
+@use 'bulma/sass/utilities/css-variables' as cv;
+
+// Base typography and layout (critical for LCP/FCP)
+html {
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: inherit;
+  color: #363636;
+  background-color: #ffffff;
+}
+
+// Critical heading styles
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 0.5em 0;
+  font-weight: 600;
+  line-height: 1.125;
+}
+
+h1 {
+  font-size: 2em;
+}
+h2 {
+  font-size: 1.75em;
+}
+h3 {
+  font-size: 1.5em;
+}
+h4 {
+  font-size: 1.25em;
+}
+h5 {
+  font-size: 1.125em;
+}
+h6 {
+  font-size: 1em;
+}
+
+// Critical layout components
+.container {
+  margin: 0 auto;
+  max-width: 960px;
+  padding: 0 20px;
+  position: relative;
+}
+
+// Navbar (critical for navigation)
+.navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  min-height: 3.25rem;
+  position: relative;
+}
+
+.navbar-brand {
+  align-items: stretch;
+  display: flex;
+  flex-shrink: 0;
+  min-height: 3.25rem;
+}
+
+.navbar-menu {
+  display: flex;
+  align-items: stretch;
+  box-shadow: none;
+}
+
+.navbar-start {
+  justify-content: flex-start;
+  margin-right: auto;
+}
+
+.navbar-end {
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+// Section spacing
+.section {
+  padding: 3rem 1.5rem;
+}
+
+// Content typography
+.content {
+  color: #363636;
+}
+
+.content p {
+  margin-bottom: 1em;
+}
+
+// Critical buttons
+.button {
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 0.375em;
+  box-shadow: none;
+  display: inline-flex;
+  font-size: 1rem;
+  height: 2.5em;
+  justify-content: flex-start;
+  line-height: 1.5;
+  padding: calc(0.5em - 1px) 1em;
+  position: relative;
+  vertical-align: top;
+  text-decoration: none;
+  cursor: pointer;
+  background-color: #ffffff;
+  border-color: #dbdbdb;
+  color: #363636;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  border-color: #b5b5b5;
+  color: #363636;
+}
+
+.button:focus {
+  outline: none;
+  border-color: #485fc7;
+  box-shadow: 0 0 0 0.125em rgba(72, 95, 199, 0.25);
+}
+
+// Utility classes
+.is-hidden {
+  display: none !important;
+}
+.is-invisible {
+  visibility: hidden !important;
+}
+
+// Responsive breakpoints (critical for mobile)
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 0 10px;
+  }
+  .section {
+    padding: 1.5rem 1rem;
+  }
+  .navbar-menu {
+    display: none;
+  }
+}

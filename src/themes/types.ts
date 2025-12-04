@@ -75,6 +75,45 @@ export interface ThemeTokens {
   };
 }
 
+export interface BulmaConfig {
+  // Custom breakpoints for responsive design
+  breakpoints?: {
+    mobile?: string;
+    tablet?: string;
+    desktop?: string;
+    widescreen?: string;
+    fullhd?: string;
+  };
+  // Custom spacing scale
+  spacing?: {
+    small?: string;
+    medium?: string;
+    large?: string;
+  };
+  // Custom typography scale
+  sizes?: {
+    small?: string;
+    normal?: string;
+    medium?: string;
+    large?: string;
+  };
+  // Custom radius values
+  radius?: {
+    small?: string;
+    normal?: string;
+    medium?: string;
+    large?: string;
+    rounded?: string;
+  };
+  // Custom shadows
+  shadows?: {
+    small?: string;
+    normal?: string;
+    medium?: string;
+    large?: string;
+  };
+}
+
 export interface ThemeFlavor {
   id: string;
   label: string;
@@ -82,6 +121,7 @@ export interface ThemeFlavor {
   appearance: 'light' | 'dark';
   iconUrl?: string;
   tokens: ThemeTokens;
+  bulma?: BulmaConfig; // Optional Bulma customizations
 }
 
 export interface ThemePackage {
