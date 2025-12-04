@@ -8,14 +8,7 @@ interface Window {
   initNavbar?: (doc: globalThis.Document) => void;
 }
 
-/**
- * Escape regex metacharacters in a string to prevent regex injection.
- * @param str - The string to escape.
- * @returns The escaped string safe for use in RegExp.
- */
-function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+import { escapeRegex, escapeCssAttributeSelector } from '../helpers';
 
 /**
  * Base page object with common navigation and theme functionality.
@@ -238,8 +231,11 @@ export class BasePage {
    * Verify the current theme is applied.
    */
   async expectThemeApplied(themeId: string): Promise<void> {
-    // Check HTML data attribute
-    await expect(this.page.locator('html')).toHaveAttribute('data-flavor', themeId);
+    // Check HTML theme CSS class
+    const escapedThemeId = escapeRegex(themeId);
+    await expect(this.page.locator('html')).toHaveClass(
+      new RegExp(`(?:^|\\s)theme-${escapedThemeId}(?:\\s|$)`)
+    );
 
     // Check localStorage with polling to handle race conditions
     await expect
@@ -251,10 +247,12 @@ export class BasePage {
       )
       .toBe(themeId);
 
-    // Check CSS link href
-    const themeCss = this.getThemeCss();
-    const escapedThemeId = escapeRegex(themeId);
-    await expect(themeCss).toHaveAttribute('href', new RegExp(`${escapedThemeId}\\.css`));
+    // Check that theme CSS is loaded (dynamically added link element)
+    const escapedThemeIdForCss = escapeRegex(themeId);
+    const themeCss = this.page.locator(
+      `link[data-theme-id="${escapeCssAttributeSelector(themeId)}"]`
+    );
+    await expect(themeCss).toHaveAttribute('href', new RegExp(`${escapedThemeIdForCss}\\.css`));
   }
 
   /**
