@@ -199,7 +199,9 @@ async function applyTheme(doc: Document, themeId: string): Promise<void> {
       try {
         // Resolve path relative to site root
         // Use baseUrl if set, otherwise resolve from root
-        const base = baseUrl ? `${window.location.origin}${baseUrl}/` : `${window.location.origin}/`;
+        const base = baseUrl
+          ? `${window.location.origin}${baseUrl}/`
+          : `${window.location.origin}/`;
         const resolvedPath = new URL(theme.cssFile, base).pathname;
         themeLink.href = resolvedPath;
       } catch {
@@ -257,7 +259,9 @@ async function applyTheme(doc: Document, themeId: string): Promise<void> {
       try {
         // Resolve path relative to site root
         // Use baseUrl if set, otherwise resolve from root
-        const base = baseUrl ? `${window.location.origin}${baseUrl}/` : `${window.location.origin}/`;
+        const base = baseUrl
+          ? `${window.location.origin}${baseUrl}/`
+          : `${window.location.origin}/`;
         const resolvedPath = new URL(theme.icon, base).pathname;
         triggerIcon.src = resolvedPath;
         triggerIcon.alt = `${THEME_FAMILIES[theme.family].name} ${theme.name}`;

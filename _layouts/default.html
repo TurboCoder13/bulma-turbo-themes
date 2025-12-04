@@ -23,10 +23,15 @@
           var DEFAULT_THEME = 'catppuccin-mocha';
           // Valid theme IDs - must match THEMES array in theme-selector.js
           var VALID_THEMES = [
-            'bulma-light', 'bulma-dark',
-            'catppuccin-latte', 'catppuccin-frappe', 'catppuccin-macchiato', 'catppuccin-mocha',
+            'bulma-light',
+            'bulma-dark',
+            'catppuccin-latte',
+            'catppuccin-frappe',
+            'catppuccin-macchiato',
+            'catppuccin-mocha',
             'dracula',
-            'github-light', 'github-dark'
+            'github-light',
+            'github-dark',
           ];
           var savedTheme = localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;
           // Validate theme ID against allowed list to prevent invalid class/URL injection
@@ -44,7 +49,7 @@
               classesToRemove.push(classList[i]);
             }
           }
-          classesToRemove.forEach(function(cls) {
+          classesToRemove.forEach(function (cls) {
             classList.remove(cls);
           });
           // Add the new theme class
@@ -60,7 +65,9 @@
           }
           var sanitizedBaseUrl = sanitizeUrlPath(baseUrl);
           // Resolve path relative to site root
-          var base = sanitizedBaseUrl ? window.location.origin + sanitizedBaseUrl + '/' : window.location.origin + '/';
+          var base = sanitizedBaseUrl
+            ? window.location.origin + sanitizedBaseUrl + '/'
+            : window.location.origin + '/';
           var themePath = new URL('assets/css/themes/' + savedTheme + '.css', base).pathname;
 
           // Create preload link
