@@ -185,7 +185,8 @@ async function applyTheme(doc: Document, themeId: string): Promise<void> {
     doc.documentElement.classList.add(`theme-${theme.id}`);
 
     // Lazy load theme CSS if not already loaded
-    const themeLinkId = `theme-${themeId}-css`;
+    // Use resolved theme.id consistently (not the input themeId which may have been invalid)
+    const themeLinkId = `theme-${theme.id}-css`;
     let themeLink = doc.getElementById(themeLinkId) as HTMLLinkElement | null;
 
     if (!themeLink) {
@@ -193,7 +194,7 @@ async function applyTheme(doc: Document, themeId: string): Promise<void> {
       themeLink.id = themeLinkId;
       themeLink.rel = 'stylesheet';
       themeLink.type = 'text/css';
-      themeLink.setAttribute('data-theme-id', themeId);
+      themeLink.setAttribute('data-theme-id', theme.id);
 
       try {
         // Resolve path relative to site root
@@ -202,7 +203,7 @@ async function applyTheme(doc: Document, themeId: string): Promise<void> {
         const resolvedPath = new URL(theme.cssFile, base).pathname;
         themeLink.href = resolvedPath;
       } catch {
-        console.warn(`Invalid theme CSS path for ${themeId}`);
+        console.warn(`Invalid theme CSS path for ${theme.id}`);
         // Theme class already applied, so we can return successfully
         return;
       }
@@ -213,16 +214,30 @@ async function applyTheme(doc: Document, themeId: string): Promise<void> {
       // Wait for CSS to load (but don't fail if it doesn't load)
       try {
         await new Promise<void>((resolve, reject) => {
-          themeLink!.onload = () => resolve();
-          themeLink!.onerror = () => reject(new Error(`Failed to load theme ${themeId}`));
+          // Store timeout ID to clear on success/error (prevents memory leak)
+          const timeoutId = setTimeout(() => {
+            themeLink!.onload = null;
+            themeLink!.onerror = null;
+            reject(new Error(`Theme ${theme.id} load timeout`));
+          }, 10000);
 
-          // Timeout after 10 seconds
-          setTimeout(() => reject(new Error(`Theme ${themeId} load timeout`)), 10000);
+          themeLink!.onload = () => {
+            clearTimeout(timeoutId);
+            themeLink!.onload = null;
+            themeLink!.onerror = null;
+            resolve();
+          };
+          themeLink!.onerror = () => {
+            clearTimeout(timeoutId);
+            themeLink!.onload = null;
+            themeLink!.onerror = null;
+            reject(new Error(`Failed to load theme ${theme.id}`));
+          };
         });
       } catch (error) {
         // CSS loading failed, but theme class is already applied
         // Log the error but don't throw - theme switching should still work
-        console.warn(`Theme CSS failed to load for ${themeId}:`, error);
+        console.warn(`Theme CSS failed to load for ${theme.id}:`, error);
       }
     }
 
@@ -230,7 +245,7 @@ async function applyTheme(doc: Document, themeId: string): Promise<void> {
     const themeLinks = doc.querySelectorAll('link[id^="theme-"][id$="-css"]');
     themeLinks.forEach((link) => {
       const linkThemeId = link.id.replace('theme-', '').replace('-css', '');
-      if (linkThemeId !== themeId && linkThemeId !== 'base') {
+      if (linkThemeId !== theme.id && linkThemeId !== 'base') {
         link.remove();
       }
     });
@@ -248,14 +263,14 @@ async function applyTheme(doc: Document, themeId: string): Promise<void> {
         triggerIcon.alt = `${THEME_FAMILIES[theme.family].name} ${theme.name}`;
         triggerIcon.title = `${THEME_FAMILIES[theme.family].name} ${theme.name}`;
       } catch {
-        console.warn(`Invalid theme icon path for ${themeId}`);
+        console.warn(`Invalid theme icon path for ${theme.id}`);
       }
     }
 
     // Update active state in dropdown
     const dropdownItems = doc.querySelectorAll('#theme-flavor-menu .dropdown-item.theme-item');
     dropdownItems.forEach((item) => {
-      if (item.getAttribute('data-theme-id') === themeId) {
+      if (item.getAttribute('data-theme-id') === theme.id) {
         item.classList.add('is-active');
         item.setAttribute('aria-checked', 'true');
       } else {
