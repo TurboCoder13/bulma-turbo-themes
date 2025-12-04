@@ -24,7 +24,7 @@ if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
     echo ""
     echo "This script will:"
     echo "  - Check for required tools (bun, node, ruby, bundle)"
-    echo "  - Install dependencies with Bun"
+    echo "  - Install dependencies with Bun (npm fallback if Bun not available)"
     echo "  - Install Ruby dependencies"
     echo "  - Set up git hooks (husky)"
     echo ""

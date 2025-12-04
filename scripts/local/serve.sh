@@ -82,6 +82,7 @@ print_status "$BLUE" "🔄 Live reload is enabled - changes will auto-refresh"
 echo ""
 
 # Detect package manager for TypeScript watch
+PKG_RUN=""
 if command_exists "bun"; then
   PKG_RUN="bun run"
 elif command_exists "npm"; then
@@ -91,8 +92,12 @@ fi
 # Start Jekyll server with live reload and optional TypeScript watch in parallel
 if [ "$start_ts_watch" = true ]; then
   if grep -q '"ts:watch"' package.json >/dev/null 2>&1; then
-    print_status "$BLUE" "⚡ Starting TypeScript watcher (tsc --watch)"
-    ($PKG_RUN ts:watch >/dev/null 2>&1 &)
+    if [ -n "$PKG_RUN" ]; then
+      print_status "$BLUE" "⚡ Starting TypeScript watcher (tsc --watch)"
+      ($PKG_RUN ts:watch >/dev/null 2>&1 &)
+    else
+      print_status "$YELLOW" "⚠️ Skipping TypeScript watcher: bun/npm not found"
+    fi
   fi
 fi
 bundle exec jekyll serve --port $local_port --livereload --incremental

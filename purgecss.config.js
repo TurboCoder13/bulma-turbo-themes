@@ -2,7 +2,6 @@
 export default {
   content: [
     './_layouts/**/*.html',
-    './_includes/**/*.html',
     './index.md',
     './components.md',
     './forms.md',
