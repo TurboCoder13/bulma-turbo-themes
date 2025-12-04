@@ -1,10 +1,14 @@
 ---
 name: Setup Environment
-description: Set up Node.js and Ruby with caching and install dependencies
+description: Set up Bun, Node.js, and Ruby with caching and install dependencies
 
 inputs:
+  bun-version:
+    description: 'Bun version to use'
+    required: false
+    default: 'latest'
   node-version:
-    description: 'Node.js version to use'
+    description: 'Node.js version to use (for compatibility)'
     required: false
     default: '22'
   ruby-version:
@@ -19,11 +23,21 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2.0.1
+      with:
+        bun-version: ${{ inputs.bun-version }}
+
+    - name: Verify Bun installation
+      shell: bash
+      run: |
+        echo "Bun version: $(bun --version)"
+
     - name: Setup Node.js
       uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6
       with:
         node-version: ${{ inputs.node-version }}
-        cache: npm
+        # Note: Bun handles caching, but Node.js is needed for npm publish compatibility
 
     - name: Verify Node.js version
       shell: bash
@@ -60,6 +74,6 @@ runs:
       shell: bash
       run: ./scripts/ci/install-ci-deps.sh
 
-    - name: Install Node.js dependencies
+    - name: Install Node.js dependencies with Bun
       shell: bash
-      run: npm ci
+      run: bun install --frozen-lockfile
