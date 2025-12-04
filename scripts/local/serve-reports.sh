@@ -26,7 +26,7 @@ if [ -d "playwright-report" ] || [ -L "playwright-report" ] || [ -d "playwright"
   echo ""
 else
   echo "⚠️  Playwright HTML Report not found"
-  echo "   Run: npm run e2e"
+  echo "   Run: bun run e2e (or npm run e2e)"
   echo ""
 fi
 
@@ -44,10 +44,14 @@ fi
 echo "Starting report servers..."
 echo ""
 
-# Check if npx is available
-if ! command -v npx &> /dev/null; then
-  echo "❌ Error: npx is not installed or not in PATH"
-  echo "   Please install Node.js and npm to use this script"
+# Detect package executor (prefer bunx, fall back to npx)
+if command -v bunx &> /dev/null; then
+  PKG_EXEC="bunx --bun"
+elif command -v npx &> /dev/null; then
+  PKG_EXEC="npx --yes"
+else
+  echo "❌ Error: No package executor found"
+  echo "   Please install Bun (https://bun.sh) or Node.js/npm"
   exit 1
 fi
 
@@ -159,7 +163,7 @@ start_server() {
   fi
   
   # Start server and redirect output to log file
-  npx http-server "$path" -p "$port" -a 127.0.0.1 -c-1 > "$log_file" 2>&1 &
+  $PKG_EXEC http-server "$path" -p "$port" -a 127.0.0.1 -c-1 > "$log_file" 2>&1 &
   local server_pid=$!
   
   # Wait briefly for server to start

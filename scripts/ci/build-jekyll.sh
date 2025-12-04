@@ -33,11 +33,21 @@ cd "$(git rev-parse --show-toplevel 2>/dev/null || echo ".")"
 
 print_status "$BLUE" "🏗️  Starting CI Jekyll build..."
 
+# Detect package manager (prefer bun, fall back to npm)
+if command -v bun >/dev/null 2>&1; then
+    PKG_RUN="bun run"
+elif command -v npm >/dev/null 2>&1; then
+    PKG_RUN="npm run"
+else
+    print_status "$RED" "❌ No package manager found!"
+    exit 1
+fi
+
 # Step 1: Theme synchronization (if needed)
 print_status "$BLUE" "🎨 Step 1: Theme synchronization..."
 if [ -f "package.json" ] && grep -q '"theme:sync"' package.json >/dev/null 2>&1; then
     print_status "$YELLOW" "  Running theme sync..."
-    npm run theme:sync
+    $PKG_RUN theme:sync
     print_status "$GREEN" "  ✅ Theme sync completed"
 else
     print_status "$YELLOW" "  ⏭️  Skipping theme sync (not configured)"
