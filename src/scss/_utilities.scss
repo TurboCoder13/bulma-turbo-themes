@@ -3,8 +3,9 @@
 
 @use 'variables' as *;
 
-// Import Bulma functions directly for advanced features
+// Import Bulma functions and mixins directly for advanced features
 @use 'bulma/sass/utilities/functions' as bulma-fn;
+@use 'bulma/sass/utilities/mixins' as bulma-mx;
 
 // Import Sass modules for advanced functionality
 @use 'sass:color';

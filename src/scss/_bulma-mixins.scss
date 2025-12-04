@@ -12,8 +12,9 @@
 @use 'bulma/sass/utilities/functions' as bulma-fn;
 
 // Theme helper mixins
-@mixin theme-responsive($breakpoint, $rules) {
-  @include bulma-mx.media-breakpoint-up($breakpoint) {
+// Note: Bulma uses 'from' mixin for responsive breakpoints (styles from that breakpoint upward)
+@mixin theme-responsive($breakpoint) {
+  @include bulma-mx.from($breakpoint) {
     @content;
   }
 }
