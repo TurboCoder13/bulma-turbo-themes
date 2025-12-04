@@ -31,21 +31,21 @@ jobs:
         include:
           - id: e2e
             display_name: '🎭 E2E Tests'
-            run_command: 'npm run e2e:ci'
+            run_command: 'bun run e2e:ci'
             timeout: 30
             artifact_prefix: 'playwright'
             comment_marker: 'playwright-e2e-comment'
             comment_file: 'playwright-e2e-comment.md'
           - id: smoke
             display_name: '🔥 E2E Smoke Tests'
-            run_command: 'npm run e2e:smoke'
+            run_command: 'bun run e2e:smoke'
             timeout: 15
             artifact_prefix: 'playwright-smoke'
             comment_marker: 'playwright-e2e-smoke-comment'
             comment_file: 'playwright-e2e-smoke-comment.md'
           - id: a11y
             display_name: '♿ E2E Accessibility Tests'
-            run_command: 'npm run e2e:a11y'
+            run_command: 'bun run e2e:a11y'
             timeout: 15
             artifact_prefix: 'playwright-a11y'
             comment_marker: 'playwright-e2e-a11y-comment'
@@ -73,6 +73,7 @@ jobs:
             files.pythonhosted.org:443
             registry.npmjs.org:443
             npmjs.org:443
+            bun.sh:443
             cdn.playwright.dev:443
             playwright.download.prss.microsoft.com:443
             playwright.azureedge.net:443
@@ -97,13 +98,13 @@ jobs:
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
             playwright-${{ runner.os }}-
       - name: Install Playwright browsers
-        run: npm run e2e:install
+        run: bun run e2e:install
       - name: Build Jekyll site
-        run: npm run e2e:prep
+        run: bun run e2e:prep
       - name: Run tests
         run: ${{ matrix.run_command }}
       - name: Generate Playwright PR comment

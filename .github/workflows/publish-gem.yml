@@ -56,6 +56,7 @@ jobs:
             pipelines.actions.githubusercontent.com:443
             registry.npmjs.org:443
             npmjs.org:443
+            bun.sh:443
             cache.ruby-lang.org:443
             rubygems-downloads.global.ssl.fastly.net:443
             rubygems.org:443
@@ -67,11 +68,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2.0.1
+        with:
+          bun-version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: '22'
-          cache: npm
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@8aeb6ff8030dd539317f8e1769a044873b56ea71 # v1.268.0
@@ -80,13 +85,13 @@ jobs:
           bundler-cache: true
 
       - name: Install dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: Build npm package
-        run: npm run build
+        run: bun run build
 
       - name: Build gem package
-        run: npm run build:gem
+        run: bun run build:gem
 
       - name: Extract gem information
         id: gem-info
@@ -96,7 +101,7 @@ jobs:
         run: ./scripts/ci/verify-gem-package.sh ${{ steps.gem-info.outputs.path }}
 
       - name: Run tests against built package
-        run: npm test
+        run: bun run test
 
       - name: Generate SHA256 checksum
         id: checksum
