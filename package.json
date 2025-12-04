@@ -1,6 +1,6 @@
 {
   "name": "@turbocoder13/bulma-turbo-themes",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "description": "Bulma theme packs and an accessible theme selector.",
   "license": "MIT",
   "type": "module",
