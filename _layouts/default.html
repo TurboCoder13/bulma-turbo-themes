@@ -36,7 +36,9 @@
             return path.replace(/[<>"'`&]/g, '').replace(/\\/g, '');
           }
           var sanitizedBaseUrl = sanitizeUrlPath(baseUrl);
-          var themePath = sanitizedBaseUrl + '/assets/css/themes/' + savedTheme + '.css';
+          // Resolve path relative to site root
+          var base = sanitizedBaseUrl ? window.location.origin + sanitizedBaseUrl + '/' : window.location.origin + '/';
+          var themePath = new URL('assets/css/themes/' + savedTheme + '.css', base).pathname;
 
           // Create preload link
           var preloadLink = document.createElement('link');

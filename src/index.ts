@@ -196,9 +196,11 @@ async function applyTheme(doc: Document, themeId: string): Promise<void> {
       themeLink.setAttribute('data-theme-id', themeId);
 
       try {
-        const fullPath = baseUrl ? `${baseUrl}/${theme.cssFile}` : theme.cssFile;
-        const url = new URL(fullPath, 'http://localhost');
-        themeLink.href = url.pathname;
+        // Resolve path relative to site root
+        // Use baseUrl if set, otherwise resolve from root
+        const base = baseUrl ? `${window.location.origin}${baseUrl}/` : `${window.location.origin}/`;
+        const resolvedPath = new URL(theme.cssFile, base).pathname;
+        themeLink.href = resolvedPath;
       } catch {
         console.warn(`Invalid theme CSS path for ${themeId}`);
         // Theme class already applied, so we can return successfully
@@ -237,10 +239,12 @@ async function applyTheme(doc: Document, themeId: string): Promise<void> {
     const triggerIcon = doc.getElementById('theme-flavor-trigger-icon') as HTMLImageElement | null;
 
     if (triggerIcon && theme.icon) {
-      const iconPath = baseUrl ? `${baseUrl}/${theme.icon}` : theme.icon;
       try {
-        const url = new URL(iconPath, 'http://localhost');
-        triggerIcon.src = url.pathname;
+        // Resolve path relative to site root
+        // Use baseUrl if set, otherwise resolve from root
+        const base = baseUrl ? `${window.location.origin}${baseUrl}/` : `${window.location.origin}/`;
+        const resolvedPath = new URL(theme.icon, base).pathname;
+        triggerIcon.src = resolvedPath;
         triggerIcon.alt = `${THEME_FAMILIES[theme.family].name} ${theme.name}`;
         triggerIcon.title = `${THEME_FAMILIES[theme.family].name} ${theme.name}`;
       } catch {
