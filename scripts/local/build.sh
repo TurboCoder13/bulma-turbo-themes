@@ -432,6 +432,14 @@ if [ -f "package.json" ] && grep -q '"build:themes"' package.json >/dev/null 2>&
     print_status "$GREEN" "  ✅ CSS themes built successfully"
 fi
 
+# Step 6.6: Minify JavaScript
+print_status "$BLUE" "📦 Step 6.6: Minify JavaScript..."
+if [ -f "package.json" ] && grep -q '"build:js"' package.json >/dev/null 2>&1; then
+    print_status "$YELLOW" "  Minifying theme-selector.js..."
+    $PKG_RUN build:js
+    print_status "$GREEN" "  ✅ JavaScript minified successfully"
+fi
+
 # Step 7: Jekyll build
 print_status "$BLUE" "🏗️  Step 7: Jekyll build..."
 print_status "$YELLOW" "  Building Jekyll site..."

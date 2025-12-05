@@ -37,6 +37,7 @@
     "build": "tsc -p tsconfig.json",
     "build:css": "vite build --mode css",
     "build:themes": "node scripts/generate-themes-sass.mjs && node scripts/build-themes.mjs",
+    "build:js": "bunx esbuild assets/js/theme-selector.js --minify --outfile=assets/js/theme-selector.min.js --target=es2020",
     "build:dev": "./scripts/local/build.sh --dev",
     "build:prod": "./scripts/local/build.sh --prod",
     "serve": "bun run build && bun run build:themes && bundle exec jekyll serve --livereload --incremental",

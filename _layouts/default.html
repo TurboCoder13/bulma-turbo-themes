@@ -127,10 +127,8 @@
       href="{{ '/assets/img/bulma-logo.png' | relative_url }}"
       color="#111827"
     />
-    <!-- Critical CSS (above-the-fold) -->
-    <style id="theme-critical-css">
-      /* Critical CSS inlined for optimal performance */
-    </style>
+    <!-- Critical CSS inlined for optimal LCP performance -->
+    <style id="theme-critical-css">html{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.5}body{color:#363636;font-family:inherit;font-size:1rem;line-height:inherit;background-color:#fff;margin:0}h1,h2,h3,h4,h5,h6{margin:0 0 .5em;font-weight:600;line-height:1.125}h1{font-size:2em}h2{font-size:1.75em}h3{font-size:1.5em}h4{font-size:1.25em}h5{font-size:1.125em}h6{font-size:1em}.container{max-width:960px;margin:0 auto;padding:0 20px;position:relative}.navbar{background-color:#fff;border-bottom:1px solid #e5e5e5;min-height:3.25rem;position:relative}.navbar-brand{flex-shrink:0;min-height:3.25rem}.navbar-brand,.navbar-menu{align-items:stretch;display:flex}.navbar-menu{box-shadow:none}.navbar-start{justify-content:flex-start;margin-right:auto}.navbar-end{justify-content:flex-end;margin-left:auto}.section{padding:3rem 1.5rem}.content{color:#363636}.content p{margin-bottom:1em}.button{box-shadow:none;color:#363636;cursor:pointer;vertical-align:top;background-color:#fff;border:1px solid #dbdbdb;border-radius:.375em;justify-content:flex-start;align-items:center;height:2.5em;padding:calc(.5em - 1px) 1em;font-size:1rem;line-height:1.5;text-decoration:none;transition:all .2s;display:inline-flex;position:relative}.button:hover{color:#363636;border-color:#b5b5b5}.button:focus{border-color:#485fc7;outline:none;box-shadow:0 0 0 .125em #485fc740}.is-hidden{display:none!important}@media screen and (max-width:768px){.container{padding:0 10px}.section{padding:1.5rem 1rem}.navbar-menu{display:none}}</style>
     <!-- Base CSS (shared styles, loaded asynchronously) -->
     <link
       id="theme-base-css"
@@ -143,7 +141,12 @@
       <link rel="stylesheet" href="{{ '/assets/css/themes/base.css' | relative_url }}" />
     </noscript>
     <link rel="stylesheet" href="{{ '/assets/css/custom.css' | relative_url }}" />
+    <!-- Use minified JS in production for ~50% smaller payload -->
+    {% if jekyll.environment == 'production' %}
+    <script type="module" src="{{ '/assets/js/theme-selector.min.js' | relative_url }}"></script>
+    {% else %}
     <script type="module" src="{{ '/assets/js/theme-selector.js' | relative_url }}"></script>
+    {% endif %}
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         // Initialize navbar highlighting

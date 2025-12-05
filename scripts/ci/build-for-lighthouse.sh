@@ -92,6 +92,13 @@ if [ -f "package.json" ] && grep -q '"build"' package.json >/dev/null 2>&1; then
     $PKG_RUN build
 fi
 
+# Step 3.5: Minify JavaScript for production
+print_status "$BLUE" "📦 Step 3.5: Minify JavaScript..."
+if [ -f "package.json" ] && grep -q '"build:js"' package.json >/dev/null 2>&1; then
+    print_status "$YELLOW" "  Minifying theme-selector.js..."
+    $PKG_RUN build:js
+fi
+
 # Step 4: Jekyll build (production mode for Lighthouse)
 print_status "$BLUE" "🏗️  Step 4: Jekyll build..."
 print_status "$YELLOW" "  Building Jekyll site..."

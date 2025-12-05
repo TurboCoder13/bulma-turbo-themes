@@ -11,7 +11,8 @@ const THEMES = [
     name: 'Light',
     description: 'Classic Bulma look with a bright, neutral palette.',
     cssFile: 'assets/css/themes/bulma-light.css',
-    icon: 'assets/img/bulma-logo.png',
+    icon: 'assets/img/bulma-logo.webp',
+    iconFallback: 'assets/img/bulma-logo.png',
     family: 'bulma',
     appearance: 'light',
     colors: { bg: '#ffffff', surface: '#f5f5f5', accent: '#00d1b2', text: '#363636' },
@@ -21,7 +22,8 @@ const THEMES = [
     name: 'Dark',
     description: 'Dark Bulma theme tuned for low-light reading.',
     cssFile: 'assets/css/themes/bulma-dark.css',
-    icon: 'assets/img/bulma-logo.png',
+    icon: 'assets/img/bulma-logo.webp',
+    iconFallback: 'assets/img/bulma-logo.png',
     family: 'bulma',
     appearance: 'dark',
     colors: { bg: '#1a1a2e', surface: '#252540', accent: '#00d1b2', text: '#f5f5f5' },
@@ -32,7 +34,8 @@ const THEMES = [
     name: 'Latte',
     description: 'Light, soft Catppuccin palette for daytime use.',
     cssFile: 'assets/css/themes/catppuccin-latte.css',
-    icon: 'assets/img/catppuccin-logo-latte.png',
+    icon: 'assets/img/catppuccin-logo-latte.webp',
+    iconFallback: 'assets/img/catppuccin-logo-latte.png',
     family: 'catppuccin',
     appearance: 'light',
     colors: { bg: '#eff1f5', surface: '#e6e9ef', accent: '#8839ef', text: '#4c4f69' },
@@ -42,7 +45,8 @@ const THEMES = [
     name: 'Frappé',
     description: 'Balanced dark Catppuccin theme for focused work.',
     cssFile: 'assets/css/themes/catppuccin-frappe.css',
-    icon: 'assets/img/catppuccin-logo-latte.png',
+    icon: 'assets/img/catppuccin-logo-latte.webp',
+    iconFallback: 'assets/img/catppuccin-logo-latte.png',
     family: 'catppuccin',
     appearance: 'dark',
     colors: { bg: '#303446', surface: '#414559', accent: '#ca9ee6', text: '#c6d0f5' },
@@ -52,7 +56,8 @@ const THEMES = [
     name: 'Macchiato',
     description: 'Deep, atmospheric Catppuccin variant with rich contrast.',
     cssFile: 'assets/css/themes/catppuccin-macchiato.css',
-    icon: 'assets/img/catppuccin-logo-macchiato.png',
+    icon: 'assets/img/catppuccin-logo-macchiato.webp',
+    iconFallback: 'assets/img/catppuccin-logo-macchiato.png',
     family: 'catppuccin',
     appearance: 'dark',
     colors: { bg: '#24273a', surface: '#363a4f', accent: '#c6a0f6', text: '#cad3f5' },
@@ -62,7 +67,8 @@ const THEMES = [
     name: 'Mocha',
     description: 'Cozy, high-contrast Catppuccin theme for late-night sessions.',
     cssFile: 'assets/css/themes/catppuccin-mocha.css',
-    icon: 'assets/img/catppuccin-logo-macchiato.png',
+    icon: 'assets/img/catppuccin-logo-macchiato.webp',
+    iconFallback: 'assets/img/catppuccin-logo-macchiato.png',
     family: 'catppuccin',
     appearance: 'dark',
     colors: { bg: '#1e1e2e', surface: '#313244', accent: '#cba6f7', text: '#cdd6f4' },
@@ -73,7 +79,8 @@ const THEMES = [
     name: 'Classic',
     description: 'Iconic Dracula dark theme with vibrant accents.',
     cssFile: 'assets/css/themes/dracula.css',
-    icon: 'assets/img/dracula-logo.png',
+    icon: 'assets/img/dracula-logo.webp',
+    iconFallback: 'assets/img/dracula-logo.png',
     family: 'dracula',
     appearance: 'dark',
     colors: { bg: '#282a36', surface: '#44475a', accent: '#bd93f9', text: '#f8f8f2' },
@@ -84,7 +91,8 @@ const THEMES = [
     name: 'Light',
     description: 'GitHub-inspired light theme suited for documentation and UI heavy pages.',
     cssFile: 'assets/css/themes/github-light.css',
-    icon: 'assets/img/github-logo-light.png',
+    icon: 'assets/img/github-logo-light.webp',
+    iconFallback: 'assets/img/github-logo-light.png',
     family: 'github',
     appearance: 'light',
     colors: { bg: '#ffffff', surface: '#f6f8fa', accent: '#0969da', text: '#1f2328' },
@@ -94,7 +102,8 @@ const THEMES = [
     name: 'Dark',
     description: 'GitHub dark theme optimized for code-heavy views.',
     cssFile: 'assets/css/themes/github-dark.css',
-    icon: 'assets/img/github-logo-dark.png',
+    icon: 'assets/img/github-logo-dark.webp',
+    iconFallback: 'assets/img/github-logo-dark.png',
     family: 'github',
     appearance: 'dark',
     colors: { bg: '#0d1117', surface: '#161b22', accent: '#58a6ff', text: '#c9d1d9' },
@@ -202,7 +211,7 @@ async function applyTheme(doc, themeId) {
         link.remove();
       }
     });
-    // Update trigger button icon with theme's icon image
+    // Update trigger button icon with theme's icon image (WebP with PNG fallback)
     const triggerIcon = doc.getElementById('theme-flavor-trigger-icon');
     if (triggerIcon && theme.icon) {
       try {
@@ -215,6 +224,14 @@ async function applyTheme(doc, themeId) {
         triggerIcon.src = resolvedPath;
         triggerIcon.alt = `${THEME_FAMILIES[theme.family].name} ${theme.name}`;
         triggerIcon.title = `${THEME_FAMILIES[theme.family].name} ${theme.name}`;
+        // Fallback to PNG if WebP fails
+        if (theme.iconFallback) {
+          const fallbackPath = new URL(theme.iconFallback, base).pathname;
+          triggerIcon.onerror = () => {
+            triggerIcon.onerror = null;
+            triggerIcon.src = fallbackPath;
+          };
+        }
       } catch {
         console.warn(`Invalid theme icon path for ${theme.id}`);
       }
@@ -414,7 +431,7 @@ export function wireFlavorSelector(documentObj, windowObj) {
       if (isActive) {
         item.classList.add('is-active');
       }
-      // Icon - resolve path from site root to prevent broken paths on subpages
+      // Icon - use WebP with PNG fallback for performance
       const icon = documentObj.createElement('img');
       icon.className = 'theme-icon';
       if (theme.icon) {
@@ -426,9 +443,21 @@ export function wireFlavorSelector(documentObj, windowObj) {
           : `${origin}/${theme.icon}`;
         icon.src = iconPath;
         icon.alt = `${familyMeta.name} ${theme.name}`;
+        // Fallback to PNG if WebP fails to load
+        if (theme.iconFallback) {
+          const fallbackPath = baseUrl
+            ? `${origin}${baseUrl}/${theme.iconFallback}`
+            : `${origin}/${theme.iconFallback}`;
+          icon.onerror = () => {
+            icon.onerror = null; // Prevent infinite loop
+            icon.src = fallbackPath;
+          };
+        }
       }
       icon.width = 24;
       icon.height = 24;
+      // Add loading="lazy" for icons below the fold
+      icon.loading = 'lazy';
       item.appendChild(icon);
       // Text content
       const copy = documentObj.createElement('div');
