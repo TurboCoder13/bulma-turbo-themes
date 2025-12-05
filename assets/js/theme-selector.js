@@ -414,11 +414,16 @@ export function wireFlavorSelector(documentObj, windowObj) {
       if (isActive) {
         item.classList.add('is-active');
       }
-      // Icon
+      // Icon - resolve path from site root to prevent broken paths on subpages
       const icon = documentObj.createElement('img');
       icon.className = 'theme-icon';
       if (theme.icon) {
-        const iconPath = baseUrl ? `${baseUrl}/${theme.icon}` : theme.icon;
+        // Always use absolute path from origin to avoid relative path issues
+        // on subpages like /components/ where relative paths would break
+        const origin = windowObj.location.origin;
+        const iconPath = baseUrl
+          ? `${origin}${baseUrl}/${theme.icon}`
+          : `${origin}/${theme.icon}`;
         icon.src = iconPath;
         icon.alt = `${familyMeta.name} ${theme.name}`;
       }
@@ -458,17 +463,20 @@ export function wireFlavorSelector(documentObj, windowObj) {
         e.preventDefault();
         // Always update localStorage and close dropdown, even if CSS loading fails
         windowObj.localStorage.setItem(STORAGE_KEY, theme.id);
+        closeDropdown({ restoreFocus: true });
         if (selectEl) {
           selectEl.value = theme.id;
-          // Notify any listeners watching the native select
+          // Dispatch change event which triggers the select's change listener
+          // that calls applyTheme. Do NOT call applyTheme here to avoid
+          // duplicate calls causing race conditions (flickering, duplicate CSS links).
           const changeEvent = new Event('change', { bubbles: true });
           selectEl.dispatchEvent(changeEvent);
+        } else {
+          // Fallback: apply theme directly only if no select element exists
+          applyTheme(documentObj, theme.id).catch((error) => {
+            console.error(`Failed to apply theme ${theme.id}:`, error);
+          });
         }
-        closeDropdown({ restoreFocus: true });
-        // Apply theme asynchronously (doesn't block dropdown closing)
-        applyTheme(documentObj, theme.id).catch((error) => {
-          console.error(`Failed to apply theme ${theme.id}:`, error);
-        });
       });
       menuItems.push(item);
       themesContainer.appendChild(item);

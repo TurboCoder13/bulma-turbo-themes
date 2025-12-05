@@ -62,6 +62,8 @@ jobs:
             playwright-akamai.azureedge.net:443
             playwright-verizon.azureedge.net:443
             storage.googleapis.com:443
+            lhci-cloud.web.app:443
+            lhci-server.lighthouseapp.io:443
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
@@ -80,6 +82,11 @@ jobs:
       - name: Build site for Lighthouse analysis
         run: ./scripts/ci/run-lighthouse-ci.sh
         # Uses streamlined build script that skips tests (they run in separate workflows)
+        env:
+          # Use filesystem upload to avoid external connections to temporary-public-storage
+          LHCI_UPLOAD_TARGET: filesystem
+          # Disable LHCI telemetry/analytics that might cause egress issues
+          DO_NOT_TRACK: 1
 
       - name: Verify Lighthouse results
         run: ./scripts/ci/verify-lighthouse-results.sh
