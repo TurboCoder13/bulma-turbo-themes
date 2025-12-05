@@ -142,4 +142,32 @@ describe('generateBulmaUse', () => {
     expect(output).toContain("@use 'bulma/sass' with (");
     expect(output).toContain('$primary: hsl(');
   });
+
+  it('throws error when color is undefined', () => {
+    const undefinedColors = {
+      ...defaultColors,
+      primary: undefined as unknown as string,
+    };
+    expect(() => generateBulmaUse(undefinedColors)).toThrow('Invalid theme colors');
+  });
+
+  it('throws error when color is null', () => {
+    const nullColors = {
+      ...defaultColors,
+      link: null as unknown as string,
+    };
+    expect(() => generateBulmaUse(nullColors)).toThrow('Invalid theme colors');
+  });
+
+  it('handles malformed hex gracefully (returns NaN HSL values)', () => {
+    // Note: Invalid hex strings like '#GGG' or 'not-a-hex' don't throw errors
+    // They result in NaN values in the output. This test documents current behavior.
+    const malformedColors = {
+      ...defaultColors,
+      info: 'not-a-hex',
+    };
+    const output = generateBulmaUse(malformedColors);
+    // The output will contain NaN values - this is expected current behavior
+    expect(output).toContain('$info: hsl(NaN');
+  });
 });

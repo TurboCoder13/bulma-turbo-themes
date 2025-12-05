@@ -811,7 +811,7 @@ describe('public API', () => {
     expect(document.documentElement.classList.add).toHaveBeenCalledWith('theme-catppuccin-latte');
   });
 
-  it('applyTheme skips trigger icon update when trigger element is missing', () => {
+  it('applyTheme skips trigger icon update when trigger element is missing', async () => {
     // Provide flavor link but omit trigger icon element
     Object.defineProperty(document, 'getElementById', {
       value: vi.fn((id) => {
@@ -822,11 +822,11 @@ describe('public API', () => {
       writable: true,
     });
 
-    // Should not throw
-    expect(() => initTheme(document as any, window as any)).not.toThrow();
+    // Should not reject - await the Promise for proper async testing
+    await expect(initTheme(document as any, window as any)).resolves.not.toThrow();
   });
 
-  it('applyTheme handles URL constructor error (cssFile) without throwing', () => {
+  it('applyTheme handles URL constructor error (cssFile) without throwing', async () => {
     // Set up DOM elements
     Object.defineProperty(document, 'getElementById', {
       value: vi.fn((id) => {
@@ -848,7 +848,8 @@ describe('public API', () => {
       return new OriginalURL(input, base);
     }) as any;
 
-    expect(() => initTheme(document as any, window as any)).not.toThrow();
+    // Should not reject - await the Promise for proper async testing
+    await expect(initTheme(document as any, window as any)).resolves.not.toThrow();
 
     // Restore URL
     (globalThis as any).URL = OriginalURL as any;
@@ -2664,7 +2665,7 @@ describe('public API', () => {
       expect(mockReportsLink.classList.add).not.toHaveBeenCalled();
     });
 
-    it('handles icon URL constructor error in applyTheme', () => {
+    it('handles icon URL constructor error in applyTheme', async () => {
       // Set up DOM elements
       const triggerIconEl: any = {
         firstChild: null,
@@ -2690,7 +2691,8 @@ describe('public API', () => {
       }) as any;
 
       mockLocalStorage.getItem.mockReturnValue('catppuccin-frappe');
-      expect(() => initTheme(document as any, window as any)).not.toThrow();
+      // Should not reject - await the Promise for proper async testing
+      await expect(initTheme(document as any, window as any)).resolves.not.toThrow();
 
       // Restore URL
       (globalThis as any).URL = OriginalURL as any;
