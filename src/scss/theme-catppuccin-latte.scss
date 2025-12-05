@@ -26,6 +26,10 @@
   --bulma-body-background-color: #eff1f5;
   --bulma-body-color: #4c4f69;
   --bulma-border: #9ca0b0;
+  --bulma-scheme-main: #eff1f5;
+  --bulma-scheme-main-bis: #e6e9ef;
+  --bulma-scheme-main-ter: #dce0e8;
+  --bulma-scheme-invert: #4c4f69;
   --theme-font-sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   --theme-font-mono: JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --theme-text: #4c4f69;
@@ -60,6 +64,9 @@
   --theme-surface-0: #eff1f5;
   --theme-surface-1: #e6e9ef;
   --theme-surface-2: #dce0e8;
+  /* Table component tokens (with fallbacks) */
+  --theme-table-cell-bg: #eff1f5;
+  --theme-table-header-fg: #4c4f69;
   color-scheme: light;
 }
 

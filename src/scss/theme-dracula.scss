@@ -25,6 +25,10 @@
   --bulma-body-background-color: #282a36;
   --bulma-body-color: #f8f8f2;
   --bulma-border: #44475a;
+  --bulma-scheme-main: #282a36;
+  --bulma-scheme-main-bis: #21222c;
+  --bulma-scheme-main-ter: #44475a;
+  --bulma-scheme-invert: #f8f8f2;
   --theme-font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --theme-font-mono: "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --theme-text: #f8f8f2;
@@ -59,6 +63,47 @@
   --theme-surface-0: #282a36;
   --theme-surface-1: #21222c;
   --theme-surface-2: #44475a;
+  /* Table component tokens (with fallbacks) */
+  --theme-table-cell-bg: #282a36;
+  --theme-table-header-fg: #f8f8f2;
+  /* Card component tokens */
+  --theme-card-bg: #21222c;
+  --theme-card-border: #6272a4;
+  --theme-card-header-bg: #282a36;
+  --theme-card-footer-bg: #21222c;
+  /* Message component tokens */
+  --theme-message-bg: #282a36;
+  --theme-message-header-bg: #44475a;
+  --theme-message-border: #6272a4;
+  --theme-message-body-fg: #f8f8f2;
+  /* Panel component tokens */
+  --theme-panel-bg: #21222c;
+  --theme-panel-header-bg: #44475a;
+  --theme-panel-header-fg: #f8f8f2;
+  --theme-panel-border: #6272a4;
+  --theme-panel-block-bg: #282a36;
+  --theme-panel-block-hover-bg: #2e303e;
+  --theme-panel-block-active-bg: #44475a;
+  /* Box component tokens */
+  --theme-box-bg: #21222c;
+  --theme-box-border: #6272a4;
+  /* Notification component tokens */
+  --theme-notification-bg: #282a36;
+  --theme-notification-border: #6272a4;
+  /* Modal component tokens */
+  --theme-modal-bg: rgba(40, 42, 54, 0.9);
+  --theme-modal-card-bg: #21222c;
+  --theme-modal-header-bg: #282a36;
+  --theme-modal-footer-bg: #21222c;
+  /* Dropdown component tokens */
+  --theme-dropdown-bg: #21222c;
+  --theme-dropdown-item-hover-bg: #2e303e;
+  --theme-dropdown-border: #6272a4;
+  /* Tabs component tokens */
+  --theme-tabs-border: #6272a4;
+  --theme-tabs-link-bg: #2e303e;
+  --theme-tabs-link-active-bg: #21222c;
+  --theme-tabs-link-hover-bg: #44475a;
   color-scheme: dark;
 }
 
