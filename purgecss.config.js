@@ -33,8 +33,9 @@ export default {
       'is-theme', // Custom dropdown class
     ],
 
-    // Deep patterns (including children)
-    deep: [/^theme-/],
+  // Deep patterns (including children)
+  // Note: /^theme-/ is already in standard, no need to duplicate in deep
+  deep: [],
 
     // Greedy patterns
     greedy: [],
