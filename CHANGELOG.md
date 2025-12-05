@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.10.7] - 2025-12-05
+
+### 🐛 Fixed
+
+- update renovatebot/github-action digest to 4ebebab (#141)
+
 ## [0.10.6] - 2025-12-05
 
 ### 🐛 Fixed
