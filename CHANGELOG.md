@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.10.8] - 2025-12-05
+
+### 🐛 Fixed
+
+- update react monorepo to v19 (#165)
+
 ## [0.10.7] - 2025-12-05
 
 ### 🐛 Fixed
