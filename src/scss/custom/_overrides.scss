@@ -564,99 +564,41 @@ input[type='file']::file-selector-button:hover {
 // ============================================================================
 // Message Component
 // ============================================================================
+// Messages are colorful components meant to stand out. The header is a darker
+// shade of the body color, and the body has a lighter tinted background.
+// We preserve Bulma's colorful defaults for semantic variants.
 
 .message {
-  background-color: var(--theme-message-bg, var(--theme-surface-1, $theme-surface-1));
-  border: 1px solid var(--theme-message-border, var(--theme-table-border, $theme-table-border));
   border-radius: var(--bulma-radius, 0.375rem);
 
-  .message-header {
-    background-color: var(--theme-message-header-bg, var(--theme-surface-2, $theme-surface-2));
-    color: var(--theme-text, $theme-text);
-    font-weight: 600;
-    border-radius: var(--bulma-radius, 0.375rem) var(--bulma-radius, 0.375rem) 0 0;
+  // Default (non-semantic) message styling uses theme tokens
+  &:not(.is-primary):not(.is-link):not(.is-info):not(.is-success):not(.is-warning):not(.is-danger) {
+    background-color: var(--theme-message-bg, var(--theme-surface-1, $theme-surface-1));
+    border: 1px solid var(--theme-message-border, var(--theme-table-border, $theme-table-border));
 
-    .delete {
-      background-color: color-mix(in srgb, var(--theme-text, $theme-text) 20%, transparent);
+    .message-header {
+      background-color: var(--theme-message-header-bg, var(--theme-surface-2, $theme-surface-2));
+      color: var(--theme-text, $theme-text);
+      font-weight: 600;
 
-      &:hover {
-        background-color: color-mix(in srgb, var(--theme-text, $theme-text) 30%, transparent);
+      .delete {
+        background-color: color-mix(in srgb, var(--theme-text, $theme-text) 20%, transparent);
+
+        &:hover {
+          background-color: color-mix(in srgb, var(--theme-text, $theme-text) 30%, transparent);
+        }
       }
     }
-  }
 
-  .message-body {
-    color: var(--theme-message-body-fg, var(--theme-text, $theme-text));
-    border-color: transparent;
-    border-left: 4px solid var(--theme-message-border, var(--theme-table-border, $theme-table-border));
-  }
-
-  // Semantic message colors with proper contrast
-  &.is-primary {
-    .message-header {
-      background-color: hsl(var(--bulma-primary-h), var(--bulma-primary-s), 35%);
-      color: #ffffff;
-    }
     .message-body {
-      background-color: color-mix(in srgb, hsl(var(--bulma-primary)) 15%, var(--theme-message-bg, var(--theme-surface-1)));
-      border-left-color: hsl(var(--bulma-primary));
+      color: var(--theme-message-body-fg, var(--theme-text, $theme-text));
+      border-color: transparent;
+      border-left: 4px solid var(--theme-message-border, var(--theme-table-border, $theme-table-border));
     }
   }
 
-  &.is-link {
-    .message-header {
-      background-color: hsl(var(--bulma-link-h), var(--bulma-link-s), 40%);
-      color: #ffffff;
-    }
-    .message-body {
-      background-color: color-mix(in srgb, hsl(var(--bulma-link)) 15%, var(--theme-message-bg, var(--theme-surface-1)));
-      border-left-color: hsl(var(--bulma-link));
-    }
-  }
-
-  &.is-info {
-    .message-header {
-      background-color: hsl(var(--bulma-info-h), var(--bulma-info-s), 40%);
-      color: #ffffff;
-    }
-    .message-body {
-      background-color: color-mix(in srgb, hsl(var(--bulma-info)) 15%, var(--theme-message-bg, var(--theme-surface-1)));
-      border-left-color: hsl(var(--bulma-info));
-    }
-  }
-
-  &.is-success {
-    .message-header {
-      background-color: hsl(var(--bulma-success-h), var(--bulma-success-s), 35%);
-      color: #ffffff;
-    }
-    .message-body {
-      background-color: color-mix(in srgb, hsl(var(--bulma-success)) 15%, var(--theme-message-bg, var(--theme-surface-1)));
-      border-left-color: hsl(var(--bulma-success));
-    }
-  }
-
-  &.is-warning {
-    .message-header {
-      background-color: hsl(var(--bulma-warning-h), var(--bulma-warning-s), 45%);
-      color: #363636;
-    }
-    .message-body {
-      background-color: color-mix(in srgb, hsl(var(--bulma-warning)) 20%, var(--theme-message-bg, var(--theme-surface-1)));
-      border-left-color: hsl(var(--bulma-warning));
-    }
-  }
-
-  &.is-danger {
-    .message-header {
-      background-color: hsl(var(--bulma-danger-h), var(--bulma-danger-s), 45%);
-      color: #ffffff;
-    }
-    .message-body {
-      background-color: color-mix(in srgb, hsl(var(--bulma-danger)) 15%, var(--theme-message-bg, var(--theme-surface-1)));
-      border-left-color: hsl(var(--bulma-danger));
-    }
-  }
+  // Semantic message colors - let Bulma handle the colorful styling
+  // We only add minor adjustments for better dark theme compatibility
 }
 
 // ============================================================================
@@ -741,56 +683,28 @@ input[type='file']::file-selector-button:hover {
 // ============================================================================
 // Notification Component
 // ============================================================================
+// Notifications are colorful alert components. Semantic variants (is-primary,
+// is-info, is-success, is-warning, is-danger) should remain vibrant and
+// colorful as Bulma intended. We only style the default (non-semantic) variant.
 
 .notification {
-  background-color: var(--theme-notification-bg, var(--theme-surface-1, $theme-surface-1));
-  border: 1px solid var(--theme-notification-border, var(--theme-table-border, $theme-table-border));
-  color: var(--theme-text, $theme-text);
+  // Default (non-semantic) notification styling uses theme tokens
+  &:not(.is-primary):not(.is-link):not(.is-info):not(.is-success):not(.is-warning):not(.is-danger):not(.is-light):not(.is-dark) {
+    background-color: var(--theme-notification-bg, var(--theme-surface-1, $theme-surface-1));
+    border: 1px solid var(--theme-notification-border, var(--theme-table-border, $theme-table-border));
+    color: var(--theme-text, $theme-text);
 
-  .delete {
-    background-color: color-mix(in srgb, var(--theme-text, $theme-text) 20%, transparent);
+    .delete {
+      background-color: color-mix(in srgb, var(--theme-text, $theme-text) 20%, transparent);
 
-    &:hover {
-      background-color: color-mix(in srgb, var(--theme-text, $theme-text) 30%, transparent);
+      &:hover {
+        background-color: color-mix(in srgb, var(--theme-text, $theme-text) 30%, transparent);
+      }
     }
   }
 
-  // Semantic notification colors with proper contrast
-  &.is-primary {
-    background-color: color-mix(in srgb, hsl(var(--bulma-primary)) 20%, var(--theme-notification-bg, var(--theme-surface-1)));
-    border-color: hsl(var(--bulma-primary));
-    color: var(--theme-text, $theme-text);
-  }
-
-  &.is-link {
-    background-color: color-mix(in srgb, hsl(var(--bulma-link)) 20%, var(--theme-notification-bg, var(--theme-surface-1)));
-    border-color: hsl(var(--bulma-link));
-    color: var(--theme-text, $theme-text);
-  }
-
-  &.is-info {
-    background-color: color-mix(in srgb, hsl(var(--bulma-info)) 20%, var(--theme-notification-bg, var(--theme-surface-1)));
-    border-color: hsl(var(--bulma-info));
-    color: var(--theme-text, $theme-text);
-  }
-
-  &.is-success {
-    background-color: color-mix(in srgb, hsl(var(--bulma-success)) 20%, var(--theme-notification-bg, var(--theme-surface-1)));
-    border-color: hsl(var(--bulma-success));
-    color: var(--theme-text, $theme-text);
-  }
-
-  &.is-warning {
-    background-color: color-mix(in srgb, hsl(var(--bulma-warning)) 25%, var(--theme-notification-bg, var(--theme-surface-1)));
-    border-color: hsl(var(--bulma-warning));
-    color: var(--theme-text, $theme-text);
-  }
-
-  &.is-danger {
-    background-color: color-mix(in srgb, hsl(var(--bulma-danger)) 20%, var(--theme-notification-bg, var(--theme-surface-1)));
-    border-color: hsl(var(--bulma-danger));
-    color: var(--theme-text, $theme-text);
-  }
+  // Semantic notification colors - let Bulma handle the colorful styling
+  // Bulma provides vibrant solid backgrounds with contrasting text
 }
 
 // ============================================================================
