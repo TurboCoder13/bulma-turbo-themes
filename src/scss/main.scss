@@ -1,0 +1,70 @@
+// SPDX-License-Identifier: MIT
+// Main Sass entry point for theme generation
+
+@use 'sass:color';
+
+// Import our custom styles first
+@use 'variables';
+@use 'themes' as *;
+@use 'syntax' as *;
+@use 'custom/overrides';
+@use 'custom/hacks';
+
+// Import Bulma with default configuration
+@use 'bulma/bulma';
+
+// Generate CSS for each theme
+@each $theme-name, $theme-data in $themes {
+  .theme-#{$theme-name} {
+    // Apply theme-specific CSS variables
+    --bulma-body-background-color: #{theme-get($theme-name, surface-0)};
+    --bulma-body-color: #{theme-get($theme-name, text)};
+    --bulma-primary-h: #{theme-get($theme-name, primary-h)}deg;
+    --bulma-primary-s: #{theme-get($theme-name, primary-s)}%;
+    --bulma-primary-l: #{theme-get($theme-name, primary-l)}%;
+    --bulma-link: #{theme-get($theme-name, link)};
+    --bulma-info: #{theme-get($theme-name, info)};
+    --bulma-success: #{theme-get($theme-name, success)};
+    --bulma-warning: #{theme-get($theme-name, warning)};
+    --bulma-danger: #{theme-get($theme-name, danger)};
+    --bulma-border: #{theme-get($theme-name, table-border)};
+    --theme-font-sans: #{theme-get($theme-name, font-sans)};
+    --theme-font-mono: #{theme-get($theme-name, font-mono)};
+    --theme-text: #{theme-get($theme-name, text)};
+    --theme-text-muted: #{theme-get($theme-name, text-muted)};
+    --theme-h1: #{theme-get($theme-name, h1)};
+    --theme-h2: #{theme-get($theme-name, h2)};
+    --theme-h3: #{theme-get($theme-name, h3)};
+    --theme-h4: #{theme-get($theme-name, h4)};
+    --theme-h5: #{theme-get($theme-name, h5)};
+    --theme-h6: #{theme-get($theme-name, h6)};
+    --theme-link: #{theme-get($theme-name, link)};
+    --theme-blockquote-border: #{theme-get($theme-name, blockquote-border)};
+    --theme-blockquote-fg: #{theme-get($theme-name, blockquote-fg)};
+    --theme-blockquote-bg: #{theme-get($theme-name, blockquote-bg)};
+    --theme-code-fg: #{theme-get($theme-name, code-fg)};
+    --theme-code-bg: #{theme-get($theme-name, code-bg)};
+    --theme-pre-fg: #{theme-get($theme-name, pre-fg)};
+    --theme-pre-bg: #{theme-get($theme-name, pre-bg)};
+    --theme-table-border: #{theme-get($theme-name, table-border)};
+    --theme-table-stripe: #{theme-get($theme-name, table-stripe)};
+    --theme-table-thead-bg: #{theme-get($theme-name, table-thead-bg)};
+    --theme-selection-fg: #{theme-get($theme-name, selection-fg)};
+    --theme-selection-bg: #{theme-get($theme-name, selection-bg)};
+    --syntax-fg: #{theme-get($theme-name, syntax-fg)};
+    --syntax-bg: #{theme-get($theme-name, syntax-bg)};
+    --syntax-keyword: #{theme-get($theme-name, syntax-keyword)};
+    --syntax-string: #{theme-get($theme-name, syntax-string)};
+    --syntax-number: #{theme-get($theme-name, syntax-number)};
+    --syntax-comment: #{theme-get($theme-name, syntax-comment)};
+    --syntax-title: #{theme-get($theme-name, syntax-title)};
+    --syntax-attr: #{theme-get($theme-name, syntax-attr)};
+    --theme-surface-0: #{theme-get($theme-name, surface-0)};
+    --theme-surface-1: #{theme-get($theme-name, surface-1)};
+    --theme-surface-2: #{theme-get($theme-name, surface-2)};
+    color-scheme: #{theme-get($theme-name, appearance)};
+
+    // Include syntax highlighting for this theme
+    @include syntax-highlighting();
+  }
+}

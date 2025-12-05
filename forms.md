@@ -43,7 +43,7 @@ permalink: /forms/
   <div class="field">
     <label class="label" for="subject">Subject</label>
     <div class="control">
-      <div class="select">
+      <div class="select is-theme">
         <select id="subject">
           <option>Select dropdown</option>
           <option>With options</option>

@@ -55,19 +55,25 @@ log_info "🧪 Running tests..."
 # Change to project root
 cd "$(git rev-parse --show-toplevel 2>/dev/null || echo ".")"
 
-# Check if npm is available
-require_command npm
+# Detect package manager (prefer bun, fall back to npm)
+if command_exists bun; then
+    PKG_RUN="bun run"
+elif command_exists npm; then
+    PKG_RUN="npm run"
+else
+    die "No package manager found! Install bun (https://bun.sh) or npm"
+fi
 
 # Run tests
 if [ "$WATCH_MODE" = true ]; then
     log_info "Running tests in watch mode..."
-    npm run test -- --watch
+    $PKG_RUN test -- --watch
 elif [ "$SKIP_COVERAGE" = true ]; then
     log_info "Running tests without coverage..."
-    npm run test -- --run
+    $PKG_RUN test -- --run
 else
     log_info "Running tests with coverage..."
-    npm test
+    $PKG_RUN test
     
     # Display coverage summary if available
     if [ -f "coverage/coverage-summary.json" ]; then

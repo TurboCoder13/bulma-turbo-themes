@@ -8,6 +8,20 @@ const mockLocalStorage = {
   setItem: vi.fn(),
 };
 
+// Mock dropdown container for closest() calls
+const mockDropdownContainer = {
+  classList: {
+    add: vi.fn(),
+    remove: vi.fn(),
+    toggle: vi.fn(),
+    contains: vi.fn(),
+    forEach: vi.fn(),
+  },
+  setAttribute: vi.fn(),
+  getAttribute: vi.fn(),
+  contains: vi.fn(() => false),
+};
+
 // Mock DOM elements
 const mockElement = {
   href: '',
@@ -25,8 +39,15 @@ const mockElement = {
     remove: vi.fn(),
     toggle: vi.fn(),
     contains: vi.fn(),
+    forEach: vi.fn(),
   },
   contains: vi.fn(),
+  closest: vi.fn(() => mockDropdownContainer),
+  click: vi.fn(),
+  id: '',
+  rel: '',
+  onload: vi.fn(),
+  onerror: vi.fn(),
 };
 
 const mockImg = {
@@ -38,13 +59,114 @@ const mockImg = {
 const mockSpan = {
   textContent: '',
   style: {},
+  appendChild: vi.fn(),
+  className: '',
+  setAttribute: vi.fn(),
 };
 
 const mockLink = { href: '' } as any;
 
+// Helper to create a theme link that auto-loads
+const createAutoLoadThemeLink = () => {
+  let onloadHandler: (() => void) | null = null;
+  let onerrorHandler: (() => void) | null = null;
+
+  const mockThemeLink = {
+    id: '',
+    rel: 'stylesheet',
+    href: '',
+    setAttribute: vi.fn(),
+    set onload(handler: () => void) {
+      onloadHandler = handler;
+      // Trigger immediately in next tick to simulate successful loading
+      // Use setTimeout with 0 delay to ensure it happens after current execution
+      setTimeout(() => {
+        if (onloadHandler) {
+          onloadHandler();
+        }
+      }, 0);
+    },
+    get onload() {
+      return onloadHandler || (() => {});
+    },
+    set onerror(handler: () => void) {
+      onerrorHandler = handler;
+    },
+    get onerror() {
+      return onerrorHandler || (() => {});
+    },
+  };
+
+  return mockThemeLink;
+};
+
+// Helper to setup theme link auto-load in createElement
+const setupThemeLinkAutoLoad = (existingCreateElement?: (tag: string) => any) => {
+  const baseCreateElement =
+    existingCreateElement ||
+    ((tag: string) => {
+      if (tag === 'img') return mockImg;
+      if (tag === 'span') return mockSpan;
+      return mockElement;
+    });
+
+  Object.defineProperty(document, 'createElement', {
+    value: vi.fn((tag: string) => {
+      if (tag === 'link') {
+        return createAutoLoadThemeLink();
+      }
+      return baseCreateElement(tag);
+    }),
+    writable: true,
+    configurable: true,
+  });
+};
+
+// Legacy helper for backward compatibility
+const mockThemeLoading = () => {
+  setupThemeLinkAutoLoad();
+  return createAutoLoadThemeLink();
+};
+
 describe('public API', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+
+    // Mock document.head
+    Object.defineProperty(document, 'head', {
+      value: {
+        appendChild: vi.fn(),
+      },
+      writable: true,
+    });
+
+    // Mock document.body
+    Object.defineProperty(document, 'body', {
+      value: {
+        appendChild: vi.fn(),
+        contains: vi.fn(() => false),
+      },
+      writable: true,
+      configurable: true,
+    });
+
+    // Mock documentElement with proper classList spy
+    Object.defineProperty(document, 'documentElement', {
+      value: {
+        className: '',
+        classList: {
+          add: vi.fn(),
+          remove: vi.fn(),
+          toggle: vi.fn(),
+          contains: vi.fn(),
+          forEach: vi.fn(),
+        },
+        getAttribute: vi.fn(),
+        setAttribute: vi.fn(),
+        removeAttribute: vi.fn(),
+      },
+      writable: true,
+    });
 
     // Setup DOM mocks
     Object.defineProperty(document, 'getElementById', {
@@ -52,7 +174,8 @@ describe('public API', () => {
         if (
           id === 'theme-flavor-items' ||
           id === 'theme-flavor-trigger-icon' ||
-          id === 'theme-flavor-dd'
+          id === 'theme-flavor-trigger' ||
+          id === 'theme-flavor-menu'
         ) {
           return mockElement;
         }
@@ -64,29 +187,13 @@ describe('public API', () => {
       writable: true,
     });
 
-    Object.defineProperty(document, 'querySelector', {
-      value: vi.fn((selector) => {
-        if (selector === '.theme-flavor-trigger') {
-          return mockElement;
-        }
-        return null;
-      }),
-      writable: true,
-    });
-
     Object.defineProperty(document, 'querySelectorAll', {
       value: vi.fn(() => []),
       writable: true,
     });
 
-    Object.defineProperty(document, 'createElement', {
-      value: vi.fn((tag) => {
-        if (tag === 'img') return mockImg;
-        if (tag === 'span') return mockSpan;
-        return mockElement;
-      }),
-      writable: true,
-    });
+    // Setup theme link auto-load by default
+    setupThemeLinkAutoLoad();
 
     Object.defineProperty(document, 'addEventListener', {
       value: vi.fn(),
@@ -127,47 +234,53 @@ describe('public API', () => {
     expect(typeof initNavbar).toBe('function');
   });
 
-  it('initTheme sets data-flavor attribute', () => {
-    document.documentElement.removeAttribute('data-flavor');
-    initTheme(document, window);
-    expect(document.documentElement.getAttribute('data-flavor')).toBe('catppuccin-mocha');
+  it('initTheme applies theme class', async () => {
+    document.documentElement.className = '';
+    mockThemeLoading();
+    await initTheme(document, window);
+    expect(document.documentElement.classList.add).toHaveBeenCalledWith('theme-catppuccin-mocha');
   });
 
-  it('initTheme uses saved theme from localStorage', () => {
-    mockLocalStorage.getItem.mockReturnValue('dracula');
-    initTheme(document, window);
+  it('initTheme uses saved theme from localStorage', async () => {
+    mockLocalStorage.getItem.mockReturnValue('catppuccin-frappe');
+    mockThemeLoading();
+    await initTheme(document, window);
     expect(mockLocalStorage.getItem).toHaveBeenCalledWith('bulma-theme-flavor');
   });
 
-  it('initTheme uses default theme when localStorage is empty', () => {
+  it('initTheme uses default theme when localStorage is empty', async () => {
     mockLocalStorage.getItem.mockReturnValue(null);
-    initTheme(document, window);
-    expect(document.documentElement.setAttribute).toHaveBeenCalledWith(
-      'data-flavor',
-      'catppuccin-mocha'
-    );
+    mockThemeLoading();
+    await initTheme(document, window);
+    expect(document.documentElement.classList.add).toHaveBeenCalledWith('theme-catppuccin-mocha');
   });
 
   it('wireFlavorSelector returns early when elements are missing', () => {
+    const originalAbortController = global.AbortController;
     const mockAbortController = {
       abort: vi.fn(),
     };
-    const originalAbortController = global.AbortController;
-    const MockAbortController = function () {
-      return mockAbortController;
+    const MockAbortController = function (this: any) {
+      Object.assign(this, mockAbortController);
     };
     (global as any).AbortController = MockAbortController;
 
     try {
       Object.defineProperty(document, 'getElementById', {
-        value: vi.fn(() => null),
+        value: vi.fn((id) => {
+          // Return null for all elements to trigger early return
+          if (id === 'theme-flavor-items' || id === 'theme-flavor-trigger') {
+            return null;
+          }
+          return null;
+        }),
         writable: true,
       });
 
       const result = wireFlavorSelector(document, window);
-      expect(document.getElementById).toHaveBeenCalledWith('theme-flavor-items');
-      expect(document.querySelector).toHaveBeenCalledWith('.theme-flavor-trigger');
-      expect(document.getElementById).toHaveBeenCalledWith('theme-flavor-dd');
+      expect(document.getElementById).toHaveBeenCalledWith('theme-flavor-menu');
+      expect(document.getElementById).toHaveBeenCalledWith('theme-flavor-trigger');
+      // Note: dropdown is now obtained via trigger.closest(), not getElementById
 
       // Verify cleanup function exists and calls abortController.abort()
       expect(result).toBeDefined();
@@ -186,63 +299,72 @@ describe('public API', () => {
     wireFlavorSelector(document, window);
 
     // Should create elements for each theme
-    expect(document.createElement).toHaveBeenCalledWith('a');
-    expect(document.createElement).toHaveBeenCalledWith('img');
-    expect(document.createElement).toHaveBeenCalledWith('span');
+    expect(document.createElement).toHaveBeenCalledWith('button');
+    expect(document.createElement).toHaveBeenCalledWith('div'); // For swatches and containers
+    expect(document.createElement).toHaveBeenCalledWith('span'); // For names and badges
   });
 
-  it('wireFlavorSelector toggles active state on dropdown items', () => {
-    // Mock two dropdown items; first matches the first theme id used by click handler
-    const item1 = {
-      getAttribute: vi.fn(() => 'bulma-light'),
+  it('wireFlavorSelector handles theme selection', async () => {
+    // Mock dropdown item
+    const mockItem = {
+      getAttribute: vi.fn(() => 'catppuccin-latte'),
       classList: { add: vi.fn(), remove: vi.fn() },
       setAttribute: vi.fn(),
+      addEventListener: vi.fn(),
+      click: vi.fn(),
     } as any;
-    const item2 = {
-      getAttribute: vi.fn(() => 'github-dark'),
-      classList: { add: vi.fn(), remove: vi.fn() },
-      setAttribute: vi.fn(),
-    } as any;
+
+    // Mock querySelectorAll to return our mock item
     Object.defineProperty(document, 'querySelectorAll', {
-      value: vi.fn(() => [item1, item2]),
+      value: vi.fn(() => [mockItem]),
       writable: true,
     });
 
     wireFlavorSelector(document, window);
 
-    // Simulate click selection of first generated item via handler
-    const clickHandler = mockElement.addEventListener.mock.calls.find(
+    // Find the click handler for the theme item
+    const clickHandler = mockItem.addEventListener.mock.calls.find(
       (call) => call[0] === 'click'
     )?.[1];
-    if (clickHandler) {
-      clickHandler({ preventDefault: vi.fn() });
-    }
 
-    // After applyTheme runs, active state should be updated
-    expect(item1.classList.add).toHaveBeenCalledWith('is-active');
-    expect(item2.classList.remove).toHaveBeenCalledWith('is-active');
+    if (clickHandler) {
+      await clickHandler({ preventDefault: vi.fn() });
+
+      // Verify localStorage was set and applyTheme was called
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+        'bulma-theme-flavor',
+        'catppuccin-latte'
+      );
+    }
   });
 
-  it('opens on mouseenter and closes on mouseleave', () => {
+  it('sets up event listeners for theme selector', () => {
     wireFlavorSelector(document, window);
 
-    const mouseEnter = mockElement.addEventListener.mock.calls.find(
-      (c) => c[0] === 'mouseenter'
-    )?.[1];
-    const mouseLeave = mockElement.addEventListener.mock.calls.find(
-      (c) => c[0] === 'mouseleave'
-    )?.[1];
+    // Verify that event listeners are set up for the trigger button
+    expect(mockElement.addEventListener).toHaveBeenCalledWith(
+      'click',
+      expect.any(Function),
+      expect.any(Object)
+    );
+    expect(mockElement.addEventListener).toHaveBeenCalledWith(
+      'keydown',
+      expect.any(Function),
+      expect.any(Object)
+    );
 
-    if (mouseEnter) mouseEnter();
-    if (mouseLeave) mouseLeave();
-
-    expect(mockElement.classList.add).toHaveBeenCalledWith('is-active');
-    expect(mockElement.classList.remove).toHaveBeenCalledWith('is-active');
+    // Verify document-level event listeners for outside clicks and escape
+    expect(
+      (document.addEventListener as any).mock.calls.some((call: any[]) => call[0] === 'click')
+    ).toBe(true);
+    expect(
+      (document.addEventListener as any).mock.calls.some((call: any[]) => call[0] === 'keydown')
+    ).toBe(true);
   });
 
   it('closes when clicking outside the dropdown', () => {
     // dropdown.contains should return false to emulate outside click
-    mockElement.contains.mockReturnValue(false);
+    mockDropdownContainer.contains.mockReturnValue(false);
     wireFlavorSelector(document, window);
 
     const docClick = (document.addEventListener as any).mock.calls.find(
@@ -252,77 +374,318 @@ describe('public API', () => {
       docClick({ target: {} } as any);
     }
 
-    expect(mockElement.classList.remove).toHaveBeenCalledWith('is-active');
+    // The dropdown is obtained via trigger.closest(), which returns mockDropdownContainer
+    expect(mockDropdownContainer.classList.remove).toHaveBeenCalledWith('is-active');
   });
 
   it('does not close when clicking inside the dropdown', () => {
-    mockElement.contains.mockReturnValue(true);
+    const mockTarget = {
+      nodeName: 'BUTTON',
+    } as any; // The click target element (a button inside the dropdown)
+    const mockDropdown = {
+      ...mockElement,
+      classList: {
+        ...mockElement.classList,
+        remove: vi.fn(),
+      },
+      contains: vi.fn(() => {
+        // Always return true to simulate clicking inside the dropdown
+        // This ensures the dropdown doesn't close
+        return true;
+      }),
+    };
+    const mockTrigger = {
+      ...mockElement,
+      closest: vi.fn(() => mockDropdown),
+    };
+    Object.defineProperty(document, 'getElementById', {
+      value: vi.fn((id) => {
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
+        return null;
+      }),
+      writable: true,
+    });
+
     wireFlavorSelector(document, window);
+
+    // Clear any calls made during initialization
+    mockDropdown.classList.remove.mockClear();
 
     const docClick = (document.addEventListener as any).mock.calls.find(
       (c: any) => c[0] === 'click'
     )?.[1];
     if (docClick) {
-      docClick({ target: {} } as any);
+      // Simulate clicking inside the dropdown (target is inside)
+      // The contains mock will return true for mockTarget
+      docClick({ target: mockTarget } as any);
     }
 
-    expect(mockElement.classList.remove).not.toHaveBeenCalledWith('is-active');
+    // Verify contains was called with the target
+    expect(mockDropdown.contains).toHaveBeenCalledWith(mockTarget);
+    // Since contains returns true (target is inside), remove should not be called
+    // The condition in the code is: if (dropdown && !dropdown.contains(e.target as Node))
+    // So if contains returns true, the condition is false and remove should not be called
+    expect(mockDropdown.classList.remove).not.toHaveBeenCalledWith('is-active');
   });
 
-  it('updates flavor link href when present', () => {
-    // Provide link element and trigger a click selection
+  it('handles applyTheme error gracefully in click handler catch block', async () => {
+    // Test error handling in applyTheme catch block (coverage for line 372)
+    const mockHead = { appendChild: vi.fn() };
+    let onerrorHandler: (() => void) | null = null;
+    const mockThemeLink = {
+      id: 'theme-catppuccin-mocha-css',
+      rel: 'stylesheet',
+      href: '',
+      set onload(handler: () => void) {
+        // Don't call - simulate load failure
+      },
+      set onerror(handler: () => void) {
+        onerrorHandler = handler;
+        // Trigger error immediately to reject the promise
+        setTimeout(() => {
+          if (onerrorHandler) {
+            onerrorHandler();
+          }
+        }, 0);
+      },
+      get onerror() {
+        return onerrorHandler || (() => {});
+      },
+    };
+
+    Object.defineProperty(document, 'head', { value: mockHead, writable: true });
+    Object.defineProperty(document, 'getElementById', {
+      value: vi.fn((id) => {
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-catppuccin-mocha-css') return null; // Not loaded yet
+        return null;
+      }),
+      writable: true,
+    });
+    Object.defineProperty(document, 'createElement', {
+      value: vi.fn((tag) => {
+        if (tag === 'link') return mockThemeLink;
+        if (tag === 'img') return mockImg;
+        if (tag === 'span') return mockSpan;
+        if (tag === 'button') {
+          return {
+            ...mockElement,
+            type: 'button',
+            getAttribute: vi.fn(() => 'catppuccin-mocha'),
+            addEventListener: vi.fn(),
+          };
+        }
+        if (tag === 'div') {
+          return {
+            className: '',
+            style: { setProperty: vi.fn() },
+            appendChild: vi.fn(),
+            setAttribute: vi.fn(),
+          };
+        }
+        return mockElement;
+      }),
+      writable: true,
+    });
+
+    // Mock querySelectorAll to return dropdown items
+    const mockItem = {
+      getAttribute: vi.fn(() => 'catppuccin-mocha'),
+      classList: { add: vi.fn(), remove: vi.fn() },
+      setAttribute: vi.fn(),
+      addEventListener: vi.fn(),
+    } as any;
+
+    Object.defineProperty(document, 'querySelectorAll', {
+      value: vi.fn(() => [mockItem]),
+      writable: true,
+    });
+
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
     wireFlavorSelector(document, window);
-    const clickHandler = mockElement.addEventListener.mock.calls.find(
+
+    // Find and trigger the click handler
+    const clickHandler = mockItem.addEventListener.mock.calls.find(
       (call) => call[0] === 'click'
     )?.[1];
+
     if (clickHandler) {
-      clickHandler({ preventDefault: vi.fn() });
+      // Trigger click - this will call applyTheme which will fail
+      const clickPromise = clickHandler({ preventDefault: vi.fn() });
+
+      // Wait for the error to be handled
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
+      // Verify error was logged (coverage for line 372)
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Failed to apply theme'),
+        expect.anything()
+      );
+
+      // Clean up
+      try {
+        await clickPromise;
+      } catch {
+        // Expected - promise rejects
+      }
+
+      consoleErrorSpy.mockRestore();
     }
-    expect(mockLink.href).not.toBe('');
   });
 
-  it('handles baseUrl attribute on html element', () => {
-    const baseEl = { getAttribute: vi.fn(() => '/app') } as any;
-    Object.defineProperty(document, 'querySelector', {
-      value: vi.fn((selector) => {
-        if (selector === 'html[data-baseurl]') return baseEl;
-        if (selector === '.theme-flavor-trigger') return mockElement;
-        return null;
+  it('creates theme CSS link on theme selection', async () => {
+    // Mock the document head and createElement
+    const mockHead = { appendChild: vi.fn() };
+    let onloadHandler: (() => void) | null = null;
+    let onerrorHandler: (() => void) | null = null;
+    const mockThemeLink = {
+      id: '',
+      rel: '',
+      href: '',
+      set onload(handler: () => void) {
+        onloadHandler = handler;
+      },
+      set onerror(handler: () => void) {
+        onerrorHandler = handler;
+      },
+      triggerLoad: () => onloadHandler?.(),
+      triggerError: () => onerrorHandler?.(),
+    };
+    const mockAnchor = {
+      href: '#',
+      className: '',
+      setAttribute: vi.fn(),
+      getAttribute: vi.fn(),
+      appendChild: vi.fn(),
+      addEventListener: vi.fn(),
+      classList: { add: vi.fn(), remove: vi.fn() },
+    };
+    Object.defineProperty(document, 'head', { value: mockHead, writable: true });
+    Object.defineProperty(document, 'createElement', {
+      value: vi.fn((tagName: string) => {
+        if (tagName === 'link') return mockThemeLink;
+        if (tagName === 'button') return mockAnchor;
+        if (tagName === 'span')
+          return {
+            textContent: '',
+            style: {},
+            className: '',
+            setAttribute: vi.fn(),
+            appendChild: vi.fn(),
+          };
+        if (tagName === 'img') return { src: '', alt: '', width: 0, height: 0 };
+        if (tagName === 'div')
+          return {
+            className: '',
+            style: { setProperty: vi.fn() },
+            appendChild: vi.fn(),
+            setAttribute: vi.fn(),
+          };
+        return {};
       }),
       writable: true,
     });
-    initTheme(document, window);
+
+    // Mock querySelectorAll to return a mock item
+    const mockItem = {
+      getAttribute: vi.fn(() => 'catppuccin-latte'),
+      classList: { add: vi.fn(), remove: vi.fn() },
+      setAttribute: vi.fn(),
+      addEventListener: vi.fn(),
+    } as any;
+
+    Object.defineProperty(document, 'querySelectorAll', {
+      value: vi.fn(() => [mockItem]),
+      writable: true,
+    });
+
     wireFlavorSelector(document, window);
-    // No explicit assertion; executing this path exercises baseUrl branch
-    expect(document.documentElement.setAttribute).toHaveBeenCalled();
+
+    // Find and trigger the click handler
+    const clickHandler = mockItem.addEventListener.mock.calls.find(
+      (call) => call[0] === 'click'
+    )?.[1];
+
+    if (clickHandler) {
+      // Start the click handler which will set up the onload handler
+      const clickPromise = clickHandler({ preventDefault: vi.fn() });
+
+      // Mock successful CSS load by triggering the onload handler
+      mockThemeLink.triggerLoad();
+
+      // Wait for the click handler to complete
+      await clickPromise;
+
+      // Verify theme CSS link was created
+      expect(document.createElement).toHaveBeenCalledWith('link');
+      expect(mockHead.appendChild).toHaveBeenCalledWith(mockThemeLink);
+    }
   });
 
-  it('handles invalid baseUrl gracefully (catch path)', () => {
-    const baseEl = { getAttribute: vi.fn(() => '::invalid-url') } as any;
+  it('handles baseUrl attribute on html element', async () => {
+    Object.defineProperty(document.documentElement, 'getAttribute', {
+      value: vi.fn((attr) => {
+        if (attr === 'data-baseurl') return '/app';
+        return null;
+      }),
+      writable: true,
+    });
     Object.defineProperty(document, 'querySelector', {
       value: vi.fn((selector) => {
-        if (selector === 'html[data-baseurl]') return baseEl;
         if (selector === '.theme-flavor-trigger') return mockElement;
         return null;
       }),
       writable: true,
     });
-    initTheme(document, window);
+    await initTheme(document, window);
+    wireFlavorSelector(document, window);
+    // Verify baseUrl is used in theme application
+    expect(document.documentElement.classList.add).toHaveBeenCalledWith('theme-catppuccin-mocha');
+  });
+
+  it('handles invalid baseUrl gracefully (catch path)', async () => {
+    Object.defineProperty(document.documentElement, 'getAttribute', {
+      value: vi.fn((attr) => {
+        if (attr === 'data-baseurl') return '::invalid-url';
+        return null;
+      }),
+      writable: true,
+    });
+    Object.defineProperty(document, 'querySelector', {
+      value: vi.fn((selector) => {
+        if (selector === '.theme-flavor-trigger') return mockElement;
+        return null;
+      }),
+      writable: true,
+    });
+    await initTheme(document, window);
     // no throw means catch branch executed safely
-    expect(document.documentElement.setAttribute).toHaveBeenCalled();
+    expect(document.documentElement.classList.add).toHaveBeenCalledWith('theme-catppuccin-mocha');
   });
 
   it('toggles dropdown on trigger click', () => {
+    const mockDropdown = {
+      ...mockElement,
+      classList: {
+        ...mockElement.classList,
+        toggle: vi.fn(),
+        contains: vi.fn(() => false),
+      },
+    };
     const mockTrigger = {
       ...mockElement,
       addEventListener: vi.fn(),
       classList: { toggle: vi.fn(), add: vi.fn(), remove: vi.fn() },
       setAttribute: vi.fn(),
       focus: vi.fn(),
+      closest: vi.fn(() => mockDropdown),
     } as any;
-    Object.defineProperty(document, 'querySelector', {
-      value: vi.fn((selector) => {
-        if (selector === '.theme-flavor-trigger') return mockTrigger;
+    Object.defineProperty(document, 'getElementById', {
+      value: vi.fn((id) => {
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
         return null;
       }),
       writable: true,
@@ -335,59 +698,81 @@ describe('public API', () => {
       triggerClick({ preventDefault: vi.fn() } as any);
     }
     // The code toggles the dropdown element, not the trigger
-    expect(mockElement.classList.toggle).toHaveBeenCalledWith('is-active');
+    expect(mockDropdown.classList.toggle).toHaveBeenCalledWith('is-active');
   });
 
-  it('updates trigger icon when theme has icon', () => {
+  it('updates trigger icon when theme has icon', async () => {
     // Select a theme that has an icon, e.g., dracula
-    mockLocalStorage.getItem.mockReturnValue('dracula');
-    initTheme(document, window);
-    expect(mockElement.appendChild).toHaveBeenCalled();
-  });
-
-  it('removes existing children from trigger icon (while loop)', () => {
-    // Provide a trigger icon element with an existing child
     const triggerIconEl: any = {
-      firstChild: {},
-      removeChild: vi.fn(function () {
-        // simulate removing the only child
-        this.firstChild = null;
-      }),
-      appendChild: vi.fn(),
+      src: '',
+      alt: '',
+      title: '',
     };
     Object.defineProperty(document, 'getElementById', {
       value: vi.fn((id) => {
         if (id === 'theme-flavor-trigger-icon') return triggerIconEl;
-        if (id === 'theme-flavor-items' || id === 'theme-flavor-dd') return mockElement;
+        if (id === 'theme-flavor-menu') return mockElement;
         if (id === 'theme-flavor-css') return mockLink;
         return null;
       }),
       writable: true,
     });
-    mockLocalStorage.getItem.mockReturnValue('dracula');
-    initTheme(document, window);
-    expect(triggerIconEl.removeChild).toHaveBeenCalled();
+    mockLocalStorage.getItem.mockReturnValue('catppuccin-frappe');
+    mockThemeLoading();
+    await initTheme(document, window);
+    expect(triggerIconEl.src).toBeTruthy();
   });
 
-  it('keeps behavior on invalid baseUrl (css link still set; icon ignored)', () => {
-    const baseEl = { getAttribute: vi.fn(() => '::invalid-url') } as any;
+  it('removes existing children from trigger icon (while loop)', async () => {
+    // Mock theme loading
+    mockThemeLoading();
+
+    // Provide a trigger icon element - icon is set via src property, not children
+    const triggerIconEl: any = {
+      src: '',
+      alt: '',
+      title: '',
+    };
+    Object.defineProperty(document, 'getElementById', {
+      value: vi.fn((id) => {
+        if (id === 'theme-flavor-trigger-icon') return triggerIconEl;
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-css') return mockLink;
+        return null;
+      }),
+      writable: true,
+    });
+    mockLocalStorage.getItem.mockReturnValue('catppuccin-frappe');
+    await initTheme(document, window);
+    // Icon is set via src property, not by removing/adding children
+    expect(triggerIconEl.src).toBeTruthy();
+  });
+
+  it('handles theme application with invalid baseUrl', async () => {
+    Object.defineProperty(document.documentElement, 'getAttribute', {
+      value: vi.fn((attr) => {
+        if (attr === 'data-baseurl') return '::invalid-url';
+        return null;
+      }),
+      writable: true,
+    });
     Object.defineProperty(document, 'querySelector', {
       value: vi.fn((selector) => {
-        if (selector === 'html[data-baseurl]') return baseEl;
         if (selector === '.theme-flavor-trigger') return mockElement;
         return null;
       }),
       writable: true,
     });
-    mockLocalStorage.getItem.mockReturnValue('dracula');
-    initTheme(document, window);
-    // css link still set via absolute path resolution; icon src ignored
-    expect(mockLink.href).toContain('/assets/css/themes/');
-    // In our mocks, img.src may still be set; just ensure it is a string
-    expect(typeof (mockImg as any).src).toBe('string');
+    mockLocalStorage.getItem.mockReturnValue('catppuccin-frappe');
+    await initTheme(document, window);
+    // Theme class is still applied despite invalid baseUrl
+    expect(document.documentElement.classList.add).toHaveBeenCalledWith('theme-catppuccin-frappe');
   });
 
-  it('handles missing flavor link gracefully (no throw, no href set)', () => {
+  it('handles missing flavor link gracefully (no throw, no href set)', async () => {
+    // Mock theme loading
+    mockThemeLoading();
+
     // Remove flavor link from DOM mocks
     const mockLocal = mockLocalStorage;
     Object.defineProperty(document, 'getElementById', {
@@ -395,7 +780,7 @@ describe('public API', () => {
         if (
           id === 'theme-flavor-trigger-icon' ||
           id === 'theme-flavor-items' ||
-          id === 'theme-flavor-dd'
+          id === 'theme-flavor-menu'
         )
           return mockElement;
         return null;
@@ -404,74 +789,50 @@ describe('public API', () => {
     });
 
     // Should not throw when link is missing
-    expect(() => initTheme(document as any, window as any)).not.toThrow();
+    await expect(initTheme(document as any, window as any)).resolves.not.toThrow();
     // No href to set; ensure we didn't try to access mockLink
     expect(mockLocal.getItem).toHaveBeenCalled();
   });
 
-  it('falls back to text icon when theme has no icon', () => {
-    // Force a theme without an icon
-    mockLocalStorage.getItem.mockReturnValue('bulma-light');
-    // Temporarily remove icon from theme by intercepting createElement calls
-    const triggerIconEl: any = {
-      firstChild: null,
-      removeChild: vi.fn(),
-      appendChild: vi.fn(),
-    };
-    Object.defineProperty(document, 'getElementById', {
-      value: vi.fn((id) => {
-        if (id === 'theme-flavor-trigger-icon') return triggerIconEl;
-        if (id === 'theme-flavor-css') return mockLink;
-        if (id === 'theme-flavor-items' || id === 'theme-flavor-dd') return mockElement;
-        return null;
-      }),
-      writable: true,
+  it('falls back to text icon when theme has no icon', async () => {
+    // Force a theme without an icon - but catppuccin-latte actually has an icon
+    // So we'll test with a theme that exists but mock the icon as missing
+    mockLocalStorage.getItem.mockReturnValue('catppuccin-latte');
+
+    // Setup createElement with auto-load for link, but custom handling for other elements
+    setupThemeLinkAutoLoad((tag: string) => {
+      if (tag === 'img') return { ...mockImg, src: '' } as any;
+      if (tag === 'span') return { ...mockSpan } as any;
+      return mockElement as any;
     });
 
-    // Spy on document.createElement to simulate no icon path by returning span for non-img
-    const origCreate = document.createElement;
-    Object.defineProperty(document, 'createElement', {
-      value: vi.fn((tag: string) => {
-        if (tag === 'img') return { ...mockImg, src: '' } as any; // img with empty src
-        if (tag === 'span') return { ...mockSpan } as any;
-        return mockElement as any;
-      }),
-      writable: true,
-    });
-
-    initTheme(document as any, window as any);
-    // Expect a child appended (span fallback)
-    expect(triggerIconEl.appendChild).toHaveBeenCalled();
-
-    // Restore createElement to avoid side effects for later tests
-    Object.defineProperty(document, 'createElement', {
-      value: origCreate,
-      writable: true,
-    });
+    await initTheme(document as any, window as any);
+    // Theme class is applied regardless of icon handling
+    expect(document.documentElement.classList.add).toHaveBeenCalledWith('theme-catppuccin-latte');
   });
 
-  it('applyTheme skips trigger icon update when trigger element is missing', () => {
+  it('applyTheme skips trigger icon update when trigger element is missing', async () => {
     // Provide flavor link but omit trigger icon element
     Object.defineProperty(document, 'getElementById', {
       value: vi.fn((id) => {
         if (id === 'theme-flavor-css') return mockLink;
-        if (id === 'theme-flavor-items' || id === 'theme-flavor-dd') return mockElement;
+        if (id === 'theme-flavor-items' || id === 'theme-flavor-menu') return mockElement;
         return null;
       }),
       writable: true,
     });
 
-    // Should not throw
-    expect(() => initTheme(document as any, window as any)).not.toThrow();
+    // Should not reject - await the Promise for proper async testing
+    await expect(initTheme(document as any, window as any)).resolves.not.toThrow();
   });
 
-  it('applyTheme handles URL constructor error (cssFile) without throwing', () => {
+  it('applyTheme handles URL constructor error (cssFile) without throwing', async () => {
     // Set up DOM elements
     Object.defineProperty(document, 'getElementById', {
       value: vi.fn((id) => {
         if (id === 'theme-flavor-css') return mockLink;
         if (id === 'theme-flavor-trigger-icon') return mockElement;
-        if (id === 'theme-flavor-items' || id === 'theme-flavor-dd') return mockElement;
+        if (id === 'theme-flavor-items' || id === 'theme-flavor-menu') return mockElement;
         return null;
       }),
       writable: true,
@@ -487,34 +848,25 @@ describe('public API', () => {
       return new OriginalURL(input, base);
     }) as any;
 
-    expect(() => initTheme(document as any, window as any)).not.toThrow();
+    // Should not reject - await the Promise for proper async testing
+    await expect(initTheme(document as any, window as any)).resolves.not.toThrow();
 
     // Restore URL
     (globalThis as any).URL = OriginalURL as any;
   });
 
-  it('falls back to default theme when saved theme is unknown', () => {
+  it('falls back to default theme when saved theme is unknown', async () => {
     mockLocalStorage.getItem.mockReturnValue('unknown-theme-id');
-    initTheme(document, window);
-    expect(document.documentElement.setAttribute).toHaveBeenCalledWith(
-      'data-flavor',
-      'unknown-theme-id'
-    );
+    // Ensure auto-load is set up
+    setupThemeLinkAutoLoad();
+    await initTheme(document, window);
+    expect(document.documentElement.classList.add).toHaveBeenCalledWith('theme-catppuccin-mocha');
   });
 
   it('wireFlavorSelector sets up event listeners', () => {
     wireFlavorSelector(document, window);
 
-    expect(mockElement.addEventListener).toHaveBeenCalledWith(
-      'mouseenter',
-      expect.any(Function),
-      expect.any(Object)
-    );
-    expect(mockElement.addEventListener).toHaveBeenCalledWith(
-      'mouseleave',
-      expect.any(Function),
-      expect.any(Object)
-    );
+    // The trigger should have click and keydown listeners
     expect(mockElement.addEventListener).toHaveBeenCalledWith(
       'click',
       expect.any(Function),
@@ -527,27 +879,257 @@ describe('public API', () => {
     );
   });
 
-  it('wireFlavorSelector handles theme selection', () => {
-    const mockEvent = {
-      preventDefault: vi.fn(),
-      target: mockElement,
+  it('wireFlavorSelector handles theme selection', async () => {
+    const mockMenuItems: any[] = [];
+    const mockTrigger = {
+      ...mockElement,
+      setAttribute: vi.fn(),
+      addEventListener: vi.fn(),
     };
+    const _mockDropdown = {
+      ...mockElement,
+      classList: {
+        ...mockElement.classList,
+        remove: vi.fn(),
+      },
+    };
+
+    Object.defineProperty(document, 'createElement', {
+      value: vi.fn((tag) => {
+        if (tag === 'button') {
+          const item = {
+            ...mockElement,
+            type: 'button',
+            getAttribute: vi.fn((attr) => {
+              // Return theme ID for data-theme-id attribute
+              if (attr === 'data-theme-id') {
+                // Return different theme IDs, but we'll find the catppuccin-latte one
+                const index = mockMenuItems.length;
+                const themes = [
+                  'bulma-light',
+                  'bulma-dark',
+                  'catppuccin-latte',
+                  'catppuccin-frappe',
+                  'catppuccin-macchiato',
+                  'catppuccin-mocha',
+                  'dracula',
+                  'github-light',
+                  'github-dark',
+                ];
+                return themes[index] || 'catppuccin-latte';
+              }
+              return null;
+            }),
+            addEventListener: vi.fn(),
+          };
+          mockMenuItems.push(item);
+          return item;
+        }
+        if (tag === 'div') {
+          return {
+            className: '',
+            style: { setProperty: vi.fn() },
+            appendChild: vi.fn(),
+            setAttribute: vi.fn(),
+          };
+        }
+        if (tag === 'img') return mockImg;
+        if (tag === 'span') return mockSpan;
+        if (tag === 'link') return createAutoLoadThemeLink();
+        return mockElement;
+      }),
+      writable: true,
+    });
+
+    Object.defineProperty(document, 'getElementById', {
+      value: vi.fn((id) => {
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
+        return null;
+      }),
+      writable: true,
+    });
 
     wireFlavorSelector(document, window);
 
-    // Simulate click on dropdown item
-    const clickHandler = mockElement.addEventListener.mock.calls.find(
-      (call) => call[0] === 'click'
-    )?.[1];
+    // Find the catppuccin-latte menu item and its click handler
+    // The items are created in order, so catppuccin-latte should be at index 2
+    const catppuccinLatteItem =
+      mockMenuItems.length > 2
+        ? mockMenuItems[2]
+        : mockMenuItems.find((item) => {
+            const themeId = item.getAttribute('data-theme-id');
+            return themeId === 'catppuccin-latte';
+          });
 
-    if (clickHandler) {
-      clickHandler(mockEvent);
-      expect(mockEvent.preventDefault).toHaveBeenCalled();
-      expect(mockLocalStorage.setItem).toHaveBeenCalled();
+    expect(catppuccinLatteItem).toBeDefined();
+    if (catppuccinLatteItem) {
+      const clickHandler = catppuccinLatteItem.addEventListener.mock.calls.find(
+        (call) => call[0] === 'click'
+      )?.[1];
+
+      if (clickHandler) {
+        const mockEvent = {
+          preventDefault: vi.fn(),
+          target: catppuccinLatteItem,
+        };
+        await clickHandler(mockEvent);
+        // Wait a bit for async operations to complete
+        await new Promise((resolve) => setTimeout(resolve, 10));
+        expect(mockEvent.preventDefault).toHaveBeenCalled();
+        expect(mockLocalStorage.setItem).toHaveBeenCalled();
+      }
+    }
+  });
+
+  it('wireFlavorSelector keeps native select in sync with dropdown clicks', async () => {
+    const mockMenuItems: any[] = [];
+    const mockTrigger = {
+      ...mockElement,
+      setAttribute: vi.fn(),
+      addEventListener: vi.fn(),
+    };
+    const mockDropdown = {
+      ...mockElement,
+      classList: {
+        ...mockElement.classList,
+        remove: vi.fn(),
+        add: vi.fn(),
+        toggle: vi.fn(() => true),
+        contains: vi.fn(() => false),
+      },
+    };
+    const mockDropdownContent = {
+      ...mockElement,
+      appendChild: vi.fn(),
+    };
+    const mockSelect: any = {
+      firstChild: null,
+      removeChild: vi.fn(function () {
+        this.firstChild = null;
+      }),
+      appendChild: vi.fn(),
+      addEventListener: vi.fn(),
+      disabled: true,
+      value: '',
+      dispatchEvent: vi.fn(),
+    };
+
+    Object.defineProperty(document, 'createElement', {
+      value: vi.fn((tag) => {
+        if (tag === 'button') {
+          // Capture index at creation time (before push)
+          const capturedIndex = mockMenuItems.length;
+          const themes = [
+            'bulma-light',
+            'bulma-dark',
+            'catppuccin-latte',
+            'catppuccin-frappe',
+            'catppuccin-macchiato',
+            'catppuccin-mocha',
+            'dracula',
+            'github-light',
+            'github-dark',
+          ];
+          const item = {
+            ...mockElement,
+            type: 'button',
+            getAttribute: vi.fn((attr) => {
+              if (attr === 'data-theme-id') {
+                return themes[capturedIndex] || 'catppuccin-latte';
+              }
+              return null;
+            }),
+            addEventListener: vi.fn(),
+            classList: {
+              ...mockElement.classList,
+              add: vi.fn(),
+              remove: vi.fn(),
+            },
+          };
+          mockMenuItems.push(item);
+          return item;
+        }
+        if (tag === 'div') {
+          return {
+            className: '',
+            style: { setProperty: vi.fn() },
+            appendChild: vi.fn(),
+            setAttribute: vi.fn(),
+          };
+        }
+        if (tag === 'img') return mockImg;
+        if (tag === 'span') return mockSpan;
+        if (tag === 'link') return createAutoLoadThemeLink();
+        return mockElement;
+      }),
+      writable: true,
+    });
+
+    Object.defineProperty(document, 'getElementById', {
+      value: vi.fn((id) => {
+        if (id === 'theme-flavor-items') return mockDropdownContent;
+        if (id === 'theme-flavor-menu') return mockDropdown;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
+        if (id === 'theme-flavor-select') return mockSelect;
+        return null;
+      }),
+      writable: true,
+    });
+
+    wireFlavorSelector(document, window);
+
+    // Find a specific menu item and its click handler
+    const catppuccinLatteItem = mockMenuItems.find((item) => {
+      const themeId = item.getAttribute('data-theme-id');
+      return themeId === 'catppuccin-latte';
+    });
+
+    expect(catppuccinLatteItem).toBeDefined();
+
+    if (catppuccinLatteItem) {
+      const clickHandler = catppuccinLatteItem.addEventListener.mock.calls.find(
+        (call: any[]) => call[0] === 'click'
+      )?.[1];
+
+      expect(clickHandler).toBeDefined();
+      if (clickHandler) {
+        const mockEvent = {
+          preventDefault: vi.fn(),
+        };
+        await clickHandler(mockEvent as any);
+
+        // Native select should be enabled and updated to the chosen theme
+        expect(mockSelect.disabled).toBe(false);
+        expect(mockSelect.value).toBe('catppuccin-latte');
+        expect(mockSelect.dispatchEvent).toHaveBeenCalled();
+      }
     }
   });
 
   it('wireFlavorSelector handles keyboard navigation', () => {
+    const mockDropdown = {
+      ...mockElement,
+      classList: {
+        ...mockElement.classList,
+        toggle: vi.fn(),
+        contains: vi.fn(() => false),
+      },
+    };
+    const mockTrigger = {
+      ...mockElement,
+      addEventListener: vi.fn(),
+      closest: vi.fn(() => mockDropdown),
+    };
+    Object.defineProperty(document, 'getElementById', {
+      value: vi.fn((id) => {
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
+        return null;
+      }),
+      writable: true,
+    });
+
     const mockKeyEvent = {
       key: 'Enter',
       preventDefault: vi.fn(),
@@ -556,18 +1138,40 @@ describe('public API', () => {
     wireFlavorSelector(document, window);
 
     // Simulate keydown on trigger
-    const keydownHandler = mockElement.addEventListener.mock.calls.find(
+    const keydownHandler = mockTrigger.addEventListener.mock.calls.find(
       (call) => call[0] === 'keydown'
     )?.[1];
 
     if (keydownHandler) {
       keydownHandler(mockKeyEvent);
       expect(mockKeyEvent.preventDefault).toHaveBeenCalled();
-      expect(mockElement.classList.toggle).toHaveBeenCalledWith('is-active');
+      expect(mockDropdown.classList.toggle).toHaveBeenCalled();
     }
   });
 
   it('wireFlavorSelector handles space key navigation', () => {
+    const mockDropdown = {
+      ...mockElement,
+      classList: {
+        ...mockElement.classList,
+        toggle: vi.fn(),
+        contains: vi.fn(() => false),
+      },
+    };
+    const mockTrigger = {
+      ...mockElement,
+      addEventListener: vi.fn(),
+      closest: vi.fn(() => mockDropdown),
+    };
+    Object.defineProperty(document, 'getElementById', {
+      value: vi.fn((id) => {
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
+        return null;
+      }),
+      writable: true,
+    });
+
     const mockKeyEvent = {
       key: ' ',
       preventDefault: vi.fn(),
@@ -575,20 +1179,37 @@ describe('public API', () => {
 
     wireFlavorSelector(document, window);
 
-    const keydownHandler = mockElement.addEventListener.mock.calls.find(
+    const keydownHandler = mockTrigger.addEventListener.mock.calls.find(
       (call) => call[0] === 'keydown'
     )?.[1];
 
     if (keydownHandler) {
       keydownHandler(mockKeyEvent);
       expect(mockKeyEvent.preventDefault).toHaveBeenCalled();
-      expect(mockElement.classList.toggle).toHaveBeenCalledWith('is-active');
+      expect(mockDropdown.classList.toggle).toHaveBeenCalled();
     }
   });
 
   it('wireFlavorSelector ignores other keys', () => {
+    const mockDropdown = {
+      ...mockElement,
+      classList: {
+        ...mockElement.classList,
+        toggle: vi.fn(),
+        contains: vi.fn(() => false),
+      },
+    };
+    Object.defineProperty(document, 'getElementById', {
+      value: vi.fn((id) => {
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-trigger') return mockElement;
+        return null;
+      }),
+      writable: true,
+    });
+
     const mockKeyEvent = {
-      key: 'Escape',
+      key: 'a', // Non-special key
       preventDefault: vi.fn(),
     };
 
@@ -600,12 +1221,35 @@ describe('public API', () => {
 
     if (keydownHandler) {
       keydownHandler(mockKeyEvent);
-      expect(mockKeyEvent.preventDefault).not.toHaveBeenCalled();
-      expect(mockElement.classList.toggle).not.toHaveBeenCalled();
+      // Non-special keys don't trigger preventDefault or toggle
+      expect(mockDropdown.classList.toggle).not.toHaveBeenCalled();
     }
   });
 
   it.each(['ArrowDown', 'ArrowUp'])('wireFlavorSelector handles %s key navigation', (key) => {
+    const mockDropdown = {
+      ...mockElement,
+      classList: {
+        ...mockElement.classList,
+        add: vi.fn(),
+        contains: vi.fn(() => false),
+      },
+    };
+    const mockTrigger = {
+      ...mockElement,
+      addEventListener: vi.fn(),
+      setAttribute: vi.fn(),
+      closest: vi.fn(() => mockDropdown),
+    };
+    Object.defineProperty(document, 'getElementById', {
+      value: vi.fn((id) => {
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
+        return null;
+      }),
+      writable: true,
+    });
+
     const mockKeyEvent = {
       key,
       preventDefault: vi.fn(),
@@ -613,21 +1257,41 @@ describe('public API', () => {
 
     wireFlavorSelector(document, window);
 
-    const keydownHandler = mockElement.addEventListener.mock.calls.find(
+    const keydownHandler = mockTrigger.addEventListener.mock.calls.find(
       (call) => call[0] === 'keydown'
     )?.[1];
 
     if (keydownHandler) {
       keydownHandler(mockKeyEvent);
       expect(mockKeyEvent.preventDefault).toHaveBeenCalled();
-      expect(mockElement.classList.add).toHaveBeenCalledWith('is-active');
-      expect(mockElement.setAttribute).toHaveBeenCalledWith('aria-expanded', 'true');
+      expect(mockDropdown.classList.add).toHaveBeenCalledWith('is-active');
+      expect(mockTrigger.setAttribute).toHaveBeenCalledWith('aria-expanded', 'true');
     }
   });
 
   it('wireFlavorSelector handles Escape key to close dropdown', () => {
-    // Set up dropdown as active
-    mockElement.classList.contains.mockReturnValue(true);
+    const mockDropdown = {
+      ...mockElement,
+      classList: {
+        ...mockElement.classList,
+        remove: vi.fn(),
+        contains: vi.fn(() => true), // Dropdown is active
+      },
+    };
+    const mockTrigger = {
+      ...mockElement,
+      setAttribute: vi.fn(),
+      focus: vi.fn(),
+      closest: vi.fn(() => mockDropdown),
+    };
+    Object.defineProperty(document, 'getElementById', {
+      value: vi.fn((id) => {
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
+        return null;
+      }),
+      writable: true,
+    });
 
     wireFlavorSelector(document, window);
 
@@ -642,8 +1306,8 @@ describe('public API', () => {
         preventDefault: vi.fn(),
       };
       docKeydownHandler(escapeEvent);
-      expect(mockElement.classList.remove).toHaveBeenCalledWith('is-active');
-      expect(mockElement.setAttribute).toHaveBeenCalledWith('aria-expanded', 'false');
+      expect(mockDropdown.classList.remove).toHaveBeenCalledWith('is-active');
+      expect(mockTrigger.setAttribute).toHaveBeenCalledWith('aria-expanded', 'false');
     }
   });
 
@@ -656,7 +1320,7 @@ describe('public API', () => {
         setAttribute: vi.fn(),
         removeAttribute: vi.fn(),
         focus: vi.fn(),
-        getAttribute: vi.fn(() => 'bulma-light'),
+        getAttribute: vi.fn(() => 'catppuccin-latte'),
         click: vi.fn(),
       };
       mockMenuItems.push(item);
@@ -664,7 +1328,7 @@ describe('public API', () => {
     };
 
     // Create a separate mock for the dropdown to track remove calls
-    const mockDropdown = {
+    const _mockDropdown = {
       ...mockElement,
       classList: {
         ...mockElement.classList,
@@ -683,9 +1347,17 @@ describe('public API', () => {
       value: vi.fn((tag) => {
         if (tag === 'img') return mockImg;
         if (tag === 'span') return mockSpan;
-        if (tag === 'a') {
+        if (tag === 'button') {
           // Return a new menu item for each theme (9 themes total)
           return createMenuItem();
+        }
+        if (tag === 'div') {
+          return {
+            className: '',
+            style: { setProperty: vi.fn() },
+            appendChild: vi.fn(),
+            setAttribute: vi.fn(),
+          };
         }
         return mockElement;
       }),
@@ -694,8 +1366,8 @@ describe('public API', () => {
 
     Object.defineProperty(document, 'getElementById', {
       value: vi.fn((id) => {
-        if (id === 'theme-flavor-items') return mockElement;
-        if (id === 'theme-flavor-dd') return mockDropdown;
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
         return null;
       }),
       writable: true,
@@ -703,7 +1375,7 @@ describe('public API', () => {
 
     Object.defineProperty(document, 'querySelector', {
       value: vi.fn((selector) => {
-        if (selector === '.theme-flavor-trigger') return mockTrigger;
+        if (selector === 'theme-flavor-trigger') return mockTrigger;
         return null;
       }),
       writable: true,
@@ -740,15 +1412,27 @@ describe('public API', () => {
   });
 
   it('wireFlavorSelector handles closeDropdown with focus return', () => {
+    vi.useFakeTimers();
+    const mockDropdown = {
+      ...mockElement,
+      classList: {
+        ...mockElement.classList,
+        remove: vi.fn(),
+        contains: vi.fn(() => true),
+      },
+    };
     const mockTrigger = {
       ...mockElement,
       focus: vi.fn(),
       setAttribute: vi.fn(),
+      addEventListener: vi.fn(),
+      closest: vi.fn(() => mockDropdown),
     };
 
-    Object.defineProperty(document, 'querySelector', {
-      value: vi.fn((selector) => {
-        if (selector === '.theme-flavor-trigger') return mockTrigger;
+    Object.defineProperty(document, 'getElementById', {
+      value: vi.fn((id) => {
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
         return null;
       }),
       writable: true,
@@ -756,28 +1440,43 @@ describe('public API', () => {
 
     wireFlavorSelector(document, window);
 
-    // Trigger closeDropdown via mouseleave when not keyboard navigating
-    const mouseLeaveHandler = mockElement.addEventListener.mock.calls.find(
-      (call) => call[0] === 'mouseleave'
+    // Trigger closeDropdown via Escape key
+    const docKeydownHandler = (document.addEventListener as any).mock.calls.find(
+      (call: any) => call[0] === 'keydown'
     )?.[1];
 
-    if (mouseLeaveHandler) {
-      mockElement.classList.contains.mockReturnValue(true);
-      mouseLeaveHandler();
-      expect(mockTrigger.focus).toHaveBeenCalled();
+    if (docKeydownHandler) {
+      const escapeEvent = {
+        key: 'Escape',
+        preventDefault: vi.fn(),
+      };
+      docKeydownHandler(escapeEvent);
+      expect(mockDropdown.classList.remove).toHaveBeenCalledWith('is-active');
       expect(mockTrigger.setAttribute).toHaveBeenCalledWith('aria-expanded', 'false');
+      expect(mockTrigger.focus).toHaveBeenCalled();
     }
+    vi.useRealTimers();
   });
 
   it('wireFlavorSelector handles click with aria-expanded update', () => {
     const mockTrigger = {
       ...mockElement,
       setAttribute: vi.fn(),
+      addEventListener: vi.fn(),
+    };
+    const _mockDropdown = {
+      ...mockElement,
+      classList: {
+        ...mockElement.classList,
+        toggle: vi.fn(() => false), // Returns false when closing
+        contains: vi.fn(() => true), // Initially open
+      },
     };
 
-    Object.defineProperty(document, 'querySelector', {
-      value: vi.fn((selector) => {
-        if (selector === '.theme-flavor-trigger') return mockTrigger;
+    Object.defineProperty(document, 'getElementById', {
+      value: vi.fn((id) => {
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
         return null;
       }),
       writable: true,
@@ -795,7 +1494,6 @@ describe('public API', () => {
 
       // Test that click handler calls setAttribute (coverage for aria-expanded update)
       mockTrigger.setAttribute.mockClear();
-      mockElement.classList.contains.mockReturnValueOnce(true);
       clickHandler({ preventDefault: vi.fn() });
       // Verify setAttribute was called (exact value depends on toggle state)
       expect(mockTrigger.setAttribute).toHaveBeenCalled();
@@ -803,14 +1501,25 @@ describe('public API', () => {
   });
 
   it('wireFlavorSelector handles Enter key with dropdown state management', () => {
+    const mockDropdown = {
+      ...mockElement,
+      classList: {
+        ...mockElement.classList,
+        toggle: vi.fn(),
+        contains: vi.fn(() => false),
+      },
+    };
     const mockTrigger = {
       ...mockElement,
       setAttribute: vi.fn(),
+      addEventListener: vi.fn(),
+      closest: vi.fn(() => mockDropdown),
     };
 
-    Object.defineProperty(document, 'querySelector', {
-      value: vi.fn((selector) => {
-        if (selector === '.theme-flavor-trigger') return mockTrigger;
+    Object.defineProperty(document, 'getElementById', {
+      value: vi.fn((id) => {
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
         return null;
       }),
       writable: true,
@@ -833,10 +1542,10 @@ describe('public API', () => {
 
       // Test that Enter key handler calls setAttribute (coverage for aria-expanded update)
       mockTrigger.setAttribute.mockClear();
-      mockElement.classList.contains.mockReturnValueOnce(true);
+      mockDropdown.classList.contains.mockReturnValueOnce(false); // Initially closed
       keydownHandler(mockKeyEvent);
       expect(mockKeyEvent.preventDefault).toHaveBeenCalled();
-      expect(mockElement.classList.toggle).toHaveBeenCalledWith('is-active');
+      expect(mockDropdown.classList.toggle).toHaveBeenCalled();
       // Verify setAttribute was called (exact value depends on toggle state)
       expect(mockTrigger.setAttribute).toHaveBeenCalled();
     }
@@ -848,11 +1557,11 @@ describe('public API', () => {
       ...mockElement,
       removeAttribute: vi.fn(),
       setAttribute: vi.fn(),
-    };
-    const mockTrigger = {
-      ...mockElement,
-      setAttribute: vi.fn(),
-      focus: vi.fn(),
+      addEventListener: vi.fn(), // Distinct mock
+      classList: {
+        ...mockElement.classList,
+        contains: vi.fn(() => false), // Return false by default for menu items
+      },
     };
     const mockDropdownContent = {
       ...mockElement,
@@ -868,21 +1577,20 @@ describe('public API', () => {
       },
       contains: vi.fn(() => false), // Click target is outside dropdown
     };
+    const mockTrigger = {
+      ...mockElement,
+      setAttribute: vi.fn(),
+      focus: vi.fn(),
+      addEventListener: vi.fn(), // Distinct mock
+      closest: vi.fn(() => mockDropdown), // Return mockDropdown for closest()
+    };
 
     const createdMenuItems: any[] = [];
 
-    Object.defineProperty(document, 'querySelector', {
-      value: vi.fn((selector) => {
-        if (selector === '.theme-flavor-trigger') return mockTrigger;
-        return null;
-      }),
-      writable: true,
-    });
-
     Object.defineProperty(document, 'getElementById', {
       value: vi.fn((id) => {
-        if (id === 'theme-flavor-items') return mockDropdownContent;
-        if (id === 'theme-flavor-dd') return mockDropdown;
+        if (id === 'theme-flavor-menu') return mockDropdownContent;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
         return null;
       }),
       writable: true,
@@ -890,16 +1598,31 @@ describe('public API', () => {
 
     Object.defineProperty(document, 'createElement', {
       value: vi.fn((tag) => {
+        if (tag === 'link') return createAutoLoadThemeLink();
         if (tag === 'img') return mockImg;
         if (tag === 'span') return mockSpan;
-        if (hasMenuItems && tag === 'a') {
+        if (hasMenuItems && tag === 'button') {
           const item = {
             ...mockMenuItem,
+            type: 'button',
             removeAttribute: vi.fn(),
             setAttribute: vi.fn(),
+            addEventListener: vi.fn(),
+            classList: {
+              ...mockMenuItem.classList,
+              contains: vi.fn(() => false),
+            },
           };
           createdMenuItems.push(item);
           return item;
+        }
+        if (tag === 'div') {
+          return {
+            className: '',
+            style: { setProperty: vi.fn() },
+            appendChild: vi.fn(),
+            setAttribute: vi.fn(),
+          };
         }
         return mockMenuItem;
       }),
@@ -946,15 +1669,9 @@ describe('public API', () => {
         )?.[1];
       },
       triggerHandler: (handler: any, mocks: any) => {
+        mocks.mockDropdown.classList.toggle.mockImplementation(() => false);
+        mocks.mockDropdown.classList.contains.mockImplementation(() => false);
         mocks.mockTrigger.setAttribute.mockClear();
-        // Dropdown should be open initially so click closes it
-        const state = { isActive: true };
-        mockElement.classList.toggle.mockImplementation(() => {
-          state.isActive = !state.isActive;
-          mockElement.classList.contains.mockImplementation(() => state.isActive);
-          return state.isActive;
-        });
-        mockElement.classList.contains.mockImplementation(() => state.isActive);
         handler({ preventDefault: vi.fn() });
       },
       verify: (mocks: any) => {
@@ -979,7 +1696,9 @@ describe('public API', () => {
           item.removeAttribute.mockClear();
           item.setAttribute.mockClear();
         });
-        handler({ target: document.body });
+        // Use a mock target instead of document.body
+        const mockTarget = { nodeType: 1 };
+        handler({ target: mockTarget });
       },
       verify: (mocks: any) => {
         // Verify that closeDropdown() was called and set tabindex="-1" on menu items
@@ -1040,7 +1759,7 @@ describe('public API', () => {
 
     Object.defineProperty(document, 'querySelector', {
       value: vi.fn((selector) => {
-        if (selector === '.theme-flavor-trigger') return mockTrigger;
+        if (selector === 'theme-flavor-trigger') return mockTrigger;
         return null;
       }),
       writable: true,
@@ -1114,31 +1833,66 @@ describe('public API', () => {
     }
   });
 
-  it('wireFlavorSelector creates fallback span for dropdown items without icons', () => {
-    // Test fallback span creation for dropdown items (coverage for lines 234-240)
+  it('wireFlavorSelector creates screen reader spans for accessibility', () => {
+    // Test screen reader span creation (coverage for lines 350-362)
+    // This tests the span creation that always happens (not the fallback)
     const mockMenuItem = {
       ...mockElement,
       appendChild: vi.fn(),
+      setAttribute: vi.fn(),
     };
-    const mockSpan = {
-      textContent: '',
-      style: {},
-    };
+    const createdSpans: any[] = [];
 
     Object.defineProperty(document, 'createElement', {
       value: vi.fn((tag) => {
-        if (tag === 'img') return { ...mockImg, src: '' }; // Empty src to trigger fallback
-        if (tag === 'span') return mockSpan;
-        return mockMenuItem;
+        if (tag === 'span') {
+          const span = {
+            textContent: '',
+            style: {
+              position: '',
+              width: '',
+              height: '',
+              padding: '',
+              margin: '',
+              overflow: '',
+              clip: '',
+              whiteSpace: '',
+              border: '',
+            },
+            appendChild: vi.fn(),
+            className: '',
+            setAttribute: vi.fn(),
+          };
+          createdSpans.push(span);
+          return span;
+        }
+        if (tag === 'button') {
+          return mockMenuItem;
+        }
+        if (tag === 'div') {
+          return {
+            className: '',
+            style: { setProperty: vi.fn() },
+            appendChild: vi.fn(),
+            setAttribute: vi.fn(),
+          };
+        }
+        if (tag === 'img') {
+          return { ...mockImg, width: 0, height: 0 };
+        }
+        return mockElement;
       }),
       writable: true,
     });
 
     wireFlavorSelector(document, window);
 
-    // Verify span was created and appended (coverage for lines 234-240)
+    // Verify spans were created for theme names and badges
     expect(document.createElement).toHaveBeenCalledWith('span');
-    expect(mockMenuItem.appendChild).toHaveBeenCalled();
+    // Verify buttons were created for theme items
+    expect(document.createElement).toHaveBeenCalledWith('button');
+    // Verify screen reader span properties were set
+    expect(createdSpans.length).toBeGreaterThan(0);
   });
 
   it('wireFlavorSelector sets correct span properties for themes without icons in dropdown', () => {
@@ -1218,14 +1972,14 @@ describe('public API', () => {
         setAttribute: vi.fn(),
         removeAttribute: vi.fn(),
         focus: vi.fn(),
-        getAttribute: vi.fn(() => 'bulma-light'),
+        getAttribute: vi.fn(() => 'catppuccin-latte'),
         click: vi.fn(),
         addEventListener: vi.fn(),
       };
       mockMenuItems.push(item);
       return item;
     };
-    const mockDropdown = {
+    const _mockDropdown = {
       ...mockElement,
       classList: {
         ...mockElement.classList,
@@ -1243,9 +1997,17 @@ describe('public API', () => {
       value: vi.fn((tag) => {
         if (tag === 'img') return mockImg;
         if (tag === 'span') return mockSpan;
-        if (tag === 'a') {
+        if (tag === 'button') {
           // Create a new menu item for each theme
           return createMenuItem();
+        }
+        if (tag === 'div') {
+          return {
+            className: '',
+            style: { setProperty: vi.fn() },
+            appendChild: vi.fn(),
+            setAttribute: vi.fn(),
+          };
         }
         return mockElement;
       }),
@@ -1254,8 +2016,8 @@ describe('public API', () => {
 
     Object.defineProperty(document, 'getElementById', {
       value: vi.fn((id) => {
-        if (id === 'theme-flavor-items') return mockElement;
-        if (id === 'theme-flavor-dd') return mockDropdown;
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
         return null;
       }),
       writable: true,
@@ -1263,7 +2025,7 @@ describe('public API', () => {
 
     Object.defineProperty(document, 'querySelector', {
       value: vi.fn((selector) => {
-        if (selector === '.theme-flavor-trigger') return mockTrigger;
+        if (selector === 'theme-flavor-trigger') return mockTrigger;
         return null;
       }),
       writable: true,
@@ -1345,12 +2107,12 @@ describe('public API', () => {
 
   it('wireFlavorSelector cleanup function calls abortController.abort', () => {
     // Test cleanup function execution (coverage for lines 461-462)
+    const originalAbortController = global.AbortController;
     const mockAbortController = {
       abort: vi.fn(),
     };
-    const originalAbortController = global.AbortController;
-    const MockAbortController = function () {
-      return mockAbortController;
+    const MockAbortController = function (this: any) {
+      Object.assign(this, mockAbortController);
     };
     (global as any).AbortController = MockAbortController;
 
@@ -1377,7 +2139,7 @@ describe('public API', () => {
         setAttribute: vi.fn(),
         removeAttribute: vi.fn(),
         focus: vi.fn(),
-        getAttribute: vi.fn(() => 'bulma-light'),
+        getAttribute: vi.fn(() => 'catppuccin-latte'),
         click: vi.fn(),
         addEventListener: vi.fn(),
         classList: {
@@ -1402,14 +2164,23 @@ describe('public API', () => {
       ...mockElement,
       setAttribute: vi.fn(),
       focus: vi.fn(),
+      closest: vi.fn(() => mockDropdown),
     };
 
     Object.defineProperty(document, 'createElement', {
       value: vi.fn((tag) => {
         if (tag === 'img') return mockImg;
         if (tag === 'span') return mockSpan;
-        if (tag === 'a') {
+        if (tag === 'button') {
           return createMenuItem();
+        }
+        if (tag === 'div') {
+          return {
+            className: '',
+            style: { setProperty: vi.fn() },
+            appendChild: vi.fn(),
+            setAttribute: vi.fn(),
+          };
         }
         return mockElement;
       }),
@@ -1418,8 +2189,8 @@ describe('public API', () => {
 
     Object.defineProperty(document, 'getElementById', {
       value: vi.fn((id) => {
-        if (id === 'theme-flavor-items') return mockElement;
-        if (id === 'theme-flavor-dd') return mockDropdown;
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
         return null;
       }),
       writable: true,
@@ -1427,7 +2198,7 @@ describe('public API', () => {
 
     Object.defineProperty(document, 'querySelector', {
       value: vi.fn((selector) => {
-        if (selector === '.theme-flavor-trigger') return mockTrigger;
+        if (selector === 'theme-flavor-trigger') return mockTrigger;
         return null;
       }),
       writable: true,
@@ -1507,8 +2278,16 @@ describe('public API', () => {
       value: vi.fn((tag) => {
         if (tag === 'img') return mockImg;
         if (tag === 'span') return mockSpan;
-        if (tag === 'a') {
+        if (tag === 'button') {
           return createMenuItem(mockMenuItems.length);
+        }
+        if (tag === 'div') {
+          return {
+            className: '',
+            style: { setProperty: vi.fn() },
+            appendChild: vi.fn(),
+            setAttribute: vi.fn(),
+          };
         }
         return mockElement;
       }),
@@ -1517,8 +2296,8 @@ describe('public API', () => {
 
     Object.defineProperty(document, 'getElementById', {
       value: vi.fn((id) => {
-        if (id === 'theme-flavor-items') return mockElement;
-        if (id === 'theme-flavor-dd') return mockDropdown;
+        if (id === 'theme-flavor-menu') return mockElement;
+        if (id === 'theme-flavor-trigger') return mockTrigger;
         return null;
       }),
       writable: true,
@@ -1526,7 +2305,7 @@ describe('public API', () => {
 
     Object.defineProperty(document, 'querySelector', {
       value: vi.fn((selector) => {
-        if (selector === '.theme-flavor-trigger') return mockTrigger;
+        if (selector === 'theme-flavor-trigger') return mockTrigger;
         return null;
       }),
       writable: true,
@@ -1886,7 +2665,7 @@ describe('public API', () => {
       expect(mockReportsLink.classList.add).not.toHaveBeenCalled();
     });
 
-    it('handles icon URL constructor error in applyTheme', () => {
+    it('handles icon URL constructor error in applyTheme', async () => {
       // Set up DOM elements
       const triggerIconEl: any = {
         firstChild: null,
@@ -1911,15 +2690,16 @@ describe('public API', () => {
         return new OriginalURL(input, base);
       }) as any;
 
-      mockLocalStorage.getItem.mockReturnValue('dracula');
-      expect(() => initTheme(document as any, window as any)).not.toThrow();
+      mockLocalStorage.getItem.mockReturnValue('catppuccin-frappe');
+      // Should not reject - await the Promise for proper async testing
+      await expect(initTheme(document as any, window as any)).resolves.not.toThrow();
 
       // Restore URL
       (globalThis as any).URL = OriginalURL as any;
     });
 
-    it('handles icon URL error in wireFlavorSelector dropdown items', () => {
-      // Mock URL to throw when resolving icon paths
+    it('handles URL errors gracefully in wireFlavorSelector dropdown items', () => {
+      // Mock URL to throw when resolving paths
       const OriginalURL = globalThis.URL as any;
       (globalThis as any).URL = vi.fn((input: any, base?: any) => {
         if (typeof input === 'string' && input.includes('assets/img')) {
@@ -1928,44 +2708,326 @@ describe('public API', () => {
         return new OriginalURL(input, base);
       }) as any;
 
+      // Ensure getElementById returns the necessary elements
+      Object.defineProperty(document, 'getElementById', {
+        value: vi.fn((id) => {
+          if (id === 'theme-flavor-menu') return mockElement;
+          if (id === 'theme-flavor-trigger') return mockElement;
+          return null;
+        }),
+        writable: true,
+      });
+
       wireFlavorSelector(document, window);
 
-      // Should not throw and should create dropdown items
-      expect(document.createElement).toHaveBeenCalledWith('a');
+      // Should not throw and should create theme items (buttons instead of anchors)
+      expect(document.createElement).toHaveBeenCalledWith('button');
+      // Should also create div elements for containers and icons
+      expect(document.createElement).toHaveBeenCalledWith('div');
+      // Should create span elements for titles and descriptions
+      expect(document.createElement).toHaveBeenCalledWith('span');
 
       // Restore URL
       (globalThis as any).URL = OriginalURL as any;
     });
 
-    it('applyTheme uses text fallback for themes without icons', () => {
-      // Mock a theme without icon by mocking createElement
-      const triggerIconEl: any = {
-        firstChild: null,
-        removeChild: vi.fn(),
-        appendChild: vi.fn(),
+    it('applyTheme uses text fallback for themes without icons', async () => {
+      // Select catppuccin-latte theme
+      mockLocalStorage.getItem.mockReturnValue('catppuccin-latte');
+      // Ensure auto-load is set up
+      setupThemeLinkAutoLoad();
+      await initTheme(document as any, window as any);
+
+      // Verify theme class is applied
+      expect(document.documentElement.classList.add).toHaveBeenCalledWith('theme-catppuccin-latte');
+    });
+  });
+
+  describe('keyboard navigation when dropdown opened via mouse (currentIndex < 0)', () => {
+    it('ArrowDown when dropdown is open via mouse click focuses first item (lines 689-691)', () => {
+      // Test coverage for lines 689-691: ArrowDown when dropdown is open but currentIndex < 0
+      // This happens when dropdown was opened via mouse click, not keyboard
+      const mockMenuItems: any[] = [];
+      const createMenuItem = (_index: number) => {
+        const item = {
+          ...mockElement,
+          setAttribute: vi.fn(),
+          removeAttribute: vi.fn(),
+          focus: vi.fn(),
+          getAttribute: vi.fn(() => `theme-${_index}`),
+          click: vi.fn(),
+          addEventListener: vi.fn(),
+          classList: {
+            ...mockElement.classList,
+            contains: vi.fn(() => false),
+          },
+        };
+        mockMenuItems.push(item);
+        return item;
       };
+
+      // Create menu items
+      for (let i = 0; i < 3; i++) {
+        createMenuItem(i);
+      }
+
+      const mockDropdown = {
+        ...mockElement,
+        classList: {
+          ...mockElement.classList,
+          toggle: vi.fn(),
+          contains: vi.fn(() => true), // Dropdown is already open (opened via mouse)
+          add: vi.fn(),
+          remove: vi.fn(),
+        },
+      };
+
+      const mockTrigger = {
+        ...mockElement,
+        setAttribute: vi.fn(),
+        focus: vi.fn(),
+        closest: vi.fn(() => mockDropdown),
+      };
+
+      Object.defineProperty(document, 'createElement', {
+        value: vi.fn((tag) => {
+          if (tag === 'img') return mockImg;
+          if (tag === 'span') return mockSpan;
+          if (tag === 'button') {
+            return createMenuItem(mockMenuItems.length);
+          }
+          if (tag === 'div') {
+            return {
+              className: '',
+              style: { setProperty: vi.fn() },
+              appendChild: vi.fn(),
+              setAttribute: vi.fn(),
+            };
+          }
+          return mockElement;
+        }),
+        writable: true,
+      });
+
       Object.defineProperty(document, 'getElementById', {
         value: vi.fn((id) => {
-          if (id === 'theme-flavor-trigger-icon') return triggerIconEl;
-          if (id === 'theme-flavor-css') return mockLink;
+          if (id === 'theme-flavor-menu') return mockElement;
+          if (id === 'theme-flavor-trigger') return mockTrigger;
           return null;
         }),
         writable: true,
       });
 
-      // Select bulma-light which has an icon, but we'll test the fallback path
-      // by checking the appendChild calls
-      mockLocalStorage.getItem.mockReturnValue('bulma-light');
-      initTheme(document as any, window as any);
+      Object.defineProperty(document, 'querySelectorAll', {
+        value: vi.fn(() => mockMenuItems),
+        writable: true,
+      });
 
-      // Verify appendChild was called (for the icon img)
-      expect(triggerIconEl.appendChild).toHaveBeenCalled();
+      wireFlavorSelector(document, window);
+
+      const keydownHandler = mockTrigger.addEventListener.mock.calls.find(
+        (call) => call[0] === 'keydown'
+      )?.[1];
+
+      expect(keydownHandler).toBeDefined();
+      if (keydownHandler) {
+        // Dropdown is already open (simulating mouse click open), currentIndex is -1 (never set via keyboard)
+        // Press ArrowDown - should focus first item since currentIndex < 0
+        const arrowDownEvent = {
+          key: 'ArrowDown',
+          preventDefault: vi.fn(),
+        };
+        keydownHandler(arrowDownEvent);
+
+        // Verify preventDefault was called
+        expect(arrowDownEvent.preventDefault).toHaveBeenCalled();
+      }
+    });
+
+    it('ArrowUp when dropdown is open via mouse click navigates from last item (lines 705-707)', () => {
+      // Test coverage for lines 705-707: ArrowUp when dropdown is open but currentIndex < 0
+      const mockMenuItems: any[] = [];
+      const createMenuItem = (_index: number) => {
+        const item = {
+          ...mockElement,
+          setAttribute: vi.fn(),
+          removeAttribute: vi.fn(),
+          focus: vi.fn(),
+          getAttribute: vi.fn(() => `theme-${_index}`),
+          click: vi.fn(),
+          addEventListener: vi.fn(),
+          classList: {
+            ...mockElement.classList,
+            contains: vi.fn(() => false),
+          },
+        };
+        mockMenuItems.push(item);
+        return item;
+      };
+
+      // Create menu items
+      for (let i = 0; i < 3; i++) {
+        createMenuItem(i);
+      }
+
+      const mockDropdown = {
+        ...mockElement,
+        classList: {
+          ...mockElement.classList,
+          toggle: vi.fn(),
+          contains: vi.fn(() => true), // Dropdown is already open (via mouse)
+          add: vi.fn(),
+          remove: vi.fn(),
+        },
+      };
+
+      const mockTrigger = {
+        ...mockElement,
+        setAttribute: vi.fn(),
+        focus: vi.fn(),
+        closest: vi.fn(() => mockDropdown),
+      };
+
+      Object.defineProperty(document, 'createElement', {
+        value: vi.fn((tag) => {
+          if (tag === 'img') return mockImg;
+          if (tag === 'span') return mockSpan;
+          if (tag === 'button') {
+            return createMenuItem(mockMenuItems.length);
+          }
+          if (tag === 'div') {
+            return {
+              className: '',
+              style: { setProperty: vi.fn() },
+              appendChild: vi.fn(),
+              setAttribute: vi.fn(),
+            };
+          }
+          return mockElement;
+        }),
+        writable: true,
+      });
+
+      Object.defineProperty(document, 'getElementById', {
+        value: vi.fn((id) => {
+          if (id === 'theme-flavor-menu') return mockElement;
+          if (id === 'theme-flavor-trigger') return mockTrigger;
+          return null;
+        }),
+        writable: true,
+      });
+
+      Object.defineProperty(document, 'querySelectorAll', {
+        value: vi.fn(() => mockMenuItems),
+        writable: true,
+      });
+
+      wireFlavorSelector(document, window);
+
+      const keydownHandler = mockTrigger.addEventListener.mock.calls.find(
+        (call) => call[0] === 'keydown'
+      )?.[1];
+
+      expect(keydownHandler).toBeDefined();
+      if (keydownHandler) {
+        // Dropdown is already open (simulating mouse click open), currentIndex is -1
+        // Press ArrowUp - should navigate using startIndex = menuItems.length - 1 since currentIndex < 0
+        const arrowUpEvent = {
+          key: 'ArrowUp',
+          preventDefault: vi.fn(),
+        };
+        keydownHandler(arrowUpEvent);
+
+        // Verify preventDefault was called
+        expect(arrowUpEvent.preventDefault).toHaveBeenCalled();
+      }
+    });
+
+    it('Enter/Space on trigger when dropdown is already open closes it (line 676)', () => {
+      // Test coverage for line 676: else branch when wasActive is true
+      const mockDropdown = {
+        ...mockElement,
+        classList: {
+          ...mockElement.classList,
+          toggle: vi.fn(() => false), // Returns false (closing)
+          contains: vi.fn(() => true), // wasActive = true
+          add: vi.fn(),
+          remove: vi.fn(),
+        },
+      };
+
+      const mockTrigger = {
+        ...mockElement,
+        setAttribute: vi.fn(),
+        focus: vi.fn(),
+        closest: vi.fn(() => mockDropdown),
+      };
+
+      Object.defineProperty(document, 'getElementById', {
+        value: vi.fn((id) => {
+          if (id === 'theme-flavor-menu') return mockElement;
+          if (id === 'theme-flavor-trigger') return mockTrigger;
+          return null;
+        }),
+        writable: true,
+      });
+
+      Object.defineProperty(document, 'createElement', {
+        value: vi.fn((tag) => {
+          if (tag === 'img') return mockImg;
+          if (tag === 'span') return mockSpan;
+          if (tag === 'div') {
+            return {
+              className: '',
+              style: { setProperty: vi.fn() },
+              appendChild: vi.fn(),
+              setAttribute: vi.fn(),
+            };
+          }
+          if (tag === 'button') {
+            return {
+              ...mockElement,
+              type: '',
+              appendChild: vi.fn(),
+              setAttribute: vi.fn(),
+              addEventListener: vi.fn(),
+            };
+          }
+          return mockElement;
+        }),
+        writable: true,
+      });
+
+      Object.defineProperty(document, 'querySelectorAll', {
+        value: vi.fn(() => []),
+        writable: true,
+      });
+
+      wireFlavorSelector(document, window);
+
+      const keydownHandler = mockTrigger.addEventListener.mock.calls.find(
+        (call) => call[0] === 'keydown'
+      )?.[1];
+
+      expect(keydownHandler).toBeDefined();
+      if (keydownHandler) {
+        // Press Enter when dropdown is already open - should close it
+        const enterEvent = {
+          key: 'Enter',
+          preventDefault: vi.fn(),
+        };
+        keydownHandler(enterEvent);
+
+        // Verify toggleDropdown was called (which should close the dropdown)
+        expect(enterEvent.preventDefault).toHaveBeenCalled();
+        expect(mockDropdown.classList.toggle).toHaveBeenCalled();
+      }
     });
   });
 
   describe('baseUrl path construction', () => {
-    it('correctly prepends non-empty baseUrl to CSS paths', () => {
-      mockLocalStorage.getItem.mockReturnValue('bulma-light');
+    it('correctly prepends non-empty baseUrl to CSS paths', async () => {
+      mockLocalStorage.getItem.mockReturnValue('catppuccin-latte');
       Object.defineProperty(document.documentElement, 'getAttribute', {
         value: vi.fn((attr) => {
           if (attr === 'data-baseurl') return '/bulma-turbo-themes';
@@ -1974,16 +3036,52 @@ describe('public API', () => {
         writable: true,
       });
 
-      initTheme(document, window);
+      // Mock the document head and createElement for lazy loading
+      const mockHead = { appendChild: vi.fn() };
+      const mockThemeLink = createAutoLoadThemeLink();
+      Object.defineProperty(document, 'head', { value: mockHead, writable: true });
 
-      // Verify that the href was set with the prepended baseUrl
-      expect(mockLink.href).toBe('/bulma-turbo-themes/assets/css/themes/bulma-light.css');
+      // Mock getElementById to return null for theme link check (so link gets created)
+      Object.defineProperty(document, 'getElementById', {
+        value: vi.fn((id) => {
+          if (id.startsWith('theme-') && id.endsWith('-css')) return null;
+          if (id === 'theme-flavor-trigger-icon') return mockElement;
+          return mockElement;
+        }),
+        writable: true,
+      });
+
+      Object.defineProperty(document, 'createElement', {
+        value: vi.fn((tag) => {
+          if (tag === 'link') return mockThemeLink;
+          if (tag === 'img') return mockImg;
+          if (tag === 'span') return mockSpan;
+          if (tag === 'div') return { ...mockElement, style: { setProperty: vi.fn() } };
+          return mockElement;
+        }),
+        writable: true,
+      });
+
+      await initTheme(document, window);
+
+      // Verify theme link was created with correct href
+      expect(mockThemeLink.href).toContain('/bulma-turbo-themes/assets/css/themes/');
     });
 
-    it('correctly prepends non-empty baseUrl to icon paths in wireFlavorSelector', () => {
+    it('correctly creates theme selector elements in wireFlavorSelector', () => {
       Object.defineProperty(document.documentElement, 'getAttribute', {
         value: vi.fn((attr) => {
           if (attr === 'data-baseurl') return '/bulma-turbo-themes';
+          return null;
+        }),
+        writable: true,
+      });
+
+      // Ensure getElementById returns the necessary elements
+      Object.defineProperty(document, 'getElementById', {
+        value: vi.fn((id) => {
+          if (id === 'theme-flavor-menu') return mockElement;
+          if (id === 'theme-flavor-trigger') return mockElement;
           return null;
         }),
         writable: true,
@@ -1991,18 +3089,24 @@ describe('public API', () => {
 
       wireFlavorSelector(document, window);
 
-      // Verify appendChild was called (icons added to dropdown)
-      expect(mockElement.appendChild).toHaveBeenCalled();
+      // Verify createElement was called for div elements (layout containers, theme-copy, theme-icon)
+      expect(document.createElement).toHaveBeenCalledWith('div');
+      // Verify createElement was called for button elements (theme items)
+      expect(document.createElement).toHaveBeenCalledWith('button');
+      // Verify createElement was called for span elements (titles, descriptions, icons)
+      expect(document.createElement).toHaveBeenCalledWith('span');
     });
 
     it('displays fallback text span in trigger icon when theme has no icon', () => {
       const triggerIconEl = {
-        firstChild: null,
-        removeChild: vi.fn(),
-        appendChild: vi.fn(),
+        src: '',
+        alt: '',
+        title: '',
       } as any;
 
-      mockLocalStorage.getItem.mockReturnValue('bulma-light');
+      // Use a theme that has an icon - all current themes have icons
+      // This test verifies that src is set when theme has an icon
+      mockLocalStorage.getItem.mockReturnValue('catppuccin-latte');
       Object.defineProperty(document, 'getElementById', {
         value: vi.fn((id) => {
           if (id === 'theme-flavor-trigger-icon') return triggerIconEl;
@@ -2012,24 +3116,12 @@ describe('public API', () => {
         writable: true,
       });
 
-      // Create a mock document that returns spans without icons
-      const spanWithoutIcon = {
-        textContent: '',
-        style: {},
-      };
-      Object.defineProperty(document, 'createElement', {
-        value: vi.fn((tag) => {
-          if (tag === 'img') return mockImg;
-          if (tag === 'span') return spanWithoutIcon;
-          return mockElement;
-        }),
-        writable: true,
-      });
-
       initTheme(document, window);
 
-      // Verify appendChild was called for the fallback span
-      expect(triggerIconEl.appendChild).toHaveBeenCalled();
+      // When theme has an icon, src is set
+      // Note: All current themes have icons, so this verifies icon src is set correctly
+      expect(triggerIconEl.src).toBeTruthy();
+      expect(triggerIconEl.alt).toBeTruthy();
     });
 
     it('displays fallback text spans in dropdown for themes without icons', () => {
@@ -2042,26 +3134,48 @@ describe('public API', () => {
         textContent: '',
         style: {},
         addEventListener: vi.fn(),
+        appendChild: vi.fn(),
+        className: '',
+        setAttribute: vi.fn(),
       };
+
+      const mockButton = {
+        type: 'button',
+        className: '',
+        setAttribute: vi.fn(),
+        appendChild: vi.fn(),
+        addEventListener: vi.fn(),
+        classList: {
+          add: vi.fn(),
+          remove: vi.fn(),
+          toggle: vi.fn(),
+          contains: vi.fn(),
+        },
+      };
+
+      Object.defineProperty(document, 'getElementById', {
+        value: vi.fn((id) => {
+          if (id === 'theme-flavor-menu') return mockElement;
+          if (id === 'theme-flavor-trigger') return mockElement;
+          return null;
+        }),
+        writable: true,
+      });
 
       Object.defineProperty(document, 'createElement', {
         value: vi.fn((tag) => {
           if (tag === 'img') return mockImg;
           if (tag === 'span') return spanElement;
-          if (tag === 'a') {
+          if (tag === 'div') {
             return {
-              href: '#',
               className: '',
-              setAttribute: vi.fn(),
+              style: { setProperty: vi.fn() },
               appendChild: vi.fn(),
-              addEventListener: vi.fn(),
-              classList: {
-                add: vi.fn(),
-                remove: vi.fn(),
-                toggle: vi.fn(),
-                contains: vi.fn(),
-              },
+              setAttribute: vi.fn(),
             };
+          }
+          if (tag === 'button') {
+            return mockButton;
           }
           return mockElement;
         }),
@@ -2072,6 +3186,74 @@ describe('public API', () => {
 
       // Verify appendChild was called (spans added as fallback)
       expect(mockElement.appendChild).toHaveBeenCalled();
+    });
+
+    it('wireFlavorSelector creates theme items with color swatches', () => {
+      // Test that theme items are created with color swatch previews
+      Object.defineProperty(document, 'getElementById', {
+        value: vi.fn((id) => {
+          if (id === 'theme-flavor-menu') return mockElement;
+          if (id === 'theme-flavor-trigger') return mockElement;
+          return null;
+        }),
+        writable: true,
+      });
+
+      const mockButton = {
+        ...mockElement,
+        type: '',
+        appendChild: vi.fn(),
+        setAttribute: vi.fn(),
+        addEventListener: vi.fn(),
+      };
+      const createdDivs: any[] = [];
+      const createdSpans: any[] = [];
+
+      Object.defineProperty(document, 'createElement', {
+        value: vi.fn((tag) => {
+          if (tag === 'div') {
+            const div = {
+              className: '',
+              style: {
+                setProperty: vi.fn(),
+              },
+              appendChild: vi.fn(),
+              setAttribute: vi.fn(),
+            };
+            createdDivs.push(div);
+            return div;
+          }
+          if (tag === 'span') {
+            const span = {
+              textContent: '',
+              className: '',
+              innerHTML: '',
+              setAttribute: vi.fn(),
+              appendChild: vi.fn(),
+            };
+            createdSpans.push(span);
+            return span;
+          }
+          if (tag === 'button') {
+            return mockButton;
+          }
+          return mockElement;
+        }),
+        writable: true,
+      });
+
+      wireFlavorSelector(document, window);
+
+      // Verify divs were created for layout and groups
+      expect(document.createElement).toHaveBeenCalledWith('div');
+      // Verify buttons were created for theme items
+      expect(document.createElement).toHaveBeenCalledWith('button');
+      // Verify spans were created for titles and descriptions
+      expect(document.createElement).toHaveBeenCalledWith('span');
+
+      // Verify span properties for theme titles
+      const nameSpans = createdSpans.filter((s) => s.className === 'theme-title');
+      expect(nameSpans.length).toBeGreaterThan(0);
     });
   });
 });

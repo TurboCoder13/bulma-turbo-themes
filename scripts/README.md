@@ -11,7 +11,6 @@ scripts/
 ├── local/              # Local development scripts
 ├── utils/              # Shared utility functions
 ├── build-gem.sh        # Build Ruby gem package
-├── generate-css.mjs    # Generate CSS theme files
 ├── sync-catppuccin.mjs # Sync Catppuccin themes
 └── e2e-serve.mjs       # E2E test server
 ```
@@ -318,22 +317,6 @@ source "$SCRIPT_DIR/../utils/utils.sh"
 - **Error handling:** `die`, `require_command`
 
 ## 🎨 Root-Level Scripts
-
-### `generate-css.mjs`
-
-Generate theme CSS files from source.
-
-**Usage:**
-
-```bash
-node scripts/generate-css.mjs
-```
-
-**Environment:**
-
-- Requires: Node.js
-- Inputs: Theme source files
-- Outputs: Generated CSS in `assets/css/themes/`
 
 ### `sync-catppuccin.mjs`
 

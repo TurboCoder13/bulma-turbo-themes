@@ -154,8 +154,8 @@ echo "   • Temporary and test artifact files"
 echo ""
 echo -e "${YELLOW}🔄 To rebuild from scratch, run:${NC}"
 if [ -f "package.json" ]; then
-  echo "   npm install          # Install Node.js dependencies"
-  echo "   npm run ts:build     # Build TypeScript"
+  echo "   bun install          # Install dependencies"
+  echo "   bun run build        # Build TypeScript"
 else
   echo "   # (Node.js steps skipped - no package.json)"
 fi

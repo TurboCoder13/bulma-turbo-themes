@@ -2,7 +2,7 @@
 
 # Build script for bulma-turbo-themes Jekyll site
 # This script handles both local development and CI workflows
-# Usage: ./scripts/local/build.sh [--quick|--full|--serve|--no-serve]
+# Usage: ./scripts/local/build.sh [--quick|--full|--serve|--no-serve|--skip-tests|--skip-lint|--skip-lh]
 #
 # Environment Variables:
 #   PORT_RELEASE_CHECK_INTERVAL - Time between port checks in seconds (default: 0.5)
@@ -176,8 +176,9 @@ SERVE_MODE=false
 NO_SERVE=false
 DEV_MODE=false
 PROD_MODE=false
-SKIP_E2E=false
+SKIP_TESTS=false
 SKIP_LH=false
+SKIP_LINT=false
 
 # Parse command-line arguments
 while [[ $# -gt 0 ]]; do
@@ -206,17 +207,21 @@ while [[ $# -gt 0 ]]; do
             PROD_MODE=true
             shift
             ;;
-        --skip-e2e)
-            SKIP_E2E=true
+        --skip-tests)
+            SKIP_TESTS=true
             shift
             ;;
         --skip-lh)
             SKIP_LH=true
             shift
             ;;
+        --skip-lint)
+            SKIP_LINT=true
+            shift
+            ;;
         *)
             print_status "$RED" "❌ Unknown option: $1"
-            print_status "$YELLOW" "Usage: $0 [--quick|--full|--serve|--no-serve|--dev|--prod|--skip-e2e|--skip-lh]"
+            print_status "$YELLOW" "Usage: $0 [--quick|--full|--serve|--no-serve|--dev|--prod|--skip-tests|--skip-lh|--skip-lint]"
             exit 1
             ;;
     esac
@@ -258,8 +263,28 @@ fi
 # Step 1: Install dependencies
 print_status "$BLUE" "📦 Step 1: Installing dependencies..."
 
+# Detect package manager (prefer bun, fall back to npm)
+if command_exists "bun"; then
+    PKG_MGR="bun"
+    PKG_RUN="bun run"
+    PKG_INSTALL="bun install"
+    PKG_INSTALL_FROZEN="bun install --frozen-lockfile"
+    PKG_EXEC="bunx --bun"
+    print_status "$GREEN" "  Using Bun as package manager"
+elif command_exists "npm"; then
+    PKG_MGR="npm"
+    PKG_RUN="npm run"
+    PKG_INSTALL="npm install"
+    PKG_INSTALL_FROZEN="npm ci"
+    PKG_EXEC="npx --yes"
+    print_status "$YELLOW" "  Using npm as package manager (install bun for faster builds: https://bun.sh)"
+else
+    print_status "$RED" "❌ No package manager found! Install bun (https://bun.sh) or npm"
+    exit 1
+fi
+
 # Check required commands
-required_cmds=("npm" "git")
+required_cmds=("git")
 if [ "$QUICK_MODE" = false ]; then
     required_cmds+=("bundle")
 fi
@@ -273,11 +298,13 @@ done
 
 # Install Node.js dependencies
 if [ -f "package.json" ]; then
-    print_status "$YELLOW" "  Installing Node.js dependencies..."
-    if [ -f "package-lock.json" ]; then
-        npm ci
+    print_status "$YELLOW" "  Installing dependencies with $PKG_MGR..."
+    if [ -f "bun.lock" ] && [ "$PKG_MGR" = "bun" ]; then
+        $PKG_INSTALL_FROZEN
+    elif [ -f "package-lock.json" ] && [ "$PKG_MGR" = "npm" ]; then
+        $PKG_INSTALL_FROZEN
     else
-        npm install
+        $PKG_INSTALL
     fi
 else
     print_status "$YELLOW" "⚠️  Skipping Node.js steps (no package.json found)."
@@ -292,51 +319,59 @@ else
 fi
 
 # Step 2: Linting and formatting
-print_status "$BLUE" "🔍 Step 2: Linting and formatting..."
-if [ -f "package.json" ]; then
-    print_status "$YELLOW" "  Running ESLint..."
-    npm run lint
-    
-    print_status "$YELLOW" "  Checking code formatting with lintro..."
-    if ! uv run lintro check --tools black,darglint,prettier,ruff,yamllint,actionlint,bandit 2>/dev/null; then
-        print_status "$RED" "❌ Code formatting check failed"
-        print_status "$YELLOW" "  Run 'npm run format:write' to fix formatting issues automatically"
-        exit 1
-    fi
-    
-    print_status "$YELLOW" "  Validating YAML files with lintro..."
-    if command_exists "uv"; then
-        # Validate YAML files using lintro chk (hadolint excluded due to Dockerfile issues now resolved)
-        if ! uv run lintro chk --tools yamllint,actionlint .github/workflows .github/actions 2>/dev/null; then
-            print_status "$YELLOW" "⚠️  lintro validation found issues (non-blocking)"
+if [ "$SKIP_LINT" = true ]; then
+    print_status "$YELLOW" "⏭️  Step 2: Skipping linting and formatting (--skip-lint flag set)..."
+else
+    print_status "$BLUE" "🔍 Step 2: Linting and formatting..."
+    if [ -f "package.json" ]; then
+        print_status "$YELLOW" "  Running ESLint..."
+        $PKG_RUN lint
+        
+        print_status "$YELLOW" "  Checking code formatting with lintro..."
+        if command_exists "uv"; then
+            if ! uv run lintro check --tools black,darglint,prettier,ruff,yamllint,actionlint,bandit 2>/dev/null; then
+                print_status "$RED" "❌ Code formatting check failed"
+                print_status "$YELLOW" "  Run '$PKG_RUN format:write' to fix formatting issues automatically"
+                exit 1
+            fi
+        else
+            print_status "$YELLOW" "⚠️  uv not available, skipping lintro code formatting check"
         fi
-    else
-        print_status "$YELLOW" "⚠️  uv not available, skipping YAML validation"
-    fi
-    
-    print_status "$YELLOW" "  Validating GitHub Action pinning..."
-    if [ -f "scripts/ci/validate-action-pinning.sh" ]; then
-        if ! ./scripts/ci/validate-action-pinning.sh; then
-            print_status "$RED" "❌ Action pinning validation failed"
-            print_status "$YELLOW" "  Some GitHub Actions are not properly pinned to SHA"
-            exit 1
+        
+        print_status "$YELLOW" "  Validating YAML files with lintro..."
+        if command_exists "uv"; then
+            # Validate YAML files using lintro chk (hadolint excluded due to Dockerfile issues now resolved)
+            if ! uv run lintro chk --tools yamllint,actionlint .github/workflows .github/actions 2>/dev/null; then
+                print_status "$YELLOW" "⚠️  lintro validation found issues (non-blocking)"
+            fi
+        else
+            print_status "$YELLOW" "⚠️  uv not available, skipping YAML validation"
         fi
-    else
-        print_status "$YELLOW" "⚠️  Action pinning validation script not found"
+        
+        print_status "$YELLOW" "  Validating GitHub Action pinning..."
+        if [ -f "scripts/ci/validate-action-pinning.sh" ]; then
+            if ! ./scripts/ci/validate-action-pinning.sh; then
+                print_status "$RED" "❌ Action pinning validation failed"
+                print_status "$YELLOW" "  Some GitHub Actions are not properly pinned to SHA"
+                exit 1
+            fi
+        else
+            print_status "$YELLOW" "⚠️  Action pinning validation script not found"
+        fi
+        
+        print_status "$YELLOW" "  Running Markdown lint..."
+        $PKG_RUN mdlint
+        
+        print_status "$YELLOW" "  Running Stylelint..."
+        $PKG_RUN stylelint
     fi
-    
-    print_status "$YELLOW" "  Running Markdown lint..."
-    npm run mdlint
-    
-    print_status "$YELLOW" "  Running Stylelint..."
-    npm run stylelint
 fi
 
 # Step 3: Theme synchronization
 print_status "$BLUE" "🎨 Step 3: Theme synchronization..."
 if [ -f "package.json" ] && grep -q '"theme:sync"' package.json >/dev/null 2>&1; then
     print_status "$YELLOW" "  Running theme sync..."
-    npm run theme:sync
+    $PKG_RUN theme:sync
     
     # Check for diffs limited to generated files to avoid unrelated local edits
     GENERATED_PATHS=("src/themes/packs/catppuccin.synced.ts")
@@ -355,30 +390,34 @@ fi
 print_status "$BLUE" "⚡ Step 4: TypeScript build..."
 if [ -f "package.json" ] && grep -q '"build"' package.json >/dev/null 2>&1; then
     print_status "$YELLOW" "  Building TypeScript..."
-    npm run build
+    $PKG_RUN build
 fi
 
 # Step 5: Unit tests with coverage
-print_status "$BLUE" "🧪 Step 5: Unit tests with coverage..."
-if [ -f "package.json" ] && grep -q '"test"' package.json >/dev/null 2>&1; then
-    print_status "$YELLOW" "  Node.js version: $(node --version)"
-    print_status "$YELLOW" "  Running unit tests with coverage..."
-    if npm test; then
-        print_status "$GREEN" "  ✅ Unit tests passed with coverage"
-        if [ -d "coverage" ]; then
-            print_status "$GREEN" "  📊 Coverage reports generated in coverage/"
-            ls -la coverage/
+if [ "$SKIP_TESTS" = true ]; then
+    print_status "$YELLOW" "⏭️  Step 5: Skipping unit tests (--skip-tests flag set)..."
+else
+    print_status "$BLUE" "🧪 Step 5: Unit tests with coverage..."
+    if [ -f "package.json" ] && grep -q '"test"' package.json >/dev/null 2>&1; then
+        print_status "$YELLOW" "  Package manager: $PKG_MGR"
+        print_status "$YELLOW" "  Running unit tests with coverage..."
+        if $PKG_RUN test; then
+            print_status "$GREEN" "  ✅ Unit tests passed with coverage"
+            if [ -d "coverage" ]; then
+                print_status "$GREEN" "  📊 Coverage reports generated in coverage/"
+                ls -la coverage/
 
-            # Generate coverage badges if script exists
-            if [ -f "scripts/ci/coverage-badges.mjs" ]; then
-                print_status "$YELLOW" "  Generating coverage badges..."
-                node scripts/ci/coverage-badges.mjs
-                print_status "$GREEN" "  ✅ Coverage badges generated in assets/static/badges/"
+                # Generate coverage badges if script exists
+                if [ -f "scripts/ci/coverage-badges.mjs" ]; then
+                    print_status "$YELLOW" "  Generating coverage badges..."
+                    node scripts/ci/coverage-badges.mjs
+                    print_status "$GREEN" "  ✅ Coverage badges generated in assets/static/badges/"
+                fi
             fi
+        else
+            print_status "$RED" "  ❌ Unit tests failed"
+            exit 1
         fi
-    else
-        print_status "$RED" "  ❌ Unit tests failed"
-        exit 1
     fi
 fi
 
@@ -386,7 +425,23 @@ fi
 if [ -f "package.json" ] && grep -q '"css:budget"' package.json >/dev/null 2>&1; then
     print_status "$BLUE" "💰 Step 6: CSS budget check..."
     print_status "$YELLOW" "  Running CSS budget check..."
-    npm run css:budget
+    $PKG_RUN css:budget
+fi
+
+# Step 6.5: Build CSS Themes
+print_status "$BLUE" "🎨 Step 6.5: Build CSS Themes..."
+if [ -f "package.json" ] && grep -q '"build:themes"' package.json >/dev/null 2>&1; then
+    print_status "$YELLOW" "  Building CSS theme files..."
+    $PKG_RUN build:themes
+    print_status "$GREEN" "  ✅ CSS themes built successfully"
+fi
+
+# Step 6.6: Minify JavaScript
+print_status "$BLUE" "📦 Step 6.6: Minify JavaScript..."
+if [ -f "package.json" ] && grep -q '"build:js"' package.json >/dev/null 2>&1; then
+    print_status "$YELLOW" "  Minifying theme-selector.js..."
+    $PKG_RUN build:js
+    print_status "$GREEN" "  ✅ JavaScript minified successfully"
 fi
 
 # Step 7: Jekyll build
@@ -394,15 +449,15 @@ print_status "$BLUE" "🏗️  Step 7: Jekyll build..."
 print_status "$YELLOW" "  Building Jekyll site..."
 bundle exec jekyll build --config "$JEKYLL_CONFIG" --trace --strict_front_matter
 
-# Step 8: E2E tests with Playwright (skip in quick mode or if --skip-e2e flag is set)
-if [ "$QUICK_MODE" = false ] && [ "$SKIP_E2E" = false ] && command_exists "npx"; then
-    if npm list @playwright/test &>/dev/null; then
+# Step 8: E2E tests with Playwright (skip in quick mode or if --skip-tests flag is set)
+if [ "$QUICK_MODE" = false ] && [ "$SKIP_TESTS" = false ]; then
+    if [ -d "node_modules/@playwright/test" ]; then
         print_status "$BLUE" "🎭 Step 8: E2E tests with Playwright..."
         # Ensure Playwright browsers are installed before E2E
         print_status "$YELLOW" "  Ensuring Playwright browsers are installed..."
-        npx --yes playwright install chromium >/dev/null 2>&1 || true
+        $PKG_EXEC playwright install chromium >/dev/null 2>&1 || true
         print_status "$YELLOW" "  Running E2E tests..."
-        if npm run e2e:ci; then
+        if $PKG_RUN e2e:ci; then
             print_status "$GREEN" "  ✅ E2E tests passed"
         else
             print_status "$RED" "  ❌ E2E tests failed"
@@ -411,8 +466,8 @@ if [ "$QUICK_MODE" = false ] && [ "$SKIP_E2E" = false ] && command_exists "npx";
     else
         print_status "$YELLOW" "⚠️  Playwright not installed, skipping E2E tests..."
     fi
-elif [ "$SKIP_E2E" = true ]; then
-    print_status "$YELLOW" "⏭️  Skipping E2E tests (--skip-e2e flag set)..."
+elif [ "$SKIP_TESTS" = true ]; then
+    print_status "$YELLOW" "⏭️  Skipping E2E tests (--skip-tests flag set)..."
 fi
 
 # Step 9: HTMLProofer
@@ -459,50 +514,47 @@ LIGHTHOUSE_RAN=false
 LIGHTHOUSE_PASSED=false
 if [ "$QUICK_MODE" = false ] && [ "$SKIP_LH" = false ] && { [ "$DEV_MODE" = true ] || [ "$PROD_MODE" = true ] || [ "$FULL_MODE" = true ]; }; then
     print_status "$BLUE" "📊 Step 10: Lighthouse performance analysis..."
-    if command_exists "npx"; then
-        # Check if Lighthouse config exists
-        if [ -f "lighthouserc.json" ]; then
-            print_status "$YELLOW" "  Cleaning up any existing Jekyll processes..."
-            ./scripts/ci/cleanup-jekyll-processes.sh
-            
-            wait_for_port_release || exit 1
-            
-            print_status "$YELLOW" "  Running Lighthouse CI (latest)..."
-            if npx --yes @lhci/cli@latest autorun --config=./lighthouserc.json --collect.numberOfRuns=1; then
-                print_status "$GREEN" "  ✅ Lighthouse CI completed successfully"
-                LIGHTHOUSE_RAN=true
-                if [ -d "lighthouse-reports" ]; then
-                    print_status "$GREEN" "  📊 Reports generated in lighthouse-reports/"
-                    ls -la lighthouse-reports/
-                    LIGHTHOUSE_PASSED=true
-                else
-                    print_status "$YELLOW" "  ⚠️  No lighthouse-reports directory found (reports may not have been generated)"
-                fi
+    # Check if Lighthouse config exists
+    if [ -f "lighthouserc.json" ]; then
+        print_status "$YELLOW" "  Cleaning up any existing Jekyll processes..."
+        ./scripts/ci/cleanup-jekyll-processes.sh
+        
+        wait_for_port_release || exit 1
+        
+        print_status "$YELLOW" "  Running Lighthouse CI (latest)..."
+        if $PKG_EXEC @lhci/cli@latest autorun --config=./lighthouserc.json --collect.numberOfRuns=1; then
+            print_status "$GREEN" "  ✅ Lighthouse CI completed successfully"
+            LIGHTHOUSE_RAN=true
+            if [ -d "lighthouse-reports" ]; then
+                print_status "$GREEN" "  📊 Reports generated in lighthouse-reports/"
+                ls -la lighthouse-reports/
+                LIGHTHOUSE_PASSED=true
             else
-                print_status "$RED" "  ❌ Lighthouse CI failed"
-                print_status "$YELLOW" "  Checking for error logs..."
-                if [ -d ".lighthouse" ]; then
-                    print_status "$YELLOW" "  Found .lighthouse directory:"
-                    ls -la .lighthouse/
-                fi
-                exit 1
+                print_status "$YELLOW" "  ⚠️  No lighthouse-reports directory found (reports may not have been generated)"
             fi
         else
-            print_status "$YELLOW" "⚠️  Lighthouse config not found, skipping..."
+            print_status "$RED" "  ❌ Lighthouse CI failed"
+            print_status "$YELLOW" "  Checking for error logs..."
+            if [ -d ".lighthouse" ]; then
+                print_status "$YELLOW" "  Found .lighthouse directory:"
+                ls -la .lighthouse/
+            fi
+            exit 1
         fi
     else
-        print_status "$YELLOW" "⚠️  npx not available, skipping Lighthouse..."
+        print_status "$YELLOW" "⚠️  Lighthouse config not found, skipping..."
     fi
 fi
 
 # Step 11: Security checks (full mode only)
 if [ "$FULL_MODE" = true ]; then
     print_status "$BLUE" "🔒 Step 11: Security checks..."
-    if command_exists "npm"; then
+    if [ "$PKG_MGR" = "npm" ]; then
         print_status "$YELLOW" "  Running npm audit..."
         npm audit --audit-level=moderate || print_status "$YELLOW" "⚠️  npm audit found issues"
     else
-        print_status "$YELLOW" "⚠️  npm not available for security checks"
+        print_status "$YELLOW" "  Listing dependencies..."
+        bun pm ls 2>/dev/null || print_status "$YELLOW" "⚠️  Could not list dependencies"
     fi
 fi
 
@@ -519,13 +571,21 @@ print_status "$GREEN" "  ✅ All reports included in site (available at /coverag
 # Summary
 print_status "$GREEN" "✅ CI pipeline completed successfully!"
 print_status "$BLUE" "📋 Summary:"
-print_status "$GREEN" "  ✅ Linting and formatting passed"
+if [ "$SKIP_LINT" = true ]; then
+    print_status "$YELLOW" "  ⏭️  Linting and formatting skipped (--skip-lint flag)"
+else
+    print_status "$GREEN" "  ✅ Linting and formatting passed"
+fi
 print_status "$GREEN" "  ✅ Theme synchronization passed"
 print_status "$GREEN" "  ✅ TypeScript build passed"
-print_status "$GREEN" "  ✅ Unit tests with coverage passed"
+if [ "$SKIP_TESTS" = true ]; then
+    print_status "$YELLOW" "  ⏭️  Tests skipped (--skip-tests flag)"
+else
+    print_status "$GREEN" "  ✅ Unit tests with coverage passed"
+fi
 print_status "$GREEN" "  ✅ CSS budget check passed"
 print_status "$GREEN" "  ✅ Jekyll build passed"
-if [ "$QUICK_MODE" = false ] && [ "$SKIP_E2E" = false ] && command_exists "npx" && npm list @playwright/test &>/dev/null; then
+if [ "$QUICK_MODE" = false ] && [ "$SKIP_TESTS" = false ] && [ -d "node_modules/@playwright/test" ]; then
     print_status "$GREEN" "  ✅ E2E tests passed"
 fi
 print_status "$GREEN" "  ✅ HTMLProofer validation passed"

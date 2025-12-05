@@ -38,6 +38,7 @@ jobs:
             release-assets.githubusercontent.com:443
             registry.npmjs.org:443
             npmjs.org:443
+            bun.sh:443
             rubygems.org:443
             api.rubygems.org:443
             index.rubygems.org:443
@@ -71,7 +72,7 @@ jobs:
           ruby-version: '3.4.7'
 
       - name: Install Playwright browsers
-        run: npm run e2e:install
+        run: bun run e2e:install
 
       - name: Clean up any existing Jekyll processes
         run: ./scripts/ci/cleanup-jekyll-processes.sh
@@ -79,6 +80,11 @@ jobs:
       - name: Build site for Lighthouse analysis
         run: ./scripts/ci/run-lighthouse-ci.sh
         # Uses streamlined build script that skips tests (they run in separate workflows)
+        env:
+          # Use filesystem upload to avoid external connections to temporary-public-storage
+          LHCI_UPLOAD_TARGET: filesystem
+          # Disable LHCI telemetry/analytics that might cause egress issues
+          DO_NOT_TRACK: 1
 
       - name: Verify Lighthouse results
         run: ./scripts/ci/verify-lighthouse-results.sh

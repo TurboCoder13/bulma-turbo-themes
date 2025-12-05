@@ -1,0 +1,36 @@
+---
+name: Setup Bun
+description: Install and configure Bun JavaScript runtime with caching
+
+inputs:
+  bun-version:
+    description: 'Bun version to install'
+    required: false
+    default: 'latest'
+  frozen-lockfile:
+    description: 'Use frozen lockfile (fail if lockfile needs update)'
+    required: false
+    default: 'true'
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2.0.1
+      with:
+        bun-version: ${{ inputs.bun-version }}
+
+    - name: Verify Bun installation
+      shell: bash
+      run: |
+        echo "Bun version: $(bun --version)"
+        echo "Bun path: $(which bun)"
+
+    - name: Install dependencies with Bun
+      shell: bash
+      run: |
+        if [ "${{ inputs.frozen-lockfile }}" = "true" ]; then
+          bun install --frozen-lockfile
+        else
+          bun install
+        fi

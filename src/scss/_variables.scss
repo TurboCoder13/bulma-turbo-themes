@@ -1,0 +1,93 @@
+// SPDX-License-Identifier: MIT
+// Shared Sass variables for Bulma Turbo Themes
+
+// Import Bulma's utilities for advanced customization
+@use 'bulma/sass/utilities/functions' as bulma-fn;
+@use 'bulma/sass/utilities/mixins' as bulma-mx;
+@use 'bulma/sass/utilities/extends' as bulma-ex;
+
+// Import Bulma's default variables
+@use 'bulma/sass/utilities/initial-variables' as *;
+
+// Override Bulma's initial variables with our theme system
+// These will be overridden by theme-specific values
+$primary: hsl(220, 91%, 54%) !default;
+$link: hsl(217, 91%, 60%) !default;
+$info: hsl(204, 94%, 64%) !default;
+$success: hsl(142, 71%, 45%) !default;
+$warning: hsl(38, 92%, 50%) !default;
+$danger: hsl(0, 84%, 60%) !default;
+
+// Theme-specific variables (will be overridden per theme)
+$theme-font-sans: (
+  Inter,
+  ui-sans-serif,
+  system-ui,
+  -apple-system,
+  Segoe UI,
+  Roboto,
+  Helvetica,
+  Arial,
+  'Apple Color Emoji',
+  'Segoe UI Emoji'
+) !default;
+
+$theme-border: #9ca0b0 !default;
+
+$theme-font-mono: (
+  'JetBrains Mono',
+  ui-monospace,
+  SFMono-Regular,
+  Menlo,
+  Monaco,
+  Consolas,
+  'Liberation Mono',
+  'Courier New',
+  monospace
+) !default;
+
+// Syntax highlighting colors (will be overridden per theme)
+$syntax-fg: #4c4f69 !default;
+$syntax-bg: #ccd0da !default;
+$syntax-keyword: #1e66f5 !default;
+$syntax-string: #40a02b !default;
+$syntax-number: #df8e1d !default;
+$syntax-comment: #6c6f85 !default;
+$syntax-title: #04a5e5 !default;
+$syntax-attr: #1e66f5 !default;
+
+// Theme surface colors
+$theme-surface-0: #eff1f5 !default; // Base background
+$theme-surface-1: #e6e9ef !default; // Surface
+$theme-surface-2: #dce0e8 !default; // Overlay
+
+// Text colors
+$theme-text: #4c4f69 !default;
+$theme-text-muted: #6c6f85 !default;
+
+// Heading colors (semantic, will be overridden per theme)
+$theme-h1: #40a02b !default;
+$theme-h2: #1e66f5 !default;
+$theme-h3: #209fb5 !default;
+$theme-h4: #df8e1d !default;
+$theme-h5: #8839ef !default;
+$theme-h6: #d20f39 !default;
+
+// Content colors
+$theme-link: #1e66f5 !default;
+$theme-blockquote-border: #8c8fa1 !default;
+$theme-blockquote-fg: #4c4f69 !default;
+$theme-blockquote-bg: #e6e9ef !default;
+$theme-code-fg: #4c4f69 !default;
+$theme-code-bg: #ccd0da !default;
+$theme-pre-fg: #4c4f69 !default;
+$theme-pre-bg: #ccd0da !default;
+
+// Table colors
+$theme-table-border: #8c8fa1 !default;
+$theme-table-stripe: #ccd0da !default;
+$theme-table-thead-bg: #bcc0cc !default;
+
+// Selection colors
+$theme-selection-fg: #4c4f69 !default;
+$theme-selection-bg: #8c8fa1 !default;

@@ -95,6 +95,29 @@ export default [
     },
   },
   {
+    files: ['**/*.config.js', 'vite.config.js', 'postcss.config.js', 'purgecss.config.js'],
+    languageOptions: {
+      parserOptions: {
+        ecmaVersion: 2021,
+        sourceType: 'module',
+      },
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        global: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        exports: 'readonly',
+      },
+    },
+    rules: {
+      'no-console': 'off', // Allow console in config files
+    },
+  },
+  {
     ignores: [
       'dist/',
       '_site/',

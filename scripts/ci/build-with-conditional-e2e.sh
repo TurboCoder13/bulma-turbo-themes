@@ -13,15 +13,25 @@ set -euo pipefail
 EVENT_NAME="${1:-push}"
 RUN_E2E_TESTS="${2:-false}"
 
+# Detect package manager (prefer bun, fall back to npm)
+if command -v bun >/dev/null 2>&1; then
+    PKG_RUN="bun run"
+elif command -v npm >/dev/null 2>&1; then
+    PKG_RUN="npm run"
+else
+    echo "❌ No package manager found!"
+    exit 1
+fi
+
 if [ "$EVENT_NAME" = "push" ]; then
   echo "Building site with E2E tests for push event..."
-  npm run build:prod -- --no-serve
+  $PKG_RUN build:prod -- --no-serve
 elif [ "$RUN_E2E_TESTS" = "true" ]; then
   echo "Building site with E2E tests (workflow_dispatch override)..."
-  npm run build:prod -- --no-serve
+  $PKG_RUN build:prod -- --no-serve
 else
   echo "Building site without E2E tests (workflow_dispatch, run-e2e-tests=false)..."
-  npm run build:prod -- --no-serve --skip-e2e
+  $PKG_RUN build:prod -- --no-serve --skip-e2e
 fi
 
 echo "✅ Site build completed successfully"

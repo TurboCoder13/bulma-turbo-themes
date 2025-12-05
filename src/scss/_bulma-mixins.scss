@@ -1,0 +1,50 @@
+// SPDX-License-Identifier: MIT
+// Bulma mixins and utilities for advanced theming
+
+// Forward Bulma utilities for theme use
+@forward 'bulma/sass/utilities/initial-variables';
+@forward 'bulma/sass/utilities/functions';
+@forward 'bulma/sass/utilities/mixins';
+@forward 'bulma/sass/utilities/extends';
+
+// Re-export common Bulma mixins for easier access
+@use 'bulma/sass/utilities/mixins' as bulma-mx;
+@use 'bulma/sass/utilities/functions' as bulma-fn;
+
+// Theme helper mixins
+// Note: Bulma uses 'from' mixin for responsive breakpoints (styles from that breakpoint upward)
+@mixin theme-responsive($breakpoint) {
+  @include bulma-mx.from($breakpoint) {
+    @content;
+  }
+}
+
+@mixin theme-button-variant($color-name, $color-value) {
+  .button.is-#{$color-name} {
+    background-color: $color-value;
+    border-color: $color-value;
+    color: bulma-fn.color-invert($color-value);
+
+    &:hover {
+      background-color: bulma-fn.color-darken($color-value, 7.5%);
+      border-color: bulma-fn.color-darken($color-value, 10%);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.125em
+        bulma-fn.color-mix(bulma-fn.color-invert($color-value), $color-value, 25%);
+    }
+  }
+}
+
+@mixin theme-text-variant($color-name, $color-value) {
+  .has-text-#{$color-name} {
+    color: $color-value !important;
+  }
+}
+
+@mixin theme-background-variant($color-name, $color-value) {
+  .has-background-#{$color-name} {
+    background-color: $color-value !important;
+  }
+}

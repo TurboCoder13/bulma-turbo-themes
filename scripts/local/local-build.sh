@@ -55,14 +55,20 @@ log_info "🔨 Building project..."
 # Change to project root
 cd "$(git rev-parse --show-toplevel 2>/dev/null || echo ".")"
 
-# Check if npm is available
-require_command npm
+# Detect package manager (prefer bun, fall back to npm)
+if command_exists bun; then
+    PKG_RUN="bun run"
+elif command_exists npm; then
+    PKG_RUN="npm run"
+else
+    die "No package manager found! Install bun (https://bun.sh) or npm"
+fi
 
 # Run linting and formatting checks unless skipped
 if [ "$SKIP_CHECKS" = false ]; then
     log_info "🔍 Running linting checks..."
     
-    if npm run lint >/dev/null 2>&1; then
+    if $PKG_RUN lint >/dev/null 2>&1; then
         log_success "✅ Linting passed"
     else
         log_warn "⚠️  Linting issues found"
@@ -70,10 +76,10 @@ if [ "$SKIP_CHECKS" = false ]; then
     
     log_info "🎨 Checking code formatting..."
     
-    if npm run format >/dev/null 2>&1; then
+    if $PKG_RUN format >/dev/null 2>&1; then
         log_success "✅ Formatting check passed"
     else
-        log_warn "⚠️  Formatting issues found (run: npm run format:write)"
+        log_warn "⚠️  Formatting issues found (run: $PKG_RUN format:write)"
     fi
     
     echo ""
@@ -81,7 +87,7 @@ fi
 
 # Build TypeScript
 log_info "⚡ Building TypeScript..."
-npm run build
+$PKG_RUN build
 
 log_success "✅ Build completed!"
 
@@ -96,7 +102,7 @@ fi
 if [ "$RUN_TESTS" = true ]; then
     echo ""
     log_info "🧪 Running tests..."
-    npm test
+    $PKG_RUN test
     log_success "✅ Tests passed!"
 fi
 
