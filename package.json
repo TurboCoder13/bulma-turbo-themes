@@ -52,7 +52,7 @@
     "coverage:badges": "node scripts/ci/coverage-badges.mjs",
     "css:budget": "node scripts/ci/css-budget.mjs",
     "theme:sync": "node scripts/sync-catppuccin.mjs",
-    "e2e:prep": "bun run build && bundle exec jekyll build --config _config.yml",
+    "e2e:prep": "bun run build && bun run build:themes && bundle exec jekyll build --config _config.yml",
     "e2e:start": "node scripts/e2e-serve.mjs",
     "e2e": "playwright test",
     "e2e:ci": "playwright test",
