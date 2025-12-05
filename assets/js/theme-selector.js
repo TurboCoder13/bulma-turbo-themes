@@ -447,9 +447,7 @@ export function wireFlavorSelector(documentObj, windowObj) {
         // Always use absolute path from origin to avoid relative path issues
         // on subpages like /components/ where relative paths would break
         const origin = windowObj.location.origin;
-        const iconPath = baseUrl
-          ? `${origin}${baseUrl}/${theme.icon}`
-          : `${origin}/${theme.icon}`;
+        const iconPath = baseUrl ? `${origin}${baseUrl}/${theme.icon}` : `${origin}/${theme.icon}`;
         icon.src = iconPath;
         icon.alt = `${familyMeta.name} ${theme.name}`;
         // Fallback to PNG if WebP fails to load

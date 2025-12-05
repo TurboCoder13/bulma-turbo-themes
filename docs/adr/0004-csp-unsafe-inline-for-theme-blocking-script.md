@@ -51,8 +51,10 @@ prioritizing user experience (no FOUC) over strict CSP compliance.
 ### Current CSP (lines 12–13 in `_layouts/default.html`)
 
 ```html
-<meta http-equiv="Content-Security-Policy"
-  content="default-src 'self'; script-src 'self' 'unsafe-inline'; ...">
+<meta
+  http-equiv="Content-Security-Policy"
+  content="default-src 'self'; script-src 'self' 'unsafe-inline'; ..."
+/>
 ```
 
 ### Mitigations in Place
