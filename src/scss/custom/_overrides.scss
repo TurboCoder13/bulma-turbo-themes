@@ -597,8 +597,37 @@ input[type='file']::file-selector-button:hover {
     }
   }
 
-  // Semantic message colors - let Bulma handle the colorful styling
-  // We only add minor adjustments for better dark theme compatibility
+  // Semantic message colors - ensure readable text in both light and dark themes
+  // Headers use solid colors with white text for maximum contrast
+  &.is-primary .message-header {
+    background-color: var(--bulma-primary, hsl(171, 100%, 41%));
+    color: var(--bulma-primary-invert, #fff);
+  }
+
+  &.is-link .message-header {
+    background-color: var(--bulma-link, hsl(229, 53%, 53%));
+    color: var(--bulma-link-invert, #fff);
+  }
+
+  &.is-info .message-header {
+    background-color: var(--bulma-info, hsl(207, 61%, 53%));
+    color: var(--bulma-info-invert, #fff);
+  }
+
+  &.is-success .message-header {
+    background-color: var(--bulma-success, hsl(153, 53%, 53%));
+    color: var(--bulma-success-invert, #fff);
+  }
+
+  &.is-warning .message-header {
+    background-color: var(--bulma-warning, hsl(44, 100%, 77%));
+    color: var(--bulma-warning-invert, rgba(0, 0, 0, 0.7));
+  }
+
+  &.is-danger .message-header {
+    background-color: var(--bulma-danger, hsl(348, 86%, 61%));
+    color: var(--bulma-danger-invert, #fff);
+  }
 }
 
 // ============================================================================
