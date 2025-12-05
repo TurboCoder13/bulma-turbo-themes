@@ -90,6 +90,9 @@ jobs:
       - name: Build npm package
         run: bun run build
 
+      - name: Build theme CSS files
+        run: bun run build:themes
+
       - name: Build gem package
         run: bun run build:gem
 
