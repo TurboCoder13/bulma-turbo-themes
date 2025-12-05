@@ -40,6 +40,7 @@ jobs:
             release-assets.githubusercontent.com:443
             registry.npmjs.org:443
             npmjs.org:443
+            bun.sh:443
             rubygems.org:443
             api.rubygems.org:443
             index.rubygems.org:443
@@ -60,16 +61,16 @@ jobs:
           ruby-version: ${{ inputs.ruby-version }}
 
       - name: Lint JavaScript/TypeScript
-        run: npm run lint
+        run: bun run lint
 
       - name: Format check
-        run: npm run format
+        run: bun run format
 
       - name: Markdown lint
-        run: npm run mdlint
+        run: bun run mdlint
 
       - name: CSS lint (Stylelint)
-        run: npm run stylelint
+        run: bun run stylelint
 
       - name: Shellcheck (non-blocking)
         continue-on-error: true

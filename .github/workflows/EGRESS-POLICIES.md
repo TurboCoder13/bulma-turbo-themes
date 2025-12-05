@@ -142,6 +142,7 @@ allowed-endpoints: >
   codeload.github.com:443
   registry.npmjs.org:443
   npmjs.org:443
+  bun.sh:443
   raw.githubusercontent.com:443
   github-releases.githubusercontent.com:443
   release-assets.githubusercontent.com:443
@@ -161,6 +162,7 @@ allowed-endpoints: >
 **Rationale:**
 
 - GitHub: Code checkout, artifacts, workflow orchestration
+- Bun: Downloading and installing the Bun runtime via `oven-sh/setup-bun`
 - npm: Installing and resolving Node.js dependencies
 - Ruby: Installing Ruby and Bundler (RubyGems endpoints and Ruby tarball cache)
 - Python: Installing Python tooling via `uv` and PyPI

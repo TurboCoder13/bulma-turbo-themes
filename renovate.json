@@ -4,7 +4,7 @@
   "platformCommit": true,
   "packageRules": [
     {
-      "matchManagers": ["npm"],
+      "matchManagers": ["npm", "bun"],
       "matchUpdateTypes": ["patch"],
       "automerge": true,
       "automergeType": "branch"
@@ -19,5 +19,9 @@
   "schedule": ["after 22:00", "before 23:00"],
   "timezone": "UTC",
   "labels": ["dependencies"],
-  "semanticCommits": "enabled"
+  "semanticCommits": "enabled",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true
+  }
 }

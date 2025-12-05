@@ -101,6 +101,42 @@ function checkRemoteBranch(branchName) {
 }
 
 /**
+ * Check if a remote branch has a common ancestor with main
+ *
+ * This detects orphaned branches that were created from a different
+ * history (e.g., before main was resigned/rebased). Such branches
+ * cannot be used to create PRs against main.
+ */
+function hasCommonAncestor(branchName) {
+  try {
+    execSync(`git merge-base main origin/${branchName}`, {
+      cwd: projectRoot,
+      stdio: "pipe",
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Delete a remote branch
+ */
+function deleteRemoteBranch(branchName) {
+  try {
+    execSync(`git push origin --delete ${branchName}`, {
+      cwd: projectRoot,
+      stdio: "pipe",
+    });
+    console.log(`🗑️  Deleted orphaned remote branch ${branchName}`);
+    return true;
+  } catch (error) {
+    console.warn(`⚠️  Failed to delete remote branch ${branchName}: ${error.message}`);
+    return false;
+  }
+}
+
+/**
  * Create version bump branch
  */
 function createVersionBranch(newVersion) {
@@ -109,49 +145,79 @@ function createVersionBranch(newVersion) {
   // Check if remote branch already exists
   if (checkRemoteBranch(branchName)) {
     console.log(`🌿 Remote branch ${branchName} already exists`);
+
+    // Fetch the remote branch to check for common ancestry
     try {
-      // Fetch the remote branch explicitly to ensure refs are available locally
-      console.log(`📥 Fetching remote branch ${branchName}...`);
       execSync(`git fetch origin ${branchName}`, {
         cwd: projectRoot,
         stdio: "pipe",
       });
-      console.log(`✅ Successfully fetched remote branch ${branchName}`);
+    } catch {
+      // Fetch failed, but continue to check common ancestry
+    }
 
-      // Checkout existing remote branch
-      execSync(`git checkout -b ${branchName} origin/${branchName}`, {
-        cwd: projectRoot,
-      });
-      console.log(`🌿 Checked out existing remote branch ${branchName}`);
-      return branchName;
-    } catch (error) {
-      // Re-check if branch actually exists (might have been deleted between check and fetch)
-      if (!checkRemoteBranch(branchName)) {
-        console.log(
-          `ℹ️  Remote branch ${branchName} no longer exists (may have been deleted), will create new branch`,
-        );
-        // Fall through to create new branch logic below
+    // Check if the remote branch has common ancestry with main
+    // This can happen if main was rebased/resigned after the branch was created
+    if (!hasCommonAncestor(branchName)) {
+      console.warn(
+        `⚠️  Remote branch ${branchName} has no common history with main`,
+      );
+      console.warn(
+        `   This usually happens when main was rebased or commits were resigned.`,
+      );
+      console.warn(
+        `   Deleting orphaned branch and creating a fresh one...`,
+      );
+
+      // Delete the orphaned remote branch
+      if (deleteRemoteBranch(branchName)) {
+        // Successfully deleted, fall through to create new branch
+        console.log(`✅ Orphaned branch deleted, creating fresh branch from main`);
       } else {
-        // Branch exists but fetch/checkout failed - try local branch as fallback
-        console.warn(
-          `⚠️  Failed to fetch/checkout remote branch ${branchName}: ${error.message}`,
+        throw new Error(
+          `Cannot delete orphaned remote branch ${branchName}. ` +
+            `The branch has no common history with main and cannot be used to create a PR. ` +
+            `Please manually delete the remote branch and retry.`,
         );
-        try {
-          execSync(`git checkout ${branchName}`, { cwd: projectRoot });
-          console.log(`🌿 Checked out existing local branch ${branchName}`);
-          return branchName;
-        } catch (localError) {
-          console.error(
-            `❌ Failed to checkout branch ${branchName} (both remote and local attempts failed)`,
+      }
+    } else {
+      // Branch has common ancestry, safe to reuse
+      try {
+        // Checkout existing remote branch
+        execSync(`git checkout -b ${branchName} origin/${branchName}`, {
+          cwd: projectRoot,
+        });
+        console.log(`🌿 Checked out existing remote branch ${branchName}`);
+        return branchName;
+      } catch (error) {
+        // Re-check if branch actually exists (might have been deleted between check and fetch)
+        if (!checkRemoteBranch(branchName)) {
+          console.log(
+            `ℹ️  Remote branch ${branchName} no longer exists (may have been deleted), will create new branch`,
           );
-          console.error(`   Remote error: ${error.message}`);
-          console.error(`   Local error: ${localError.message}`);
-          throw new Error(
-            `Cannot checkout existing branch ${branchName}. ` +
-              `The remote branch exists but cannot be checked out. ` +
-              `This may indicate the branch points to an unreachable commit or there's a git state issue. ` +
-              `Consider manually deleting the remote branch and retrying.`,
+          // Fall through to create new branch logic below
+        } else {
+          // Branch exists but fetch/checkout failed - try local branch as fallback
+          console.warn(
+            `⚠️  Failed to fetch/checkout remote branch ${branchName}: ${error.message}`,
           );
+          try {
+            execSync(`git checkout ${branchName}`, { cwd: projectRoot });
+            console.log(`🌿 Checked out existing local branch ${branchName}`);
+            return branchName;
+          } catch (localError) {
+            console.error(
+              `❌ Failed to checkout branch ${branchName} (both remote and local attempts failed)`,
+            );
+            console.error(`   Remote error: ${error.message}`);
+            console.error(`   Local error: ${localError.message}`);
+            throw new Error(
+              `Cannot checkout existing branch ${branchName}. ` +
+                `The remote branch exists but cannot be checked out. ` +
+                `This may indicate the branch points to an unreachable commit or there's a git state issue. ` +
+                `Consider manually deleting the remote branch and retrying.`,
+            );
+          }
         }
       }
     }

@@ -8,15 +8,108 @@
       data-theme-label="{{ site.data.i18n.en.theme_label }}"
       data-current-theme-title-template="{{ site.data.i18n.en.current_theme_title }}"
     />
+    <!--
+      CSP Security Trade-off: 'unsafe-inline' for script-src
+      ========================================================
+      Why required: The inline theme-blocking script (lines 19-87 below) must run
+      synchronously before first paint to prevent Flash of Unstyled Content (FOUC).
+      Without it, users would see the wrong theme briefly before it snaps to their
+      saved preference — a jarring experience.
+
+      Why not use nonces/hashes:
+      - Nonces require server-side generation (not possible with static Jekyll/GitHub Pages)
+      - Hashes are brittle and break on any script change, causing CI failures
+
+      Mitigations in place:
+      - Inline script validates theme IDs against allowlist (prevents class injection)
+      - URL sanitization prevents XSS via manipulated data-baseurl
+      - No eval() or dynamic code execution
+      - All other scripts are external files
+
+      Future tightening: Service worker precomputed theme class, or migration to SSR
+      with nonce-based CSP.
+
+      See: docs/adr/0004-csp-unsafe-inline-for-theme-blocking-script.md
+    -->
+    <!-- Note: frame-ancestors can only be set via HTTP header, not meta tag, so it's omitted here -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
     />
     <title>{{ page.title | default: site.title }}</title>
     {% seo %}
+    <!-- Blocking script to apply theme immediately from localStorage -->
+    <!-- This prevents FOUC by setting theme class before first paint -->
+    <script>
+      (function () {
+        try {
+          var STORAGE_KEY = 'bulma-theme-flavor';
+          var DEFAULT_THEME = 'catppuccin-mocha';
+          // Valid theme IDs - must match THEMES array in theme-selector.js
+          var VALID_THEMES = [
+            'bulma-light',
+            'bulma-dark',
+            'catppuccin-latte',
+            'catppuccin-frappe',
+            'catppuccin-macchiato',
+            'catppuccin-mocha',
+            'dracula',
+            'github-light',
+            'github-dark',
+          ];
+          var savedTheme = localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;
+          // Validate theme ID against allowed list to prevent invalid class/URL injection
+          if (VALID_THEMES.indexOf(savedTheme) === -1) {
+            savedTheme = DEFAULT_THEME;
+          }
+          var themeClass = 'theme-' + savedTheme;
+
+          // Apply theme class using classList to preserve existing classes
+          // First remove any existing theme classes
+          var classList = document.documentElement.classList;
+          var classesToRemove = [];
+          for (var i = 0; i < classList.length; i++) {
+            if (classList[i].indexOf('theme-') === 0) {
+              classesToRemove.push(classList[i]);
+            }
+          }
+          classesToRemove.forEach(function (cls) {
+            classList.remove(cls);
+          });
+          // Add the new theme class
+          classList.add(themeClass);
+
+          // Preload theme CSS for faster loading
+          var baseUrl = document.documentElement.getAttribute('data-baseurl') || '';
+          // Sanitize baseUrl to prevent XSS attacks
+          function sanitizeUrlPath(path) {
+            if (!path) return '';
+            // Remove or encode dangerous characters that could be interpreted as HTML/JS
+            return path.replace(/[<>"'`&]/g, '').replace(/\\/g, '');
+          }
+          var sanitizedBaseUrl = sanitizeUrlPath(baseUrl);
+          // Resolve path relative to site root
+          var base = sanitizedBaseUrl
+            ? window.location.origin + sanitizedBaseUrl + '/'
+            : window.location.origin + '/';
+          var themePath = new URL('assets/css/themes/' + savedTheme + '.css', base).pathname;
+
+          // Create preload link
+          var preloadLink = document.createElement('link');
+          preloadLink.rel = 'preload';
+          preloadLink.as = 'style';
+          preloadLink.href = themePath;
+          document.head.appendChild(preloadLink);
+
+          // Store theme info for later use
+          window.__INITIAL_THEME__ = savedTheme;
+        } catch (e) {
+          // Silently fail if localStorage is not available
+          console.warn('Unable to load saved theme:', e);
+        }
+      })();
+    </script>
     <link rel="icon" href="{{ '/favicon.ico' | relative_url }}" />
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link
       rel="icon"
       type="image/png"
@@ -34,32 +127,51 @@
       href="{{ '/assets/img/bulma-logo.png' | relative_url }}"
       color="#111827"
     />
+    <!--
+      Critical CSS removed - was causing theme override issues.
+      Theme CSS uses CSS variables for colors, but hardcoded critical CSS
+      was overriding them. The theme CSS is preloaded for fast loading.
+    -->
+    <!-- Base CSS (shared styles, loaded asynchronously) -->
     <link
+      id="theme-base-css"
       rel="preload"
       as="style"
-      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
-      crossorigin="anonymous"
+      href="{{ '/assets/css/themes/base.css' | relative_url }}"
+      onload="this.rel = 'stylesheet'"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
-      integrity="sha384-tl5h4XuWmVzPeVWU0x8bx0j/5iMwCBduLEgZ+2lH4Wjda+4+q3mpCww74dgAB3OX"
-      crossorigin="anonymous"
-    />
-    <link
-      id="theme-global-css"
-      rel="stylesheet"
-      href="{{ '/assets/css/themes/global.css' | relative_url }}"
-    />
-    <link id="theme-flavor-css" rel="stylesheet" href="#" />
+    <noscript>
+      <link rel="stylesheet" href="{{ '/assets/css/themes/base.css' | relative_url }}" />
+    </noscript>
     <link rel="stylesheet" href="{{ '/assets/css/custom.css' | relative_url }}" />
+    <!-- Use minified JS in production for ~50% smaller payload -->
+    {% if jekyll.environment == 'production' %}
+    <script type="module" src="{{ '/assets/js/theme-selector.min.js' | relative_url }}"></script>
+    {% else %}
     <script type="module" src="{{ '/assets/js/theme-selector.js' | relative_url }}"></script>
+    {% endif %}
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         // Initialize navbar highlighting
         if (window.initNavbar) {
           window.initNavbar(document);
         }
+
+        // Initialize burger menu toggle
+        const burgers = document.querySelectorAll('.navbar-burger');
+        burgers.forEach((burger) => {
+          burger.addEventListener('click', () => {
+            const targetId = burger.dataset.target;
+            const target = document.getElementById(targetId);
+            if (target) {
+              burger.classList.toggle('is-active');
+              target.classList.toggle('is-active');
+              // Update aria-expanded
+              const isExpanded = burger.classList.contains('is-active');
+              burger.setAttribute('aria-expanded', String(isExpanded));
+            }
+          });
+        });
       });
     </script>
   </head>
@@ -212,42 +324,37 @@
             </div>
           </div>
           <div class="navbar-end">
-            <div class="navbar-item">
-              <div class="control has-icons-left">
-                <div class="select is-rounded is-small is-hidden" aria-hidden="true">
-                  <select id="theme-flavor-select" aria-label="Theme flavor" disabled></select>
-                </div>
-                <span
-                  class="icon is-small is-left"
-                  id="theme-flavor-icon"
-                  aria-hidden="true"
-                ></span>
-              </div>
-              <div
-                class="dropdown is-right is-theme"
-                id="theme-flavor-dd"
-                data-testid="theme-dropdown"
+            <div class="navbar-item has-dropdown is-hoverable" data-testid="theme-dropdown">
+              <button
+                class="theme-trigger-icon"
+                id="theme-flavor-trigger"
+                type="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+                aria-controls="theme-flavor-menu"
+                aria-label="Select theme"
+                data-testid="theme-trigger"
               >
-                <div class="dropdown-trigger">
-                  <button
-                    class="button is-small is-rounded is-flavor-trigger theme-flavor-trigger"
-                    aria-haspopup="true"
-                    aria-controls="theme-flavor-menu"
-                    aria-label="Theme"
-                    data-testid="theme-trigger"
-                  >
-                    <span class="icon is-small" id="theme-flavor-trigger-icon"></span>
-                  </button>
-                </div>
-                <div
-                  class="dropdown-menu"
-                  id="theme-flavor-menu"
-                  role="menu"
-                  data-testid="theme-menu"
-                >
-                  <div class="dropdown-content" id="theme-flavor-items"></div>
-                </div>
+                <img
+                  id="theme-flavor-trigger-icon"
+                  src="{{ '/assets/img/catppuccin-logo-macchiato.png' | relative_url }}"
+                  alt="Current theme"
+                  width="32"
+                  height="32"
+                />
+              </button>
+              <div
+                class="navbar-dropdown is-right"
+                id="theme-flavor-menu"
+                aria-labelledby="theme-flavor-trigger"
+                data-testid="theme-menu"
+                role="menu"
+              >
+                <!-- Theme items populated by JS -->
               </div>
+            </div>
+            <div class="select is-rounded is-small is-hidden">
+              <select id="theme-flavor-select" aria-label="Theme flavor" disabled></select>
             </div>
           </div>
         </div>

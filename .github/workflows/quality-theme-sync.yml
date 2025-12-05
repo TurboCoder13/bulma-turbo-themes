@@ -36,6 +36,7 @@ jobs:
             release-assets.githubusercontent.com:443
             registry.npmjs.org:443
             npmjs.org:443
+            bun.sh:443
             cdn.jsdelivr.net:443
             rubygems.org:443
             api.rubygems.org:443
@@ -53,4 +54,4 @@ jobs:
       - name: Run theme sync determinism check
         run: ./scripts/ci/theme-sync-determinism-check.sh
       - name: Run test suite (quick)
-        run: npm test --silent
+        run: bun run test --silent

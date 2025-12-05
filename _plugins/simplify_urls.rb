@@ -74,7 +74,8 @@ Jekyll::Hooks.register :site, :post_write do |site|
       FileUtils.cp_r(File.join(lh_src_to_use, "."), lh_dst)
       if Dir.exist?(lh_dst)
         # Create index.html listing all lighthouse reports
-        report_files = Dir.glob(File.join(lh_dst, "lhr-*.html")).sort.reverse
+        # Match both old format (lhr-*.html) and new LHCI format (*.report.html)
+        report_files = Dir.glob(File.join(lh_dst, "*.html")).select { |f| f.end_with?(".report.html") || File.basename(f).start_with?("lhr-") }.sort.reverse
         if report_files.any?
           index_path = File.join(lh_dst, "index.html")
           File.open(index_path, "w") do |f|
@@ -106,7 +107,13 @@ Jekyll::Hooks.register :site, :post_write do |site|
             f.puts "</body>"
             f.puts "</html>"
           end
-          Jekyll.logger.info "Simplified URL created: /lighthouse/ with index.html"
+          # Verify the file was created
+          if File.exist?(index_path)
+            Jekyll.logger.info "Simplified URL created: /lighthouse/ with index.html"
+            Jekyll.logger.debug "Verified index.html exists at: #{index_path}"
+          else
+            Jekyll.logger.error "ERROR: index.html was NOT created at: #{index_path}"
+          end
         else
           Jekyll.logger.info "Simplified URL created: /lighthouse/"
         end

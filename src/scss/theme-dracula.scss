@@ -1,0 +1,146 @@
+// SPDX-License-Identifier: MIT
+// Theme-specific Bulma configuration for dracula
+@use 'bulma/sass' with (
+  $primary: hsl(265, 89%, 78%),
+  $link: hsl(191, 97%, 77%),
+  $info: hsl(191, 97%, 77%),
+  $success: hsl(135, 94%, 65%),
+  $warning: hsl(65, 92%, 76%),
+  $danger: hsl(0, 100%, 67%)
+);
+
+// Import custom overrides and hacks
+@use 'custom/overrides';
+@use 'custom/hacks';
+
+// Web font imports (compiled to top of CSS output)
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap');
+
+
+
+// Theme-specific overrides using Bulma's generated CSS variables
+// Note: Bulma automatically generates --bulma-primary-* CSS variables (00-100 shades)
+// and --bulma-primary-soft, --bulma-primary-bold variants from the Sass variables above
+.theme-dracula {
+  --bulma-body-background-color: #282a36;
+  --bulma-body-color: #f8f8f2;
+  --bulma-border: #44475a;
+  --theme-font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --theme-font-mono: "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --theme-text: #f8f8f2;
+  --theme-text-muted: #6272a4;
+  --theme-h1: #ff79c6;
+  --theme-h2: #bd93f9;
+  --theme-h3: #8be9fd;
+  --theme-h4: #50fa7b;
+  --theme-h5: #ffb86c;
+  --theme-h6: #f1fa8c;
+  --theme-link: hsl(191, 97%, 77%);
+  --theme-blockquote-border: #bd93f9;
+  --theme-blockquote-fg: #6272a4;
+  --theme-blockquote-bg: #21222c;
+  --theme-code-fg: #50fa7b;
+  --theme-code-bg: #21222c;
+  --theme-pre-fg: #f8f8f2;
+  --theme-pre-bg: #21222c;
+  --theme-table-border: #44475a;
+  --theme-table-stripe: #21222c;
+  --theme-table-thead-bg: #44475a;
+  --theme-selection-fg: #f8f8f2;
+  --theme-selection-bg: #44475a;
+  --syntax-fg: #50fa7b;
+  --syntax-bg: #21222c;
+  --syntax-keyword: #bd93f9;
+  --syntax-string: hsl(135, 94%, 65%);
+  --syntax-number: hsl(65, 92%, 76%);
+  --syntax-comment: #6272a4;
+  --syntax-title: hsl(191, 97%, 77%);
+  --syntax-attr: hsl(191, 97%, 77%);
+  --theme-surface-0: #282a36;
+  --theme-surface-1: #21222c;
+  --theme-surface-2: #44475a;
+  color-scheme: dark;
+}
+
+/* Advanced theme component customizations using Bulma's generated color palette */
+.theme-dracula .button.is-theme-primary {
+  background-color: hsl(var(--bulma-primary));
+  border-color: hsl(var(--bulma-primary));
+  color: hsl(var(--bulma-primary-invert));
+}
+
+.theme-dracula .button.is-theme-link {
+  background-color: hsl(var(--bulma-link));
+  border-color: hsl(var(--bulma-link));
+  color: hsl(var(--bulma-link-invert));
+}
+
+.theme-dracula .notification.is-theme-primary {
+  background-color: hsl(var(--bulma-primary-light));
+  border-left-color: hsl(var(--bulma-primary));
+  color: hsl(var(--bulma-primary-dark));
+}
+
+.theme-dracula .has-theme-gradient-primary {
+  background: linear-gradient(to right, hsl(var(--bulma-primary)), hsl(var(--bulma-primary-95)));
+}
+
+.theme-dracula .has-theme-gradient-link {
+  background: linear-gradient(to right, hsl(var(--bulma-link)), hsl(var(--bulma-link-95)));
+}
+
+/* Syntax highlighting for this theme */
+.theme-dracula .highlight {
+  background: var(--syntax-bg);
+  color: var(--syntax-fg);
+}
+
+.theme-dracula .highlight pre,
+.theme-dracula pre.highlight {
+  background: transparent;
+  color: var(--syntax-fg);
+}
+
+.theme-dracula .highlight code {
+  background: transparent;
+  color: var(--syntax-fg);
+}
+
+.theme-dracula .highlight .c,
+.theme-dracula .highlight .cm,
+.theme-dracula .highlight .c1 {
+  color: var(--syntax-comment);
+}
+
+.theme-dracula .highlight .k,
+.theme-dracula .highlight .kc,
+.theme-dracula .highlight .kd {
+  color: var(--syntax-keyword);
+}
+
+.theme-dracula .highlight .s,
+.theme-dracula .highlight .s1,
+.theme-dracula .highlight .sb,
+.theme-dracula .highlight .sd,
+.theme-dracula .highlight .s2 {
+  color: var(--syntax-string);
+}
+
+.theme-dracula .highlight .m,
+.theme-dracula .highlight .mi,
+.theme-dracula .highlight .mf,
+.theme-dracula .highlight .mh {
+  color: var(--syntax-number);
+}
+
+.theme-dracula .highlight .nt,
+.theme-dracula .highlight .na {
+  color: var(--syntax-attr);
+}
+
+.theme-dracula .highlight .nn,
+.theme-dracula .highlight .nc,
+.theme-dracula .highlight .no,
+.theme-dracula .highlight .nf {
+  color: var(--syntax-title);
+}

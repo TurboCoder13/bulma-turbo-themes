@@ -1,0 +1,250 @@
+// SPDX-License-Identifier: MIT
+// Advanced theme utilities for Bulma Turbo Themes
+
+@use 'variables' as *;
+
+// Import Bulma functions and mixins directly for advanced features
+@use 'bulma/sass/utilities/functions' as bulma-fn;
+@use 'bulma/sass/utilities/mixins' as bulma-mx;
+
+// Import Sass modules for advanced functionality
+@use 'sass:color';
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
+
+// ============================================================================
+// THEME-AWARE COLOR FUNCTIONS
+// ============================================================================
+
+/// Get a theme-aware color with automatic contrast adjustments
+/// @param {String} $color-name - Name of the Bulma color variable (e.g., 'primary', 'link')
+/// @param {String} $variant - Color variant ('base', 'invert', 'light', 'dark') [default: 'base']
+/// @return {Color} Theme-aware color value
+@function theme-color($color-name, $variant: 'base') {
+  // Use Bulma's color variables directly
+  $color-var: null;
+
+  @if $color-name == 'primary' {
+    $color-var: $primary;
+  } @else if $color-name == 'link' {
+    $color-var: $link;
+  } @else if $color-name == 'info' {
+    $color-var: $info;
+  } @else if $color-name == 'success' {
+    $color-var: $success;
+  } @else if $color-name == 'warning' {
+    $color-var: $warning;
+  } @else if $color-name == 'danger' {
+    $color-var: $danger;
+  } @else {
+    @error "Color '#{$color-name}' not supported. Use: primary, link, info, success, warning, danger";
+  }
+
+  @if $variant == 'invert' {
+    @return bulma-fn.bulmaFindColorInvert($color-var);
+  } @else if $variant == 'light' {
+    @return bulma-fn.bulmaFindLightColor($color-var);
+  } @else if $variant == 'dark' {
+    @return bulma-fn.bulmaFindDarkColor($color-var);
+  }
+
+  // Base color
+  @return $color-var;
+}
+
+/// Create a theme-aware color palette with automatic variants
+/// @param {Color} $base-color - Base color for the palette
+/// @return {List} Color palette [base, invert, light, dark]
+@function create-color-palette($base-color) {
+  $invert: bulma-fn.bulmaFindColorInvert($base-color);
+  $light: bulma-fn.bulmaFindLightColor($base-color);
+  $dark: bulma-fn.bulmaFindDarkColor($base-color);
+
+  @return $base-color, $invert, $light, $dark;
+}
+
+/// Get theme-aware text color based on background
+/// @param {Color} $background - Background color
+/// @param {Color} $light-text - Light text color [default: theme text]
+/// @param {Color} $dark-text - Dark text color [default: theme text-muted]
+/// @return {Color} Appropriate text color for the background
+@function theme-text-on-background(
+  $background,
+  $light-text: $theme-text,
+  $dark-text: $theme-text-muted
+) {
+  @if bulma-fn.bulmaColorLuminance($background) > 0.55 {
+    @return $dark-text;
+  } @else {
+    @return $light-text;
+  }
+}
+
+// ============================================================================
+// ADVANCED COMPONENT MIXINS
+// ============================================================================
+
+/// Create a theme-aware button variant
+/// @param {String} $color-name - Name of the theme color to use
+/// @param {String} $variant - Button style variant [default: 'normal']
+@mixin theme-button($color-name, $variant: 'normal') {
+  $bg-color: theme-color($color-name);
+  $text-color: theme-color($color-name, 'invert');
+
+  @if $variant == 'outlined' {
+    @include bulma-mx.button-outlined($bg-color, $text-color);
+  } @else if $variant == 'inverted' {
+    @include bulma-mx.button-inverted($bg-color, $text-color);
+  } @else {
+    background-color: $bg-color;
+    border-color: $bg-color;
+    color: $text-color;
+
+    &:hover {
+      $hover-color: bulma-fn.bulmaDarken($bg-color, 7.5%);
+      background-color: $hover-color;
+      border-color: $hover-color;
+    }
+
+    &:focus {
+      $focus-color: bulma-fn.bulmaDarken($bg-color, 10%);
+      background-color: $focus-color;
+      border-color: $focus-color;
+      box-shadow: 0 0 0 0.125em bulma-fn.bulmaRgba($bg-color, 0.25);
+    }
+  }
+}
+
+/// Create theme-aware notification styles
+/// @param {String} $color-name - Name of the theme color to use
+@mixin theme-notification($color-name) {
+  $bg-color: theme-color($color-name, 'light');
+  $border-color: theme-color($color-name);
+  $text-color: theme-text-on-background($bg-color);
+
+  background-color: $bg-color;
+  border-left-color: $border-color;
+  color: $text-color;
+}
+
+/// Create theme-aware card component
+/// @param {String} $color-name - Name of the theme color for accents [optional]
+@mixin theme-card($color-name: null) {
+  background-color: $theme-surface-1;
+  border: 1px solid $theme-border;
+  border-radius: 0.25rem;
+  box-shadow:
+    0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1),
+    0 0 0 1px rgba(10, 10, 10, 0.02);
+
+  .card-header {
+    @if $color-name != null {
+      background-color: theme-color($color-name, 'light');
+      border-bottom-color: theme-color($color-name);
+    } @else {
+      background-color: $theme-surface-2;
+      border-bottom-color: $theme-border;
+    }
+  }
+
+  .card-content {
+    background-color: $theme-surface-1;
+    color: $theme-text;
+  }
+}
+
+// ============================================================================
+// TYPOGRAPHY AND SPACING UTILITIES
+// ============================================================================
+
+/// Create theme-aware text utilities
+/// @param {String} $size - Text size (small, normal, medium, large)
+@mixin theme-text-size($size) {
+  @if $size == 'small' {
+    font-size: $size-small;
+  } @else if $size == 'medium' {
+    font-size: $size-medium;
+  } @else if $size == 'large' {
+    font-size: $size-large;
+  } @else {
+    font-size: $size-normal;
+  }
+}
+
+/// Create theme-aware spacing utilities
+/// @param {Number} $multiplier - Spacing multiplier [default: 1]
+/// @param {String} $property - CSS property to apply spacing to [default: 'margin']
+/// @param {String} $direction - Direction (all, top, right, bottom, left, x, y) [default: 'all']
+@mixin theme-spacing($multiplier: 1, $property: 'margin', $direction: 'all') {
+  $base-spacing: 1rem * $multiplier;
+
+  @if $direction == 'all' {
+    #{$property}: $base-spacing;
+  } @else if $direction == 'x' {
+    #{$property}-left: $base-spacing;
+    #{$property}-right: $base-spacing;
+  } @else if $direction == 'y' {
+    #{$property}-top: $base-spacing;
+    #{$property}-bottom: $base-spacing;
+  } @else {
+    #{$property}-#{$direction}: $base-spacing;
+  }
+}
+
+// ============================================================================
+// ADVANCED THEME FUNCTIONS
+// ============================================================================
+
+/// Generate a complete theme color map from base colors
+/// @param {Map} $base-colors - Map of base color names to color values
+/// @return {Map} Complete color map with variants
+@function generate-theme-colors($base-colors) {
+  $theme-colors: ();
+
+  @each $name, $base-color in $base-colors {
+    $palette: create-color-palette($base-color);
+    $theme-colors: map.merge(
+      $theme-colors,
+      (
+        $name: $palette,
+      )
+    );
+  }
+
+  @return $theme-colors;
+}
+
+/// Create theme-aware gradient background
+/// @param {Color} $start-color - Starting color
+/// @param {Color} $end-color - Ending color [optional, auto-generated]
+/// @param {String} $direction - Gradient direction [default: 'to right']
+/// @return {String} CSS gradient value
+@function theme-gradient($start-color, $end-color: null, $direction: 'to right') {
+  @if $end-color == null {
+    $end-color: bulma-fn.bulmaLighten($start-color, 10%);
+  }
+
+  @return linear-gradient(#{$direction}, $start-color, $end-color);
+}
+
+// ============================================================================
+// EXPORT PUBLIC API
+// ============================================================================
+
+// Re-export Bulma functions for convenience
+@function bulma-color-luminance($color) {
+  @return bulma-fn.bulmaColorLuminance($color);
+}
+@function bulma-find-color-invert($color) {
+  @return bulma-fn.bulmaFindColorInvert($color);
+}
+@function bulma-rgba($color, $alpha) {
+  @return bulma-fn.bulmaRgba($color, $alpha);
+}
+@function bulma-darken($color, $amount) {
+  @return bulma-fn.bulmaDarken($color, $amount);
+}
+@function bulma-lighten($color, $amount) {
+  @return bulma-fn.bulmaLighten($color, $amount);
+}

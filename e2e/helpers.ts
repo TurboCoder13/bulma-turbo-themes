@@ -12,6 +12,17 @@ export function escapeCssAttributeSelector(value: string): string {
 }
 
 /**
+ * Escapes regex metacharacters in a string for safe use in RegExp.
+ * Prevents regex injection attacks by escaping special characters.
+ *
+ * @param str - The string to escape
+ * @returns The escaped string safe for use in RegExp
+ */
+export function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
  * Converts a color string (rgba/hsla/hex8) to an opaque version.
  * Falls back to the original color if conversion fails.
  *
@@ -192,7 +203,7 @@ export async function navigateToThemeOption(
   selectedThemeId: string
 ): Promise<{ targetElement: Locator; targetIndex: number }> {
   // Locate all theme options
-  const themeOptions = page.locator('[data-theme-id]');
+  const themeOptions = page.locator('.dropdown-item[data-theme-id]');
   const allOptions = await themeOptions.all();
 
   // Synchronously find the target index by iterating and awaiting getAttribute

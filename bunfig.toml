@@ -1,0 +1,24 @@
+# Bun configuration for bulma-turbo-themes
+# https://bun.sh/docs/runtime/bunfig
+
+[install]
+# Use exact versions like npm ci (frozen lockfile in CI)
+# This ensures reproducible builds
+exact = true
+
+[install.cache]
+# Enable global cache for faster installs
+disable = false
+
+[install.lockfile]
+# Save lockfile after install
+save = true
+
+[run]
+# Silence experimental feature warnings
+silent = false
+
+# Environment variables for scripts
+[run.env]
+NODE_ENV = "development"
+

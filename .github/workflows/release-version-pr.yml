@@ -31,6 +31,7 @@ jobs:
             github.com:443
             api.github.com:443
             registry.npmjs.org:443
+            bun.sh:443
 
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -58,17 +59,22 @@ jobs:
         if: steps.guard.outputs.is_release != 'true'
         run: ./scripts/ci/configure-git.sh
 
+      - name: Setup Bun
+        if: steps.guard.outputs.is_release != 'true'
+        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2.0.1
+        with:
+          bun-version: "1.1.8"
+
       - name: Setup Node.js
         if: steps.guard.outputs.is_release != 'true'
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
-          cache: npm
 
       - name: Install dependencies
         if: steps.guard.outputs.is_release != 'true'
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: Check for existing version PR
         if: steps.guard.outputs.is_release != 'true'

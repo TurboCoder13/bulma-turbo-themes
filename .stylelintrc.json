@@ -4,7 +4,13 @@
     "color-named": "never",
     "selector-max-id": 0,
     "comment-empty-line-before": "always",
-    "rule-empty-line-before": "always-multi-line"
+    "rule-empty-line-before": [
+      "always-multi-line",
+      {
+        "except": ["first-nested"],
+        "ignore": ["after-comment", "inside-block"]
+      }
+    ]
   },
   "ignoreFiles": ["node_modules/**/*", "_site/**/*", "assets/css/themes/**/*"]
 }

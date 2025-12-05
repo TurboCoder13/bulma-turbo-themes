@@ -43,7 +43,7 @@ test.describe('Accessibility Tests @a11y', () => {
     });
   });
 
-  const themes = ['github-dark', 'catppuccin-latte'] as const;
+  const themes = ['catppuccin-mocha', 'catppuccin-latte'] as const;
 
   themes.forEach((theme) => {
     test(`should have no accessibility violations when switching to ${theme} theme`, async ({
