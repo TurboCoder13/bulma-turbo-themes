@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.10.4] - 2025-12-05
+
+### 🐛 Fixed
+
+- update softprops/action-gh-release digest to a06a81a (#142)
+
 ## [0.10.3] - 2025-12-05
 
 ### 🐛 Fixed
