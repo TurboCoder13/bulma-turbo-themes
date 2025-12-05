@@ -99,6 +99,13 @@ if [ -f "package.json" ] && grep -q '"build:js"' package.json >/dev/null 2>&1; t
     $PKG_RUN build:js
 fi
 
+# Step 3.6: Build theme CSS files
+print_status "$BLUE" "🎨 Step 3.6: Build theme CSS..."
+if [ -f "package.json" ] && grep -q '"build:themes"' package.json >/dev/null 2>&1; then
+    print_status "$YELLOW" "  Building theme CSS files..."
+    $PKG_RUN build:themes
+fi
+
 # Step 4: Jekyll build (production mode for Lighthouse)
 print_status "$BLUE" "🏗️  Step 4: Jekyll build..."
 print_status "$YELLOW" "  Building Jekyll site..."
@@ -108,6 +115,7 @@ print_status "$GREEN" "✅ Lighthouse build completed successfully!"
 print_status "$BLUE" "📋 Summary:"
 print_status "$GREEN" "  ✅ Theme synchronization passed"
 print_status "$GREEN" "  ✅ TypeScript build passed"
+print_status "$GREEN" "  ✅ Theme CSS build passed"
 print_status "$GREEN" "  ✅ Jekyll build passed"
 print_status "$YELLOW" "  ⏭️  Tests skipped (run in separate workflows)"
 
