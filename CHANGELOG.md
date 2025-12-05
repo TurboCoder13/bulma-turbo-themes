@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.10.5] - 2025-12-05
+
+### 🐛 Fixed
+
+- update actions/checkout action to v6 (#160)
+
 ## [0.10.4] - 2025-12-05
 
 ### 🐛 Fixed
