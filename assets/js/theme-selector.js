@@ -386,14 +386,22 @@ export function wireFlavorSelector(documentObj, windowObj) {
     // Enable select when JS is active
     selectEl.disabled = false;
     // Allow changing theme via native select
-    selectEl.addEventListener('change', (event) => {
-      const target = event.target;
-      const selectedThemeId = target?.value || DEFAULT_THEME;
-      windowObj.localStorage.setItem(STORAGE_KEY, selectedThemeId);
-      applyTheme(documentObj, selectedThemeId).catch((error) => {
-        console.error(`Failed to apply theme ${selectedThemeId}:`, error);
-      });
-    });
+    selectEl.addEventListener(
+      'change',
+      (event) => {
+        const target = event.target;
+        const selectedThemeId = target?.value || DEFAULT_THEME;
+        windowObj.localStorage.setItem(STORAGE_KEY, selectedThemeId);
+        applyTheme(documentObj, selectedThemeId).catch((error) => {
+          console.error(`Failed to apply theme ${selectedThemeId}:`, error);
+        });
+      },
+      { signal: abortController.signal }
+    );
+  }
+  // Clear any existing dropdown content before populating
+  while (dropdownMenu.firstChild) {
+    dropdownMenu.removeChild(dropdownMenu.firstChild);
   }
   // Populate dropdown with grouped theme options
   const families = Object.keys(THEME_FAMILIES);
