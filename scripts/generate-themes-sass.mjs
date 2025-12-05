@@ -198,8 +198,8 @@ fs.writeFileSync(outFile, sassContent, "utf8");
 console.log(`Generated Sass themes file: ${outFile}`);
 
 // Also generate individual theme entry points for separate CSS compilation
-const themeCssDir = path.join(projectRoot, "assets", "css", "themes");
-fs.mkdirSync(themeCssDir, { recursive: true });
+// Ensure CSS output directory exists (used by Sass build step, not this script)
+fs.mkdirSync(path.join(projectRoot, "assets", "css", "themes"), { recursive: true });
 
 // Generate Google Fonts import URL from webFonts array
 function generateFontImports(webFonts) {
