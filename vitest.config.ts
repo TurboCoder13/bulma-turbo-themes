@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     environment: 'happy-dom',
-    include: ['test/**/*.test.ts', 'test/**/*.spec.ts'],
+    include: ['test/**/*.test.ts', 'test/**/*.test.tsx', 'test/**/*.spec.ts'],
     exclude: ['**/node_modules/**', '**/dist/**', '**/_site/**'],
     coverage: {
       provider: 'v8',
@@ -24,6 +24,7 @@ export default defineConfig({
         'src/themes/packs/**/*.synced.ts',
         'src/themes/types.ts',
         'src/themes/css.ts',
+        'src/tokens/react-native/index.ts', // Re-exports only
       ],
       thresholds: {
         lines: 85,

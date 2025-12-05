@@ -94,8 +94,9 @@ permalink: /components/
 
 ### Code block
 
-<pre><code class="language-js">const theme = {
+```js
+const theme = {
   flavor: 'dracula',
   mode: 'dark',
 };
-</code></pre>
+```

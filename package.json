@@ -19,14 +19,27 @@
     "theme",
     "css",
     "design-system",
-    "accessibility"
+    "accessibility",
+    "design-tokens",
+    "react-native",
+    "cross-platform"
   ],
   "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./tokens": {
+      "types": "./dist/tokens/index.d.ts",
+      "import": "./dist/tokens/index.js"
+    },
+    "./tokens/react-native": {
+      "types": "./dist/tokens/react-native/index.d.ts",
+      "import": "./dist/tokens/react-native/index.js"
+    },
+    "./tokens.json": "./dist/tokens.json",
+    "./css/*": "./assets/css/themes/*"
   },
   "types": "./dist/index.d.ts",
   "files": [
@@ -34,7 +47,7 @@
     "assets/css/themes/*.css"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node scripts/generate-tokens-json.mjs",
     "build:css": "vite build --mode css",
     "build:themes": "node scripts/generate-themes-sass.mjs && node scripts/build-themes.mjs",
     "build:js": "bunx esbuild assets/js/theme-selector.js --minify --outfile=assets/js/theme-selector.min.js --target=es2020",
@@ -80,7 +93,24 @@
       "uv run lintro fmt"
     ]
   },
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-native": ">=0.70.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "react": "^18.3.1",
+    "@types/react": "^18.3.12",
+    "@testing-library/react": "^16.0.1",
+    "react-dom": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
     "@axe-core/playwright": "^4.11.0",
     "@catppuccin/palette": "^1.7.1",
     "@fullhuman/postcss-purgecss": "^7.0.2",
