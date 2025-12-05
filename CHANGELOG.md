@@ -10,6 +10,24 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.9.0] - 2025-12-05
+
+### ✨ Added
+
+- migrate theme system to SASS (#143)
+
+### 🐛 Fixed
+
+- enable platformCommit for Renovate to sign commits
+- correct JavaScript reference in gem layout (#106)
+
+### 🔧 Changed
+
+- add missing egress endpoints for Bun download (#149)
+- update actions/setup-node digest to 633bb92 (#110)
+- update peter-evans/create-pull-request digest to 271a8d0 (#109)
+- update actions/setup-node digest to 2028fbc (#108)
+
 ## [0.8.1] - 2025-11-16
 
 ### 🐛 Fixed
