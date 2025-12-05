@@ -6,7 +6,7 @@ inputs:
   bun-version:
     description: 'Bun version to use'
     required: false
-    default: 'latest'
+    default: '1.1.8'
   node-version:
     description: 'Node.js version to use (for compatibility)'
     required: false

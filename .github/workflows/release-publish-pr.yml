@@ -75,6 +75,9 @@ jobs:
       - name: Build package
         run: bun run build
 
+      - name: Build theme CSS
+        run: bun run build:themes
+
       - name: Publish to npm
         run: npm publish --access public --provenance
         env:

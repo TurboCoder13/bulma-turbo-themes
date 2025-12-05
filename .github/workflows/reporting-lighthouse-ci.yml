@@ -62,8 +62,6 @@ jobs:
             playwright-akamai.azureedge.net:443
             playwright-verizon.azureedge.net:443
             storage.googleapis.com:443
-            lhci-cloud.web.app:443
-            lhci-server.lighthouseapp.io:443
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 

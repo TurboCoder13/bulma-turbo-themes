@@ -328,10 +328,14 @@ else
         $PKG_RUN lint
         
         print_status "$YELLOW" "  Checking code formatting with lintro..."
-        if ! uv run lintro check --tools black,darglint,prettier,ruff,yamllint,actionlint,bandit 2>/dev/null; then
-            print_status "$RED" "❌ Code formatting check failed"
-            print_status "$YELLOW" "  Run '$PKG_RUN format:write' to fix formatting issues automatically"
-            exit 1
+        if command_exists "uv"; then
+            if ! uv run lintro check --tools black,darglint,prettier,ruff,yamllint,actionlint,bandit 2>/dev/null; then
+                print_status "$RED" "❌ Code formatting check failed"
+                print_status "$YELLOW" "  Run '$PKG_RUN format:write' to fix formatting issues automatically"
+                exit 1
+            fi
+        else
+            print_status "$YELLOW" "⚠️  uv not available, skipping lintro code formatting check"
         fi
         
         print_status "$YELLOW" "  Validating YAML files with lintro..."

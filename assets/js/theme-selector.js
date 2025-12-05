@@ -111,6 +111,9 @@ const THEMES = [
 ];
 const STORAGE_KEY = 'bulma-theme-flavor';
 const DEFAULT_THEME = 'catppuccin-mocha';
+// Generation counter for theme switching to prevent race conditions
+// Incremented each time applyTheme is called; used to skip cleanup if a newer switch occurred
+let themeGenerationCounter = 0;
 function getCurrentThemeFromClasses(element) {
   const classList = Array.from(element.classList);
   for (const className of classList) {
@@ -132,6 +135,9 @@ function getBaseUrl(doc) {
   }
 }
 async function applyTheme(doc, themeId) {
+  // Increment and capture generation counter to detect if a newer theme switch occurs
+  themeGenerationCounter++;
+  const thisGeneration = themeGenerationCounter;
   const theme = THEMES.find((t) => t.id === themeId) || THEMES.find((t) => t.id === DEFAULT_THEME);
   const baseUrl = getBaseUrl(doc);
   // Add loading state to trigger button
@@ -204,13 +210,16 @@ async function applyTheme(doc, themeId) {
       }
     }
     // Clean up old theme CSS links (keep current and base themes)
-    const themeLinks = doc.querySelectorAll('link[id^="theme-"][id$="-css"]');
-    themeLinks.forEach((link) => {
-      const linkThemeId = link.id.replace('theme-', '').replace('-css', '');
-      if (linkThemeId !== theme.id && linkThemeId !== 'base') {
-        link.remove();
-      }
-    });
+    // Only cleanup if this is still the latest theme switch (prevents race condition)
+    if (thisGeneration === themeGenerationCounter) {
+      const themeLinks = doc.querySelectorAll('link[id^="theme-"][id$="-css"]');
+      themeLinks.forEach((link) => {
+        const linkThemeId = link.id.replace('theme-', '').replace('-css', '');
+        if (linkThemeId !== theme.id && linkThemeId !== 'base') {
+          link.remove();
+        }
+      });
+    }
     // Update trigger button icon with theme's icon image (WebP with PNG fallback)
     const triggerIcon = doc.getElementById('theme-flavor-trigger-icon');
     if (triggerIcon && theme.icon) {

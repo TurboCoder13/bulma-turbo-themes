@@ -70,6 +70,9 @@ jobs:
       - name: Build package
         run: bun run build
 
+      - name: Build theme CSS
+        run: bun run build:themes
+
       - name: Publish to npm with custom tag
         run: npm publish --access public --provenance --tag=${{ inputs.tag }}
         env:

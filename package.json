@@ -73,7 +73,7 @@
     "test:workflows:quick": "./scripts/local/test-workflows-act.sh --quick",
     "test:workflows:single": "./scripts/local/test-workflows-act.sh --single",
     "prepare": "[ -z \"$npm_config_omit\" ] && husky || true",
-    "prepublishOnly": "bun run build && bun run test"
+    "prepublishOnly": "bun run build && bun run build:themes && bun run test"
   },
   "lint-staged": {
     "*.{json,md,yml,yaml,css,html}": [
@@ -85,7 +85,7 @@
     "@catppuccin/palette": "^1.7.1",
     "@fullhuman/postcss-purgecss": "^7.0.2",
     "@playwright/test": "^1.56.1",
-    "@primer/primitives": "11.3.1",
+    "@primer/primitives": "^11.3.1",
     "@typescript-eslint/eslint-plugin": "^8.46.3",
     "@typescript-eslint/parser": "^8.46.3",
     "@vitest/coverage-v8": "^4.0.8",
