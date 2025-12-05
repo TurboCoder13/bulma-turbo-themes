@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.10.6] - 2025-12-05
+
+### 🐛 Fixed
+
+- update actions/create-github-app-token action to v2 (#162)
+
 ## [0.10.5] - 2025-12-05
 
 ### 🐛 Fixed
