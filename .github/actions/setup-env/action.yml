@@ -74,6 +74,16 @@ runs:
       shell: bash
       run: ./scripts/ci/install-ci-deps.sh
 
+    - name: Cache Bun dependencies
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+      with:
+        path: |
+          ~/.bun/install/cache
+          node_modules
+        key: bun-${{ runner.os }}-${{ hashFiles('**/bun.lock') }}
+        restore-keys: |
+          bun-${{ runner.os }}-
+
     - name: Install Node.js dependencies with Bun
       shell: bash
-      run: bun install --frozen-lockfile
+      run: ./scripts/ci/bun-install-with-retry.sh
