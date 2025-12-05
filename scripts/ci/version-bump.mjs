@@ -20,19 +20,22 @@ const projectRoot = join(__dirname, "../..");
 // Configuration
 const CONFIG = {
   majorKeywords: ["BREAKING CHANGE", "BREAKING CHANGES"],
-  minorKeywords: ["feat:", "feature:"],
-  patchKeywords: [
-    "fix:",
-    "bugfix:",
-    "patch:",
-    "docs:",
-    "style:",
-    "refactor:",
-    "perf:",
-    "test:",
-    "chore:",
+  // Note: These patterns match by commit type, not literal prefix
+  // The matching logic uses parseCommit() which extracts type from "type(scope):"
+  minorTypes: ["feat", "feature"],
+  patchTypes: [
+    "fix",
+    "bugfix",
+    "patch",
+    "docs",
+    "style",
+    "refactor",
+    "perf",
+    "test",
+    "chore",
   ],
-  ignoreKeywords: ["ci:", "build:", "release:", "chore(release):"],
+  ignoreTypes: ["ci", "build", "release"],
+  ignorePatterns: ["chore(release):"], // Full prefix patterns to skip entirely
   changelogFile: join(projectRoot, "CHANGELOG.md"),
   packageFile: join(projectRoot, "package.json"),
 };
@@ -102,9 +105,16 @@ function determineBumpType(commits) {
     const parsed = parseCommit(message);
     if (!parsed) continue;
 
-    // Skip ignored commit types
+    // Skip ignored commit types based on parsed type
+    if (CONFIG.ignoreTypes.includes(parsed.type)) {
+      continue;
+    }
+
+    // Skip specific full patterns (like "chore(release):")
     if (
-      CONFIG.ignoreKeywords.some((keyword) => message.toLowerCase().startsWith(keyword))
+      CONFIG.ignorePatterns.some((pattern) =>
+        message.toLowerCase().startsWith(pattern),
+      )
     ) {
       continue;
     }
@@ -116,13 +126,9 @@ function determineBumpType(commits) {
       )
     ) {
       hasBreaking = true;
-    } else if (
-      CONFIG.minorKeywords.some((keyword) => message.toLowerCase().startsWith(keyword))
-    ) {
+    } else if (CONFIG.minorTypes.includes(parsed.type)) {
       hasFeature = true;
-    } else if (
-      CONFIG.patchKeywords.some((keyword) => message.toLowerCase().startsWith(keyword))
-    ) {
+    } else if (CONFIG.patchTypes.includes(parsed.type)) {
       hasFix = true;
     }
   }
@@ -185,9 +191,16 @@ function generateChangelogEntry(commits, version, bumpType) {
     const parsed = parseCommit(message);
     if (!parsed) continue;
 
-    // Skip ignored commit types
+    // Skip ignored commit types based on parsed type
+    if (CONFIG.ignoreTypes.includes(parsed.type)) {
+      continue;
+    }
+
+    // Skip specific full patterns (like "chore(release):")
     if (
-      CONFIG.ignoreKeywords.some((keyword) => message.toLowerCase().startsWith(keyword))
+      CONFIG.ignorePatterns.some((pattern) =>
+        message.toLowerCase().startsWith(pattern),
+      )
     ) {
       continue;
     }
@@ -201,13 +214,9 @@ function generateChangelogEntry(commits, version, bumpType) {
       )
     ) {
       breaking.push(entry);
-    } else if (
-      CONFIG.minorKeywords.some((keyword) => message.toLowerCase().startsWith(keyword))
-    ) {
+    } else if (CONFIG.minorTypes.includes(parsed.type)) {
       features.push(entry);
-    } else if (
-      CONFIG.patchKeywords.some((keyword) => message.toLowerCase().startsWith(keyword))
-    ) {
+    } else if (CONFIG.patchTypes.includes(parsed.type)) {
       fixes.push(entry);
     } else {
       others.push(entry);
