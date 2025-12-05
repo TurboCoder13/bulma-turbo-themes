@@ -49,11 +49,10 @@ describe('auto init', () => {
     const calls = (document.addEventListener as any).mock.calls;
     const domHandler = calls.find((c: any[]) => c[0] === 'DOMContentLoaded')?.[1];
     expect(domHandler).toBeTypeOf('function');
-    // Execute the handler; it should log warnings but not throw
+    // Execute the handler - it should not throw
+    // Note: Initialization logs were removed to reduce console noise in production
     await domHandler();
-    expect((global.console as any).warn).toHaveBeenCalled();
-    // Verify both success and error console calls are possible (coverage for lines 614-618)
-    expect((global.console as any).warn).toHaveBeenCalledWith('Theme switcher initializing...');
+    // Handler should complete without throwing (error logging only on failure)
   });
 
   it('registers pagehide handler for cleanup when wireFlavorSelector returns cleanup', async () => {

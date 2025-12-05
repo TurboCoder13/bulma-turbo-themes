@@ -784,7 +784,6 @@ export function enhanceAccessibility(documentObj: Document): void {
 // Auto-initialize on DOMContentLoaded
 if (typeof document !== 'undefined' && typeof window !== 'undefined') {
   document.addEventListener('DOMContentLoaded', () => {
-    console.warn('Theme switcher initializing...');
     initTheme(document, window)
       .then(() => {
         const { cleanup } = wireFlavorSelector(document, window);
@@ -796,8 +795,6 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
           window.removeEventListener('pagehide', pagehideHandler);
         };
         window.addEventListener('pagehide', pagehideHandler);
-
-        console.warn('Theme switcher initialized successfully');
       })
       .catch((error) => {
         console.error('Theme switcher initialization failed:', error);
