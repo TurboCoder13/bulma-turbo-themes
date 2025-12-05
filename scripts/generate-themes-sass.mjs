@@ -301,6 +301,10 @@ ${googleFontImports}${fontFaceDeclarations}
   --bulma-body-background-color: ${tokens.background.base};
   --bulma-body-color: ${tokens.text.primary};
   --bulma-border: ${tokens.border.default};
+  --bulma-scheme-main: ${tokens.background.base};
+  --bulma-scheme-main-bis: ${tokens.background.surface};
+  --bulma-scheme-main-ter: ${tokens.background.overlay};
+  --bulma-scheme-invert: ${tokens.text.primary};
   --theme-font-sans: ${generateFontFamilyList(tokens.typography.fonts.sans)};
   --theme-font-mono: ${generateFontFamilyList(tokens.typography.fonts.mono)};
   --theme-text: ${tokens.text.primary};
@@ -335,7 +339,48 @@ ${googleFontImports}${fontFaceDeclarations}
   --theme-surface-0: ${tokens.background.base};
   --theme-surface-1: ${tokens.background.surface};
   --theme-surface-2: ${tokens.background.overlay};
-  color-scheme: ${flavor.appearance};
+  /* Table component tokens (with fallbacks) */
+  --theme-table-cell-bg: ${tokens.content.table.cellBg ?? tokens.background.base};
+  --theme-table-header-fg: ${tokens.content.table.headerFg ?? tokens.text.primary};
+${tokens.components ? `  /* Card component tokens */
+  --theme-card-bg: ${tokens.components.card?.bg ?? tokens.background.surface};
+  --theme-card-border: ${tokens.components.card?.border ?? tokens.border.default};
+  --theme-card-header-bg: ${tokens.components.card?.headerBg ?? tokens.background.overlay};
+  --theme-card-footer-bg: ${tokens.components.card?.footerBg ?? tokens.background.surface};
+  /* Message component tokens */
+  --theme-message-bg: ${tokens.components.message?.bg ?? tokens.background.surface};
+  --theme-message-header-bg: ${tokens.components.message?.headerBg ?? tokens.background.overlay};
+  --theme-message-border: ${tokens.components.message?.border ?? tokens.border.default};
+  --theme-message-body-fg: ${tokens.components.message?.bodyFg ?? tokens.text.primary};
+  /* Panel component tokens */
+  --theme-panel-bg: ${tokens.components.panel?.bg ?? tokens.background.surface};
+  --theme-panel-header-bg: ${tokens.components.panel?.headerBg ?? tokens.background.overlay};
+  --theme-panel-header-fg: ${tokens.components.panel?.headerFg ?? tokens.text.primary};
+  --theme-panel-border: ${tokens.components.panel?.border ?? tokens.border.default};
+  --theme-panel-block-bg: ${tokens.components.panel?.blockBg ?? tokens.background.surface};
+  --theme-panel-block-hover-bg: ${tokens.components.panel?.blockHoverBg ?? tokens.background.overlay};
+  --theme-panel-block-active-bg: ${tokens.components.panel?.blockActiveBg ?? tokens.background.overlay};
+  /* Box component tokens */
+  --theme-box-bg: ${tokens.components.box?.bg ?? tokens.background.surface};
+  --theme-box-border: ${tokens.components.box?.border ?? tokens.border.default};
+  /* Notification component tokens */
+  --theme-notification-bg: ${tokens.components.notification?.bg ?? tokens.background.surface};
+  --theme-notification-border: ${tokens.components.notification?.border ?? tokens.border.default};
+  /* Modal component tokens */
+  --theme-modal-bg: ${tokens.components.modal?.bg ?? 'rgba(10, 10, 10, 0.86)'};
+  --theme-modal-card-bg: ${tokens.components.modal?.cardBg ?? tokens.background.surface};
+  --theme-modal-header-bg: ${tokens.components.modal?.headerBg ?? tokens.background.overlay};
+  --theme-modal-footer-bg: ${tokens.components.modal?.footerBg ?? tokens.background.surface};
+  /* Dropdown component tokens */
+  --theme-dropdown-bg: ${tokens.components.dropdown?.bg ?? tokens.background.surface};
+  --theme-dropdown-item-hover-bg: ${tokens.components.dropdown?.itemHoverBg ?? tokens.background.overlay};
+  --theme-dropdown-border: ${tokens.components.dropdown?.border ?? tokens.border.default};
+  /* Tabs component tokens */
+  --theme-tabs-border: ${tokens.components.tabs?.border ?? tokens.border.default};
+  --theme-tabs-link-bg: ${tokens.components.tabs?.linkBg ?? tokens.background.surface};
+  --theme-tabs-link-active-bg: ${tokens.components.tabs?.linkActiveBg ?? tokens.background.base};
+  --theme-tabs-link-hover-bg: ${tokens.components.tabs?.linkHoverBg ?? tokens.background.overlay};
+` : ''}  color-scheme: ${flavor.appearance};
 }
 
 /* Advanced theme component customizations using Bulma's generated color palette */
