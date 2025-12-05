@@ -26,6 +26,10 @@
   --bulma-body-background-color: #ffffff;
   --bulma-body-color: #363636;
   --bulma-border: #dbdbdb;
+  --bulma-scheme-main: #ffffff;
+  --bulma-scheme-main-bis: #f5f5f5;
+  --bulma-scheme-main-ter: #eeeeee;
+  --bulma-scheme-invert: #363636;
   --theme-font-sans: "Nunito Sans", BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --theme-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --theme-text: #363636;
@@ -46,7 +50,7 @@
   --theme-pre-bg: #f5f5f5;
   --theme-table-border: #dbdbdb;
   --theme-table-stripe: #fafafa;
-  --theme-table-thead-bg: #f5f5f5;
+  --theme-table-thead-bg: #f0f0f0;
   --theme-selection-fg: #363636;
   --theme-selection-bg: #b5d5ff;
   --syntax-fg: #f14668;
@@ -60,6 +64,47 @@
   --theme-surface-0: #ffffff;
   --theme-surface-1: #f5f5f5;
   --theme-surface-2: #eeeeee;
+  /* Table component tokens (with fallbacks) */
+  --theme-table-cell-bg: #ffffff;
+  --theme-table-header-fg: #363636;
+  /* Card component tokens */
+  --theme-card-bg: #ffffff;
+  --theme-card-border: #d5d5d5;
+  --theme-card-header-bg: #f5f5f5;
+  --theme-card-footer-bg: #fafafa;
+  /* Message component tokens */
+  --theme-message-bg: #f8f9fa;
+  --theme-message-header-bg: #eef1f4;
+  --theme-message-border: #d5dbe1;
+  --theme-message-body-fg: #4a4a4a;
+  /* Panel component tokens */
+  --theme-panel-bg: #ffffff;
+  --theme-panel-header-bg: #f0f0f0;
+  --theme-panel-header-fg: #363636;
+  --theme-panel-border: #d5d5d5;
+  --theme-panel-block-bg: #fafafa;
+  --theme-panel-block-hover-bg: #f5f5f5;
+  --theme-panel-block-active-bg: #eef6fc;
+  /* Box component tokens */
+  --theme-box-bg: #ffffff;
+  --theme-box-border: #e0e0e0;
+  /* Notification component tokens */
+  --theme-notification-bg: #f5f5f5;
+  --theme-notification-border: #e0e0e0;
+  /* Modal component tokens */
+  --theme-modal-bg: rgba(10, 10, 10, 0.86);
+  --theme-modal-card-bg: #ffffff;
+  --theme-modal-header-bg: #f5f5f5;
+  --theme-modal-footer-bg: #fafafa;
+  /* Dropdown component tokens */
+  --theme-dropdown-bg: #ffffff;
+  --theme-dropdown-item-hover-bg: #f5f5f5;
+  --theme-dropdown-border: #dbdbdb;
+  /* Tabs component tokens */
+  --theme-tabs-border: #dbdbdb;
+  --theme-tabs-link-bg: #f5f5f5;
+  --theme-tabs-link-active-bg: #ffffff;
+  --theme-tabs-link-hover-bg: #eeeeee;
   color-scheme: light;
 }
 

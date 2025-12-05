@@ -71,6 +71,58 @@ export interface ThemeTokens {
       border: string;
       stripe: string;
       theadBg: string;
+      cellBg?: string;
+      headerFg?: string;
+    };
+  };
+  // Optional component-specific tokens for enhanced contrast
+  // Falls back to surface tokens when not defined
+  components?: {
+    card?: {
+      bg?: string;
+      border?: string;
+      headerBg?: string;
+      footerBg?: string;
+    };
+    message?: {
+      bg?: string;
+      headerBg?: string;
+      border?: string;
+      bodyFg?: string;
+    };
+    panel?: {
+      bg?: string;
+      headerBg?: string;
+      headerFg?: string;
+      border?: string;
+      blockBg?: string;
+      blockHoverBg?: string;
+      blockActiveBg?: string;
+    };
+    box?: {
+      bg?: string;
+      border?: string;
+    };
+    notification?: {
+      bg?: string;
+      border?: string;
+    };
+    modal?: {
+      bg?: string;
+      cardBg?: string;
+      headerBg?: string;
+      footerBg?: string;
+    };
+    dropdown?: {
+      bg?: string;
+      itemHoverBg?: string;
+      border?: string;
+    };
+    tabs?: {
+      border?: string;
+      linkBg?: string;
+      linkActiveBg?: string;
+      linkHoverBg?: string;
     };
   };
 }
