@@ -10,6 +10,18 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.10.0] - 2025-12-05
+
+### ✨ Added
+
+- add full theming solution with context and hooks (#151)
+
+### 🐛 Fixed
+
+- recognize scoped conventional commits in version bump (#154)
+- update peter-evans/create-pull-request action to v7.0.11 (#148)
+- add missing egress endpoints for Bun CDN downloads
+
 ## [0.9.0] - 2025-12-05
 
 ### ✨ Added
