@@ -158,6 +158,93 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ```
 
+### React Native / Cross-Platform
+
+This package provides platform-agnostic design tokens that work in React Native, Expo, and other non-web environments.
+
+#### Installation
+
+```bash
+bun add @turbocoder13/bulma-turbo-themes
+# or
+npm install @turbocoder13/bulma-turbo-themes
+```
+
+#### Basic Usage (Without Context)
+
+```tsx
+import { useTheme, useThemeColors } from '@turbocoder13/bulma-turbo-themes/tokens/react-native';
+
+function MyComponent() {
+  const { colors, styles, theme } = useTheme('catppuccin-mocha');
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.h1}>{theme.label}</Text>
+      <Text style={[styles.text, { color: colors.brandPrimary }]}>
+        Primary color text
+      </Text>
+    </View>
+  );
+}
+```
+
+#### With ThemeProvider (Recommended)
+
+```tsx
+import { ThemeProvider, useThemeContext } from '@turbocoder13/bulma-turbo-themes/tokens/react-native';
+import { useColorScheme } from 'react-native';
+
+// Wrap your app with ThemeProvider
+function App() {
+  return (
+    <ThemeProvider
+      useColorScheme={useColorScheme}
+      followSystem
+      lightTheme="catppuccin-latte"
+      darkTheme="catppuccin-mocha"
+    >
+      <MyApp />
+    </ThemeProvider>
+  );
+}
+
+// Use the theme in any component
+function MyApp() {
+  const { colors, styles, setTheme, toggleAppearance, appearance } = useThemeContext();
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.h1}>Welcome!</Text>
+      <Button
+        title={`Switch to ${appearance === 'dark' ? 'light' : 'dark'}`}
+        onPress={toggleAppearance}
+      />
+    </View>
+  );
+}
+```
+
+#### Available Exports
+
+| Import Path | Use Case |
+|-------------|----------|
+| `@turbocoder13/bulma-turbo-themes/tokens` | Platform-agnostic tokens (pure data) |
+| `@turbocoder13/bulma-turbo-themes/tokens/react-native` | React Native utilities, hooks, and context |
+| `@turbocoder13/bulma-turbo-themes/tokens.json` | JSON tokens for Flutter, Swift, Kotlin |
+| `@turbocoder13/bulma-turbo-themes/css/*` | CSS files for web |
+
+#### Pre-built Styles
+
+The React Native module includes pre-built styles for common components:
+
+- **Layout**: `container`, `safeArea`, `centered`, `row`
+- **Typography**: `h1`-`h6`, `text`, `textSecondary`, `caption`, `label`, `link`
+- **Components**: `card`, `cardElevated`, `button`, `buttonOutline`, `input`, `listItem`, `badge`, `tag`, `divider`
+- **State Colors**: `success`, `warning`, `danger`, `info`
+
+Plus design tokens for `spacing`, `typography`, `borderRadius`, and `shadows`.
+
 ## Testing
 
 This project includes comprehensive testing:
