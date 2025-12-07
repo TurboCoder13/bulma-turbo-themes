@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.10.9] - 2025-12-07
+
+### 🐛 Fixed
+
+- update github/codeql-action action to v4.31.7 (#167)
+
 ## [0.10.8] - 2025-12-05
 
 ### 🐛 Fixed
