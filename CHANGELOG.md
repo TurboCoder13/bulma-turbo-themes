@@ -10,6 +10,16 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.10.9] - 2025-12-09
+
+### 🐛 Fixed
+
+- update softprops/action-gh-release digest to 60cfd9a (#172)
+- update renovatebot/github-action action to v44.0.5 (#173)
+- update oven-sh/setup-bun action to v2.0.2 (#168)
+- update actions/create-github-app-token action to v2.2.1 (#169)
+- update github/codeql-action action to v4.31.7 (#167)
+
 ## [0.10.9] - 2025-12-08
 
 ### 🐛 Fixed
