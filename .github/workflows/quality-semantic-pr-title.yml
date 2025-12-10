@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       - name: Validate PR title
         id: semantic
-        uses: TurboCoder13/py-lintro/.github/actions/semantic-pr-title-check@b3fb40d43cd5c2e343a7a875e283c421c59e47fd
+        uses: TurboCoder13/py-lintro/.github/actions/semantic-pr-title-check@d2f79fd326c6102bf4799c984a3e523bea5d0b8b
         with:
           types: |
             chore
