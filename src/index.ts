@@ -46,7 +46,7 @@ const THEMES: ThemeFlavor[] = [
     name: 'Light',
     description: 'Classic Bulma look with a bright, neutral palette.',
     cssFile: 'assets/css/themes/bulma-light.css',
-    icon: 'assets/img/bulma-logo.png',
+    icon: 'assets/img/turbo-themes-logo.png',
     family: 'bulma',
     appearance: 'light',
     colors: { bg: '#ffffff', surface: '#f5f5f5', accent: '#00d1b2', text: '#363636' },
@@ -56,7 +56,7 @@ const THEMES: ThemeFlavor[] = [
     name: 'Dark',
     description: 'Dark Bulma theme tuned for low-light reading.',
     cssFile: 'assets/css/themes/bulma-dark.css',
-    icon: 'assets/img/bulma-logo.png',
+    icon: 'assets/img/turbo-themes-logo.png',
     family: 'bulma',
     appearance: 'dark',
     colors: { bg: '#1a1a2e', surface: '#252540', accent: '#00d1b2', text: '#f5f5f5' },
@@ -136,7 +136,8 @@ const THEMES: ThemeFlavor[] = [
   },
 ];
 
-const STORAGE_KEY = 'bulma-theme-flavor';
+const STORAGE_KEY = 'turbo-theme';
+const LEGACY_STORAGE_KEYS = ['bulma-theme-flavor'];
 const DEFAULT_THEME = 'catppuccin-mocha';
 
 function getCurrentThemeFromClasses(element: HTMLElement): string | null {
@@ -291,6 +292,14 @@ async function applyTheme(doc: Document, themeId: string): Promise<void> {
 }
 
 export async function initTheme(documentObj: Document, windowObj: Window): Promise<void> {
+  // Migrate legacy storage keys
+  for (const legacyKey of LEGACY_STORAGE_KEYS) {
+    const legacy = windowObj.localStorage.getItem(legacyKey);
+    if (legacy && !windowObj.localStorage.getItem(STORAGE_KEY)) {
+      windowObj.localStorage.setItem(STORAGE_KEY, legacy);
+      windowObj.localStorage.removeItem(legacyKey);
+    }
+  }
   // Check if theme was already applied by blocking script
   const initialTheme = windowObj.__INITIAL_THEME__;
   const savedTheme = windowObj.localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;

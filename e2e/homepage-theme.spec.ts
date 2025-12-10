@@ -48,7 +48,7 @@ test.describe('Homepage Theme Switching @smoke', () => {
 
         // Verify localStorage contains the theme
         const storedTheme = await homePage.page.evaluate(() =>
-          localStorage.getItem('bulma-theme-flavor')
+          localStorage.getItem('turbo-theme')
         );
         expect(storedTheme).toBe(theme);
 

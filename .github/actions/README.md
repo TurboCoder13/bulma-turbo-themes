@@ -1,6 +1,6 @@
 # Composite Actions
 
-This directory contains reusable composite actions for the bulma-turbo-themes project.
+This directory contains reusable composite actions for the turbo-themes project.
 
 ## 📋 Available Actions
 

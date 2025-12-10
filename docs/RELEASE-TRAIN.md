@@ -1,6 +1,6 @@
 # Release Train Documentation
 
-This document describes the complete release train process for bulma-turbo-themes, ensuring consistent and automated releases.
+This document describes the complete release train process for turbo-themes, ensuring consistent and automated releases.
 
 ## 🚂 Release Train Flow
 
@@ -110,7 +110,7 @@ Merge version PR → creates git tag v0.3.0
 **Requirements:**
 
 - `NPM_TOKEN` secret must be valid
-- npm account must have publish permissions for `@turbocoder13/bulma-turbo-themes`
+- npm account must have publish permissions for `@turbocoder13/turbo-themes`
 - 2FA must be set to "Authorization only" level
 
 ### 4.5 Auto Tag Creation
@@ -328,9 +328,9 @@ These commit types do not trigger releases:
 
 1. **Use Conventional Commits** - Follow the format strictly
 2. **Match PR Title to Commits** - Ensure consistency
-3. **Test Locally** - Run `npm run ci:quick` before pushing
+3. **Test Locally** - Run `bun run ci:quick` before pushing
 4. **Review Release Impact** - Understand what your changes will trigger
-5. **Run E2E Tests When Touching UI/Theme Logic** - Use `npm run e2e:ci` (no retries by default) to catch flakes locally instead of relying on CI.
+5. **Run E2E Tests When Touching UI/Theme Logic** - Use `bun run e2e:ci` (no retries by default) to catch flakes locally instead of relying on CI.
 
 ### For Maintainers
 

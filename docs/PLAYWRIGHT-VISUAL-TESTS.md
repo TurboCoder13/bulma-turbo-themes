@@ -44,7 +44,7 @@ By maintaining separate snapshots for each platform, we can use strict tolerance
 
 ```bash
 # Run all visual tests (uses macOS snapshots)
-npm run e2e:visual
+bun run e2e:visual
 
 # Run specific visual test file
 npx playwright test e2e/homepage-theme.spec.ts --grep @visual
@@ -97,7 +97,7 @@ bash scripts/local/generate-linux-snapshots.sh
 
 3. **Review diffs carefully**: When snapshots differ, visually inspect the generated diff images to determine if changes are intentional.
 
-4. **Test theme changes locally first**: Use `npm run e2e:visual` to verify changes before pushing to CI.
+4. **Test theme changes locally first**: Use `bun run e2e:visual` to verify changes before pushing to CI.
 
 5. **Keep tolerance strict**: Current settings (100 pixels, 0.2 threshold) catch real regressions while avoiding false positives thanks to platform-specific snapshots.
 
@@ -130,7 +130,7 @@ This is normal for Linux-generated snapshots. Linux fonts render differently tha
 
 ```bash
 # macOS snapshots
-npm run e2e:prep
+bun run e2e:prep
 npx playwright test --grep @visual --update-snapshots
 
 # Linux snapshots

@@ -16,7 +16,7 @@ The project generates two types of test reports:
 Run the E2E tests to generate the Playwright HTML report:
 
 ```bash
-npm run e2e:ci
+bun run e2e:ci
 ```
 
 This creates the `playwright-report/` directory with an interactive HTML report.
@@ -168,7 +168,7 @@ ERROR '/lighthouse' not found.
 **Solution**: These directories are only created after running the respective tests. Run:
 
 ```bash
-npm run e2e:ci      # For Playwright report
+bun run e2e:ci      # For Playwright report
 ./scripts/ci/run-lighthouse-ci.sh  # For Lighthouse reports
 ```
 
@@ -251,7 +251,7 @@ After freeing the port, restart the server.
 1. Run E2E tests to check for visual regressions:
 
    ```bash
-   npm run e2e:ci
+   bun run e2e:ci
    ```
 
 2. View the report:

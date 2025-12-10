@@ -67,6 +67,15 @@ jobs:
       - name: Build CSS Themes
         run: bun run build:themes
 
+      - name: Generate tokens (css/python/swift)
+        run: bun run build:tokens:all
+
+      - name: Verify generated tokens are committed
+        shell: bash
+        run: |
+          git status --porcelain
+          git diff --quiet --exit-code
+
       - name: Jekyll build
         run: bun run build:ci:jekyll
 

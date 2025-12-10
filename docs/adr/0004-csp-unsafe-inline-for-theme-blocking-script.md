@@ -29,7 +29,7 @@ scripts. However:
 - **Hashes** are fragile — any whitespace or comment change breaks the hash,
   causing CI failures and security alerts
 
-Since bulma-turbo-themes is a static Jekyll site deployed to GitHub Pages,
+Since turbo-themes is a static Jekyll site deployed to GitHub Pages,
 we cannot dynamically generate nonces. Hash-based approaches create maintenance
 burden and brittleness in CI/CD pipelines.
 

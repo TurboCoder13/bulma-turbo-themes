@@ -82,7 +82,7 @@ export function getDefaultThemeForAppearance(
  *
  * @example
  * ```tsx
- * import { ThemeProvider } from '@turbocoder13/bulma-turbo-themes/tokens/react-native';
+ * import { ThemeProvider } from '@turbocoder13/turbo-themes/tokens/react-native';
  * import { useColorScheme } from 'react-native';
  *
  * function App() {

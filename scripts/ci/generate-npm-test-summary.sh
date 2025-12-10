@@ -5,7 +5,7 @@
 set -euo pipefail
 
 TAG="$1"
-PACKAGE_NAME="@turbocoder13/bulma-turbo-themes"
+PACKAGE_NAME="@turbocoder13/turbo-themes"
 
 echo "## 📦 Test Publish Complete" >> $GITHUB_STEP_SUMMARY
 echo "" >> $GITHUB_STEP_SUMMARY

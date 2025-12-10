@@ -1,6 +1,6 @@
 ---
 name: Feature request
-description: Suggest an idea or enhancement for bulma-turbo-themes
+description: Suggest an idea or enhancement for turbo-themes
 labels: [enhancement, needs-triage]
 title: '[Feature]: '
 body:
@@ -9,7 +9,7 @@ body:
       value: |
         ## Thank you for suggesting a feature!
 
-        We appreciate your ideas for improving bulma-turbo-themes. Please provide details to help us understand and evaluate your proposal.
+        We appreciate your ideas for improving turbo-themes. Please provide details to help us understand and evaluate your proposal.
 
   - type: input
     id: summary

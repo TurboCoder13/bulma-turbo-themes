@@ -653,7 +653,7 @@ test.describe('Theme Edge Cases', () => {
 
         // Verify localStorage is updated
         const storedTheme = await homePage.page.evaluate(() =>
-          localStorage.getItem('bulma-theme-flavor')
+          localStorage.getItem('turbo-theme')
         );
         expect(storedTheme).toBe('catppuccin-latte');
       } finally {
@@ -686,7 +686,7 @@ test.describe('Theme Edge Cases', () => {
 
         // Verify localStorage is updated
         const storedTheme = await homePage.page.evaluate(() =>
-          localStorage.getItem('bulma-theme-flavor')
+          localStorage.getItem('turbo-theme')
         );
         expect(storedTheme).toBe('catppuccin-latte');
 
@@ -733,7 +733,7 @@ test.describe('Theme Edge Cases', () => {
 
           // Verify localStorage is updated
           const storedTheme = await homePage.page.evaluate(() =>
-            localStorage.getItem('bulma-theme-flavor')
+            localStorage.getItem('turbo-theme')
           );
           expect(storedTheme).toBe('catppuccin-mocha');
         });

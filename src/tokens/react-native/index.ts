@@ -10,7 +10,7 @@
  *
  * @example Basic usage with ThemeProvider
  * ```tsx
- * import { ThemeProvider, useThemeContext } from '@turbocoder13/bulma-turbo-themes/tokens/react-native';
+ * import { ThemeProvider, useThemeContext } from '@turbocoder13/turbo-themes/tokens/react-native';
  * import { useColorScheme } from 'react-native';
  *
  * function App() {
@@ -33,7 +33,7 @@
  *
  * @example Usage without context
  * ```tsx
- * import { useTheme, useThemeColors } from '@turbocoder13/bulma-turbo-themes/tokens/react-native';
+ * import { useTheme, useThemeColors } from '@turbocoder13/turbo-themes/tokens/react-native';
  *
  * function MyComponent() {
  *   const { colors, styles } = useTheme('catppuccin-mocha');

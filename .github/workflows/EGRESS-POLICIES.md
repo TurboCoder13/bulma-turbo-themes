@@ -1,6 +1,6 @@
 # Egress Policy Documentation
 
-This document explains the egress policies used in bulma-turbo-themes GitHub Actions workflows, managed by `step-security/harden-runner`.
+This document explains the egress policies used in turbo-themes GitHub Actions workflows, managed by `step-security/harden-runner`.
 
 ## What are Egress Policies?
 

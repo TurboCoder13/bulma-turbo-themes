@@ -11,8 +11,8 @@ const THEMES = [
     name: 'Light',
     description: 'Classic Bulma look with a bright, neutral palette.',
     cssFile: 'assets/css/themes/bulma-light.css',
-    icon: 'assets/img/bulma-logo.webp',
-    iconFallback: 'assets/img/bulma-logo.png',
+    icon: 'assets/img/turbo-themes-logo.webp',
+    iconFallback: 'assets/img/turbo-themes-logo.png',
     family: 'bulma',
     appearance: 'light',
     colors: { bg: '#ffffff', surface: '#f5f5f5', accent: '#00d1b2', text: '#363636' },
@@ -22,8 +22,8 @@ const THEMES = [
     name: 'Dark',
     description: 'Dark Bulma theme tuned for low-light reading.',
     cssFile: 'assets/css/themes/bulma-dark.css',
-    icon: 'assets/img/bulma-logo.webp',
-    iconFallback: 'assets/img/bulma-logo.png',
+    icon: 'assets/img/turbo-themes-logo.webp',
+    iconFallback: 'assets/img/turbo-themes-logo.png',
     family: 'bulma',
     appearance: 'dark',
     colors: { bg: '#1a1a2e', surface: '#252540', accent: '#00d1b2', text: '#f5f5f5' },
@@ -109,16 +109,21 @@ const THEMES = [
     colors: { bg: '#0d1117', surface: '#161b22', accent: '#58a6ff', text: '#c9d1d9' },
   },
 ];
-const STORAGE_KEY = 'bulma-theme-flavor';
+const STORAGE_KEY = 'turbo-theme';
+const LEGACY_STORAGE_KEYS = ['bulma-theme-flavor'];
 const DEFAULT_THEME = 'catppuccin-mocha';
 // Generation counter for theme switching to prevent race conditions
 // Incremented each time applyTheme is called; used to skip cleanup if a newer switch occurred
 let themeGenerationCounter = 0;
 function getCurrentThemeFromClasses(element) {
+  const dataTheme = element.getAttribute('data-theme');
+  if (dataTheme) {
+    return dataTheme;
+  }
   const classList = Array.from(element.classList);
   for (const className of classList) {
     if (className.startsWith('theme-')) {
-      return className.substring(6); // Remove 'theme-' prefix
+      return className.substring(6);
     }
   }
   return null;
@@ -134,6 +139,39 @@ function getBaseUrl(doc) {
     return '';
   }
 }
+function loadCssLink(doc, href, id) {
+  let link = doc.getElementById(id);
+  if (link && link.getAttribute('href') === href) {
+    return Promise.resolve();
+  }
+  if (!link) {
+    link = doc.createElement('link');
+    link.id = id;
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    doc.head.appendChild(link);
+  }
+  return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      link.onload = null;
+      link.onerror = null;
+      reject(new Error('Load timeout for ' + href));
+    }, 10000);
+    link.onload = () => {
+      clearTimeout(timeoutId);
+      link.onload = null;
+      link.onerror = null;
+      resolve();
+    };
+    link.onerror = () => {
+      clearTimeout(timeoutId);
+      link.onload = null;
+      link.onerror = null;
+      reject(new Error('Failed to load CSS ' + href));
+    };
+    link.href = href;
+  });
+}
 async function applyTheme(doc, themeId) {
   // Increment and capture generation counter to detect if a newer theme switch occurs
   themeGenerationCounter++;
@@ -146,94 +184,50 @@ async function applyTheme(doc, themeId) {
     trigger.classList.add('is-loading');
   }
   try {
-    // Apply theme class immediately (before CSS loading)
-    // This ensures the theme is applied even if CSS loading fails
+    // Apply data attribute and legacy class immediately
+    doc.documentElement.setAttribute('data-theme', theme.id);
     const classList = Array.from(doc.documentElement.classList);
     classList.forEach((className) => {
       if (className.startsWith('theme-')) {
         doc.documentElement.classList.remove(className);
       }
     });
-    // Add the new theme class (use resolved theme.id, not the input themeId)
     doc.documentElement.classList.add(`theme-${theme.id}`);
-    // Lazy load theme CSS if not already loaded
-    // Use resolved theme.id consistently (not the input themeId which may have been invalid)
-    const themeLinkId = `theme-${theme.id}-css`;
-    let themeLink = doc.getElementById(themeLinkId);
-    if (!themeLink) {
-      themeLink = doc.createElement('link');
-      themeLink.id = themeLinkId;
-      themeLink.rel = 'stylesheet';
-      themeLink.type = 'text/css';
-      themeLink.setAttribute('data-theme-id', theme.id);
-      try {
-        // Resolve path relative to site root
-        // Use baseUrl if set, otherwise resolve from root
-        const base = baseUrl
-          ? `${window.location.origin}${baseUrl}/`
-          : `${window.location.origin}/`;
-        const resolvedPath = new URL(theme.cssFile, base).pathname;
-        themeLink.href = resolvedPath;
-      } catch {
-        console.warn(`Invalid theme CSS path for ${theme.id}`);
-        // Theme class already applied, so we can return successfully
-        return;
-      }
-      // Add to document head
-      doc.head.appendChild(themeLink);
-      // Wait for CSS to load (but don't fail if it doesn't load)
-      try {
-        await new Promise((resolve, reject) => {
-          // Store timeout ID to clear on success/error (prevents memory leak)
-          const timeoutId = setTimeout(() => {
-            themeLink.onload = null;
-            themeLink.onerror = null;
-            reject(new Error(`Theme ${theme.id} load timeout`));
-          }, 10000);
-          themeLink.onload = () => {
-            clearTimeout(timeoutId);
-            themeLink.onload = null;
-            themeLink.onerror = null;
-            resolve();
-          };
-          themeLink.onerror = () => {
-            clearTimeout(timeoutId);
-            themeLink.onload = null;
-            themeLink.onerror = null;
-            reject(new Error(`Failed to load theme ${theme.id}`));
-          };
-        });
-      } catch (error) {
-        // CSS loading failed, but theme class is already applied
-        // Log the error but don't throw - theme switching should still work
-        console.warn(`Theme CSS failed to load for ${theme.id}:`, error);
-      }
-    }
+
+    // Resolve paths
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const base = baseUrl ? `${origin}${baseUrl}/` : `${origin}/`;
+    const turboCssPath = new URL(`assets/css/themes/turbo/${theme.id}.css`, base).pathname;
+    const compiledCssPath = new URL(`assets/css/themes/compiled/${theme.id}.css`, base).pathname;
+
+    // Load turbo variables + compiled CSS
+    await Promise.all([
+      loadCssLink(doc, turboCssPath, `theme-${theme.id}-turbo`),
+      loadCssLink(doc, compiledCssPath, `theme-${theme.id}-compiled`),
+    ]);
+
     // Clean up old theme CSS links (keep current and base themes)
-    // Only cleanup if this is still the latest theme switch (prevents race condition)
     if (thisGeneration === themeGenerationCounter) {
-      const themeLinks = doc.querySelectorAll('link[id^="theme-"][id$="-css"]');
+      const themeLinks = doc.querySelectorAll('link[id^="theme-"][id$="-compiled"], link[id^="theme-"][id$="-turbo"]');
       themeLinks.forEach((link) => {
-        const linkThemeId = link.id.replace('theme-', '').replace('-css', '');
-        if (linkThemeId !== theme.id && linkThemeId !== 'base') {
+        const linkThemeId = link.id
+          .replace('theme-', "")
+          .replace('-compiled', "")
+          .replace('-turbo', "");
+        if (linkThemeId !== theme.id && linkThemeId !== "base") {
           link.remove();
         }
       });
     }
+
     // Update trigger button icon with theme's icon image (WebP with PNG fallback)
     const triggerIcon = doc.getElementById('theme-flavor-trigger-icon');
     if (triggerIcon && theme.icon) {
       try {
-        // Resolve path relative to site root
-        // Use baseUrl if set, otherwise resolve from root
-        const base = baseUrl
-          ? `${window.location.origin}${baseUrl}/`
-          : `${window.location.origin}/`;
         const resolvedPath = new URL(theme.icon, base).pathname;
         triggerIcon.src = resolvedPath;
         triggerIcon.alt = `${THEME_FAMILIES[theme.family].name} ${theme.name}`;
         triggerIcon.title = `${THEME_FAMILIES[theme.family].name} ${theme.name}`;
-        // Fallback to PNG if WebP fails
         if (theme.iconFallback) {
           const fallbackPath = new URL(theme.iconFallback, base).pathname;
           triggerIcon.onerror = () => {
@@ -257,13 +251,20 @@ async function applyTheme(doc, themeId) {
       }
     });
   } finally {
-    // Remove loading state
     if (trigger) {
       trigger.classList.remove('is-loading');
     }
   }
 }
 export async function initTheme(documentObj, windowObj) {
+  // Migrate legacy storage keys to new STORAGE_KEY
+  for (const legacyKey of LEGACY_STORAGE_KEYS) {
+    const legacy = windowObj.localStorage.getItem(legacyKey);
+    if (legacy && !windowObj.localStorage.getItem(STORAGE_KEY)) {
+      windowObj.localStorage.setItem(STORAGE_KEY, legacy);
+      windowObj.localStorage.removeItem(legacyKey);
+    }
+  }
   // Check if theme was already applied by blocking script
   const initialTheme = windowObj.__INITIAL_THEME__;
   const savedTheme = windowObj.localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;

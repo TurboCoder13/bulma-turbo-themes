@@ -8,13 +8,13 @@ This document outlines the CI requirements and how to test them locally to ensur
 
 ```bash
 # Full CI pipeline (includes Lighthouse)
-npm run ci:full
+bun run ci:full
 
 # Quick CI (skips cleanup and Lighthouse)
-npm run ci:quick
+bun run ci:quick
 
 # Individual CI steps
-npm run ci
+bun run ci
 ```
 
 ## 📋 CI Workflow Requirements
@@ -23,21 +23,21 @@ npm run ci
 
 **Required Steps:**
 
-- ✅ ESLint linting (`npm run lint`)
+- ✅ ESLint linting (`bun run lint`)
 - ✅ Lintro formatting (`uv run lintro fmt`)
 - ✅ Lintro linting (`uv run lintro chk`)
-- ✅ Markdown linting (`npm run mdlint`)
-- ✅ CSS linting (`npm run stylelint`)
-- ✅ TypeScript build (`npm run build`)
+- ✅ Markdown linting (`bun run mdlint`)
+- ✅ CSS linting (`bun run stylelint`)
+- ✅ TypeScript build (`bun run build`)
 - ✅ Tests with coverage (`npm test`)
-- ✅ CSS budget check (`npm run css:budget`)
+- ✅ CSS budget check (`bun run css:budget`)
 - ✅ Jekyll build (`bundle exec jekyll build`)
 - ✅ HTMLProofer validation (`bundle exec htmlproofer`)
 
 **Local Testing:**
 
 ```bash
-npm run ci:quick
+bun run ci:quick
 # or
 ./scripts/local/build.sh --quick
 ```
@@ -46,7 +46,7 @@ npm run ci:quick
 
 **Required Steps:**
 
-- ✅ Theme synchronization (`npm run theme:sync`)
+- ✅ Theme synchronization (`bun run theme:sync`)
 - ✅ Check for unstaged changes
 - ✅ Quick test suite
 
@@ -59,7 +59,7 @@ npm run ci:quick
 **Local Testing:**
 
 ```bash
-npm run theme:sync
+bun run theme:sync
 git status --porcelain  # Should be empty
 npm test --silent
 ```
@@ -102,7 +102,7 @@ npx @lhci/cli@latest autorun --config=./lighthouserc.json --collect.numberOfRuns
 ```bash
 # CodeQL requires GitHub Actions environment
 # Test TypeScript compilation instead:
-npm run build
+bun run build
 ```
 
 ### 5. External Link Monitoring (`reporting-link-monitoring.yml`)
@@ -233,21 +233,21 @@ lighthouserc.json             # Lighthouse configuration
 git commit -m "your message"
 
 # Or run manually
-npm run ci:quick
+bun run ci:quick
 ```
 
 ### Before Pushing
 
 ```bash
 # Run full CI pipeline
-npm run ci:full
+bun run ci:full
 ```
 
 ### Before Release
 
 ```bash
 # Run all checks including Lighthouse
-npm run ci:full
+bun run ci:full
 npm audit
 ```
 
@@ -294,10 +294,10 @@ gh run view <run-id>
 
 ```bash
 # Run individual CI steps
-npm run lint
-npm run format
-npm run theme:sync
-npm run build
+bun run lint
+bun run format
+bun run theme:sync
+bun run build
 npm test
 ./scripts/local/build.sh --no-serve
 ```
@@ -317,8 +317,8 @@ npm test
 
 ## 🎯 Best Practices
 
-1. **Always run `npm run ci:quick` before committing**
-2. **Run `npm run ci:full` before pushing**
+1. **Always run `bun run ci:quick` before committing**
+2. **Run `bun run ci:full` before pushing**
 3. **Keep CI and local scripts in sync**
 4. **Document all CI dependencies**
 5. **Use pre-commit hooks for basic checks**

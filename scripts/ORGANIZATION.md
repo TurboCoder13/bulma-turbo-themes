@@ -1,6 +1,6 @@
 # Scripts Organization
 
-This document describes the organization of scripts in the `bulma-turbo-themes` project and provides guidelines for adding new scripts.
+This document describes the organization of scripts in the `turbo-themes` project and provides guidelines for adding new scripts.
 
 ## Directory Structure
 

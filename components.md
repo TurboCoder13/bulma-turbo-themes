@@ -82,7 +82,7 @@ permalink: /components/
     <span class="panel-icon">
       <i class="fas fa-book" aria-hidden="true"></i>
     </span>
-    bulma-turbo-themes
+    turbo-themes
   </a>
   <a class="panel-block" href="#">
     <span class="panel-icon">

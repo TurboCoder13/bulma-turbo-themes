@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Build script for bulma-turbo-themes Jekyll site
+# Build script for turbo-themes Jekyll site
 # This script handles both local development and CI workflows
 # Usage: ./scripts/local/build.sh [--quick|--full|--serve|--no-serve|--skip-tests|--skip-lint|--skip-lh]
 #
@@ -241,7 +241,7 @@ if [ "$DEV_MODE" = true ]; then
     print_status "$BLUE" "📍 Environment: Development (baseurl: empty)"
     JEKYLL_CONFIG="_config.yml"
 elif [ "$PROD_MODE" = true ]; then
-    print_status "$BLUE" "📍 Environment: Production (baseurl: /bulma-turbo-themes)"
+    print_status "$BLUE" "📍 Environment: Production (baseurl: /turbo-themes)"
     JEKYLL_CONFIG="_config.yml,_config.prod.yml"
 else
     JEKYLL_CONFIG="_config.yml"

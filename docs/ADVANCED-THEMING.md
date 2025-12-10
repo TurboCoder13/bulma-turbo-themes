@@ -4,7 +4,7 @@ This document covers advanced theming capabilities that leverage Bulma's full Sa
 
 ## Overview
 
-The bulma-turbo-themes library now supports complete Bulma customization through Sass variables, allowing themes to:
+The turbo-themes library now supports complete Bulma customization through Sass variables, allowing themes to:
 
 - Customize responsive breakpoints per theme
 - Modify spacing scales

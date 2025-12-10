@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-The bulma-turbo-themes project needs automated security policy enforcement to maintain consistent security posture across the repository. Manual security reviews are:
+The turbo-themes project needs automated security policy enforcement to maintain consistent security posture across the repository. Manual security reviews are:
 
 - Time-consuming and error-prone
 - Not scalable as the project grows

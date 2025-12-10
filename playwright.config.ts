@@ -20,7 +20,7 @@ const platformName = platform === 'darwin' ? 'macos' : platform === 'win32' ? 'w
  *
  * @example
  * // Use environment variable:
- * PLAYWRIGHT_SNAPSHOT_DIR=homepage-theme-snapshots npm run test:e2e
+ * PLAYWRIGHT_SNAPSHOT_DIR=homepage-theme-snapshots bun run test:e2e
  *
  * // Or override in project config:
  * projects: [{
@@ -97,7 +97,7 @@ export default defineConfig({
 
   // Web server configuration - builds and serves the Jekyll site
   webServer: {
-    command: 'npm run e2e:start',
+    command: 'bun run e2e:start',
     port: 4173,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000, // 2 minutes for build + serve

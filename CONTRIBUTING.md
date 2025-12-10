@@ -26,7 +26,7 @@ bun run build:themes    # Generate CSS themes
 bun run serve           # Builds and serves with live reload
 ```
 
-### Alternative: npm
+### Alternative: npm (if Bun is unavailable)
 
 ```bash
 npm ci
@@ -49,12 +49,12 @@ npm run serve
 
 ### Available Rake tasks
 
-This is a hybrid npm/Ruby project. Rake tasks are available for gem-related operations:
+This is a hybrid Bun/Ruby project (npm compatible). Rake tasks are available for gem-related operations:
 
 ```bash
 rake -T                 # List all available tasks
-rake build              # Build the Ruby gem (includes npm build)
-rake build:npm          # Build npm package (TypeScript -> JavaScript)
+rake build              # Build the Ruby gem (includes Bun build)
+rake build:npm          # Build JS package (TypeScript -> JavaScript) via Bun
 rake build:gem          # Build Ruby gem specifically
 rake clean              # Remove built artifacts (*.gem, dist/, _site/)
 rake verify:gem         # Verify gem can be built successfully
@@ -62,7 +62,7 @@ rake verify:all         # Run all checks (lint, test, and build)
 rake console            # Open IRB with the gem loaded for debugging
 ```
 
-Most developers will use `npm run build:gem` which handles the full build process, but Rake tasks are useful for gem-specific operations and are required by the RubyGems publishing workflow.
+Most developers will use `bun run build:gem` which handles the full build process, but Rake tasks are useful for gem-specific operations and are required by the RubyGems publishing workflow.
 
 ## Testing and linting
 

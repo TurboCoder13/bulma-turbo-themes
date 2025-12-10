@@ -1,6 +1,6 @@
 # Architecture Decision Records (ADR)
 
-This directory contains Architecture Decision Records (ADRs) for the bulma-turbo-themes project.
+This directory contains Architecture Decision Records (ADRs) for the turbo-themes project.
 
 ## What is an ADR?
 

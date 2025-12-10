@@ -245,7 +245,7 @@ describe('public API', () => {
     mockLocalStorage.getItem.mockReturnValue('catppuccin-frappe');
     mockThemeLoading();
     await initTheme(document, window);
-    expect(mockLocalStorage.getItem).toHaveBeenCalledWith('bulma-theme-flavor');
+    expect(mockLocalStorage.getItem).toHaveBeenCalledWith('turbo-theme');
   });
 
   it('initTheme uses default theme when localStorage is empty', async () => {
@@ -332,7 +332,7 @@ describe('public API', () => {
 
       // Verify localStorage was set and applyTheme was called
       expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-        'bulma-theme-flavor',
+        'turbo-theme',
         'catppuccin-latte'
       );
     }
@@ -3030,7 +3030,7 @@ describe('public API', () => {
       mockLocalStorage.getItem.mockReturnValue('catppuccin-latte');
       Object.defineProperty(document.documentElement, 'getAttribute', {
         value: vi.fn((attr) => {
-          if (attr === 'data-baseurl') return '/bulma-turbo-themes';
+          if (attr === 'data-baseurl') return '/turbo-themes';
           return null;
         }),
         writable: true,
@@ -3065,13 +3065,13 @@ describe('public API', () => {
       await initTheme(document, window);
 
       // Verify theme link was created with correct href
-      expect(mockThemeLink.href).toContain('/bulma-turbo-themes/assets/css/themes/');
+      expect(mockThemeLink.href).toContain('/turbo-themes/assets/css/themes/');
     });
 
     it('correctly creates theme selector elements in wireFlavorSelector', () => {
       Object.defineProperty(document.documentElement, 'getAttribute', {
         value: vi.fn((attr) => {
-          if (attr === 'data-baseurl') return '/bulma-turbo-themes';
+          if (attr === 'data-baseurl') return '/turbo-themes';
           return null;
         }),
         writable: true,

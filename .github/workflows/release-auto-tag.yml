@@ -92,8 +92,8 @@ jobs:
           steps.version-check.outputs.version_changed == 'true' &&
           steps.version-check.outputs.tag_exists == 'false'
         run: |
-          git config --global user.name "bulma-turbo-themes-release-bot[bot]"
-          git config --global user.email "bulma-turbo-themes-release-bot[bot]@users.noreply.github.com"
+          git config --global user.name "turbo-themes-release-bot[bot]"
+          git config --global user.email "turbo-themes-release-bot[bot]@users.noreply.github.com"
           git remote set-url origin "https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git"
 
       - name: Create and push release tag

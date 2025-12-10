@@ -43,7 +43,8 @@
     <script>
       (function () {
         try {
-          var STORAGE_KEY = 'bulma-theme-flavor';
+          var STORAGE_KEY = 'turbo-theme';
+          var LEGACY_STORAGE_KEYS = ['bulma-theme-flavor'];
           var DEFAULT_THEME = 'catppuccin-mocha';
           // Valid theme IDs - must match THEMES array in theme-selector.js
           var VALID_THEMES = [
@@ -57,6 +58,15 @@
             'github-light',
             'github-dark',
           ];
+          var migrated = false;
+          for (var i = 0; i < LEGACY_STORAGE_KEYS.length; i++) {
+            var legacy = localStorage.getItem(LEGACY_STORAGE_KEYS[i]);
+            if (legacy && !localStorage.getItem(STORAGE_KEY)) {
+              localStorage.setItem(STORAGE_KEY, legacy);
+              localStorage.removeItem(LEGACY_STORAGE_KEYS[i]);
+              migrated = true;
+            }
+          }
           var savedTheme = localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;
           // Validate theme ID against allowed list to prevent invalid class/URL injection
           if (VALID_THEMES.indexOf(savedTheme) === -1) {
@@ -113,18 +123,18 @@
     <link
       rel="icon"
       type="image/png"
-      href="{{ '/assets/img/bulma-logo.png' | relative_url }}"
+      href="{{ '/assets/img/turbo-themes-logo.png' | relative_url }}"
       media="(prefers-color-scheme: light)"
     />
     <link
       rel="icon"
       type="image/png"
-      href="{{ '/assets/img/bulma-logo-dark.png' | relative_url }}"
+      href="{{ '/assets/img/turbo-themes-logo-dark.png' | relative_url }}"
       media="(prefers-color-scheme: dark)"
     />
     <link
       rel="mask-icon"
-      href="{{ '/assets/img/bulma-logo.png' | relative_url }}"
+      href="{{ '/assets/img/turbo-themes-logo.png' | relative_url }}"
       color="#111827"
     />
     <!--

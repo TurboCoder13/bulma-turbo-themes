@@ -19,7 +19,7 @@ export const bulmaThemes: ThemePackage = {
       label: 'Bulma Light',
       vendor: 'bulma',
       appearance: 'light',
-      iconUrl: '/assets/img/bulma-logo.png',
+      iconUrl: '/assets/img/turbo-themes-logo.png',
       tokens: {
         background: {
           base: '#ffffff',
@@ -153,7 +153,7 @@ export const bulmaThemes: ThemePackage = {
       label: 'Bulma Dark',
       vendor: 'bulma',
       appearance: 'dark',
-      iconUrl: '/assets/img/bulma-logo.png',
+      iconUrl: '/assets/img/turbo-themes-logo.png',
       tokens: {
         background: {
           base: '#141414',

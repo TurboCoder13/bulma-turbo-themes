@@ -241,7 +241,7 @@ export class BasePage {
     await expect
       .poll(
         async () => {
-          return await this.page.evaluate(() => localStorage.getItem('bulma-theme-flavor'));
+          return await this.page.evaluate(() => localStorage.getItem('turbo-theme'));
         },
         { timeout: 5000 }
       )

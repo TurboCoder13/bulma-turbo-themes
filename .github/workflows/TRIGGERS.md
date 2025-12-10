@@ -1,6 +1,6 @@
 # Workflow Triggers Documentation
 
-This document provides a comprehensive overview of all GitHub Actions workflows in bulma-turbo-themes, their triggers, and purposes.
+This document provides a comprehensive overview of all GitHub Actions workflows in turbo-themes, their triggers, and purposes.
 
 ## Trigger Matrix
 
@@ -189,7 +189,7 @@ This document provides a comprehensive overview of all GitHub Actions workflows 
 **Requirements:**
 
 - NPM_TOKEN secret must be configured (with "Authorization only" 2FA level)
-- Valid npm credentials for @turbocoder13/bulma-turbo-themes
+- Valid npm credentials for @turbocoder13/turbo-themes
 
 **Example:** Tag `v1.2.3` triggers full publish and release
 
