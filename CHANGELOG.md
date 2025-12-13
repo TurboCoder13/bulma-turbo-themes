@@ -10,6 +10,127 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.10.9] - 2025-12-13
+
+### 🐛 Fixed
+
+- update github/codeql-action action to v4.31.8 (#180)
+- update dependency bun to v1.3.4 (#179)
+- update codecov/codecov-action action to v5.5.2 (#178)
+- update actions/setup-node action to v6.1.0 (#176)
+- update turbocoder13/py-lintro digest to d2f79fd (#175)
+- update astral-sh/setup-uv action to v7.1.5 (#174)
+- update softprops/action-gh-release digest to 60cfd9a (#172)
+- update renovatebot/github-action action to v44.0.5 (#173)
+- update oven-sh/setup-bun action to v2.0.2 (#168)
+- update actions/create-github-app-token action to v2.2.1 (#169)
+- update github/codeql-action action to v4.31.7 (#167)
+
+## [0.10.9] - 2025-12-12
+
+### 🐛 Fixed
+
+- update dependency bun to v1.3.4 (#179)
+- update codecov/codecov-action action to v5.5.2 (#178)
+- update actions/setup-node action to v6.1.0 (#176)
+- update turbocoder13/py-lintro digest to d2f79fd (#175)
+- update astral-sh/setup-uv action to v7.1.5 (#174)
+- update softprops/action-gh-release digest to 60cfd9a (#172)
+- update renovatebot/github-action action to v44.0.5 (#173)
+- update oven-sh/setup-bun action to v2.0.2 (#168)
+- update actions/create-github-app-token action to v2.2.1 (#169)
+- update github/codeql-action action to v4.31.7 (#167)
+
+## [0.10.9] - 2025-12-12
+
+### 🐛 Fixed
+
+- update codecov/codecov-action action to v5.5.2 (#178)
+- update actions/setup-node action to v6.1.0 (#176)
+- update turbocoder13/py-lintro digest to d2f79fd (#175)
+- update astral-sh/setup-uv action to v7.1.5 (#174)
+- update softprops/action-gh-release digest to 60cfd9a (#172)
+- update renovatebot/github-action action to v44.0.5 (#173)
+- update oven-sh/setup-bun action to v2.0.2 (#168)
+- update actions/create-github-app-token action to v2.2.1 (#169)
+- update github/codeql-action action to v4.31.7 (#167)
+
+## [0.10.9] - 2025-12-10
+
+### 🐛 Fixed
+
+- update actions/setup-node action to v6.1.0 (#176)
+- update turbocoder13/py-lintro digest to d2f79fd (#175)
+- update astral-sh/setup-uv action to v7.1.5 (#174)
+- update softprops/action-gh-release digest to 60cfd9a (#172)
+- update renovatebot/github-action action to v44.0.5 (#173)
+- update oven-sh/setup-bun action to v2.0.2 (#168)
+- update actions/create-github-app-token action to v2.2.1 (#169)
+- update github/codeql-action action to v4.31.7 (#167)
+
+## [0.10.9] - 2025-12-10
+
+### 🐛 Fixed
+
+- update turbocoder13/py-lintro digest to d2f79fd (#175)
+- update astral-sh/setup-uv action to v7.1.5 (#174)
+- update softprops/action-gh-release digest to 60cfd9a (#172)
+- update renovatebot/github-action action to v44.0.5 (#173)
+- update oven-sh/setup-bun action to v2.0.2 (#168)
+- update actions/create-github-app-token action to v2.2.1 (#169)
+- update github/codeql-action action to v4.31.7 (#167)
+
+## [0.10.9] - 2025-12-09
+
+### 🐛 Fixed
+
+- update astral-sh/setup-uv action to v7.1.5 (#174)
+- update softprops/action-gh-release digest to 60cfd9a (#172)
+- update renovatebot/github-action action to v44.0.5 (#173)
+- update oven-sh/setup-bun action to v2.0.2 (#168)
+- update actions/create-github-app-token action to v2.2.1 (#169)
+- update github/codeql-action action to v4.31.7 (#167)
+
+## [0.10.9] - 2025-12-09
+
+### 🐛 Fixed
+
+- update softprops/action-gh-release digest to 60cfd9a (#172)
+- update renovatebot/github-action action to v44.0.5 (#173)
+- update oven-sh/setup-bun action to v2.0.2 (#168)
+- update actions/create-github-app-token action to v2.2.1 (#169)
+- update github/codeql-action action to v4.31.7 (#167)
+
+## [0.10.9] - 2025-12-08
+
+### 🐛 Fixed
+
+- update renovatebot/github-action action to v44.0.5 (#173)
+- update oven-sh/setup-bun action to v2.0.2 (#168)
+- update actions/create-github-app-token action to v2.2.1 (#169)
+- update github/codeql-action action to v4.31.7 (#167)
+
+## [0.10.9] - 2025-12-07
+
+### 🐛 Fixed
+
+- update oven-sh/setup-bun action to v2.0.2 (#168)
+- update actions/create-github-app-token action to v2.2.1 (#169)
+- update github/codeql-action action to v4.31.7 (#167)
+
+## [0.10.9] - 2025-12-07
+
+### 🐛 Fixed
+
+- update actions/create-github-app-token action to v2.2.1 (#169)
+- update github/codeql-action action to v4.31.7 (#167)
+
+## [0.10.9] - 2025-12-07
+
+### 🐛 Fixed
+
+- update github/codeql-action action to v4.31.7 (#167)
+
 ## [0.10.8] - 2025-12-05
 
 ### 🐛 Fixed
