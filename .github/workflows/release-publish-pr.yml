@@ -106,7 +106,7 @@ jobs:
             uploads.github.com:443
 
       - name: Download SBOM artifacts
-        uses: actions/download-artifact@f093f21ca4cfa7c75ccbbc2be54da76a0c7e1f05
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
         with:
           name: sbom-all-formats
           path: sbom/
