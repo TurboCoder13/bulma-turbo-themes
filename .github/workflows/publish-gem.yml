@@ -111,7 +111,7 @@ jobs:
         run: ./scripts/ci/generate-checksum.sh ${{ steps.gem-info.outputs.path }}
 
       - name: Upload gem artifact
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: gem-package-${{ steps.gem-info.outputs.version }}
           path: ${{ steps.gem-info.outputs.path }}
@@ -155,7 +155,7 @@ jobs:
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Download gem artifact
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: gem-package-${{ needs.build.outputs.gem-version }}
           path: .
