@@ -45,18 +45,11 @@ jobs:
         with:
           egress-policy: block
           allowed-endpoints: >
-            github.com:443
-            api.github.com:443
-            registry.npmjs.org:443
-            bun.sh:443
-            objects.githubusercontent.com:443
-            github-releases.githubusercontent.com:443
+            github.com:443 api.github.com:443 registry.npmjs.org:443 bun.sh:443
+            objects.githubusercontent.com:443 github-releases.githubusercontent.com:443
             release-assets.githubusercontent.com:443
-            pipelines.actions.githubusercontent.com:443
-            codeload.github.com:443
-            fulcio.sigstore.dev:443
-            rekor.sigstore.dev:443
-            tuf-repo-cdn.sigstore.dev:443
+            pipelines.actions.githubusercontent.com:443 codeload.github.com:443
+            fulcio.sigstore.dev:443 rekor.sigstore.dev:443 tuf-repo-cdn.sigstore.dev:443
 
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
@@ -101,9 +94,7 @@ jobs:
         with:
           egress-policy: block
           allowed-endpoints: >
-            github.com:443
-            api.github.com:443
-            uploads.github.com:443
+            github.com:443 api.github.com:443 uploads.github.com:443
 
       - name: Download SBOM artifacts
         uses: actions/download-artifact@f093f21ca4cfa7c75ccbbc2be54da76a0c7e1f05
@@ -125,9 +116,9 @@ jobs:
             sbom/sbom.cyclonedx.xml.sig
             sbom/sbom.cyclonedx.xml.cert
           body: |
-            ## 📦 @turbocoder13/bulma-turbo-themes ${{ github.ref_name }}
+            ## 📦 @turbocoder13/turbo-themes ${{ github.ref_name }}
 
-            Published to npm: https://www.npmjs.com/package/@turbocoder13/bulma-turbo-themes
+            Published to npm: https://www.npmjs.com/package/@turbocoder13/turbo-themes
 
             ### 📋 Software Bill of Materials (SBOM)
 
