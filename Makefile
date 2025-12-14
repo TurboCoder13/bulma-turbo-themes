@@ -102,6 +102,38 @@ export PYTHON_TEST_CODE
 test-all: ensure-deps test-unit test-python test-e2e
 	@$(MAKE) test-lhci
 
+# Workflow testing with ACT
+.PHONY: test-workflows-help test-workflows test-workflows-quick test-workflows-list test-workflows-dry test-workflows-clean
+test-workflows-help:
+	@echo "Workflow testing targets (requires ACT + Docker):"
+	@echo "  test-workflows       - Run all testable workflows"
+	@echo "  test-workflows-quick - Run quality workflows only (fastest)"
+	@echo "  test-workflows-list  - List all available workflows"
+	@echo "  test-workflows-dry   - Dry-run (show commands without executing)"
+	@echo ""
+	@echo "Options (pass via environment):"
+	@echo "  WORKFLOW=name        - Test specific workflow (e.g., WORKFLOW=quality-ci-main)"
+	@echo "  CATEGORY=cat         - Filter by category (quality|security|publish|release|maintenance|reporting|deploy|other)"
+	@echo "  EVENT=type           - Force event type (push|pull_request|tag|workflow_dispatch)"
+
+test-workflows:
+	@./scripts/local/test-workflows-act.sh $(if $(WORKFLOW),$(WORKFLOW),) \
+		$(if $(CATEGORY),--category $(CATEGORY),) \
+		$(if $(EVENT),--event $(EVENT),)
+
+test-workflows-quick:
+	@./scripts/local/test-workflows-act.sh --category quality
+
+test-workflows-list:
+	@./scripts/local/test-workflows-act.sh --list
+
+test-workflows-dry:
+	@./scripts/local/test-workflows-act.sh --dry-run $(if $(WORKFLOW),$(WORKFLOW),)
+
+test-workflows-clean:
+	@echo "Cleaning up stale ACT containers..."
+	@docker ps -a --filter "name=act-" -q | xargs -r docker rm -f 2>/dev/null || true
+
 ensure-deps:
 	@if ! command -v bun >/dev/null 2>&1; then \
 		echo "❌ bun is required. Install from https://bun.sh"; \
@@ -173,5 +205,5 @@ build-swift:
 
 build-all: build-core build-themes build-jekyll
 
-help: playground-help build-help test-help
+help: playground-help build-help test-help test-workflows-help
 
