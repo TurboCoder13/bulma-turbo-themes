@@ -79,7 +79,7 @@ jobs:
           node-version: '22'
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@217c988b8c2bf2bacb2d5c78a7e7b18f8c34daed # v1.200.0
+        uses: ruby/setup-ruby@ac793fdd38cc468a4dd57246fa9d0e868aba9085 # v1.270.0
         with:
           ruby-version: '3.3.6'
           bundler-cache: true
@@ -164,7 +164,7 @@ jobs:
         run: ./scripts/ci/verify-artifact.sh
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@217c988b8c2bf2bacb2d5c78a7e7b18f8c34daed # v1.200.0
+        uses: ruby/setup-ruby@ac793fdd38cc468a4dd57246fa9d0e868aba9085 # v1.270.0
         with:
           ruby-version: '3.3.6'
 
