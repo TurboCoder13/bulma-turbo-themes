@@ -36,13 +36,12 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Harden Runner
+        if: ${{ !env.ACT }}
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: block
           allowed-endpoints: >
-            github.com:443
-            api.github.com:443
-            codeload.github.com:443
+            github.com:443 api.github.com:443 codeload.github.com:443
             objects.githubusercontent.com:443
 
       - name: Checkout
@@ -71,7 +70,8 @@ jobs:
         uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7.0.11
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'chore: bump internal workflow/action refs to ${{ steps.sha.outputs.sha }}'
+          commit-message:
+            'chore: bump internal workflow/action refs to ${{ steps.sha.outputs.sha }}'
           title: 'chore: bump internal refs to latest SHA'
           body: |
             Automated update of internal action/workflow references to the
