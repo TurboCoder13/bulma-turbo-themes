@@ -13,8 +13,15 @@
     "rootDir": "src",
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": "."
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["test", "_site"]
+  "exclude": ["test", "_site", "packages", "apps"],
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/theme-selector" },
+    { "path": "./packages/adapters/tailwind" },
+    { "path": "./packages/adapters/bulma" }
+  ]
 }
