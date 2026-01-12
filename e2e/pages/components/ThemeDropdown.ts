@@ -1,108 +1,84 @@
-import { type Page, type Locator, expect } from '@playwright/test';
-import { escapeCssAttributeSelector, escapeRegex } from '../../helpers';
+import { type Locator, type Page, expect } from '@playwright/test';
+import { escapeRegex } from '../../helpers';
 
 /**
- * Theme dropdown component object.
- * Encapsulates all interactions with the theme dropdown.
+ * Theme selector component object.
+ * Encapsulates all interactions with the theme selector (select element).
  */
 export class ThemeDropdown {
   /**
-   * Timeout for waiting for dropdown to become active (in milliseconds).
+   * Timeout for waiting for theme to be applied (in milliseconds).
    */
-  static readonly THEME_DROPDOWN_ACTIVE_TIMEOUT = 5000;
+  static readonly THEME_APPLY_TIMEOUT = 5000;
 
   readonly page: Page;
-  readonly dropdown: Locator;
-  readonly trigger: Locator;
+  readonly selector: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.dropdown = page.getByTestId('theme-dropdown');
-    this.trigger = page.getByTestId('theme-trigger');
+    this.selector = page.locator('#theme-selector');
   }
 
   /**
-   * Check if dropdown is visible.
+   * Alias for selector to maintain compatibility with existing code.
+   */
+  get dropdown(): Locator {
+    return this.selector;
+  }
+
+  /**
+   * Alias for selector to maintain compatibility with existing code.
+   */
+  get trigger(): Locator {
+    return this.selector;
+  }
+
+  /**
+   * Check if selector is visible.
    */
   async isVisible(): Promise<boolean> {
-    return this.dropdown.isVisible();
+    return this.selector.isVisible();
   }
 
   /**
-   * Open the dropdown by hovering.
+   * Open the dropdown (no-op for select element, kept for compatibility).
    */
   async open(): Promise<void> {
-    const waitForActive = async (timeout: number = ThemeDropdown.THEME_DROPDOWN_ACTIVE_TIMEOUT) => {
-      // Assert the active state with timeout (word-boundary class match)
-      await expect(this.dropdown).toHaveClass(/(?:^|\s)is-active(?:\s|$)/, {
-        timeout,
-      });
-    };
-
-    // Ensure elements exist; dropdown may be hidden before activation
-    await expect(this.dropdown).toBeAttached();
-    await expect(this.trigger).toBeVisible();
-    // Prefer hover; fall back to click when hover is not supported or unreliable
-    const supportsHover = await this.page.evaluate(
-      () => window.matchMedia('(hover: hover)').matches
-    );
-    if (supportsHover) {
-      try {
-        await this.trigger.hover();
-        await waitForActive();
-        return;
-      } catch {
-        // If hover-based activation is flaky (e.g., under rapid theme switching),
-        // fall back to a reliable click-based activation before failing the test.
-      }
-    }
-
-    await this.trigger.click();
-    await waitForActive();
+    // For a native select, we don't need to "open" it - just verify it's visible
+    await expect(this.selector).toBeVisible();
   }
 
   /**
    * Select a theme by ID.
    */
   async selectTheme(themeId: string): Promise<void> {
-    await this.open();
-    const option = this.getThemeOption(themeId);
-    await option.click();
-    // Verify dropdown closed after selection
-    await expect(this.dropdown).not.toHaveClass(/(?:^|\s)is-active(?:\s|$)/, {
-      timeout: ThemeDropdown.THEME_DROPDOWN_ACTIVE_TIMEOUT,
-    });
-    // Verify theme was applied by checking theme CSS class on html element
+    await this.selector.selectOption(themeId);
+    // Verify theme was applied by checking data-theme attribute on html element
     const escapedThemeId = escapeRegex(themeId);
-    await expect(this.page.locator('html')).toHaveClass(
-      new RegExp(`(?:^|\\s)theme-${escapedThemeId}(?:\\s|$)`)
+    await expect(this.page.locator('html')).toHaveAttribute(
+      'data-theme',
+      new RegExp(`^${escapedThemeId}$`)
     );
   }
 
   /**
-   * Get a theme option by ID.
+   * Get the currently selected theme value.
    */
-  getThemeOption(themeId: string): Locator {
-    const escapedThemeId = escapeCssAttributeSelector(themeId);
-    return this.dropdown.locator(`[data-theme-id="${escapedThemeId}"]`);
+  async getSelectedTheme(): Promise<string | null> {
+    return this.selector.inputValue();
   }
 
   /**
-   * Verify dropdown is visible and functional.
+   * Verify selector is visible and functional.
    */
   async expectVisible(): Promise<void> {
-    await expect(this.dropdown).toBeVisible();
-    await expect(this.trigger).toBeVisible();
+    await expect(this.selector).toBeVisible();
   }
 
   /**
-   * Verify dropdown is in active state.
-   *
-   * @param timeout - Optional timeout in milliseconds. Defaults to THEME_DROPDOWN_ACTIVE_TIMEOUT.
+   * Verify a specific theme is selected.
    */
-  async expectActive(timeout: number = ThemeDropdown.THEME_DROPDOWN_ACTIVE_TIMEOUT): Promise<void> {
-    await expect(this.dropdown).toHaveClass(/(?:^|\s)is-active(?:\s|$)/, {
-      timeout,
-    });
+  async expectThemeSelected(themeId: string): Promise<void> {
+    await expect(this.selector).toHaveValue(themeId);
   }
 }

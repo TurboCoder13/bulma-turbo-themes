@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures';
+import { expect, test } from './fixtures';
 import { takeScreenshotWithHighlight, takeScreenshotWithMultipleHighlights } from './helpers';
 import type { BasePage } from './pages/BasePage';
 
@@ -15,15 +15,15 @@ import type { BasePage } from './pages/BasePage';
  * Parameterized helper to test navigation to a page.
  *
  * @param basePage - The base page object.
- * @param pageName - The name of the page to navigate to ("components" | "forms").
+ * @param pageName - The name of the page to navigate to ("components" | "themes").
  * @param urlPattern - The regex pattern to match the expected URL.
  * @param otherLinkNames - Array of other link names that should not be active.
  */
 async function testNavigation(
   basePage: BasePage,
-  pageName: 'components' | 'forms',
+  pageName: 'components' | 'themes',
   urlPattern: RegExp,
-  otherLinkNames: Array<'home' | 'components' | 'forms'>
+  otherLinkNames: Array<'home' | 'components' | 'themes'>
 ): Promise<void> {
   const link = basePage.getNavLink(pageName);
 
@@ -45,15 +45,15 @@ async function testNavigation(
     // Verify active state: link should be active
     await expect(
       activeLink,
-      `${pageName} link should have is-active class after navigation`
-    ).toHaveClass(/is-active/);
+      `${pageName} link should have active class after navigation`
+    ).toHaveClass(/active/);
 
     // Verify other links are not active
     for (const otherLinkName of otherLinkNames) {
       await expect(
         basePage.getNavLink(otherLinkName),
         `${otherLinkName} link should not be active when on ${pageName} page`
-      ).not.toHaveClass(/is-active/);
+      ).not.toHaveClass(/active/);
     }
 
     // Take screenshot after navigation
@@ -72,37 +72,37 @@ test.describe('Navigation Smoke Tests @smoke', () => {
 
       await basePage.expectNavLinkVisible('home');
       await basePage.expectNavLinkVisible('components');
-      await basePage.expectNavLinkVisible('forms');
+      await basePage.expectNavLinkVisible('themes');
 
       // Verify initial active state: Home link should be active on home page
       await expect(links.home, 'Home link should be active on initial page load').toHaveClass(
-        /is-active/
+        /active/
       );
 
       // Verify other links are not active initially
       await expect(
         links.components,
         'Components link should not be active on home page'
-      ).not.toHaveClass(/is-active/);
-      await expect(links.forms, 'Forms link should not be active on home page').not.toHaveClass(
-        /is-active/
+      ).not.toHaveClass(/active/);
+      await expect(links.themes, 'Forms link should not be active on home page').not.toHaveClass(
+        /active/
       );
 
       // Take screenshot highlighting all navbar links
       await takeScreenshotWithMultipleHighlights(
         basePage.page,
-        [links.home, links.components, links.forms],
+        [links.home, links.components, links.themes],
         'navbar-links-display'
       );
     });
   });
 
   test('should navigate to Components page', async ({ basePage }) => {
-    await testNavigation(basePage, 'components', /\/components\/?$/, ['home', 'forms']);
+    await testNavigation(basePage, 'components', /\/components\/?$/, ['home', 'themes']);
   });
 
   test('should navigate to Forms page', async ({ basePage }) => {
-    await testNavigation(basePage, 'forms', /\/forms\/?$/, ['home', 'components']);
+    await testNavigation(basePage, 'themes', /\/themes\/?$/, ['home', 'components']);
   });
 
   test('should navigate back to Home page', async ({ basePage }) => {
@@ -114,7 +114,7 @@ test.describe('Navigation Smoke Tests @smoke', () => {
       await expect(
         basePage.getNavLink('components'),
         'Components link should be active before navigating to Home'
-      ).toHaveClass(/is-active/);
+      ).toHaveClass(/active/);
     });
 
     const homeLink = basePage.getNavLink('home');
@@ -137,18 +137,18 @@ test.describe('Navigation Smoke Tests @smoke', () => {
       // Verify active state: Home link should be active
       await expect(
         activeHome,
-        'Home link should have is-active class after navigation'
-      ).toHaveClass(/is-active/);
+        'Home link should have active class after navigation'
+      ).toHaveClass(/active/);
 
       // Verify other links are not active
       await expect(
         basePage.getNavLink('components'),
         'Components link should not be active when on Home page'
-      ).not.toHaveClass(/is-active/);
+      ).not.toHaveClass(/active/);
       await expect(
-        basePage.getNavLink('forms'),
+        basePage.getNavLink('themes'),
         'Forms link should not be active when on Home page'
-      ).not.toHaveClass(/is-active/);
+      ).not.toHaveClass(/active/);
 
       // Take screenshot after navigating back
       await takeScreenshotWithHighlight(basePage.page, activeHome, 'after-navigate-home');

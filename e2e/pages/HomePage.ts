@@ -1,6 +1,6 @@
 import type { Locator } from '@playwright/test';
-import { BasePage } from './BasePage';
 import { escapeCssAttributeSelector } from '../helpers';
+import { BasePage } from './BasePage';
 
 /**
  * Home page object with theme-specific functionality.
