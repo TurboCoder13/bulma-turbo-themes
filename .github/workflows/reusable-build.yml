@@ -1,6 +1,6 @@
 ---
 name: Reusable - Build & Package
-# Reusable workflow for building TypeScript and Jekyll site.
+# Reusable workflow for building TypeScript and Astro site.
 # Uploads build artifacts for use in downstream workflows.
 
 on:
@@ -11,11 +11,6 @@ on:
         type: string
         required: false
         default: '22'
-      ruby-version:
-        description: Ruby version to use
-        type: string
-        required: false
-        default: '3.3'
 
 permissions:
   contents: read
@@ -32,25 +27,12 @@ jobs:
         with:
           egress-policy: block
           allowed-endpoints: >
-            github.com:443
-            api.github.com:443
-            uploads.github.com:443
+            github.com:443 api.github.com:443 uploads.github.com:443
             pipelines.actions.githubusercontent.com:443
-            objects.githubusercontent.com:443
-            codeload.github.com:443
+            objects.githubusercontent.com:443 codeload.github.com:443
             github-releases.githubusercontent.com:443
-            release-assets.githubusercontent.com:443
-            registry.npmjs.org:443
-            npmjs.org:443
-            bun.sh:443
-            rubygems.org:443
-            api.rubygems.org:443
-            index.rubygems.org:443
-            bundler.rubygems.org:443
-            rubygems.global.ssl.fastly.net:443
-            cache.ruby-lang.org:443
-            pypi.org:443
-            files.pythonhosted.org:443
+            release-assets.githubusercontent.com:443 registry.npmjs.org:443
+            npmjs.org:443 bun.sh:443 pypi.org:443 files.pythonhosted.org:443
 
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
@@ -59,16 +41,25 @@ jobs:
         uses: ./.github/actions/setup-env
         with:
           node-version: ${{ inputs.node-version }}
-          ruby-version: ${{ inputs.ruby-version }}
+          skip-ruby: 'true'
 
       - name: TypeScript build
         run: bun run build
 
+      - name: Build JavaScript
+        run: bun run build:js
+
       - name: Build CSS Themes
         run: bun run build:themes
 
-      - name: Jekyll build
-        run: bun run build:ci:jekyll
+      - name: Generate types (python/swift)
+        run: bun run generate:all
+
+      - name: Verify generated tokens are committed
+        run: ./scripts/ci/verify-generated-tokens.sh
+
+      - name: Build Astro site
+        run: bun run build:ci:site
 
       - name: Upload JS dist artifact
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -81,5 +72,5 @@ jobs:
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: site-build
-          path: _site/
+          path: apps/site/dist/
           overwrite: true

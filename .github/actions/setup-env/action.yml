@@ -6,7 +6,7 @@ inputs:
   bun-version:
     description: 'Bun version to use'
     required: false
-    default: '1.1.8'
+    default: '1.3.5'
   node-version:
     description: 'Node.js version to use (for compatibility)'
     required: false
@@ -14,7 +14,7 @@ inputs:
   ruby-version:
     description: 'Ruby version to use'
     required: false
-    default: '3.3.9'
+    default: '3.4.7'
   skip-ruby:
     description: 'Skip Ruby setup (for Node.js-only workflows)'
     required: false

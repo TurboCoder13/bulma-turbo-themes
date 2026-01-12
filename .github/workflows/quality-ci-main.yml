@@ -40,7 +40,6 @@ jobs:
       fail-fast: false
       matrix:
         node: [20, 22]
-        ruby: ['3.3', '3.4']
     steps:
       - name: Harden Runner
         if: ${{ !env.ACT }}
@@ -48,32 +47,14 @@ jobs:
         with:
           egress-policy: block
           allowed-endpoints: >
-            github.com:443
-            api.github.com:443
-            uploads.github.com:443
+            github.com:443 api.github.com:443 uploads.github.com:443
             pipelines.actions.githubusercontent.com:443
-            objects.githubusercontent.com:443
-            codeload.github.com:443
-            registry.npmjs.org:443
-            npmjs.org:443
-            bun.sh:443
-            raw.githubusercontent.com:443
-            github-releases.githubusercontent.com:443
-            release-assets.githubusercontent.com:443
-            rubygems.org:443
-            api.rubygems.org:443
-            index.rubygems.org:443
-            bundler.rubygems.org:443
-            rubygems.global.ssl.fastly.net:443
-            cache.ruby-lang.org:443
-            pypi.org:443
-            files.pythonhosted.org:443
-            codecov.io:443
-            api.codecov.io:443
-            uploader.codecov.io:443
-            cdn.jsdelivr.net:443
-            bulma.io:443
-            anchore.io:443
+            objects.githubusercontent.com:443 codeload.github.com:443
+            registry.npmjs.org:443 npmjs.org:443 bun.sh:443
+            raw.githubusercontent.com:443 github-releases.githubusercontent.com:443
+            release-assets.githubusercontent.com:443 pypi.org:443
+            files.pythonhosted.org:443 codecov.io:443 api.codecov.io:443
+            uploader.codecov.io:443 cdn.jsdelivr.net:443 bulma.io:443 anchore.io:443
             get.anchore.io:443
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
@@ -84,7 +65,7 @@ jobs:
         uses: ./.github/actions/setup-env
         with:
           node-version: '${{ matrix.node }}'
-          ruby-version: '${{ matrix.ruby }}'
+          skip-ruby: 'true'
 
       - name: Validate commit messages
         if: github.event_name == 'pull_request'
@@ -99,7 +80,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
-        if: matrix.node == 22 && matrix.ruby == '3.3' && !env.ACT
+        if: matrix.node == 22 && !env.ACT
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/lcov.info
@@ -110,7 +91,7 @@ jobs:
 
       - name: Upload coverage HTML for Pages
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        if: matrix.node == 22 && matrix.ruby == '3.3' && github.ref == 'refs/heads/main' && !env.ACT
+        if: matrix.node == 22 && github.ref == 'refs/heads/main' && !env.ACT
         with:
           name: coverage-html
           path: coverage/
@@ -118,11 +99,11 @@ jobs:
           overwrite: true
 
       - name: Generate coverage summary for PR comment
-        if: matrix.node == 22 && matrix.ruby == '3.3' && github.event_name == 'pull_request'
+        if: matrix.node == 22 && github.event_name == 'pull_request'
         run: ./scripts/ci/generate-coverage-summary.sh
 
       - name: Post coverage comment on PR
-        if: matrix.node == 22 && matrix.ruby == '3.3' && github.event_name == 'pull_request' && !env.ACT
+        if: matrix.node == 22 && github.event_name == 'pull_request' && !env.ACT
         uses: ./.github/actions/post-pr-comment
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -135,7 +116,7 @@ jobs:
 
       - name: Upload coverage badges
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        if: matrix.node == 22 && matrix.ruby == '3.3' && always() && !env.ACT
+        if: matrix.node == 22 && always() && !env.ACT
         with:
           name: coverage-badges
           path: assets/static/badges
@@ -144,7 +125,7 @@ jobs:
 
       - name: Upload JS dist artifact
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        if: matrix.node == 22 && matrix.ruby == '3.3' && always() && !env.ACT
+        if: matrix.node == 22 && always() && !env.ACT
         with:
           name: js-dist
           path: dist/
@@ -152,10 +133,10 @@ jobs:
 
       - name: Upload built site artifact
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        if: matrix.node == 22 && matrix.ruby == '3.3' && always() && !env.ACT
+        if: matrix.node == 22 && always() && !env.ACT
         with:
           name: site-build
-          path: _site/
+          path: apps/site/dist/
           overwrite: true
 
       - name: Install Syft (SBOM generator)
@@ -166,8 +147,41 @@ jobs:
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        if: matrix.node == 22 && matrix.ruby == '3.3' && always() && !env.ACT
+        if: matrix.node == 22 && always() && !env.ACT
         with:
           name: sbom-cyclonedx
           path: sbom.cyclonedx.json
           overwrite: true
+
+  examples:
+    name: 📦 Validate Examples
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    needs: build
+    steps:
+      - name: Harden Runner
+        if: ${{ !env.ACT }}
+        uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443 api.github.com:443 registry.npmjs.org:443 npmjs.org:443
+            bun.sh:443 raw.githubusercontent.com:443
+            github-releases.githubusercontent.com:443
+
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: ${{ env.CHECKOUT_FETCH_DEPTH }}
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          node-version: '22'
+          skip-ruby: 'true'
+
+      - name: Build all examples
+        run: bun run examples:build
+
+      - name: Run example tests
+        run: bun run examples:test
