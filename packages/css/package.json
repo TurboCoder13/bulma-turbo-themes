@@ -1,0 +1,36 @@
+{
+  "name": "@turbocoder13/turbo-themes-css",
+  "version": "0.11.0",
+  "description": "Pure CSS Custom Properties output for Turbo Themes - framework agnostic",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./turbo.css": "./dist/turbo.css",
+    "./turbo-core.css": "./dist/turbo-core.css",
+    "./turbo-base.css": "./dist/turbo-base.css",
+    "./turbo-syntax.css": "./dist/turbo-syntax.css",
+    "./turbo-components.css": "./dist/turbo-components.css",
+    "./themes/*": "./dist/themes/*",
+    "./components": "./dist/turbo-components.css",
+    "./components/*": "./dist/components/*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/build.mjs",
+    "build:css": "node scripts/build.mjs",
+    "test": "vitest run --config vitest.config.ts"
+  },
+  "dependencies": {
+    "@turbocoder13/turbo-themes-core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  }
+}

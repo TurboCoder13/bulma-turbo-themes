@@ -1,0 +1,101 @@
+/* ==========================================================================
+   Turbo Themes - Tabs
+   ========================================================================== */
+
+.tabs {
+  display: flex;
+  gap: var(--space-xs);
+  border-bottom: 2px solid var(--turbo-border-default);
+  margin-bottom: var(--space-lg);
+}
+
+.tab {
+  padding: var(--space-md) var(--space-lg);
+  font-weight: 500;
+  color: var(--turbo-text-secondary);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tab:hover {
+  color: var(--turbo-text-primary);
+}
+
+.tab.active {
+  color: var(--turbo-brand-primary);
+  border-bottom-color: var(--turbo-brand-primary);
+}
+
+.tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Tab content panels */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Boxed tabs variant */
+.tabs-boxed {
+  border-bottom: none;
+  background: var(--turbo-bg-overlay);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xs);
+}
+
+.tabs-boxed .tab {
+  border-bottom: none;
+  border-radius: var(--radius-md);
+  margin-bottom: 0;
+}
+
+.tabs-boxed .tab.active {
+  background: var(--turbo-bg-surface);
+  color: var(--turbo-brand-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Pills tabs variant */
+.tabs-pills {
+  border-bottom: none;
+  gap: var(--space-sm);
+}
+
+.tabs-pills .tab {
+  border-bottom: none;
+  border-radius: var(--radius-full);
+  margin-bottom: 0;
+}
+
+.tabs-pills .tab.active {
+  background: var(--turbo-brand-primary);
+  color: var(--turbo-text-inverse);
+}
+
+/* Vertical tabs */
+.tabs-vertical {
+  flex-direction: column;
+  border-bottom: none;
+  border-right: 2px solid var(--turbo-border-default);
+}
+
+.tabs-vertical .tab {
+  border-bottom: none;
+  border-right: 2px solid transparent;
+  margin-bottom: 0;
+  margin-right: -2px;
+  text-align: left;
+}
+
+.tabs-vertical .tab.active {
+  border-right-color: var(--turbo-brand-primary);
+}

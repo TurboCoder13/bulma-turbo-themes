@@ -1,0 +1,142 @@
+/* ==========================================================================
+   Turbo Themes - Tables
+   ========================================================================== */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--turbo-bg-surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.table thead {
+  background: var(--turbo-bg-overlay);
+}
+
+.table th {
+  padding: var(--space-md) var(--space-lg);
+  text-align: left;
+  font-weight: 600;
+  color: var(--turbo-text-primary);
+  border-bottom: 2px solid var(--turbo-border-default);
+}
+
+.table td {
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--turbo-border-default);
+  color: var(--turbo-text-secondary);
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+.table tbody tr:hover {
+  background: color-mix(in srgb, var(--turbo-brand-primary) 5%, transparent);
+}
+
+/* Table header color variants */
+.table-header-primary thead {
+  background: color-mix(
+    in srgb,
+    var(--turbo-brand-primary) 15%,
+    var(--turbo-bg-surface)
+  );
+}
+
+.table-header-primary th {
+  color: var(--turbo-brand-primary);
+  border-bottom-color: var(--turbo-brand-primary);
+}
+
+.table-header-info thead {
+  background: color-mix(in srgb, var(--turbo-state-info) 15%, var(--turbo-bg-surface));
+}
+
+.table-header-info th {
+  color: var(--turbo-state-info);
+  border-bottom-color: var(--turbo-state-info);
+}
+
+.table-header-success thead {
+  background: color-mix(
+    in srgb,
+    var(--turbo-state-success) 15%,
+    var(--turbo-bg-surface)
+  );
+}
+
+.table-header-success th {
+  color: var(--turbo-state-success);
+  border-bottom-color: var(--turbo-state-success);
+}
+
+.table-header-warning thead {
+  background: color-mix(
+    in srgb,
+    var(--turbo-state-warning) 15%,
+    var(--turbo-bg-surface)
+  );
+}
+
+.table-header-warning th {
+  color: var(--turbo-state-warning);
+  border-bottom-color: var(--turbo-state-warning);
+}
+
+.table-header-danger thead {
+  background: color-mix(
+    in srgb,
+    var(--turbo-state-danger) 15%,
+    var(--turbo-bg-surface)
+  );
+}
+
+.table-header-danger th {
+  color: var(--turbo-state-danger);
+  border-bottom-color: var(--turbo-state-danger);
+}
+
+/* Striped table */
+.table-striped tbody tr:nth-child(odd) {
+  background: color-mix(in srgb, var(--turbo-bg-overlay) 50%, transparent);
+}
+
+.table-striped tbody tr:nth-child(even) {
+  background: transparent;
+}
+
+/* Accent striped table */
+.table-striped-accent tbody tr:nth-child(odd) {
+  background: color-mix(in srgb, var(--turbo-brand-primary) 5%, transparent);
+}
+
+.table-striped-accent tbody tr:nth-child(even) {
+  background: transparent;
+}
+
+.table-striped-accent tbody tr:hover {
+  background: color-mix(in srgb, var(--turbo-brand-primary) 10%, transparent);
+}
+
+/* Bordered table */
+.table-bordered {
+  border: 1px solid var(--turbo-border-default);
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid var(--turbo-border-default);
+}
+
+/* Compact table */
+.table-compact th,
+.table-compact td {
+  padding: var(--space-sm) var(--space-md);
+}

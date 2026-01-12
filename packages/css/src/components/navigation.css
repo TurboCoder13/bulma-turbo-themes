@@ -1,0 +1,170 @@
+/* ==========================================================================
+   Turbo Themes - Breadcrumb
+   ========================================================================== */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  font-size: 0.875rem;
+  color: var(--turbo-text-secondary);
+}
+
+.breadcrumb-item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.breadcrumb-item a {
+  color: var(--turbo-text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.breadcrumb-item a:hover {
+  color: var(--turbo-brand-primary);
+}
+
+.breadcrumb-item:not(:last-child)::after {
+  content: '/';
+  margin-left: var(--space-sm);
+  color: var(--turbo-text-secondary);
+  opacity: 0.5;
+}
+
+.breadcrumb-item.active {
+  color: var(--turbo-text-primary);
+}
+
+/* ==========================================================================
+   Panel (sidebar navigation)
+   ========================================================================== */
+
+.panel {
+  background: var(--turbo-bg-surface);
+  border: 1px solid var(--turbo-border-default);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.panel-heading {
+  padding: var(--space-md) var(--space-lg);
+  font-weight: 600;
+  background: var(--turbo-bg-overlay);
+  border-bottom: 1px solid var(--turbo-border-default);
+  margin: 0;
+}
+
+.panel-item {
+  display: block;
+  padding: var(--space-md) var(--space-lg);
+  color: var(--turbo-text-secondary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--turbo-border-default);
+  transition: all var(--transition-fast);
+}
+
+.panel-item:last-child {
+  border-bottom: none;
+}
+
+.panel-item:hover {
+  background: color-mix(in srgb, var(--turbo-brand-primary) 10%, transparent);
+  color: var(--turbo-text-primary);
+}
+
+.panel-item.active {
+  background: color-mix(in srgb, var(--turbo-brand-primary) 15%, transparent);
+  color: var(--turbo-brand-primary);
+}
+
+/* ==========================================================================
+   Navbar
+   ========================================================================== */
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  background: var(--turbo-bg-surface);
+  border-bottom: 1px solid var(--turbo-border-default);
+}
+
+.navbar-brand {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--turbo-text-primary);
+  text-decoration: none;
+}
+
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.navbar-item {
+  color: var(--turbo-text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.navbar-item:hover {
+  color: var(--turbo-text-primary);
+}
+
+.navbar-item.active {
+  color: var(--turbo-brand-primary);
+}
+
+/* ==========================================================================
+   Pagination
+   ========================================================================== */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.pagination-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 var(--space-sm);
+  color: var(--turbo-text-secondary);
+  background: var(--turbo-bg-surface);
+  border: 1px solid var(--turbo-border-default);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.pagination-item:hover {
+  background: var(--turbo-bg-overlay);
+  border-color: var(--turbo-brand-primary);
+  color: var(--turbo-text-primary);
+}
+
+.pagination-item.active {
+  background: var(--turbo-brand-primary);
+  border-color: var(--turbo-brand-primary);
+  color: var(--turbo-text-inverse);
+}
+
+.pagination-item:disabled,
+.pagination-item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-prev,
+.pagination-next {
+  font-size: 1.25rem;
+}
