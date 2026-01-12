@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Generate tag creation summary
 # Usage: generate-tag-summary.sh <version> <prerelease>
 

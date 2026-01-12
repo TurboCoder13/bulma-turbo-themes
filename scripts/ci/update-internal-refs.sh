@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Update internal references to target SHA
 # Usage: update-internal-refs.sh <target_sha>
 

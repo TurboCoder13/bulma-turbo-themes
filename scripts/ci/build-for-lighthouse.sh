@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Streamlined build script for Lighthouse CI
 # This script builds only what's needed for Lighthouse performance testing
@@ -51,15 +51,6 @@ else
     exit 1
 fi
 
-# Check required commands
-required_cmds=("bundle")
-for cmd in "${required_cmds[@]}"; do
-    if ! command_exists "$cmd"; then
-        print_status "$RED" "❌ Required command not found: $cmd"
-        exit 1
-    fi
-done
-
 # Install Node.js dependencies
 if [ -f "package.json" ]; then
     print_status "$YELLOW" "  Installing dependencies with $PKG_MGR..."
@@ -73,10 +64,6 @@ if [ -f "package.json" ]; then
 else
     print_status "$YELLOW" "⚠️  Skipping Node.js steps (no package.json found)."
 fi
-
-# Install Ruby dependencies
-print_status "$YELLOW" "  Installing Ruby dependencies..."
-bundle install
 
 # Step 2: Theme synchronization
 print_status "$BLUE" "🎨 Step 2: Theme synchronization..."
@@ -106,16 +93,16 @@ if [ -f "package.json" ] && grep -q '"build:themes"' package.json >/dev/null 2>&
     $PKG_RUN build:themes
 fi
 
-# Step 4: Jekyll build (production mode for Lighthouse)
-print_status "$BLUE" "🏗️  Step 4: Jekyll build..."
-print_status "$YELLOW" "  Building Jekyll site..."
-bundle exec jekyll build --config _config.yml --trace --strict_front_matter
+# Step 4: Astro build (production mode for Lighthouse)
+print_status "$BLUE" "🏗️  Step 4: Astro build..."
+print_status "$YELLOW" "  Building Astro site..."
+$PKG_RUN build:ci:site
 
 print_status "$GREEN" "✅ Lighthouse build completed successfully!"
 print_status "$BLUE" "📋 Summary:"
 print_status "$GREEN" "  ✅ Theme synchronization passed"
 print_status "$GREEN" "  ✅ TypeScript build passed"
 print_status "$GREEN" "  ✅ Theme CSS build passed"
-print_status "$GREEN" "  ✅ Jekyll build passed"
+print_status "$GREEN" "  ✅ Astro build passed"
 print_status "$YELLOW" "  ⏭️  Tests skipped (run in separate workflows)"
 

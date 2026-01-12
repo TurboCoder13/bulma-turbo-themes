@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copy a directory into _site with validation
+# Copy a directory into apps/site/dist with validation
 # Usage: copy-directory-to-site.sh <source-dir> <dest-subpath>
 
 set -euo pipefail
@@ -12,7 +12,7 @@ if [ ! -d "$SOURCE_DIR" ]; then
   exit 1
 fi
 
-DEST_PATH="_site/$DEST_SUBPATH"
+DEST_PATH="apps/site/dist/$DEST_SUBPATH"
 
 echo "Preparing artifacts for upload..."
 mkdir -p "$DEST_PATH"

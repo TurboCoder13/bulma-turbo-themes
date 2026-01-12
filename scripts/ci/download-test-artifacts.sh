@@ -186,32 +186,32 @@ download_lighthouse() {
   fi
 }
 
-# Copy reports into _site directory
-copy_reports_to_site() {
-  log_info "Copying reports into _site directory..."
+# Copy reports into apps/site/dist directory
+copy_reports_toapps/site/dist() {
+  log_info "Copying reports into apps/site/dist directory..."
   
   # Coverage
   if [ -d "coverage" ] && [ -n "$(ls -A coverage 2>/dev/null)" ]; then
     log_info "Copying coverage reports..."
-    mkdir -p _site/coverage
-    cp -r coverage/* _site/coverage/ || true
-    log_success "Coverage reports copied to _site/coverage/"
+    mkdir -p apps/site/dist/coverage
+    cp -r coverage/* apps/site/dist/coverage/ || true
+    log_success "Coverage reports copied to apps/site/dist/coverage/"
   fi
   
   # Playwright (needs to be copied to playwright/ via simplify_urls.rb pattern)
   if [ -d "playwright-report" ] && [ -n "$(ls -A playwright-report 2>/dev/null)" ]; then
     log_info "Copying Playwright reports..."
-    mkdir -p _site/playwright
-    cp -r playwright-report/* _site/playwright/ || true
-    log_success "Playwright reports copied to _site/playwright/"
+    mkdir -p apps/site/dist/playwright
+    cp -r playwright-report/* apps/site/dist/playwright/ || true
+    log_success "Playwright reports copied to apps/site/dist/playwright/"
   fi
   
   # Lighthouse
   if [ -d "lighthouse-reports" ] && [ -n "$(ls -A lighthouse-reports 2>/dev/null)" ]; then
     log_info "Copying Lighthouse reports..."
-    mkdir -p _site/lighthouse
-    cp -r lighthouse-reports/* _site/lighthouse/ || true
-    log_success "Lighthouse reports copied to _site/lighthouse/"
+    mkdir -p apps/site/dist/lighthouse
+    cp -r lighthouse-reports/* apps/site/dist/lighthouse/ || true
+    log_success "Lighthouse reports copied to apps/site/dist/lighthouse/"
   fi
 }
 
@@ -223,7 +223,7 @@ main() {
   download_playwright
   download_lighthouse
   
-  copy_reports_to_site
+  copy_reports_toapps/site/dist
   
   log_success "Artifact download completed"
 }

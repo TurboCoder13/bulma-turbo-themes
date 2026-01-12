@@ -1,61 +1,73 @@
 #!/usr/bin/env node
 
 /**
- * Cross-platform script to prepare and serve the Jekyll site for E2E tests.
+ * Cross-platform script to prepare and serve the Astro site for E2E tests.
  * This script runs the build prep and then starts http-server.
  */
 
-import { execSync, spawn } from "child_process";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { execSync, spawn } from 'child_process';
+import { existsSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const rootDir = join(__dirname, "..");
+const rootDir = join(__dirname, '..');
+
+/**
+ * Check if dist is already built (has index.html)
+ */
+function isSiteBuilt() {
+  return existsSync(join(rootDir, 'apps', 'site', 'dist', 'index.html'));
+}
 
 try {
-  // Step 1: Run the prep command
-  console.log("Running e2e prep (build + Jekyll build)...");
-  execSync("npm run e2e:prep", {
-    cwd: rootDir,
-    stdio: "inherit",
-    shell: true,
-  });
+  // Step 1: Run the prep command (skip if already built or SKIP_PREP=1)
+  const skipPrep = process.env.SKIP_PREP === '1' || isSiteBuilt();
+
+  if (skipPrep) {
+    console.log('Skipping e2e prep (dist already exists)...');
+  } else {
+    console.log('Running e2e prep (build + Astro build)...');
+    execSync('bun run e2e:prep', {
+      cwd: rootDir,
+      stdio: 'inherit',
+      shell: true,
+    });
+  }
 
   // Step 2: Start http-server
-  const host = process.env.HOST ?? "127.0.0.1";
+  const host = process.env.HOST ?? '127.0.0.1';
   const port = Number(process.env.PORT ?? 4173);
   if (isNaN(port) || port < 1 || port > 65535) {
-    console.error(
-      `Invalid PORT: ${process.env.PORT}. Must be a number between 1 and 65535.`,
-    );
+    console.error(`Invalid PORT: ${process.env.PORT}. Must be a number between 1 and 65535.`);
     process.exit(1);
   }
   console.log(`Starting http-server on http://${host}:${port}...`);
-  const npxCmd = process.platform === "win32" ? "npx.cmd" : "npx";
+  const bunxCmd = process.platform === 'win32' ? 'bunx.cmd' : 'bunx';
   const serverArgs = [
-    "--no-install",
-    "http-server",
-    "_site",
-    "-a",
+    '--no-install',
+    'http-server',
+    'apps/site/dist',
+    '-a',
     host,
-    "-p",
+    '-p',
     String(port),
-    "-c-1",
-    "-s",
+    '-c-1',
+    '-s',
   ];
-  const serverProcess = spawn(npxCmd, serverArgs, {
+  const serverProcess = spawn(bunxCmd, serverArgs, {
     cwd: rootDir,
-    stdio: "inherit",
+    stdio: 'inherit',
   });
   // Handle spawn errors
-  serverProcess.on("error", (error) => {
-    console.error("Failed to start http-server:", error.message);
+  serverProcess.on('error', (error) => {
+    console.error('Failed to start http-server:', error.message);
     process.exit(1);
   });
 
   // Handle server process exit
-  serverProcess.on("exit", (code, signal) => {
+  serverProcess.on('exit', (code, signal) => {
     if (signal) {
       console.log(`http-server terminated by signal: ${signal}`);
     } else if (code !== null && code !== 0) {
@@ -73,14 +85,14 @@ try {
     process.exit(0);
   };
 
-  process.on("SIGTERM", () => shutdown("SIGTERM"));
-  process.on("SIGINT", () => shutdown("SIGINT"));
-  process.on("exit", () => {
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
+  process.on('exit', () => {
     if (serverProcess && !serverProcess.killed) {
       serverProcess.kill();
     }
   });
 } catch (error) {
-  console.error("Error running e2e serve:", error.message);
+  console.error('Error running e2e serve:', error.message);
   process.exit(1);
 }

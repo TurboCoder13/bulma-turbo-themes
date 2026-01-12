@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Check if tag already exists
 # Usage: check-tag-exists.sh <version>
 

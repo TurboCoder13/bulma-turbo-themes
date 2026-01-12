@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Build script for bulma-turbo-themes Jekyll site
+# Build script for turbo-themes Jekyll site
 # This script handles both local development and CI workflows
 # Usage: ./scripts/local/build.sh [--quick|--full|--serve|--no-serve|--skip-tests|--skip-lint|--skip-lh]
 #
@@ -12,161 +12,29 @@
 
 set -e  # Exit on any error
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+# Source shared utilities
+SCRIPT_DIR_INIT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=../utils/utils.sh
+source "${SCRIPT_DIR_INIT}/../utils/utils.sh"
 
-# Function to print colored output
+# Alias logging functions for backward compatibility
 print_status() {
     local color="$1"
     local message="$2"
-    echo -e "${color}${message}${NC}"
+    case "$color" in
+        *31m*) log_error "$message" ;;
+        *32m*) log_success "$message" ;;
+        *33m*) log_warn "$message" ;;
+        *34m*) log_info "$message" ;;
+        *) echo -e "$message" ;;
+    esac
 }
 
-# Function to check if command exists
-command_exists() {
-    command -v "$1" >/dev/null 2>&1
-}
+# port_available and wait_for_port are now provided by utils.sh
 
-# Check for lsof availability
-if ! command_exists "lsof"; then
-    print_status "$YELLOW" "⚠️  lsof not found, using portable port check alternative"
-    LSOF_AVAILABLE=false
-else
-    LSOF_AVAILABLE=true
-fi
-
-# Function to check if port is available
-# Uses lsof if available, otherwise falls back to bash /dev/tcp probe
-port_available() {
-    local port="$1"
-    
-    if [ "$LSOF_AVAILABLE" = true ]; then
-        # Use lsof for accurate port checking
-        if lsof -Pi :"$port" -sTCP:LISTEN -t >/dev/null 2>&1; then
-            return 1
-        else
-            return 0
-        fi
-    else
-        # Prefer nc (netcat) if available
-        if command_exists "nc"; then
-            if nc -z 127.0.0.1 "$port" >/dev/null 2>&1; then
-                # Connection succeeded → port in use
-                return 1
-            else
-                return 0
-            fi
-        fi
-        # Prefer ss (socket statistics) if available
-        if command_exists "ss"; then
-            if ss -ltn 2>/dev/null | awk '{print $4}' | grep -qE ":(^|.*:)${port}$"; then
-                return 1
-            else
-                return 0
-            fi
-        fi
-        # Portable fallback: bash /dev/tcp probe
-        # This works on bash 2.04+ and doesn't require external tools
-        # Redirect to /dev/tcp/127.0.0.1/port; ensure FDs are closed
-        if exec 3<>/dev/tcp/127.0.0.1/"$port" 2>/dev/null; then
-            # Port is in use (connection succeeded)
-            exec 3<&-
-            exec 3>&-
-            return 1
-        else
-            # Port is available (connection failed)
-            # Close FDs defensively if they were opened partially
-            exec 3<&- 2>/dev/null || true
-            exec 3>&- 2>/dev/null || true
-            return 0
-        fi
-    fi
-}
-
-# Configuration for port release checking
-# PORT_RELEASE_CHECK_INTERVAL: Time between port checks (default: 0.5s)
-# PORT_RELEASE_TIMEOUT: Maximum time to wait for port release (default: 5s)
-# PORT_TO_CHECK: Port number to check (default: 4000)
-export PORT_RELEASE_CHECK_INTERVAL="${PORT_RELEASE_CHECK_INTERVAL:-0.5}"
-export PORT_RELEASE_TIMEOUT="${PORT_RELEASE_TIMEOUT:-5}"
-export PORT_TO_CHECK="${PORT_TO_CHECK:-4000}"
-
-# Function to wait for port to be released
+# wait_for_port_release replaced by wait_for_port from utils.sh
 wait_for_port_release() {
-    local port="${PORT_TO_CHECK}"
-    local interval="${PORT_RELEASE_CHECK_INTERVAL}"
-    local timeout="${PORT_RELEASE_TIMEOUT}"
-    # Validate numeric (integer or decimal) and reject zero/sub-millisecond values
-    case "$timeout" in
-        ''|*[!0-9.]*|*\..*\..*)
-            print_status "$RED" "❌ Invalid timeout value: $timeout (must be a positive decimal number)"
-            exit 1
-            ;;
-    esac
-    case "$interval" in
-        ''|*[!0-9.]*|*\..*\..*)
-            print_status "$RED" "❌ Invalid interval value: $interval (must be a positive decimal number)"
-            exit 1
-            ;;
-    esac
-
-    # Reject zero values (0, 0.0, 0.00, etc.) at validation time
-    # Use awk to handle decimal comparison properly
-    if awk "BEGIN {exit !($timeout <= 0)}"; then
-        print_status "$RED" "❌ Invalid timeout: $timeout seconds (must be ≥ 0.001)"
-        exit 1
-    fi
-    if awk "BEGIN {exit !($interval <= 0)}"; then
-        print_status "$RED" "❌ Invalid interval: $interval seconds (must be ≥ 0.001)"
-        exit 1
-    fi
-
-    # Convert to integer milliseconds using awk for safe decimal arithmetic
-    local timeout_ms interval_ms
-    timeout_ms=$(awk "BEGIN {printf \"%.0f\", $timeout * 1000}")
-    interval_ms=$(awk "BEGIN {printf \"%.0f\", $interval * 1000}")
-
-    # Validate converted values (should not be needed if validation above works, but safety check)
-    if [ "$timeout_ms" -le 0 ]; then
-        print_status "$RED" "❌ Invalid timeout: $timeout seconds (rounds to ≤ 0ms, must be ≥ 0.001)"
-        exit 1
-    fi
-    if [ "$interval_ms" -le 0 ]; then
-        print_status "$RED" "❌ Invalid interval: $interval seconds (rounds to ≤ 0ms, must be ≥ 0.001)"
-        exit 1
-    fi
-
-    # Ceiling division for attempt count
-    local max_attempts=$(( (timeout_ms + interval_ms - 1) / interval_ms ))
-    local attempt=0
-
-    print_status "$YELLOW" "  Waiting for port $port to be released (timeout: ${timeout}s, interval: ${interval}s)..."
-
-    while [ $attempt -lt $max_attempts ]; do
-        if port_available "$port"; then
-            print_status "$GREEN" "  ✅ Port $port is now free"
-            return 0
-        fi
-        sleep "$interval"
-        attempt=$((attempt + 1))
-    done
-
-    # Final check after timeout
-    if ! port_available "$port"; then
-        if [ "${PORT_RELEASE_STRICT:-false}" = true ]; then
-            print_status "$RED" "❌ Port $port still in use after ${timeout}s"
-            return 1
-        fi
-        print_status "$YELLOW" "  ⚠️  Port $port may still be in use after ${timeout}s timeout, continuing anyway..."
-    else
-        print_status "$GREEN" "  ✅ Port $port is now free"
-    fi
-
-    return 0
+    wait_for_port "${PORT_TO_CHECK:-4000}" "${PORT_RELEASE_TIMEOUT:-5}" "${PORT_RELEASE_CHECK_INTERVAL:-0.5}"
 }
 
 # Initialize variables
@@ -241,7 +109,7 @@ if [ "$DEV_MODE" = true ]; then
     print_status "$BLUE" "📍 Environment: Development (baseurl: empty)"
     JEKYLL_CONFIG="_config.yml"
 elif [ "$PROD_MODE" = true ]; then
-    print_status "$BLUE" "📍 Environment: Production (baseurl: /bulma-turbo-themes)"
+    print_status "$BLUE" "📍 Environment: Production (baseurl: /turbo-themes)"
     JEKYLL_CONFIG="_config.yml,_config.prod.yml"
 else
     JEKYLL_CONFIG="_config.yml"
@@ -318,50 +186,36 @@ else
     print_status "$YELLOW" "  Skipping Ruby dependencies (quick mode)..."
 fi
 
-# Step 2: Linting and formatting
+# Step 2: Linting and formatting (lintro handles all tools: biome, prettier, ruff, etc.)
 if [ "$SKIP_LINT" = true ]; then
     print_status "$YELLOW" "⏭️  Step 2: Skipping linting and formatting (--skip-lint flag set)..."
 else
     print_status "$BLUE" "🔍 Step 2: Linting and formatting..."
+    if command_exists "uv"; then
+        print_status "$YELLOW" "  Running lintro check (biome, prettier, ruff, yamllint, etc.)..."
+        if ! uv run lintro check 2>/dev/null; then
+            print_status "$RED" "❌ Linting check failed"
+            print_status "$YELLOW" "  Run 'uv run lintro fmt' to fix formatting issues automatically"
+            exit 1
+        fi
+    else
+        print_status "$RED" "❌ uv not available - lintro requires uv"
+        print_status "$YELLOW" "  Install uv: curl -LsSf https://astral.sh/uv/install.sh | sh"
+        exit 1
+    fi
+
+    print_status "$YELLOW" "  Validating GitHub Action pinning..."
+    if [ -f "scripts/ci/validate-action-pinning.sh" ]; then
+        if ! ./scripts/ci/validate-action-pinning.sh; then
+            print_status "$RED" "❌ Action pinning validation failed"
+            print_status "$YELLOW" "  Some GitHub Actions are not properly pinned to SHA"
+            exit 1
+        fi
+    else
+        print_status "$YELLOW" "⚠️  Action pinning validation script not found"
+    fi
+
     if [ -f "package.json" ]; then
-        print_status "$YELLOW" "  Running ESLint..."
-        $PKG_RUN lint
-        
-        print_status "$YELLOW" "  Checking code formatting with lintro..."
-        if command_exists "uv"; then
-            if ! uv run lintro check --tools black,darglint,prettier,ruff,yamllint,actionlint,bandit 2>/dev/null; then
-                print_status "$RED" "❌ Code formatting check failed"
-                print_status "$YELLOW" "  Run '$PKG_RUN format:write' to fix formatting issues automatically"
-                exit 1
-            fi
-        else
-            print_status "$YELLOW" "⚠️  uv not available, skipping lintro code formatting check"
-        fi
-        
-        print_status "$YELLOW" "  Validating YAML files with lintro..."
-        if command_exists "uv"; then
-            # Validate YAML files using lintro chk (hadolint excluded due to Dockerfile issues now resolved)
-            if ! uv run lintro chk --tools yamllint,actionlint .github/workflows .github/actions 2>/dev/null; then
-                print_status "$YELLOW" "⚠️  lintro validation found issues (non-blocking)"
-            fi
-        else
-            print_status "$YELLOW" "⚠️  uv not available, skipping YAML validation"
-        fi
-        
-        print_status "$YELLOW" "  Validating GitHub Action pinning..."
-        if [ -f "scripts/ci/validate-action-pinning.sh" ]; then
-            if ! ./scripts/ci/validate-action-pinning.sh; then
-                print_status "$RED" "❌ Action pinning validation failed"
-                print_status "$YELLOW" "  Some GitHub Actions are not properly pinned to SHA"
-                exit 1
-            fi
-        else
-            print_status "$YELLOW" "⚠️  Action pinning validation script not found"
-        fi
-        
-        print_status "$YELLOW" "  Running Markdown lint..."
-        $PKG_RUN mdlint
-        
         print_status "$YELLOW" "  Running Stylelint..."
         $PKG_RUN stylelint
     fi
@@ -374,7 +228,7 @@ if [ -f "package.json" ] && grep -q '"theme:sync"' package.json >/dev/null 2>&1;
     $PKG_RUN theme:sync
     
     # Check for diffs limited to generated files to avoid unrelated local edits
-    GENERATED_PATHS=("src/themes/packs/catppuccin.synced.ts")
+    GENERATED_PATHS=("packages/core/src/themes/packs/catppuccin.synced.ts")
     if ! git diff --quiet -- "${GENERATED_PATHS[@]}" \
         || [[ -n "$(git ls-files --others --exclude-standard -- "${GENERATED_PATHS[@]}")" ]]; then
         print_status "$RED" "❌ Non-deterministic theme sync detected in generated files:"
@@ -391,6 +245,14 @@ print_status "$BLUE" "⚡ Step 4: TypeScript build..."
 if [ -f "package.json" ] && grep -q '"build"' package.json >/dev/null 2>&1; then
     print_status "$YELLOW" "  Building TypeScript..."
     $PKG_RUN build
+fi
+
+# Step 4.5: Generate CSS tokens (required for tests)
+print_status "$BLUE" "🎨 Step 4.5: Generate CSS tokens..."
+if [ -f "package.json" ] && grep -q '"build:tokens:css"' package.json >/dev/null 2>&1; then
+    print_status "$YELLOW" "  Generating turbo CSS variables..."
+    $PKG_RUN build:tokens:css
+    print_status "$GREEN" "  ✅ CSS tokens generated successfully"
 fi
 
 # Step 5: Unit tests with coverage
@@ -418,6 +280,39 @@ else
             print_status "$RED" "  ❌ Unit tests failed"
             exit 1
         fi
+    fi
+fi
+
+# Step 5.5: Python tests
+if [ "$SKIP_TESTS" = false ]; then
+    print_status "$BLUE" "🐍 Step 5.5: Python tests..."
+    if [ -d "python" ]; then
+        if run_python_tests python; then
+            print_status "$GREEN" "  ✅ Python tests passed"
+        else
+            print_status "$RED" "  ❌ Python tests failed"
+            exit 1
+        fi
+    else
+        print_status "$YELLOW" "⚠️  Python directory not found, skipping Python tests..."
+    fi
+fi
+
+# Step 5.6: Ruby RSpec tests
+if [ "$SKIP_TESTS" = false ]; then
+    print_status "$BLUE" "💎 Step 5.6: Ruby RSpec tests..."
+    if command -v bundle &> /dev/null && [ -f "spec/spec_helper.rb" ]; then
+        print_status "$YELLOW" "  Running RSpec tests with coverage..."
+        # Ensure rspec-coverage directory exists
+        mkdir -p rspec-coverage
+        if bundle exec rspec --format progress --format html --out rspec-coverage/rspec-report.html; then
+            print_status "$GREEN" "  ✅ Ruby RSpec tests passed"
+        else
+            print_status "$RED" "  ❌ Ruby RSpec tests failed"
+            exit 1
+        fi
+    else
+        print_status "$YELLOW" "⚠️  RSpec not configured, skipping Ruby tests..."
     fi
 fi
 
@@ -472,41 +367,13 @@ fi
 
 # Step 9: HTMLProofer
 print_status "$BLUE" "🔍 Step 9: HTMLProofer validation..."
-print_status "$YELLOW" "  Running HTMLProofer..."
-# Validation strategy:
-# - Development builds: Validate internal links (--disable-external)
-# - Production builds: Skip HTMLProofer (baseurl causes false positives locally)
-# - Full CI builds: Separate dedicated workflow validates all links on GitHub Pages
-# This prevents false failures from production baseurl while maintaining code quality checks
 if [ "$PROD_MODE" = true ]; then
     # Production builds: Skip validation (baseurl prefix makes local paths invalid)
-    # External validation happens on actual GitHub Pages deployment
     print_status "$YELLOW" "  ⏭️  Skipping HTMLProofer for production build (validation happens on GitHub Pages)..."
-elif [ "$QUICK_MODE" = true ] || [ "$FULL_MODE" = false ]; then
-    # Quick/local dev builds: Skip external link validation (faster, no network dependency)
-    print_status "$YELLOW" "  Validating internal links only (external links checked separately via monitoring)..."
-    bundle exec htmlproofer \
-      --disable-external \
-      --assume-extension \
-      --allow-hash-href \
-      --allow-missing-href \
-      --no-enforce-https \
-      --ignore-urls "/lighthouse/,/playwright/" \
-      ./_site
 else
-    # Full CI builds: Skip external link validation here
-    # External links are validated separately on actual GitHub Pages deployment
-    # via the reporting-link-monitoring.yml workflow with proper retry logic
-    # This prevents false failures from transient network issues in CI
-    print_status "$YELLOW" "  Validating internal links only (external links checked separately on GitHub Pages)..."
-    bundle exec htmlproofer \
-      --disable-external \
-      --assume-extension \
-      --allow-hash-href \
-      --allow-missing-href \
-      --no-enforce-https \
-      --ignore-urls "/lighthouse/,/playwright/" \
-      ./_site
+    # Quick/local/CI builds: Validate internal links only (external checked separately)
+    print_status "$YELLOW" "  Validating internal links only..."
+    run_htmlproofer ./_site
 fi
 
 # Step 10: Lighthouse performance analysis (dev/prod/full unless skipped)
@@ -582,6 +449,9 @@ if [ "$SKIP_TESTS" = true ]; then
     print_status "$YELLOW" "  ⏭️  Tests skipped (--skip-tests flag)"
 else
     print_status "$GREEN" "  ✅ Unit tests with coverage passed"
+    if [ -d "python" ]; then
+        print_status "$GREEN" "  ✅ Python tests passed"
+    fi
 fi
 print_status "$GREEN" "  ✅ CSS budget check passed"
 print_status "$GREEN" "  ✅ Jekyll build passed"

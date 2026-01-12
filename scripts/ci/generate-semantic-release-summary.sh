@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Generate semantic release summary
 # Usage: generate-semantic-release-summary.sh
 

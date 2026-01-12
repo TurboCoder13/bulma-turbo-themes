@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Generate publish release summary for GitHub Actions
 
 set -euo pipefail

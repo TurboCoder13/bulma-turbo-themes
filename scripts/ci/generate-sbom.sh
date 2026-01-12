@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Generate SBOM (CycloneDX JSON)
 # Usage: generate-sbom.sh
 

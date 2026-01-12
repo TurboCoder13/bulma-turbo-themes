@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Generate coverage summary for PR comment
 # Usage: generate-coverage-summary.sh
 

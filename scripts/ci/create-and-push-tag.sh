@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Create and push git tag
 # Usage: create-and-push-tag.sh <version> <prerelease>
 

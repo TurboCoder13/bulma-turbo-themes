@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Validate SBOM files
 # Usage: validate-sbom.sh [cyclonedx|spdx]
 

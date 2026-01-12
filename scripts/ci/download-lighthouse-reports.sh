@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 # Download Lighthouse reports from recent CI runs
@@ -84,9 +84,9 @@ main() {
   # Copy reports to site if they exist
   if [ -d "${REPORTS_DIR}" ] && [ -n "$(ls -A "${REPORTS_DIR}" 2>/dev/null)" ]; then
     log_success "Including Lighthouse reports in site deployment"
-    mkdir -p _site/lighthouse-reports/
-    cp -r "${REPORTS_DIR}"/* _site/lighthouse-reports/
-    ls -la _site/lighthouse-reports/
+    mkdir -p apps/site/dist/lighthouse-reports/
+    cp -r "${REPORTS_DIR}"/* apps/site/dist/lighthouse-reports/
+    ls -la apps/site/dist/lighthouse-reports/
   else
     log_warning "No Lighthouse reports found, skipping"
   fi
