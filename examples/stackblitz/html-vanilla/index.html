@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en" data-theme="catppuccin-mocha">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Turbo Themes - HTML Vanilla</title>
+    <link rel="stylesheet" href="https://unpkg.com/turbo-themes/css/turbo-core.css" />
+    <link rel="stylesheet" href="https://unpkg.com/turbo-themes/css/turbo-base.css" />
+    <link
+      id="theme-css"
+      rel="stylesheet"
+      href="https://unpkg.com/turbo-themes/css/themes/turbo/catppuccin-mocha.css"
+    />
+    <style>
+      body {
+        font-family: var(--turbo-font-sans);
+        background: var(--turbo-bg-base);
+        color: var(--turbo-text-primary);
+        padding: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .card {
+        background: var(--turbo-bg-surface);
+        border: 1px solid var(--turbo-border-default);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        margin-right: 0.5rem;
+      }
+      .btn-primary {
+        background: var(--turbo-brand-primary);
+        color: var(--turbo-text-inverse);
+      }
+      .btn-success {
+        background: var(--turbo-state-success);
+        color: var(--turbo-text-inverse);
+      }
+      .btn-danger {
+        background: var(--turbo-state-danger);
+        color: var(--turbo-text-inverse);
+      }
+      select {
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        border: 1px solid var(--turbo-border-default);
+        background: var(--turbo-bg-surface);
+        color: var(--turbo-text-primary);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Turbo Themes Demo</h1>
+
+    <div class="card">
+      <h2>Theme Selector</h2>
+      <select id="theme-selector" aria-label="Select theme">
+        <option value="catppuccin-mocha">Catppuccin Mocha</option>
+        <option value="catppuccin-latte">Catppuccin Latte</option>
+        <option value="dracula">Dracula</option>
+        <option value="github-dark">GitHub Dark</option>
+        <option value="github-light">GitHub Light</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <h2>Buttons</h2>
+      <button class="btn btn-primary">Primary</button>
+      <button class="btn btn-success">Success</button>
+      <button class="btn btn-danger">Danger</button>
+    </div>
+
+    <script>
+      const selector = document.getElementById('theme-selector');
+      const themeLink = document.getElementById('theme-css');
+
+      // Load saved theme
+      const saved = localStorage.getItem('turbo-theme');
+      if (saved) {
+        selector.value = saved;
+        themeLink.href = `https://unpkg.com/turbo-themes/css/themes/turbo/${saved}.css`;
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+
+      // Handle theme change
+      selector.addEventListener('change', (e) => {
+        const theme = e.target.value;
+        themeLink.href = `https://unpkg.com/turbo-themes/css/themes/turbo/${theme}.css`;
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('turbo-theme', theme);
+      });
+    </script>
+  </body>
+</html>

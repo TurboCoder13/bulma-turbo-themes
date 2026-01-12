@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en" data-theme="catppuccin-mocha" data-bs-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Turbo Themes - Bootstrap</title>
+    <!-- Turbo Themes CSS -->
+    <link rel="stylesheet" href="./turbo-themes/turbo-core.css" />
+    <link rel="stylesheet" href="./turbo-themes/turbo-base.css" />
+    <link
+      id="theme-css"
+      rel="stylesheet"
+      href="./turbo-themes/themes/catppuccin-mocha.css"
+    />
+    <!-- FOUC Prevention -->
+    <script>
+      (function () {
+        var saved = localStorage.getItem('turbo-theme') || 'catppuccin-mocha';
+        var lightThemes = ['catppuccin-latte', 'github-light', 'bulma-light'];
+        document.documentElement.setAttribute('data-theme', saved);
+        document.documentElement.setAttribute(
+          'data-bs-theme',
+          lightThemes.includes(saved) ? 'light' : 'dark'
+        );
+        var link = document.getElementById('theme-css');
+        if (link) link.href = './turbo-themes/themes/' + saved + '.css';
+      })();
+    </script>
+    <!-- Bootstrap + Custom Styles -->
+    <link rel="stylesheet" href="/src/styles/main.scss" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
+      <div class="container">
+        <a class="navbar-brand" href="#">Bootstrap + Turbo Themes</a>
+        <div class="d-flex align-items-center gap-3">
+          <label class="d-flex align-items-center gap-2">
+            <span class="text-body-secondary small">Theme</span>
+            <select
+              id="theme-selector"
+              class="form-select form-select-sm"
+              style="width: auto"
+              aria-label="Select theme"
+            >
+              <option value="catppuccin-mocha">Catppuccin Mocha</option>
+              <option value="catppuccin-macchiato">Catppuccin Macchiato</option>
+              <option value="catppuccin-frappe">Catppuccin Frappe</option>
+              <option value="catppuccin-latte">Catppuccin Latte</option>
+              <option value="dracula">Dracula</option>
+              <option value="github-dark">GitHub Dark</option>
+              <option value="github-light">GitHub Light</option>
+              <option value="bulma-dark">Bulma Dark</option>
+              <option value="bulma-light">Bulma Light</option>
+            </select>
+          </label>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container">
+      <!-- Buttons -->
+      <section class="card mb-4">
+        <div class="card-header">
+          <h2 class="card-title h5 mb-0">Buttons</h2>
+        </div>
+        <div class="card-body">
+          <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-primary">Primary</button>
+            <button class="btn btn-success">Success</button>
+            <button class="btn btn-danger">Danger</button>
+            <button class="btn btn-warning">Warning</button>
+            <button class="btn btn-info">Info</button>
+            <button class="btn btn-secondary">Secondary</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Alerts -->
+      <section class="card mb-4">
+        <div class="card-header">
+          <h2 class="card-title h5 mb-0">Alerts</h2>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-primary" role="alert">
+            A simple primary alert with theme colors.
+          </div>
+          <div class="alert alert-success" role="alert">
+            A simple success alert with theme colors.
+          </div>
+          <div class="alert alert-danger mb-0" role="alert">
+            A simple danger alert with theme colors.
+          </div>
+        </div>
+      </section>
+
+      <!-- Cards Grid -->
+      <section class="mb-4">
+        <h2 class="h5 mb-3">Card Grid</h2>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Surface Colors</h5>
+                <p class="card-text text-body-secondary">
+                  Cards use surface and background tokens from the active theme.
+                </p>
+              </div>
+              <div class="card-footer">
+                <small class="text-body-secondary">--turbo-bg-surface</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Typography</h5>
+                <p class="card-text text-body-secondary">
+                  Text colors map to the theme's text primary and muted tokens.
+                </p>
+              </div>
+              <div class="card-footer">
+                <small class="text-body-secondary">--turbo-text-primary</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Borders</h5>
+                <p class="card-text text-body-secondary">
+                  Border colors come from the theme's border tokens.
+                </p>
+              </div>
+              <div class="card-footer">
+                <small class="text-body-secondary">--turbo-border-default</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Form Controls -->
+      <section class="card mb-4">
+        <div class="card-header">
+          <h2 class="card-title h5 mb-0">Form Controls</h2>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="inputEmail" class="form-label">Email address</label>
+              <input
+                type="email"
+                class="form-control"
+                id="inputEmail"
+                placeholder="name@example.com"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="inputPassword" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="inputPassword"
+                placeholder="Password"
+              />
+            </div>
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="checkRemember" />
+                <label class="form-check-label" for="checkRemember">
+                  Remember me
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Color Swatches -->
+      <section class="card mb-4">
+        <div class="card-header">
+          <h2 class="card-title h5 mb-0">Color Swatches</h2>
+        </div>
+        <div class="card-body">
+          <div class="d-flex flex-wrap gap-3">
+            <div class="swatch swatch-primary" title="Primary"></div>
+            <div class="swatch swatch-success" title="Success"></div>
+            <div class="swatch swatch-warning" title="Warning"></div>
+            <div class="swatch swatch-danger" title="Danger"></div>
+            <div class="swatch swatch-info" title="Info"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="container py-4 text-center text-body-secondary border-top">
+      <p class="mb-0">
+        Current theme: <code id="current-theme">catppuccin-mocha</code>
+      </p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,186 @@
+// Bootstrap + Turbo Themes Integration
+// Note: Bootstrap SCSS color functions (mix, shade-color, etc.) require actual
+// color values, not CSS variables. We import Bootstrap with defaults, then
+// override specific properties using CSS custom properties.
+
+// Import Bootstrap with default colors (required for SCSS color functions)
+@import 'bootstrap/scss/bootstrap';
+
+// Override Bootstrap's CSS with Turbo Themes variables
+// These overrides apply after Bootstrap is compiled
+
+// Root/body overrides
+:root {
+  // Typography
+  --bs-body-font-family: var(--turbo-font-sans);
+  --bs-body-color: var(--turbo-text-primary);
+  --bs-body-bg: var(--turbo-bg-base);
+  --bs-secondary-color: var(--turbo-text-muted);
+  --bs-tertiary-bg: var(--turbo-bg-surface);
+
+  // Links
+  --bs-link-color: var(--turbo-accent-link);
+  --bs-link-hover-color: var(--turbo-brand-primary);
+
+  // Borders
+  --bs-border-color: var(--turbo-border-default);
+}
+
+// Card overrides
+.card {
+  --bs-card-bg: var(--turbo-bg-surface);
+  --bs-card-border-color: var(--turbo-border-default);
+  --bs-card-cap-bg: var(--turbo-bg-overlay);
+}
+
+// Button overrides using Turbo theme colors
+.btn-primary {
+  --bs-btn-bg: var(--turbo-brand-primary);
+  --bs-btn-border-color: var(--turbo-brand-primary);
+  --bs-btn-hover-bg: var(--turbo-brand-primary);
+  --bs-btn-hover-border-color: var(--turbo-brand-primary);
+  --bs-btn-active-bg: var(--turbo-brand-primary);
+  --bs-btn-active-border-color: var(--turbo-brand-primary);
+  filter: brightness(1);
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+}
+
+.btn-success {
+  --bs-btn-bg: var(--turbo-state-success);
+  --bs-btn-border-color: var(--turbo-state-success);
+  --bs-btn-hover-bg: var(--turbo-state-success);
+  --bs-btn-hover-border-color: var(--turbo-state-success);
+  filter: brightness(1);
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+}
+
+.btn-danger {
+  --bs-btn-bg: var(--turbo-state-danger);
+  --bs-btn-border-color: var(--turbo-state-danger);
+  --bs-btn-hover-bg: var(--turbo-state-danger);
+  --bs-btn-hover-border-color: var(--turbo-state-danger);
+  filter: brightness(1);
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+}
+
+.btn-warning {
+  --bs-btn-bg: var(--turbo-state-warning);
+  --bs-btn-border-color: var(--turbo-state-warning);
+  --bs-btn-hover-bg: var(--turbo-state-warning);
+  --bs-btn-hover-border-color: var(--turbo-state-warning);
+  filter: brightness(1);
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+}
+
+.btn-info {
+  --bs-btn-bg: var(--turbo-state-info);
+  --bs-btn-border-color: var(--turbo-state-info);
+  --bs-btn-hover-bg: var(--turbo-state-info);
+  --bs-btn-hover-border-color: var(--turbo-state-info);
+  filter: brightness(1);
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+}
+
+// Alert overrides
+.alert-primary {
+  --bs-alert-bg: color-mix(in srgb, var(--turbo-brand-primary) 15%, transparent);
+  --bs-alert-color: var(--turbo-text-primary);
+  --bs-alert-border-color: var(--turbo-brand-primary);
+}
+
+.alert-success {
+  --bs-alert-bg: color-mix(in srgb, var(--turbo-state-success) 15%, transparent);
+  --bs-alert-color: var(--turbo-text-primary);
+  --bs-alert-border-color: var(--turbo-state-success);
+}
+
+.alert-danger {
+  --bs-alert-bg: color-mix(in srgb, var(--turbo-state-danger) 15%, transparent);
+  --bs-alert-color: var(--turbo-text-primary);
+  --bs-alert-border-color: var(--turbo-state-danger);
+}
+
+// Form control overrides
+.form-control {
+  --bs-body-bg: var(--turbo-bg-overlay);
+  background-color: var(--turbo-bg-overlay);
+  border-color: var(--turbo-border-default);
+  color: var(--turbo-text-primary);
+
+  &:focus {
+    border-color: var(--turbo-brand-primary);
+    box-shadow: 0 0 0 0.25rem
+      color-mix(in srgb, var(--turbo-brand-primary) 25%, transparent);
+  }
+}
+
+.form-select {
+  background-color: var(--turbo-bg-overlay);
+  border-color: var(--turbo-border-default);
+  color: var(--turbo-text-primary);
+
+  &:focus {
+    border-color: var(--turbo-brand-primary);
+    box-shadow: 0 0 0 0.25rem
+      color-mix(in srgb, var(--turbo-brand-primary) 25%, transparent);
+  }
+}
+
+// Navbar overrides
+.navbar {
+  --bs-navbar-brand-color: var(--turbo-text-primary);
+  --bs-navbar-color: var(--turbo-text-secondary);
+}
+
+.bg-body-tertiary {
+  background-color: var(--turbo-bg-surface) !important;
+}
+
+// Custom swatch styles for color display
+.swatch {
+  width: 48px;
+  height: 48px;
+  border-radius: 0.5rem;
+  border: 2px solid var(--turbo-border-default);
+}
+
+.swatch-primary {
+  background: var(--turbo-brand-primary);
+}
+
+.swatch-success {
+  background: var(--turbo-state-success);
+}
+
+.swatch-warning {
+  background: var(--turbo-state-warning);
+}
+
+.swatch-danger {
+  background: var(--turbo-state-danger);
+}
+
+.swatch-info {
+  background: var(--turbo-state-info);
+}
+
+// Ensure consistent focus ring
+*:focus-visible {
+  outline: 2px solid var(--turbo-brand-primary);
+  outline-offset: 2px;
+}
