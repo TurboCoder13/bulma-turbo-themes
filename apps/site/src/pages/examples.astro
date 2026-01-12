@@ -1,0 +1,237 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ExampleCard from '../components/ExampleCard.astro';
+
+// SVG Icons for frameworks
+const icons = {
+  html: `<svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z"/></svg>`,
+  react: `<svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32"><path d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.41 0-.783.093-1.106.278-1.375.793-1.683 3.264-.973 6.365C1.98 8.917 0 10.42 0 12.004c0 1.59 1.99 3.097 5.043 4.03-.704 3.113-.39 5.588.988 6.38.32.187.69.275 1.102.275 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.41 0 .783-.09 1.106-.275 1.374-.792 1.683-3.263.973-6.365C22.02 15.096 24 13.59 24 12.004c0-1.59-1.99-3.097-5.043-4.032.704-3.11.39-5.587-.988-6.38-.318-.184-.688-.277-1.092-.278zm-.005 1.09v.006c.225 0 .406.044.558.127.666.382.955 1.835.73 3.704-.054.46-.142.945-.25 1.44-.96-.236-2.006-.417-3.107-.534-.66-.905-1.345-1.727-2.035-2.447 1.592-1.48 3.087-2.292 4.105-2.295zm-9.77.02c1.012 0 2.514.808 4.11 2.28-.686.72-1.37 1.537-2.02 2.442-1.107.117-2.154.298-3.113.538-.112-.49-.195-.964-.254-1.42-.23-1.868.054-3.32.714-3.707.19-.09.4-.127.563-.132zm4.882 3.05c.455.468.91.992 1.36 1.564-.44-.02-.89-.034-1.345-.034-.46 0-.915.01-1.36.034.44-.572.895-1.096 1.345-1.565zM12 8.1c.74 0 1.477.034 2.202.093.406.582.802 1.203 1.183 1.86.372.64.71 1.29 1.018 1.946-.308.655-.646 1.31-1.013 1.95-.38.66-.773 1.288-1.18 1.87-.728.063-1.466.098-2.21.098-.74 0-1.477-.035-2.202-.093-.406-.582-.802-1.204-1.183-1.86-.372-.64-.71-1.29-1.018-1.946.303-.657.646-1.313 1.013-1.954.38-.66.773-1.286 1.18-1.868.728-.064 1.466-.098 2.21-.098zm-3.635.254c-.24.377-.48.763-.704 1.16-.225.39-.435.782-.635 1.174-.265-.656-.49-1.31-.676-1.947.64-.15 1.315-.283 2.015-.386zm7.26 0c.695.103 1.365.23 2.006.387-.18.632-.405 1.282-.66 1.933-.2-.39-.41-.783-.64-1.174-.225-.392-.465-.774-.705-1.146zm3.063.675c.484.15.944.317 1.375.498 1.732.74 2.852 1.708 2.852 2.476-.005.768-1.125 1.74-2.857 2.475-.42.18-.88.342-1.355.493-.28-.958-.646-1.956-1.1-2.98.45-1.017.81-2.01 1.085-2.964zm-13.395.004c.278.96.645 1.957 1.1 2.98-.45 1.017-.812 2.01-1.086 2.964-.484-.15-.944-.318-1.37-.5-1.732-.737-2.852-1.706-2.852-2.474 0-.768 1.12-1.742 2.852-2.476.42-.18.88-.342 1.356-.494zm11.678 4.28c.265.657.49 1.312.676 1.948-.64.157-1.316.29-2.016.39.24-.375.48-.762.705-1.158.225-.39.435-.788.636-1.18zm-9.945.02c.2.392.41.783.64 1.175.23.39.465.772.705 1.143-.695-.102-1.365-.23-2.006-.386.18-.63.406-1.282.66-1.933zM17.92 16.32c.112.493.2.968.254 1.423.23 1.868-.054 3.32-.714 3.708-.147.09-.338.128-.563.128-1.012 0-2.514-.807-4.11-2.28.686-.72 1.37-1.536 2.02-2.44 1.107-.118 2.154-.3 3.113-.54zm-11.83.01c.96.234 2.006.415 3.107.532.66.905 1.345 1.727 2.035 2.446-1.595 1.483-3.092 2.295-4.11 2.295-.22-.005-.406-.05-.553-.132-.666-.38-.955-1.834-.73-3.703.054-.46.142-.944.25-1.438zm4.56.64c.44.02.89.034 1.345.034.46 0 .915-.01 1.36-.034-.44.572-.895 1.095-1.345 1.565-.455-.47-.91-.993-1.36-1.565z"/></svg>`,
+  vue: `<svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32"><path d="M24 1.61h-9.94L12 5.16 9.94 1.61H0l12 20.78ZM12 14.08 5.16 2.23h4.43L12 6.41l2.41-4.18h4.43Z"/></svg>`,
+  tailwind: `<svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32"><path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z"/></svg>`,
+  bootstrap: `<svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32"><path d="M11.77 11.24H9.956V8.202h2.152c1.17 0 1.834.522 1.834 1.466 0 1.008-.773 1.572-2.174 1.572zm.324 1.206H9.957v3.348h2.231c1.459 0 2.232-.585 2.232-1.685s-.795-1.663-2.326-1.663zM24 11.39v1.218c-1.128.108-1.817.944-2.226 2.268-.407 1.319-.463 2.937-.42 4.186.045 1.3-.968 2.5-2.337 2.5H4.985c-1.37 0-2.383-1.2-2.337-2.5.043-1.249-.013-2.867-.42-4.186-.41-1.324-1.1-2.16-2.228-2.268V11.39c1.128-.108 1.819-.944 2.227-2.268.408-1.319.464-2.937.42-4.186-.045-1.3.968-2.5 2.338-2.5h14.032c1.37 0 2.382 1.2 2.337 2.5-.043 1.249.013 2.867.42 4.186.409 1.324 1.098 2.16 2.226 2.268zm-7.927 2.817c0-1.354-.953-2.333-2.368-2.488v-.057c1.04-.169 1.856-1.135 1.856-2.213 0-1.537-1.213-2.538-3.062-2.538h-4.16v10.172h4.181c2.218 0 3.553-1.086 3.553-2.876z"/></svg>`,
+  jekyll: `<svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-.24 4.82c1.184 0 2.143.96 2.143 2.143 0 1.184-.96 2.144-2.144 2.144-1.183 0-2.143-.96-2.143-2.144 0-1.183.96-2.143 2.143-2.143zm4.054 11.18c-.304 1.393-1.073 2.478-2.12 3.221-1.047.744-2.378 1.147-3.843 1.147-1.92 0-3.593-.64-4.674-1.795-.54-.578-.926-1.278-1.12-2.06-.193-.78-.19-1.626.04-2.507.23-.88.666-1.68 1.288-2.344.622-.664 1.41-1.18 2.316-1.495.907-.316 1.907-.424 2.944-.297 1.037.127 2.015.49 2.832 1.044.817.553 1.46 1.291 1.852 2.153.392.862.53 1.826.372 2.83-.043.27-.103.57-.187.903z"/></svg>`,
+  swift: `<svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32"><path d="M21.984 16.348c.056-.112.168-.392.224-.672.728-2.8-.168-6.104-2.576-8.792-.336-.392-.728-.784-1.12-1.12.224.336.392.672.56 1.008 1.456 2.576 1.456 5.656.112 8.064-.392-.392-3.192-3.024-6.272-6.328 3.976 2.856 5.656 4.144 5.656 4.144-.784-1.176-4.088-4.48-7.168-7.392 1.904 1.232 5.152 3.808 8.008 6.664 0 0 .56.56.784.84.392-.504.672-1.064.896-1.624-.28-.336-.84-.952-.84-.952-2.744-2.912-6.328-5.824-7-6.216.168.056 3.472 2.072 5.824 4.032-2.52-2.744-7.392-6.72-7.392-6.72 5.488 3.304 9.24 7.728 10.248 11.48.28 1.008.28 1.96.056 2.856-.336 1.456-1.232 2.744-2.464 3.696-.672.504-1.4.896-2.128 1.176.784-.336 2.352-1.288 2.352-1.288.056-.056.168-.112.224-.168.112-.056.224-.168.392-.28.392-.336.728-.672 1.008-1.008.112-.168.28-.336.392-.504.168-.28.336-.504.504-.784.056-.168.168-.336.224-.504.112-.224.168-.448.28-.672.056-.168.112-.336.168-.448.056-.224.112-.392.168-.616.056-.168.056-.336.112-.504.056-.224.056-.448.112-.672 0-.168.056-.336.056-.504 0-.224 0-.504.056-.728v-.448c0-.112 0-.168-.056-.28v-.336c0-.168-.056-.336-.056-.504-.056-.336-.056-.672-.168-1.008z"/></svg>`,
+};
+
+const examples = [
+  {
+    category: 'Web Frameworks',
+    items: [
+      {
+        name: 'HTML Vanilla',
+        description: 'Zero-dependency vanilla JavaScript implementation. Perfect for learning the basics.',
+        icon: icons.html,
+        sourceUrl: 'https://github.com/TurboCoder13/turbo-themes/tree/main/examples/html-vanilla',
+        playgroundUrl: 'https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/html-vanilla',
+        tags: ['HTML', 'CSS', 'JavaScript'],
+        size: '~5KB',
+      },
+      {
+        name: 'React',
+        description: 'React 18 + TypeScript with custom useTheme hook for state management.',
+        icon: icons.react,
+        sourceUrl: 'https://github.com/TurboCoder13/turbo-themes/tree/main/examples/react',
+        playgroundUrl: 'https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/react',
+        tags: ['React', 'TypeScript', 'Vite'],
+        size: '~10KB',
+      },
+      {
+        name: 'Vue',
+        description: 'Vue 3 Composition API with useTheme composable and reactive state.',
+        icon: icons.vue,
+        sourceUrl: 'https://github.com/TurboCoder13/turbo-themes/tree/main/examples/vue',
+        playgroundUrl: 'https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/vue',
+        tags: ['Vue 3', 'TypeScript', 'Vite'],
+        size: '~10KB',
+      },
+    ],
+  },
+  {
+    category: 'CSS Frameworks',
+    items: [
+      {
+        name: 'Tailwind CSS',
+        description: 'Tailwind preset integration mapping Turbo tokens to utility classes.',
+        icon: icons.tailwind,
+        sourceUrl: 'https://github.com/TurboCoder13/turbo-themes/tree/main/examples/tailwind',
+        playgroundUrl: 'https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/tailwind',
+        tags: ['Tailwind', 'PostCSS', 'Vite'],
+        size: '~15KB',
+      },
+      {
+        name: 'Bootstrap',
+        description: 'Bootstrap 5 integration with SCSS variable mapping and light/dark mode.',
+        icon: icons.bootstrap,
+        sourceUrl: 'https://github.com/TurboCoder13/turbo-themes/tree/main/examples/bootstrap',
+        playgroundUrl: 'https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/bootstrap',
+        tags: ['Bootstrap 5', 'SCSS', 'Vite'],
+        size: '~50KB',
+      },
+    ],
+  },
+  {
+    category: 'Static Site Generators',
+    items: [
+      {
+        name: 'Jekyll',
+        description: 'Ruby gem integration for Jekyll sites with Bulma components.',
+        icon: icons.jekyll,
+        sourceUrl: 'https://github.com/TurboCoder13/turbo-themes/tree/main/examples/jekyll',
+        playgroundUrl: null,
+        tags: ['Jekyll', 'Ruby', 'Bulma'],
+        size: '~250KB',
+      },
+    ],
+  },
+  {
+    category: 'Native Platforms',
+    items: [
+      {
+        name: 'SwiftUI',
+        description: 'iOS/macOS app with ThemeManager and generated Swift types.',
+        icon: icons.swift,
+        sourceUrl: 'https://github.com/TurboCoder13/turbo-themes/tree/main/examples/swift-swiftui',
+        playgroundUrl: null,
+        tags: ['SwiftUI', 'iOS', 'macOS'],
+        size: 'Native',
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout title="Home">
+  <div class="examples-hero">
+    <h1>Examples</h1>
+    <p class="examples-subtitle">
+      Complete, working examples showing Turbo Themes integrated with popular frameworks.
+      Each example includes theme switching, localStorage persistence, and FOUC prevention.
+    </p>
+  </div>
+
+  {examples.map((section) => (
+    <section class="examples-section">
+      <div class="examples-card">
+        <h2 class="examples-category">{section.category}</h2>
+        <div class="examples-grid">
+          {section.items.map((example) => (
+            <ExampleCard {...example} />
+          ))}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="examples-cta">
+    <h2>Want to contribute?</h2>
+    <p>
+      We welcome new examples! If you've integrated Turbo Themes with a framework not listed here,
+      consider contributing it to help others.
+    </p>
+    <a href="https://github.com/TurboCoder13/turbo-themes/blob/main/CONTRIBUTING.md" class="btn btn-primary" target="_blank" rel="noopener">
+      Contribution Guide
+    </a>
+  </section>
+</BaseLayout>
+
+<style>
+  .examples-hero {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--turbo-bg-overlay) 0%, var(--turbo-bg-surface) 100%);
+    border-radius: 1rem;
+    border: 1px solid var(--turbo-border-default);
+  }
+
+  .examples-hero h1 {
+    margin-bottom: 0.75rem;
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    background: linear-gradient(135deg, var(--turbo-brand-primary), var(--turbo-state-info));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .examples-subtitle {
+    color: var(--turbo-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  .examples-section {
+    margin-bottom: 3rem;
+  }
+
+  .examples-card {
+    /* Container removed - bubbles float freely */
+  }
+
+  .examples-category {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0 auto 1.5rem;
+    color: var(--turbo-text-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, var(--turbo-brand-primary), var(--turbo-state-info));
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .examples-section {
+    text-align: center;
+  }
+
+  .examples-category::before {
+    display: none;
+  }
+
+  .examples-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding-top: 1rem;
+  }
+
+  .examples-cta {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, var(--turbo-bg-surface) 0%, var(--turbo-bg-overlay) 100%);
+    border: 1px solid var(--turbo-border-default);
+    border-radius: 1rem;
+    margin-top: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .examples-cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--turbo-brand-primary), var(--turbo-state-info), var(--turbo-state-success));
+  }
+
+  .examples-cta h2 {
+    margin-bottom: 0.75rem;
+    color: var(--turbo-text-primary);
+  }
+
+  .examples-cta p {
+    color: var(--turbo-text-secondary);
+    margin-bottom: 1.5rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+</style>

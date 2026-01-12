@@ -1,0 +1,61 @@
+---
+/**
+ * StackBlitz embed component for displaying interactive code examples.
+ */
+import { getStackBlitzEmbedUrl, getDefaultFile, type ExampleName } from '../lib/stackblitz';
+
+interface Props {
+  example: ExampleName;
+  file?: string;
+  view?: 'preview' | 'editor' | 'both';
+  hideNavigation?: boolean;
+  hideDevTools?: boolean;
+  height?: string;
+  title?: string;
+}
+
+const {
+  example,
+  file,
+  view = 'both',
+  hideNavigation = true,
+  hideDevTools = false,
+  height = '500px',
+  title,
+} = Astro.props;
+
+const embedUrl = getStackBlitzEmbedUrl(example, {
+  file: file || getDefaultFile(example),
+  view,
+  hideNavigation,
+  hideDevTools,
+});
+
+const frameTitle = title || `${example} example on StackBlitz`;
+---
+
+<div class="stackblitz-embed" style={`height: ${height};`}>
+  <iframe
+    src={embedUrl}
+    title={frameTitle}
+    loading="lazy"
+    allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+    sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts"
+  ></iframe>
+</div>
+
+<style>
+  .stackblitz-embed {
+    width: 100%;
+    border: 1px solid var(--turbo-border-default);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: var(--turbo-bg-surface);
+  }
+
+  .stackblitz-embed iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+</style>

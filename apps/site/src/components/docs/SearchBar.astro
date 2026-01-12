@@ -1,0 +1,161 @@
+---
+/**
+ * Pagefind search component.
+ * Integrates with Pagefind static search index.
+ */
+interface Props {
+  placeholder?: string;
+  compact?: boolean;
+}
+
+const { placeholder = 'Search docs...', compact = false } = Astro.props;
+---
+
+<div class:list={['search-container', { compact }]} data-testid="search-bar">
+  <div id="search" class="search-wrapper"></div>
+</div>
+
+<link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+
+<script define:vars={{ placeholder }}>
+  // Load Pagefind UI when available
+  async function initSearch() {
+    try {
+      const { PagefindUI } = await import('/pagefind/pagefind-ui.js');
+      new PagefindUI({
+        element: '#search',
+        showImages: false,
+        showSubResults: true,
+        placeholder: placeholder,
+        resetStyles: false,
+      });
+    } catch (e) {
+      // Pagefind not available (dev mode or not built yet)
+      const searchEl = document.getElementById('search');
+      if (searchEl) {
+        searchEl.innerHTML = `
+          <input
+            type="search"
+            placeholder="${placeholder}"
+            class="pagefind-fallback"
+            disabled
+          />
+        `;
+      }
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSearch);
+  } else {
+    initSearch();
+  }
+</script>
+
+<style>
+  .search-container {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .search-container.compact {
+    max-width: 250px;
+  }
+
+  .search-wrapper {
+    width: 100%;
+  }
+
+  /* Pagefind UI customizations */
+  .search-container :global(.pagefind-ui) {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: var(--turbo-brand-primary);
+    --pagefind-ui-text: var(--turbo-text-primary);
+    --pagefind-ui-background: var(--turbo-bg-surface);
+    --pagefind-ui-border: var(--turbo-border-default);
+    --pagefind-ui-tag: var(--turbo-bg-overlay);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 0.5rem;
+    --pagefind-ui-font: inherit;
+  }
+
+  .search-container :global(.pagefind-ui__form) {
+    position: relative;
+  }
+
+  .search-container :global(.pagefind-ui__search-input) {
+    background: var(--turbo-bg-surface);
+    border: 1px solid var(--turbo-border-default);
+    color: var(--turbo-text-primary);
+    border-radius: 0.5rem;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    width: 100%;
+  }
+
+  .search-container :global(.pagefind-ui__search-input:focus) {
+    border-color: var(--turbo-brand-primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.2);
+  }
+
+  .search-container :global(.pagefind-ui__search-clear) {
+    color: var(--turbo-text-secondary);
+  }
+
+  .search-container :global(.pagefind-ui__results-area) {
+    margin-top: 0.5rem;
+  }
+
+  .search-container :global(.pagefind-ui__result) {
+    padding: 0.75rem;
+    border: 1px solid var(--turbo-border-default);
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    background: var(--turbo-bg-surface);
+  }
+
+  .search-container :global(.pagefind-ui__result:hover) {
+    border-color: var(--turbo-brand-primary);
+  }
+
+  .search-container :global(.pagefind-ui__result-link) {
+    color: var(--turbo-text-primary);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .search-container :global(.pagefind-ui__result-link:hover) {
+    color: var(--turbo-brand-primary);
+  }
+
+  .search-container :global(.pagefind-ui__result-excerpt) {
+    color: var(--turbo-text-secondary);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+
+  .search-container :global(.pagefind-ui__result-excerpt mark) {
+    background: var(--turbo-brand-primary);
+    color: var(--turbo-text-inverse);
+    padding: 0 0.125rem;
+    border-radius: 0.125rem;
+  }
+
+  /* Fallback input style */
+  :global(.pagefind-fallback) {
+    width: 100%;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    background: var(--turbo-bg-surface);
+    border: 1px solid var(--turbo-border-default);
+    border-radius: 0.5rem;
+    color: var(--turbo-text-secondary);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .compact .search-container :global(.pagefind-ui) {
+    --pagefind-ui-scale: 0.8;
+  }
+</style>

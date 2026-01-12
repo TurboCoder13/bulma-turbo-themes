@@ -1,0 +1,242 @@
+---
+/**
+ * Tailwind demo - Turbo Themes + Tailwind CSS.
+ * Standalone page without the main site layout.
+ */
+---
+
+<!doctype html>
+<html lang="en" data-theme="catppuccin-mocha">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Turbo Themes + Tailwind Demo</title>
+
+    <!-- 1. Turbo Themes Core (defines CSS variables) -->
+    <link rel="stylesheet" href="/assets/css/turbo-core.css" />
+    <link id="turbo-theme-css" rel="stylesheet" href="/assets/css/themes/turbo/catppuccin-mocha.css" />
+
+    <!-- 2. Tailwind CSS (CDN with custom config) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script is:inline>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'turbo-base': 'var(--turbo-bg-base)',
+              'turbo-surface': 'var(--turbo-bg-surface)',
+              'turbo-overlay': 'var(--turbo-bg-overlay)',
+              'turbo-text': 'var(--turbo-text-primary)',
+              'turbo-text-secondary': 'var(--turbo-text-secondary)',
+              'turbo-text-muted': 'var(--turbo-text-muted)',
+              'turbo-text-inverse': 'var(--turbo-text-inverse)',
+              'turbo-primary': 'var(--turbo-brand-primary)',
+              'turbo-secondary': 'var(--turbo-brand-secondary)',
+              'turbo-success': 'var(--turbo-state-success)',
+              'turbo-warning': 'var(--turbo-state-warning)',
+              'turbo-danger': 'var(--turbo-state-danger)',
+              'turbo-info': 'var(--turbo-state-info)',
+              'turbo-border': 'var(--turbo-border-default)',
+              'turbo-border-muted': 'var(--turbo-border-muted)',
+            },
+            borderColor: { DEFAULT: 'var(--turbo-border-default)' },
+          },
+        },
+      };
+    </script>
+
+    <style type="text/tailwindcss">
+      @layer components {
+        body { background-color: var(--turbo-bg-base); color: var(--turbo-text-primary); }
+      }
+    </style>
+
+    <script is:inline>
+      (function() {
+        var STORAGE_KEY = 'turbo-theme';
+        var savedTheme = localStorage.getItem(STORAGE_KEY) || 'catppuccin-mocha';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        var themeLink = document.getElementById('turbo-theme-css');
+        if (themeLink) themeLink.href = '/assets/css/themes/turbo/' + savedTheme + '.css';
+      })();
+    </script>
+  </head>
+  <body class="bg-turbo-base text-turbo-text min-h-screen">
+    <header class="bg-turbo-surface border-b border-turbo-border py-4 sticky top-0 z-50">
+      <div class="container mx-auto px-4 flex justify-between items-center">
+        <a href="/" class="text-turbo-primary font-bold text-xl">Turbo Themes</a>
+        <select id="theme-selector" class="bg-turbo-overlay text-turbo-text border border-turbo-border rounded-md px-3 py-2 text-sm">
+          <option value="catppuccin-mocha">Catppuccin Mocha</option>
+          <option value="catppuccin-macchiato">Catppuccin Macchiato</option>
+          <option value="catppuccin-frappe">Catppuccin Frappe</option>
+          <option value="catppuccin-latte">Catppuccin Latte</option>
+          <option value="dracula">Dracula</option>
+          <option value="github-dark">GitHub Dark</option>
+          <option value="github-light">GitHub Light</option>
+          <option value="bulma-dark">Bulma Dark</option>
+          <option value="bulma-light">Bulma Light</option>
+        </select>
+      </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+      <section class="mb-12">
+        <h1 class="text-4xl font-bold mb-4">Turbo Themes + Tailwind</h1>
+        <p class="text-turbo-text-secondary text-lg mb-6">This demo shows Tailwind CSS utilities using Turbo Themes color variables.</p>
+        <div class="bg-turbo-info/10 border border-turbo-info rounded-lg p-4">
+          <strong class="text-turbo-info">How it works:</strong>
+          <span class="text-turbo-text-secondary">The Tailwind config maps <code class="bg-turbo-overlay px-1 rounded">turbo-*</code> colors to Turbo's <code class="bg-turbo-overlay px-1 rounded">--turbo-*</code> CSS variables.</span>
+        </div>
+      </section>
+
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Buttons</h2>
+        <div class="flex flex-wrap gap-3">
+          <button class="bg-turbo-primary text-turbo-text-inverse px-4 py-2 rounded-md hover:opacity-90 transition">Primary</button>
+          <button class="bg-turbo-secondary text-turbo-text-inverse px-4 py-2 rounded-md hover:opacity-90 transition">Secondary</button>
+          <button class="bg-turbo-success text-turbo-text-inverse px-4 py-2 rounded-md hover:opacity-90 transition">Success</button>
+          <button class="bg-turbo-warning text-turbo-text-inverse px-4 py-2 rounded-md hover:opacity-90 transition">Warning</button>
+          <button class="bg-turbo-danger text-turbo-text-inverse px-4 py-2 rounded-md hover:opacity-90 transition">Danger</button>
+          <button class="bg-turbo-info text-turbo-text-inverse px-4 py-2 rounded-md hover:opacity-90 transition">Info</button>
+        </div>
+        <div class="flex flex-wrap gap-3 mt-4">
+          <button class="border border-turbo-primary text-turbo-primary px-4 py-2 rounded-md hover:bg-turbo-primary/10 transition">Outline Primary</button>
+          <button class="text-turbo-primary px-4 py-2 rounded-md hover:bg-turbo-primary/10 transition">Ghost</button>
+        </div>
+      </section>
+
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Cards</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-turbo-surface border border-turbo-border rounded-lg overflow-hidden">
+            <div class="border-b border-turbo-border px-4 py-3"><h3 class="font-semibold">Card Title</h3></div>
+            <div class="p-4"><p class="text-turbo-text-secondary">This is a Tailwind card using Turbo Themes colors.</p></div>
+            <div class="border-t border-turbo-border px-4 py-3 flex gap-4">
+              <a href="#" class="text-turbo-primary hover:underline">Save</a>
+              <a href="#" class="text-turbo-primary hover:underline">Edit</a>
+            </div>
+          </div>
+          <div class="bg-turbo-surface border border-turbo-border rounded-lg p-4">
+            <h3 class="font-semibold text-lg mb-2">Simple Card</h3>
+            <p class="text-turbo-text-secondary">A card with just content.</p>
+          </div>
+          <div class="bg-turbo-surface border border-turbo-border rounded-lg overflow-hidden">
+            <div class="bg-turbo-primary h-32 flex items-center justify-center text-turbo-text-inverse">Image Placeholder</div>
+            <div class="p-4"><p class="text-turbo-text-secondary">Card with image area.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Alerts</h2>
+        <div class="space-y-4">
+          <div class="bg-turbo-primary/10 border-l-4 border-turbo-primary p-4 rounded-r-lg">
+            <strong class="text-turbo-primary">Primary:</strong>
+            <span class="text-turbo-text-secondary">A primary alert message.</span>
+          </div>
+          <div class="bg-turbo-info/10 border-l-4 border-turbo-info p-4 rounded-r-lg">
+            <strong class="text-turbo-info">Info:</strong>
+            <span class="text-turbo-text-secondary">An informational alert.</span>
+          </div>
+          <div class="bg-turbo-success/10 border-l-4 border-turbo-success p-4 rounded-r-lg">
+            <strong class="text-turbo-success">Success:</strong>
+            <span class="text-turbo-text-secondary">A success alert.</span>
+          </div>
+          <div class="bg-turbo-warning/10 border-l-4 border-turbo-warning p-4 rounded-r-lg">
+            <strong class="text-turbo-warning">Warning:</strong>
+            <span class="text-turbo-text-secondary">A warning alert.</span>
+          </div>
+          <div class="bg-turbo-danger/10 border-l-4 border-turbo-danger p-4 rounded-r-lg">
+            <strong class="text-turbo-danger">Error:</strong>
+            <span class="text-turbo-text-secondary">An error alert.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Form</h2>
+        <form class="max-w-md space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Name</label>
+            <input type="text" placeholder="Enter your name" class="w-full bg-turbo-overlay border border-turbo-border rounded-md px-3 py-2 text-turbo-text placeholder-turbo-text-muted focus:outline-none focus:ring-2 focus:ring-turbo-primary" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Email</label>
+            <input type="email" placeholder="Enter your email" class="w-full bg-turbo-overlay border border-turbo-border rounded-md px-3 py-2 text-turbo-text placeholder-turbo-text-muted focus:outline-none focus:ring-2 focus:ring-turbo-primary" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Message</label>
+            <textarea rows="4" placeholder="Enter your message" class="w-full bg-turbo-overlay border border-turbo-border rounded-md px-3 py-2 text-turbo-text placeholder-turbo-text-muted focus:outline-none focus:ring-2 focus:ring-turbo-primary"></textarea>
+          </div>
+          <div class="flex gap-3">
+            <button type="button" class="bg-turbo-primary text-turbo-text-inverse px-4 py-2 rounded-md hover:opacity-90 transition">Submit</button>
+            <button type="button" class="bg-turbo-overlay border border-turbo-border text-turbo-text px-4 py-2 rounded-md hover:bg-turbo-surface transition">Cancel</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Tags / Badges</h2>
+        <div class="flex flex-wrap gap-2">
+          <span class="bg-turbo-overlay text-turbo-text px-3 py-1 rounded-full text-sm">Default</span>
+          <span class="bg-turbo-primary text-turbo-text-inverse px-3 py-1 rounded-full text-sm">Primary</span>
+          <span class="bg-turbo-info text-turbo-text-inverse px-3 py-1 rounded-full text-sm">Info</span>
+          <span class="bg-turbo-success text-turbo-text-inverse px-3 py-1 rounded-full text-sm">Success</span>
+          <span class="bg-turbo-warning text-turbo-text-inverse px-3 py-1 rounded-full text-sm">Warning</span>
+          <span class="bg-turbo-danger text-turbo-text-inverse px-3 py-1 rounded-full text-sm">Danger</span>
+        </div>
+      </section>
+
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Table</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="border-b border-turbo-border">
+                <th class="text-left p-3 font-semibold">Name</th>
+                <th class="text-left p-3 font-semibold">Job</th>
+                <th class="text-left p-3 font-semibold">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-turbo-border hover:bg-turbo-overlay/50 transition">
+                <td class="p-3">Jane Doe</td>
+                <td class="p-3 text-turbo-text-secondary">Developer</td>
+                <td class="p-3"><span class="bg-turbo-success text-turbo-text-inverse px-2 py-0.5 rounded text-xs">Active</span></td>
+              </tr>
+              <tr class="border-b border-turbo-border hover:bg-turbo-overlay/50 transition">
+                <td class="p-3">John Smith</td>
+                <td class="p-3 text-turbo-text-secondary">Designer</td>
+                <td class="p-3"><span class="bg-turbo-warning text-turbo-text-inverse px-2 py-0.5 rounded text-xs">Away</span></td>
+              </tr>
+              <tr class="border-b border-turbo-border hover:bg-turbo-overlay/50 transition">
+                <td class="p-3">Bob Wilson</td>
+                <td class="p-3 text-turbo-text-secondary">Manager</td>
+                <td class="p-3"><span class="bg-turbo-danger text-turbo-text-inverse px-2 py-0.5 rounded text-xs">Busy</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-turbo-surface border-t border-turbo-border py-8 text-center text-turbo-text-secondary">
+      <p><strong>Turbo Themes</strong> + <strong>Tailwind CSS</strong> - <a href="/demo/" class="text-turbo-primary hover:underline">Back to demos</a></p>
+    </footer>
+
+    <script is:inline>
+      const selector = document.getElementById('theme-selector');
+      const themeLink = document.getElementById('turbo-theme-css');
+      const STORAGE_KEY = 'turbo-theme';
+      const savedTheme = localStorage.getItem(STORAGE_KEY) || 'catppuccin-mocha';
+      selector.value = savedTheme;
+
+      selector.addEventListener('change', (e) => {
+        const theme = e.target.value;
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem(STORAGE_KEY, theme);
+        themeLink.href = '/assets/css/themes/turbo/' + theme + '.css';
+      });
+    </script>
+  </body>
+</html>

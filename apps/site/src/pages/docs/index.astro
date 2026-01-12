@@ -1,0 +1,129 @@
+---
+/**
+ * Documentation landing page with floating sidebar navigation.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DocsSidebar from '../../components/docs/DocsSidebar.astro';
+import { getCollection } from 'astro:content';
+
+// Get all docs
+const allDocs = await getCollection('docs', ({ data }) => !data.draft);
+
+// Category configuration with icons and colors
+const categories = [
+  { key: 'getting-started', label: 'Getting Started', icon: '⚡', color: 'var(--turbo-state-warning)' },
+  { key: 'installation', label: 'Installation', icon: '📦', color: 'var(--turbo-state-info)' },
+  { key: 'integrations', label: 'Integrations', icon: '🔗', color: 'var(--turbo-state-success)' },
+  { key: 'api-reference', label: 'API Reference', icon: '📖', color: 'var(--turbo-brand-primary)' },
+  { key: 'guides', label: 'Guides', icon: '🔖', color: 'var(--turbo-brand-secondary)' },
+  { key: 'contributing', label: 'Contributing', icon: '👥', color: 'var(--turbo-accent-link)' },
+];
+
+// Group and sort docs by category
+const groupedDocs = categories.map(cat => ({
+  ...cat,
+  docs: allDocs
+    .filter(doc => doc.data.category === cat.key)
+    .sort((a, b) => a.data.order - b.data.order),
+})).filter(cat => cat.docs.length > 0);
+---
+
+<BaseLayout title="Documentation" description="Turbo Themes documentation - learn how to use design tokens for beautiful, consistent theming." isHome={true}>
+  <div class="docs-layout">
+    <!-- Sidebar toggle button -->
+    <button
+      class="docs-sidebar-toggle"
+      id="docs-sidebar-toggle"
+      aria-label="Toggle sidebar navigation"
+      aria-expanded="false"
+    >
+      <svg class="toggle-open-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 12h18M3 6h18M3 18h18"></path>
+      </svg>
+      <svg class="toggle-close-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 6L6 18M6 6l12 12"></path>
+      </svg>
+    </button>
+
+    <!-- Sidebar backdrop -->
+    <div class="docs-sidebar-backdrop" id="docs-sidebar-backdrop"></div>
+
+    <DocsSidebar currentSlug="" />
+
+    <main class="docs-main">
+      <div class="docs-landing-content">
+        <header class="docs-landing-hero">
+          <h1>Documentation</h1>
+          <p>Learn how to use Turbo Themes for beautiful, consistent theming across any platform.</p>
+          <a href="/docs/getting-started/" class="docs-landing-cta">
+            Get Started
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"></path>
+            </svg>
+          </a>
+        </header>
+
+        <div class="docs-landing-grid">
+          {groupedDocs.map(category => (
+            <section class="docs-landing-category" style={`--category-color: ${category.color}`}>
+              <h2>
+                <span class="category-icon">{category.icon}</span>
+                {category.label}
+              </h2>
+              <div class="docs-landing-links">
+                {category.docs.map(doc => (
+                  <a href={`/docs/${doc.slug}/`}>
+                    {doc.data.title}
+                  </a>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+    </main>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  (function() {
+    var toggle = document.getElementById('docs-sidebar-toggle');
+    var backdrop = document.getElementById('docs-sidebar-backdrop');
+    var layout = document.querySelector('.docs-layout');
+
+    if (!toggle || !backdrop || !layout) return;
+
+    function openSidebar() {
+      layout.classList.add('sidebar-open');
+      backdrop.classList.add('active');
+      toggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      layout.classList.remove('sidebar-open');
+      backdrop.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    function toggleSidebar() {
+      var isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      if (isOpen) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    }
+
+    toggle.addEventListener('click', toggleSidebar);
+    backdrop.addEventListener('click', closeSidebar);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        closeSidebar();
+      }
+    });
+  })();
+</script>
+

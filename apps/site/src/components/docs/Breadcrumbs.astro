@@ -1,0 +1,43 @@
+---
+/**
+ * Breadcrumb navigation for documentation pages.
+ * Shows: Home > Docs > Category > Page
+ * If title equals categoryLabel (category index page), only shows up to category.
+ */
+interface Props {
+  category: string;
+  categoryLabel: string;
+  title: string;
+}
+
+const { category, categoryLabel, title } = Astro.props;
+const showTitle = title !== categoryLabel;
+---
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol class="breadcrumb-list">
+    <li class="breadcrumb-item">
+      <a href="/" class="breadcrumb-link">Home</a>
+    </li>
+    <li class="breadcrumb-separator" aria-hidden="true">/</li>
+    <li class="breadcrumb-item">
+      <a href="/docs/" class="breadcrumb-link">Docs</a>
+    </li>
+    <li class="breadcrumb-separator" aria-hidden="true">/</li>
+    {showTitle ? (
+      <>
+        <li class="breadcrumb-item">
+          <a href={`/docs/${category}/`} class="breadcrumb-link">{categoryLabel}</a>
+        </li>
+        <li class="breadcrumb-separator" aria-hidden="true">/</li>
+        <li class="breadcrumb-item" aria-current="page">
+          <span class="breadcrumb-current">{title}</span>
+        </li>
+      </>
+    ) : (
+      <li class="breadcrumb-item" aria-current="page">
+        <span class="breadcrumb-current">{categoryLabel}</span>
+      </li>
+    )}
+  </ol>
+</nav>

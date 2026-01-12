@@ -1,0 +1,141 @@
+---
+/**
+ * Two-column documentation layout.
+ * Left: Sidebar navigation (collapsible)
+ * Right: Main content
+ */
+import BaseLayout from './BaseLayout.astro';
+import DocsSidebar from '../components/docs/DocsSidebar.astro';
+import Breadcrumbs from '../components/docs/Breadcrumbs.astro';
+import PrevNext from '../components/docs/PrevNext.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  category: string;
+  categoryLabel: string;
+  slug: string;
+  prev?: string;
+  next?: string;
+  lastUpdated?: Date;
+}
+
+const {
+  title,
+  description,
+  category,
+  categoryLabel,
+  slug,
+  prev,
+  next,
+  lastUpdated
+} = Astro.props;
+---
+
+<BaseLayout title={title} description={description} isHome={true}>
+  <div class="docs-layout">
+    <!-- Mobile sidebar toggle -->
+    <button
+      class="docs-sidebar-toggle"
+      id="docs-sidebar-toggle"
+      aria-label="Toggle sidebar navigation"
+      aria-expanded="false"
+    >
+      <svg class="toggle-open-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 12h18M3 6h18M3 18h18"></path>
+      </svg>
+      <svg class="toggle-close-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 6L6 18M6 6l12 12"></path>
+      </svg>
+      <span class="toggle-label">Menu</span>
+    </button>
+
+    <!-- Sidebar backdrop for mobile -->
+    <div class="docs-sidebar-backdrop" id="docs-sidebar-backdrop"></div>
+
+    <DocsSidebar currentSlug={slug} />
+
+    <main class="docs-main">
+      <article class="docs-content" data-pagefind-body>
+        <Breadcrumbs
+          category={category}
+          categoryLabel={categoryLabel}
+          title={title}
+        />
+
+        <header class="docs-header">
+          <h1 class="docs-title">{title}</h1>
+          {description && (
+            <p class="docs-description">{description}</p>
+          )}
+          {lastUpdated && (
+            <p class="docs-meta">
+              Last updated: {lastUpdated.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </p>
+          )}
+        </header>
+
+        <div class="docs-body prose">
+          <slot />
+        </div>
+
+        <PrevNext prev={prev} next={next} />
+      </article>
+    </main>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  (function() {
+    var toggle = document.getElementById('docs-sidebar-toggle');
+    var backdrop = document.getElementById('docs-sidebar-backdrop');
+    var layout = document.querySelector('.docs-layout');
+
+    if (!toggle || !backdrop || !layout) return;
+
+    function openSidebar() {
+      layout.classList.add('sidebar-open');
+      backdrop.classList.add('active');
+      toggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      layout.classList.remove('sidebar-open');
+      backdrop.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    function toggleSidebar() {
+      var isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      if (isOpen) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    }
+
+    toggle.addEventListener('click', toggleSidebar);
+    backdrop.addEventListener('click', closeSidebar);
+
+    // Close on escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        closeSidebar();
+      }
+    });
+
+    // Close sidebar when clicking a link (for navigation)
+    var sidebarLinks = document.querySelectorAll('.docs-sidebar .sidebar-menu-sub-button');
+    sidebarLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
+        closeSidebar();
+      });
+    });
+  })();
+</script>

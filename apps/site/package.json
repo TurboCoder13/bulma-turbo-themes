@@ -1,0 +1,19 @@
+{
+  "name": "@turbo-themes/site",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/copy-assets.mjs && astro build && node scripts/post-build.mjs && npx pagefind --site dist --glob '**/*.html' --exclude-selectors '[data-pagefind-ignore]' --exclude-selectors 'nav' --exclude-selectors 'footer'",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.7.13",
+    "@astrojs/sitemap": "^3.3.1"
+  },
+  "devDependencies": {
+    "@pagefind/default-ui": "^1.3.0"
+  }
+}
