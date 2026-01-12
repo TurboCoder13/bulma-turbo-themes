@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Theme-specific Bulma configuration for catppuccin-latte
+// Note: Font imports are centralized in _fonts.scss (via base.scss)
 @use 'bulma/sass' with (
   $primary: hsl(220, 91%, 54%),
   $link: hsl(220, 91%, 54%),
@@ -12,12 +13,6 @@
 // Import custom overrides and hacks
 @use 'custom/overrides';
 @use 'custom/hacks';
-
-// Web font imports (compiled to top of CSS output)
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
-
-
 
 // Theme-specific overrides using Bulma's generated CSS variables
 // Note: Bulma automatically generates --bulma-primary-* CSS variables (00-100 shades)
