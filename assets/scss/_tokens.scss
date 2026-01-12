@@ -1,0 +1,370 @@
+$turbo-tokens: (
+  'spacing-xs': (
+    0.25rem,
+    'dimension',
+  ),
+  'spacing-sm': (
+    0.5rem,
+    'dimension',
+  ),
+  'spacing-md': (
+    1rem,
+    'dimension',
+  ),
+  'spacing-lg': (
+    1.5rem,
+    'dimension',
+  ),
+  'spacing-xl': (
+    2rem,
+    'dimension',
+  ),
+  'elevation-none': (
+    none,
+    'shadow',
+  ),
+  'elevation-sm': (
+    0 1px 2px 0 rgba(0, 0, 0, 0.05),
+    'shadow',
+  ),
+  'elevation-md': (
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    'shadow',
+  ),
+  'elevation-lg': (
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05),
+    'shadow',
+  ),
+  'elevation-xl': (
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04),
+    'shadow',
+  ),
+  'animation-duration-fast': (
+    150ms,
+    'duration',
+  ),
+  'animation-duration-normal': (
+    300ms,
+    'duration',
+  ),
+  'animation-duration-slow': (
+    500ms,
+    'duration',
+  ),
+  'animation-easing-default': (
+    cubic-bezier(0.4, 0, 0.2, 1),
+    'cubicBezier',
+  ),
+  'animation-easing-emphasized': (
+    cubic-bezier(0.05, 0.7, 0.1, 1),
+    'cubicBezier',
+  ),
+  'opacity-disabled': (
+    0.5,
+    'number',
+  ),
+  'opacity-hover': (
+    0.8,
+    'number',
+  ),
+  'opacity-pressed': (
+    0.6,
+    'number',
+  ),
+  'bg-base': (
+    #141414,
+    'color',
+  ),
+  'bg-surface': (
+    #1f1f1f,
+    'color',
+  ),
+  'bg-overlay': (
+    #2b2b2b,
+    'color',
+  ),
+  'text-primary': (
+    #f5f5f5,
+    'color',
+  ),
+  'text-secondary': (
+    #dbdbdb,
+    'color',
+  ),
+  'text-inverse': (
+    #141414,
+    'color',
+  ),
+  'brand-primary': (
+    #00d1b2,
+    'color',
+  ),
+  'state-info': (
+    #3e8ed0,
+    'color',
+  ),
+  'state-success': (
+    #48c78e,
+    'color',
+  ),
+  'state-warning': (
+    #ffe08a,
+    'color',
+  ),
+  'state-danger': (
+    #f14668,
+    'color',
+  ),
+  'border-default': (
+    #363636,
+    'color',
+  ),
+  'accent-link': (
+    #485fc7,
+    'color',
+  ),
+  'font-sans': (
+    'Nunito Sans',
+    BlinkMacSystemFont,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif,
+    'fontFamily',
+  ),
+  'font-mono': (
+    'JetBrains Mono',
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    'Liberation Mono',
+    'Courier New',
+    monospace,
+    'fontFamily',
+  ),
+  'heading-h1': (
+    #00d1b2,
+    'color',
+  ),
+  'heading-h2': (
+    #7289da,
+    'color',
+  ),
+  'heading-h3': (
+    #5dade2,
+    'color',
+  ),
+  'heading-h4': (
+    #58d68d,
+    'color',
+  ),
+  'heading-h5': (
+    #f7dc6f,
+    'color',
+  ),
+  'heading-h6': (
+    #f1948a,
+    'color',
+  ),
+  'body-primary': (
+    #dbdbdb,
+    'color',
+  ),
+  'body-secondary': (
+    #b5b5b5,
+    'color',
+  ),
+  'link-default': (
+    #485fc7,
+    'color',
+  ),
+  'selection-fg': (
+    #f5f5f5,
+    'color',
+  ),
+  'selection-bg': (
+    #3273dc,
+    'color',
+  ),
+  'blockquote-border': (
+    #363636,
+    'color',
+  ),
+  'blockquote-fg': (
+    #dbdbdb,
+    'color',
+  ),
+  'blockquote-bg': (
+    #1f1f1f,
+    'color',
+  ),
+  'code-inline-fg': (
+    #f14668,
+    'color',
+  ),
+  'code-inline-bg': (
+    #2b2b2b,
+    'color',
+  ),
+  'code-block-fg': (
+    #f5f5f5,
+    'color',
+  ),
+  'code-block-bg': (
+    #2b2b2b,
+    'color',
+  ),
+  'table-border': (
+    #404040,
+    'color',
+  ),
+  'table-stripe': (
+    #1c1c1c,
+    'color',
+  ),
+  'table-thead-bg': (
+    #2d2d2d,
+    'color',
+  ),
+  'content-table-cell-bg': (
+    #1a1a1a,
+    'color',
+  ),
+  'content-table-header-fg': (
+    #f5f5f5,
+    'color',
+  ),
+  'components-card-bg': (
+    #1c1c1c,
+    'color',
+  ),
+  'components-card-border': (
+    #3a3a3a,
+    'color',
+  ),
+  'components-card-header-bg': (
+    #252525,
+    'color',
+  ),
+  'components-card-footer-bg': (
+    #1f1f1f,
+    'color',
+  ),
+  'components-message-bg': (
+    #1f1f1f,
+    'color',
+  ),
+  'components-message-header-bg': (
+    #2a2a2a,
+    'color',
+  ),
+  'components-message-border': (
+    #404040,
+    'color',
+  ),
+  'components-message-body-fg': (
+    #e0e0e0,
+    'color',
+  ),
+  'components-panel-bg': (
+    #1c1c1c,
+    'color',
+  ),
+  'components-panel-header-bg': (
+    #2a2a2a,
+    'color',
+  ),
+  'components-panel-header-fg': (
+    #f5f5f5,
+    'color',
+  ),
+  'components-panel-border': (
+    #3a3a3a,
+    'color',
+  ),
+  'components-panel-block-bg': (
+    #1f1f1f,
+    'color',
+  ),
+  'components-panel-block-hover-bg': (
+    #262626,
+    'color',
+  ),
+  'components-panel-block-active-bg': (
+    #2d3748,
+    'color',
+  ),
+  'components-box-bg': (
+    #1c1c1c,
+    'color',
+  ),
+  'components-box-border': (
+    #3a3a3a,
+    'color',
+  ),
+  'components-notification-bg': (
+    #252525,
+    'color',
+  ),
+  'components-notification-border': (
+    #404040,
+    'color',
+  ),
+  'components-modal-bg': (
+    rgba(0, 0, 0, 0.86),
+    'color',
+  ),
+  'components-modal-card-bg': (
+    #1c1c1c,
+    'color',
+  ),
+  'components-modal-header-bg': (
+    #252525,
+    'color',
+  ),
+  'components-modal-footer-bg': (
+    #1f1f1f,
+    'color',
+  ),
+  'components-dropdown-bg': (
+    #1c1c1c,
+    'color',
+  ),
+  'components-dropdown-item-hover-bg': (
+    #2a2a2a,
+    'color',
+  ),
+  'components-dropdown-border': (
+    #404040,
+    'color',
+  ),
+  'components-tabs-border': (
+    #404040,
+    'color',
+  ),
+  'components-tabs-link-bg': (
+    #252525,
+    'color',
+  ),
+  'components-tabs-link-active-bg': (
+    #1c1c1c,
+    'color',
+  ),
+  'components-tabs-link-hover-bg': (
+    #2a2a2a,
+    'color',
+  ),
+);
