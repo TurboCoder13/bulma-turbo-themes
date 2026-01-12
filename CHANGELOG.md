@@ -6,9 +6,33 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-01-XX
+
+### Changed
+
+- BREAKING: Restructured to monorepo architecture with workspace-based packages
+- BREAKING: Refactored theme selector into focused modules (packages/theme-selector/)
+- BREAKING: Moved Jekyll site to apps/site/ directory
+- BREAKING: Reorganized build scripts to generators/ directory
+- BREAKING: Moved adapters to packages/adapters/ (tailwind, bulma, bootstrap)
+- BREAKING: Core tokens and themes now in packages/core/
+- Updated Ruby gem build process to copy Jekyll files from apps/site/ during gem build
+- Updated GitHub Pages deployment workflow to build from apps/site/
+- Updated E2E test scripts to reference apps/site/\_site
+
 ### Added
 
-- TBD
+- Workspace-based package structure for better code organization
+- Clear separation between core tokens (@turbocoder13/turbo-themes-core) and UI
+  components (@turbocoder13/turbo-theme-selector)
+- Package-level test configurations with vitest
+- Generators directory for code generation scripts (python, swift, sass)
+
+### Fixed
+
+- Improved build order to ensure packages are built before root package
+- Updated all import paths to use .js extensions for ES modules
+- Fixed generator script paths to work with new monorepo structure
 
 ## [0.10.8] - 2025-12-05
 
