@@ -3,7 +3,13 @@
   "rules": {
     "color-named": "never",
     "selector-max-id": 0,
-    "comment-empty-line-before": "always",
+    "comment-empty-line-before": [
+      "always",
+      {
+        "except": ["first-nested"],
+        "ignore": ["after-comment"]
+      }
+    ],
     "rule-empty-line-before": [
       "always-multi-line",
       {

@@ -1,0 +1,22 @@
+{
+  "config": {
+    "MD013": {
+      "line_length": 88,
+      "code_blocks": false,
+      "tables": false
+    }
+  },
+  "ignores": [
+    "node_modules/**",
+    "vendor/**",
+    ".bundle/**",
+    "_site/**",
+    "dist/**",
+    "coverage/**",
+    ".git/**",
+    "playwright-report/**",
+    "lighthouse-reports/**",
+    ".bin/**",
+    ".lintro/**"
+  ]
+}

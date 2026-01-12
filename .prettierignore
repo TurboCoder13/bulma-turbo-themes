@@ -18,10 +18,10 @@ _site
 assets/js/*.min.js
 rspec-coverage
 
-# Ignore generated CSS and SCSS files (they're build artifacts)
-assets/css/themes/*.css
-src/scss/_themes.scss
-src/scss/theme-*.scss
-
-# Let stylelint handle CSS formatting (prevent prettier/stylelint conflicts)
-assets/css/*.css
+# JS/TS files are formatted by Biome, not Prettier
+*.ts
+*.tsx
+*.js
+*.jsx
+*.mjs
+*.cjs

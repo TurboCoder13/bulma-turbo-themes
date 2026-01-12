@@ -18,9 +18,9 @@ rules:
     allow-non-breakable-inline-mappings: true
 
 ignore: |
-  .github/workflows/**
-  .github/actions/**
+  .github/**
   .allstar/**
   vendor/**
   **/vendor/**
   node_modules/**
+  **/.build/**
