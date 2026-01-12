@@ -1,0 +1,370 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://turbocoder13.github.io/turbo-themes/schema/output/v1",
+  "title": "Turbo Themes Output Format",
+  "description": "Schema for the merged tokens.json output file (flattened format)",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "$description": { "type": "string" },
+    "$version": { "type": "string" },
+    "$generated": { "type": "string", "format": "date-time" },
+    "meta": { "$ref": "#/$defs/Meta" },
+    "themes": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/ThemeValue" }
+    },
+    "byVendor": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/Vendor" }
+    }
+  },
+  "required": ["themes"],
+  "$defs": {
+    "Meta": {
+      "type": "object",
+      "properties": {
+        "themeIds": { "type": "array", "items": { "type": "string" } },
+        "vendors": { "type": "array", "items": { "type": "string" } },
+        "totalThemes": { "type": "integer" },
+        "lightThemes": { "type": "integer" },
+        "darkThemes": { "type": "integer" }
+      }
+    },
+    "Vendor": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "homepage": { "type": "string", "format": "uri" },
+        "themes": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["name", "homepage", "themes"]
+    },
+    "Background": {
+      "type": "object",
+      "properties": {
+        "base": { "type": "string" },
+        "surface": { "type": "string" },
+        "overlay": { "type": "string" }
+      },
+      "required": ["base", "surface", "overlay"]
+    },
+    "Text": {
+      "type": "object",
+      "properties": {
+        "primary": { "type": "string" },
+        "secondary": { "type": "string" },
+        "inverse": { "type": "string" }
+      },
+      "required": ["primary", "secondary", "inverse"]
+    },
+    "Brand": {
+      "type": "object",
+      "properties": {
+        "primary": { "type": "string" }
+      },
+      "required": ["primary"]
+    },
+    "State": {
+      "type": "object",
+      "properties": {
+        "info": { "type": "string" },
+        "success": { "type": "string" },
+        "warning": { "type": "string" },
+        "danger": { "type": "string" }
+      },
+      "required": ["info", "success", "warning", "danger"]
+    },
+    "Border": {
+      "type": "object",
+      "properties": {
+        "default": { "type": "string" }
+      },
+      "required": ["default"]
+    },
+    "Accent": {
+      "type": "object",
+      "properties": {
+        "link": { "type": "string" }
+      },
+      "required": ["link"]
+    },
+    "Spacing": {
+      "type": "object",
+      "properties": {
+        "xs": { "type": "string" },
+        "sm": { "type": "string" },
+        "md": { "type": "string" },
+        "lg": { "type": "string" },
+        "xl": { "type": "string" }
+      },
+      "required": ["xs", "sm", "md", "lg", "xl"]
+    },
+    "Elevation": {
+      "type": "object",
+      "properties": {
+        "none": { "type": "string" },
+        "sm": { "type": "string" },
+        "md": { "type": "string" },
+        "lg": { "type": "string" },
+        "xl": { "type": "string" }
+      },
+      "required": ["none", "sm", "md", "lg", "xl"]
+    },
+    "Animation": {
+      "type": "object",
+      "properties": {
+        "durationFast": { "type": "string" },
+        "durationNormal": { "type": "string" },
+        "durationSlow": { "type": "string" },
+        "easingDefault": { "type": "string" },
+        "easingEmphasized": { "type": "string" }
+      },
+      "required": [
+        "durationFast",
+        "durationNormal",
+        "durationSlow",
+        "easingDefault",
+        "easingEmphasized"
+      ]
+    },
+    "Opacity": {
+      "type": "object",
+      "properties": {
+        "disabled": { "type": "number" },
+        "hover": { "type": "number" },
+        "pressed": { "type": "number" }
+      },
+      "required": ["disabled", "hover", "pressed"]
+    },
+    "Fonts": {
+      "type": "object",
+      "properties": {
+        "sans": { "type": "string" },
+        "mono": { "type": "string" }
+      },
+      "required": ["sans", "mono"]
+    },
+    "Typography": {
+      "type": "object",
+      "properties": {
+        "fonts": { "$ref": "#/$defs/Fonts" },
+        "webFonts": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["fonts", "webFonts"]
+    },
+    "Heading": {
+      "type": "object",
+      "properties": {
+        "h1": { "type": "string" },
+        "h2": { "type": "string" },
+        "h3": { "type": "string" },
+        "h4": { "type": "string" },
+        "h5": { "type": "string" },
+        "h6": { "type": "string" }
+      },
+      "required": ["h1", "h2", "h3", "h4", "h5", "h6"]
+    },
+    "Body": {
+      "type": "object",
+      "properties": {
+        "primary": { "type": "string" },
+        "secondary": { "type": "string" }
+      },
+      "required": ["primary", "secondary"]
+    },
+    "Link": {
+      "type": "object",
+      "properties": {
+        "default": { "type": "string" }
+      },
+      "required": ["default"]
+    },
+    "Selection": {
+      "type": "object",
+      "properties": {
+        "fg": { "type": "string" },
+        "bg": { "type": "string" }
+      },
+      "required": ["fg", "bg"]
+    },
+    "Blockquote": {
+      "type": "object",
+      "properties": {
+        "border": { "type": "string" },
+        "fg": { "type": "string" },
+        "bg": { "type": "string" }
+      },
+      "required": ["border", "fg", "bg"]
+    },
+    "Code": {
+      "type": "object",
+      "properties": {
+        "fg": { "type": "string" },
+        "bg": { "type": "string" }
+      },
+      "required": ["fg", "bg"]
+    },
+    "Table": {
+      "type": "object",
+      "properties": {
+        "border": { "type": "string" },
+        "stripe": { "type": "string" },
+        "theadBg": { "type": "string" },
+        "cellBg": { "type": "string" },
+        "headerFg": { "type": "string" }
+      },
+      "required": ["border", "stripe", "theadBg"]
+    },
+    "Content": {
+      "type": "object",
+      "properties": {
+        "heading": { "$ref": "#/$defs/Heading" },
+        "body": { "$ref": "#/$defs/Body" },
+        "link": { "$ref": "#/$defs/Link" },
+        "selection": { "$ref": "#/$defs/Selection" },
+        "blockquote": { "$ref": "#/$defs/Blockquote" },
+        "codeInline": { "$ref": "#/$defs/Code" },
+        "codeBlock": { "$ref": "#/$defs/Code" },
+        "table": { "$ref": "#/$defs/Table" }
+      },
+      "required": [
+        "heading",
+        "body",
+        "link",
+        "selection",
+        "blockquote",
+        "codeInline",
+        "codeBlock",
+        "table"
+      ]
+    },
+    "CardComponent": {
+      "type": "object",
+      "properties": {
+        "bg": { "type": "string" },
+        "border": { "type": "string" },
+        "headerBg": { "type": "string" },
+        "footerBg": { "type": "string" }
+      }
+    },
+    "MessageComponent": {
+      "type": "object",
+      "properties": {
+        "bg": { "type": "string" },
+        "headerBg": { "type": "string" },
+        "border": { "type": "string" },
+        "bodyFg": { "type": "string" }
+      }
+    },
+    "PanelComponent": {
+      "type": "object",
+      "properties": {
+        "bg": { "type": "string" },
+        "headerBg": { "type": "string" },
+        "headerFg": { "type": "string" },
+        "border": { "type": "string" },
+        "blockBg": { "type": "string" },
+        "blockHoverBg": { "type": "string" },
+        "blockActiveBg": { "type": "string" }
+      }
+    },
+    "BoxComponent": {
+      "type": "object",
+      "properties": {
+        "bg": { "type": "string" },
+        "border": { "type": "string" }
+      }
+    },
+    "NotificationComponent": {
+      "type": "object",
+      "properties": {
+        "bg": { "type": "string" },
+        "border": { "type": "string" }
+      }
+    },
+    "ModalComponent": {
+      "type": "object",
+      "properties": {
+        "bg": { "type": "string" },
+        "cardBg": { "type": "string" },
+        "headerBg": { "type": "string" },
+        "footerBg": { "type": "string" }
+      }
+    },
+    "DropdownComponent": {
+      "type": "object",
+      "properties": {
+        "bg": { "type": "string" },
+        "itemHoverBg": { "type": "string" },
+        "border": { "type": "string" }
+      }
+    },
+    "TabsComponent": {
+      "type": "object",
+      "properties": {
+        "border": { "type": "string" },
+        "linkBg": { "type": "string" },
+        "linkActiveBg": { "type": "string" },
+        "linkHoverBg": { "type": "string" }
+      }
+    },
+    "Components": {
+      "type": "object",
+      "properties": {
+        "card": { "$ref": "#/$defs/CardComponent" },
+        "message": { "$ref": "#/$defs/MessageComponent" },
+        "panel": { "$ref": "#/$defs/PanelComponent" },
+        "box": { "$ref": "#/$defs/BoxComponent" },
+        "notification": { "$ref": "#/$defs/NotificationComponent" },
+        "modal": { "$ref": "#/$defs/ModalComponent" },
+        "dropdown": { "$ref": "#/$defs/DropdownComponent" },
+        "tabs": { "$ref": "#/$defs/TabsComponent" }
+      }
+    },
+    "Tokens": {
+      "type": "object",
+      "properties": {
+        "background": { "$ref": "#/$defs/Background" },
+        "text": { "$ref": "#/$defs/Text" },
+        "brand": { "$ref": "#/$defs/Brand" },
+        "state": { "$ref": "#/$defs/State" },
+        "border": { "$ref": "#/$defs/Border" },
+        "accent": { "$ref": "#/$defs/Accent" },
+        "spacing": { "$ref": "#/$defs/Spacing" },
+        "elevation": { "$ref": "#/$defs/Elevation" },
+        "animation": { "$ref": "#/$defs/Animation" },
+        "opacity": { "$ref": "#/$defs/Opacity" },
+        "typography": { "$ref": "#/$defs/Typography" },
+        "content": { "$ref": "#/$defs/Content" },
+        "components": { "$ref": "#/$defs/Components" }
+      },
+      "required": [
+        "background",
+        "text",
+        "brand",
+        "state",
+        "border",
+        "accent",
+        "typography",
+        "content"
+      ]
+    },
+    "ThemeValue": {
+      "type": "object",
+      "properties": {
+        "$description": { "type": "string" },
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "vendor": { "type": "string" },
+        "appearance": { "enum": ["light", "dark"] },
+        "iconUrl": { "type": "string" },
+        "tokens": { "$ref": "#/$defs/Tokens" }
+      },
+      "required": ["id", "label", "vendor", "appearance", "tokens"]
+    }
+  }
+}

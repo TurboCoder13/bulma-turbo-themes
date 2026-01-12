@@ -1,0 +1,417 @@
+{
+  "$schema": "../../turbo-themes.schema.json#/$defs/ThemeFile",
+  "id": "bulma-dark",
+  "label": "Bulma Dark",
+  "vendor": "bulma",
+  "appearance": "dark",
+  "tokens": {
+    "background": {
+      "base": {
+        "$value": "#141414",
+        "$type": "color"
+      },
+      "surface": {
+        "$value": "#1f1f1f",
+        "$type": "color"
+      },
+      "overlay": {
+        "$value": "#2b2b2b",
+        "$type": "color"
+      }
+    },
+    "text": {
+      "primary": {
+        "$value": "#f5f5f5",
+        "$type": "color"
+      },
+      "secondary": {
+        "$value": "#dbdbdb",
+        "$type": "color"
+      },
+      "inverse": {
+        "$value": "#141414",
+        "$type": "color"
+      }
+    },
+    "brand": {
+      "primary": {
+        "$value": "#00d1b2",
+        "$type": "color"
+      }
+    },
+    "state": {
+      "info": {
+        "$value": "#3e8ed0",
+        "$type": "color"
+      },
+      "success": {
+        "$value": "#48c78e",
+        "$type": "color"
+      },
+      "warning": {
+        "$value": "#ffe08a",
+        "$type": "color"
+      },
+      "danger": {
+        "$value": "#f14668",
+        "$type": "color"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "#363636",
+        "$type": "color"
+      }
+    },
+    "accent": {
+      "link": {
+        "$value": "#485fc7",
+        "$type": "color"
+      }
+    },
+    "typography": {
+      "fonts": {
+        "sans": {
+          "$value": "\"Nunito Sans\", BlinkMacSystemFont, -apple-system, \"Segoe UI\", Roboto, Oxygen, Ubuntu, Cantarell, \"Fira Sans\", \"Droid Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+          "$type": "fontFamily"
+        },
+        "mono": {
+          "$value": "\"JetBrains Mono\", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace",
+          "$type": "fontFamily"
+        }
+      },
+      "webFonts": [
+        "https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&display=swap",
+        "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap"
+      ]
+    },
+    "content": {
+      "heading": {
+        "h1": {
+          "$value": "#00d1b2",
+          "$type": "color"
+        },
+        "h2": {
+          "$value": "#7289da",
+          "$type": "color"
+        },
+        "h3": {
+          "$value": "#5dade2",
+          "$type": "color"
+        },
+        "h4": {
+          "$value": "#58d68d",
+          "$type": "color"
+        },
+        "h5": {
+          "$value": "#f7dc6f",
+          "$type": "color"
+        },
+        "h6": {
+          "$value": "#f1948a",
+          "$type": "color"
+        }
+      },
+      "body": {
+        "primary": {
+          "$value": "#dbdbdb",
+          "$type": "color"
+        },
+        "secondary": {
+          "$value": "#b5b5b5",
+          "$type": "color"
+        }
+      },
+      "link": {
+        "default": {
+          "$value": "#485fc7",
+          "$type": "color"
+        }
+      },
+      "selection": {
+        "fg": {
+          "$value": "#f5f5f5",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#3273dc",
+          "$type": "color"
+        }
+      },
+      "blockquote": {
+        "border": {
+          "$value": "#363636",
+          "$type": "color"
+        },
+        "fg": {
+          "$value": "#dbdbdb",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#1f1f1f",
+          "$type": "color"
+        }
+      },
+      "codeInline": {
+        "fg": {
+          "$value": "#f14668",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#2b2b2b",
+          "$type": "color"
+        }
+      },
+      "codeBlock": {
+        "fg": {
+          "$value": "#f5f5f5",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#2b2b2b",
+          "$type": "color"
+        }
+      },
+      "table": {
+        "border": {
+          "$value": "#404040",
+          "$type": "color"
+        },
+        "stripe": {
+          "$value": "#1c1c1c",
+          "$type": "color"
+        },
+        "theadBg": {
+          "$value": "#2d2d2d",
+          "$type": "color"
+        },
+        "cellBg": {
+          "$value": "#1a1a1a",
+          "$type": "color"
+        },
+        "headerFg": {
+          "$value": "#f5f5f5",
+          "$type": "color"
+        }
+      }
+    },
+    "spacing": {
+      "xs": {
+        "$value": "0.25rem",
+        "$type": "dimension"
+      },
+      "sm": {
+        "$value": "0.5rem",
+        "$type": "dimension"
+      },
+      "md": {
+        "$value": "1rem",
+        "$type": "dimension"
+      },
+      "lg": {
+        "$value": "1.5rem",
+        "$type": "dimension"
+      },
+      "xl": {
+        "$value": "2rem",
+        "$type": "dimension"
+      }
+    },
+    "elevation": {
+      "none": {
+        "$value": "none",
+        "$type": "shadow"
+      },
+      "sm": {
+        "$value": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+        "$type": "shadow"
+      },
+      "md": {
+        "$value": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+        "$type": "shadow"
+      },
+      "lg": {
+        "$value": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+        "$type": "shadow"
+      },
+      "xl": {
+        "$value": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+        "$type": "shadow"
+      }
+    },
+    "animation": {
+      "durationFast": {
+        "$value": "150ms",
+        "$type": "duration"
+      },
+      "durationNormal": {
+        "$value": "300ms",
+        "$type": "duration"
+      },
+      "durationSlow": {
+        "$value": "500ms",
+        "$type": "duration"
+      },
+      "easingDefault": {
+        "$value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "$type": "cubicBezier"
+      },
+      "easingEmphasized": {
+        "$value": "cubic-bezier(0.05, 0.7, 0.1, 1)",
+        "$type": "cubicBezier"
+      }
+    },
+    "opacity": {
+      "disabled": {
+        "$value": 0.5,
+        "$type": "number"
+      },
+      "hover": {
+        "$value": 0.8,
+        "$type": "number"
+      },
+      "pressed": {
+        "$value": 0.6,
+        "$type": "number"
+      }
+    },
+    "components": {
+      "card": {
+        "bg": {
+          "$value": "#1c1c1c",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#3a3a3a",
+          "$type": "color"
+        },
+        "headerBg": {
+          "$value": "#252525",
+          "$type": "color"
+        },
+        "footerBg": {
+          "$value": "#1f1f1f",
+          "$type": "color"
+        }
+      },
+      "message": {
+        "bg": {
+          "$value": "#1f1f1f",
+          "$type": "color"
+        },
+        "headerBg": {
+          "$value": "#2a2a2a",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#404040",
+          "$type": "color"
+        },
+        "bodyFg": {
+          "$value": "#e0e0e0",
+          "$type": "color"
+        }
+      },
+      "panel": {
+        "bg": {
+          "$value": "#1c1c1c",
+          "$type": "color"
+        },
+        "headerBg": {
+          "$value": "#2a2a2a",
+          "$type": "color"
+        },
+        "headerFg": {
+          "$value": "#f5f5f5",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#3a3a3a",
+          "$type": "color"
+        },
+        "blockBg": {
+          "$value": "#1f1f1f",
+          "$type": "color"
+        },
+        "blockHoverBg": {
+          "$value": "#262626",
+          "$type": "color"
+        },
+        "blockActiveBg": {
+          "$value": "#2d3748",
+          "$type": "color"
+        }
+      },
+      "box": {
+        "bg": {
+          "$value": "#1c1c1c",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#3a3a3a",
+          "$type": "color"
+        }
+      },
+      "notification": {
+        "bg": {
+          "$value": "#252525",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#404040",
+          "$type": "color"
+        }
+      },
+      "modal": {
+        "bg": {
+          "$value": "rgba(0, 0, 0, 0.86)",
+          "$type": "color"
+        },
+        "cardBg": {
+          "$value": "#1c1c1c",
+          "$type": "color"
+        },
+        "headerBg": {
+          "$value": "#252525",
+          "$type": "color"
+        },
+        "footerBg": {
+          "$value": "#1f1f1f",
+          "$type": "color"
+        }
+      },
+      "dropdown": {
+        "bg": {
+          "$value": "#1c1c1c",
+          "$type": "color"
+        },
+        "itemHoverBg": {
+          "$value": "#2a2a2a",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#404040",
+          "$type": "color"
+        }
+      },
+      "tabs": {
+        "border": {
+          "$value": "#404040",
+          "$type": "color"
+        },
+        "linkBg": {
+          "$value": "#252525",
+          "$type": "color"
+        },
+        "linkActiveBg": {
+          "$value": "#1c1c1c",
+          "$type": "color"
+        },
+        "linkHoverBg": {
+          "$value": "#2a2a2a",
+          "$type": "color"
+        }
+      }
+    }
+  }
+}

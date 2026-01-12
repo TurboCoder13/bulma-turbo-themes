@@ -1,0 +1,460 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://turbocoder13.github.io/turbo-themes/schema/v1",
+  "title": "Turbo Themes Design Tokens",
+  "description": "W3C Design Tokens Community Group format schema for turbo-themes",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "$description": { "type": "string" },
+    "$version": { "type": "string" },
+    "$generated": { "type": "string", "format": "date-time" },
+    "meta": { "$ref": "#/$defs/Meta" },
+    "themes": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/Theme" }
+    },
+    "byVendor": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/Vendor" }
+    }
+  },
+  "required": ["themes"],
+  "$defs": {
+    "Meta": {
+      "type": "object",
+      "properties": {
+        "themeIds": { "type": "array", "items": { "type": "string" } },
+        "vendors": { "type": "array", "items": { "type": "string" } },
+        "totalThemes": { "type": "integer" },
+        "lightThemes": { "type": "integer" },
+        "darkThemes": { "type": "integer" }
+      }
+    },
+    "Vendor": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "homepage": { "type": "string", "format": "uri" },
+        "themes": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["name", "homepage", "themes"]
+    },
+    "ColorToken": {
+      "type": "object",
+      "properties": {
+        "$value": { "type": "string" },
+        "$type": { "const": "color" },
+        "$description": { "type": "string" }
+      },
+      "required": ["$value"]
+    },
+    "DimensionToken": {
+      "type": "object",
+      "properties": {
+        "$value": { "type": "string" },
+        "$type": { "const": "dimension" },
+        "$description": { "type": "string" }
+      },
+      "required": ["$value"]
+    },
+    "ShadowToken": {
+      "type": "object",
+      "properties": {
+        "$value": { "type": "string" },
+        "$type": { "const": "shadow" },
+        "$description": { "type": "string" }
+      },
+      "required": ["$value"]
+    },
+    "DurationToken": {
+      "type": "object",
+      "properties": {
+        "$value": { "type": "string", "pattern": "^[0-9]+(ms|s)$" },
+        "$type": { "const": "duration" },
+        "$description": { "type": "string" }
+      },
+      "required": ["$value"]
+    },
+    "CubicBezierToken": {
+      "type": "object",
+      "properties": {
+        "$value": { "type": "string" },
+        "$type": { "const": "cubicBezier" },
+        "$description": { "type": "string" }
+      },
+      "required": ["$value"]
+    },
+    "NumberToken": {
+      "type": "object",
+      "properties": {
+        "$value": { "type": "number" },
+        "$type": { "const": "number" },
+        "$description": { "type": "string" }
+      },
+      "required": ["$value"]
+    },
+    "FontFamilyToken": {
+      "type": "object",
+      "properties": {
+        "$value": { "type": "string" },
+        "$type": { "const": "fontFamily" },
+        "$description": { "type": "string" }
+      },
+      "required": ["$value"]
+    },
+    "BackgroundTokens": {
+      "type": "object",
+      "properties": {
+        "base": { "$ref": "#/$defs/ColorToken" },
+        "surface": { "$ref": "#/$defs/ColorToken" },
+        "overlay": { "$ref": "#/$defs/ColorToken" }
+      },
+      "required": ["base", "surface", "overlay"]
+    },
+    "TextTokens": {
+      "type": "object",
+      "properties": {
+        "primary": { "$ref": "#/$defs/ColorToken" },
+        "secondary": { "$ref": "#/$defs/ColorToken" },
+        "inverse": { "$ref": "#/$defs/ColorToken" }
+      },
+      "required": ["primary", "secondary", "inverse"]
+    },
+    "BrandTokens": {
+      "type": "object",
+      "properties": {
+        "primary": { "$ref": "#/$defs/ColorToken" }
+      },
+      "required": ["primary"]
+    },
+    "StateTokens": {
+      "type": "object",
+      "properties": {
+        "info": { "$ref": "#/$defs/ColorToken" },
+        "success": { "$ref": "#/$defs/ColorToken" },
+        "warning": { "$ref": "#/$defs/ColorToken" },
+        "danger": { "$ref": "#/$defs/ColorToken" }
+      },
+      "required": ["info", "success", "warning", "danger"]
+    },
+    "BorderTokens": {
+      "type": "object",
+      "properties": {
+        "default": { "$ref": "#/$defs/ColorToken" }
+      },
+      "required": ["default"]
+    },
+    "AccentTokens": {
+      "type": "object",
+      "properties": {
+        "link": { "$ref": "#/$defs/ColorToken" }
+      },
+      "required": ["link"]
+    },
+    "SpacingTokens": {
+      "type": "object",
+      "properties": {
+        "xs": { "$ref": "#/$defs/DimensionToken" },
+        "sm": { "$ref": "#/$defs/DimensionToken" },
+        "md": { "$ref": "#/$defs/DimensionToken" },
+        "lg": { "$ref": "#/$defs/DimensionToken" },
+        "xl": { "$ref": "#/$defs/DimensionToken" }
+      },
+      "required": ["xs", "sm", "md", "lg", "xl"]
+    },
+    "ElevationTokens": {
+      "type": "object",
+      "properties": {
+        "none": { "$ref": "#/$defs/ShadowToken" },
+        "sm": { "$ref": "#/$defs/ShadowToken" },
+        "md": { "$ref": "#/$defs/ShadowToken" },
+        "lg": { "$ref": "#/$defs/ShadowToken" },
+        "xl": { "$ref": "#/$defs/ShadowToken" }
+      },
+      "required": ["none", "sm", "md", "lg", "xl"]
+    },
+    "AnimationTokens": {
+      "type": "object",
+      "properties": {
+        "durationFast": { "$ref": "#/$defs/DurationToken" },
+        "durationNormal": { "$ref": "#/$defs/DurationToken" },
+        "durationSlow": { "$ref": "#/$defs/DurationToken" },
+        "easingDefault": { "$ref": "#/$defs/CubicBezierToken" },
+        "easingEmphasized": { "$ref": "#/$defs/CubicBezierToken" }
+      },
+      "required": [
+        "durationFast",
+        "durationNormal",
+        "durationSlow",
+        "easingDefault",
+        "easingEmphasized"
+      ]
+    },
+    "OpacityTokens": {
+      "type": "object",
+      "properties": {
+        "disabled": { "$ref": "#/$defs/NumberToken" },
+        "hover": { "$ref": "#/$defs/NumberToken" },
+        "pressed": { "$ref": "#/$defs/NumberToken" }
+      },
+      "required": ["disabled", "hover", "pressed"]
+    },
+    "FontsTokens": {
+      "type": "object",
+      "properties": {
+        "sans": { "$ref": "#/$defs/FontFamilyToken" },
+        "mono": { "$ref": "#/$defs/FontFamilyToken" }
+      },
+      "required": ["sans", "mono"]
+    },
+    "TypographyTokens": {
+      "type": "object",
+      "properties": {
+        "fonts": { "$ref": "#/$defs/FontsTokens" },
+        "webFonts": {
+          "type": "array",
+          "items": { "type": "string", "format": "uri" }
+        }
+      },
+      "required": ["fonts", "webFonts"]
+    },
+    "HeadingTokens": {
+      "type": "object",
+      "properties": {
+        "h1": { "$ref": "#/$defs/ColorToken" },
+        "h2": { "$ref": "#/$defs/ColorToken" },
+        "h3": { "$ref": "#/$defs/ColorToken" },
+        "h4": { "$ref": "#/$defs/ColorToken" },
+        "h5": { "$ref": "#/$defs/ColorToken" },
+        "h6": { "$ref": "#/$defs/ColorToken" }
+      },
+      "required": ["h1", "h2", "h3", "h4", "h5", "h6"]
+    },
+    "BodyTokens": {
+      "type": "object",
+      "properties": {
+        "primary": { "$ref": "#/$defs/ColorToken" },
+        "secondary": { "$ref": "#/$defs/ColorToken" }
+      },
+      "required": ["primary", "secondary"]
+    },
+    "LinkTokens": {
+      "type": "object",
+      "properties": {
+        "default": { "$ref": "#/$defs/ColorToken" }
+      },
+      "required": ["default"]
+    },
+    "SelectionTokens": {
+      "type": "object",
+      "properties": {
+        "fg": { "$ref": "#/$defs/ColorToken" },
+        "bg": { "$ref": "#/$defs/ColorToken" }
+      },
+      "required": ["fg", "bg"]
+    },
+    "BlockquoteTokens": {
+      "type": "object",
+      "properties": {
+        "border": { "$ref": "#/$defs/ColorToken" },
+        "fg": { "$ref": "#/$defs/ColorToken" },
+        "bg": { "$ref": "#/$defs/ColorToken" }
+      },
+      "required": ["border", "fg", "bg"]
+    },
+    "CodeTokens": {
+      "type": "object",
+      "properties": {
+        "fg": { "$ref": "#/$defs/ColorToken" },
+        "bg": { "$ref": "#/$defs/ColorToken" }
+      },
+      "required": ["fg", "bg"]
+    },
+    "TableTokens": {
+      "type": "object",
+      "properties": {
+        "border": { "$ref": "#/$defs/ColorToken" },
+        "stripe": { "$ref": "#/$defs/ColorToken" },
+        "theadBg": { "$ref": "#/$defs/ColorToken" },
+        "cellBg": { "$ref": "#/$defs/ColorToken" },
+        "headerFg": { "$ref": "#/$defs/ColorToken" }
+      },
+      "required": ["border", "stripe", "theadBg"]
+    },
+    "ContentTokens": {
+      "type": "object",
+      "properties": {
+        "heading": { "$ref": "#/$defs/HeadingTokens" },
+        "body": { "$ref": "#/$defs/BodyTokens" },
+        "link": { "$ref": "#/$defs/LinkTokens" },
+        "selection": { "$ref": "#/$defs/SelectionTokens" },
+        "blockquote": { "$ref": "#/$defs/BlockquoteTokens" },
+        "codeInline": { "$ref": "#/$defs/CodeTokens" },
+        "codeBlock": { "$ref": "#/$defs/CodeTokens" },
+        "table": { "$ref": "#/$defs/TableTokens" }
+      },
+      "required": [
+        "heading",
+        "body",
+        "link",
+        "selection",
+        "blockquote",
+        "codeInline",
+        "codeBlock",
+        "table"
+      ]
+    },
+    "CardComponentTokens": {
+      "type": "object",
+      "properties": {
+        "bg": { "$ref": "#/$defs/ColorToken" },
+        "border": { "$ref": "#/$defs/ColorToken" },
+        "headerBg": { "$ref": "#/$defs/ColorToken" },
+        "footerBg": { "$ref": "#/$defs/ColorToken" }
+      }
+    },
+    "MessageComponentTokens": {
+      "type": "object",
+      "properties": {
+        "bg": { "$ref": "#/$defs/ColorToken" },
+        "headerBg": { "$ref": "#/$defs/ColorToken" },
+        "border": { "$ref": "#/$defs/ColorToken" },
+        "bodyFg": { "$ref": "#/$defs/ColorToken" }
+      }
+    },
+    "PanelComponentTokens": {
+      "type": "object",
+      "properties": {
+        "bg": { "$ref": "#/$defs/ColorToken" },
+        "headerBg": { "$ref": "#/$defs/ColorToken" },
+        "headerFg": { "$ref": "#/$defs/ColorToken" },
+        "border": { "$ref": "#/$defs/ColorToken" },
+        "blockBg": { "$ref": "#/$defs/ColorToken" },
+        "blockHoverBg": { "$ref": "#/$defs/ColorToken" },
+        "blockActiveBg": { "$ref": "#/$defs/ColorToken" }
+      }
+    },
+    "BoxComponentTokens": {
+      "type": "object",
+      "properties": {
+        "bg": { "$ref": "#/$defs/ColorToken" },
+        "border": { "$ref": "#/$defs/ColorToken" }
+      }
+    },
+    "NotificationComponentTokens": {
+      "type": "object",
+      "properties": {
+        "bg": { "$ref": "#/$defs/ColorToken" },
+        "border": { "$ref": "#/$defs/ColorToken" }
+      }
+    },
+    "ModalComponentTokens": {
+      "type": "object",
+      "properties": {
+        "bg": { "$ref": "#/$defs/ColorToken" },
+        "cardBg": { "$ref": "#/$defs/ColorToken" },
+        "headerBg": { "$ref": "#/$defs/ColorToken" },
+        "footerBg": { "$ref": "#/$defs/ColorToken" }
+      }
+    },
+    "DropdownComponentTokens": {
+      "type": "object",
+      "properties": {
+        "bg": { "$ref": "#/$defs/ColorToken" },
+        "itemHoverBg": { "$ref": "#/$defs/ColorToken" },
+        "border": { "$ref": "#/$defs/ColorToken" }
+      }
+    },
+    "TabsComponentTokens": {
+      "type": "object",
+      "properties": {
+        "border": { "$ref": "#/$defs/ColorToken" },
+        "linkBg": { "$ref": "#/$defs/ColorToken" },
+        "linkActiveBg": { "$ref": "#/$defs/ColorToken" },
+        "linkHoverBg": { "$ref": "#/$defs/ColorToken" }
+      }
+    },
+    "ComponentTokens": {
+      "type": "object",
+      "properties": {
+        "card": { "$ref": "#/$defs/CardComponentTokens" },
+        "message": { "$ref": "#/$defs/MessageComponentTokens" },
+        "panel": { "$ref": "#/$defs/PanelComponentTokens" },
+        "box": { "$ref": "#/$defs/BoxComponentTokens" },
+        "notification": { "$ref": "#/$defs/NotificationComponentTokens" },
+        "modal": { "$ref": "#/$defs/ModalComponentTokens" },
+        "dropdown": { "$ref": "#/$defs/DropdownComponentTokens" },
+        "tabs": { "$ref": "#/$defs/TabsComponentTokens" }
+      }
+    },
+    "ThemeTokens": {
+      "type": "object",
+      "properties": {
+        "background": { "$ref": "#/$defs/BackgroundTokens" },
+        "text": { "$ref": "#/$defs/TextTokens" },
+        "brand": { "$ref": "#/$defs/BrandTokens" },
+        "state": { "$ref": "#/$defs/StateTokens" },
+        "border": { "$ref": "#/$defs/BorderTokens" },
+        "accent": { "$ref": "#/$defs/AccentTokens" },
+        "spacing": { "$ref": "#/$defs/SpacingTokens" },
+        "elevation": { "$ref": "#/$defs/ElevationTokens" },
+        "animation": { "$ref": "#/$defs/AnimationTokens" },
+        "opacity": { "$ref": "#/$defs/OpacityTokens" },
+        "typography": { "$ref": "#/$defs/TypographyTokens" },
+        "content": { "$ref": "#/$defs/ContentTokens" },
+        "components": { "$ref": "#/$defs/ComponentTokens" }
+      },
+      "required": [
+        "background",
+        "text",
+        "brand",
+        "state",
+        "border",
+        "accent",
+        "typography",
+        "content"
+      ]
+    },
+    "Theme": {
+      "type": "object",
+      "properties": {
+        "$description": { "type": "string" },
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "vendor": { "type": "string" },
+        "appearance": { "enum": ["light", "dark"] },
+        "iconUrl": { "type": "string" },
+        "tokens": { "$ref": "#/$defs/ThemeTokens" }
+      },
+      "required": ["id", "label", "vendor", "appearance", "tokens"]
+    },
+    "ThemeFile": {
+      "description": "Schema for individual theme files in schema/tokens/themes/",
+      "type": "object",
+      "properties": {
+        "$schema": { "type": "string" },
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "vendor": { "type": "string" },
+        "appearance": { "enum": ["light", "dark"] },
+        "iconUrl": { "type": "string" },
+        "tokens": { "$ref": "#/$defs/ThemeTokens" }
+      },
+      "required": ["id", "label", "vendor", "appearance", "tokens"]
+    },
+    "SharedTokensFile": {
+      "description": "Schema for shared tokens file (spacing, elevation, animation, opacity)",
+      "type": "object",
+      "properties": {
+        "$schema": { "type": "string" },
+        "$description": { "type": "string" },
+        "spacing": { "$ref": "#/$defs/SpacingTokens" },
+        "elevation": { "$ref": "#/$defs/ElevationTokens" },
+        "animation": { "$ref": "#/$defs/AnimationTokens" },
+        "opacity": { "$ref": "#/$defs/OpacityTokens" }
+      },
+      "required": ["spacing", "elevation", "animation", "opacity"]
+    }
+  }
+}
