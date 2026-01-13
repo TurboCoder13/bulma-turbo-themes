@@ -66,6 +66,27 @@
       }
     }
 
+    // Focus trap for modal accessibility
+    function trapFocus(e) {
+      if (!modal.classList.contains('open')) return;
+
+      var focusableElements = modal.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      var firstElement = focusableElements[0];
+      var lastElement = focusableElements[focusableElements.length - 1];
+
+      if (e.key === 'Tab') {
+        if (e.shiftKey && document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    }
+
     // Keyboard shortcut: Cmd+K / Ctrl+K
     document.addEventListener('keydown', function(e) {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -81,6 +102,9 @@
       if (e.key === 'Escape' && modal.classList.contains('open')) {
         closeModal();
       }
+
+      // Focus trap when modal is open
+      trapFocus(e);
     });
 
     // Click backdrop to close

@@ -136,9 +136,9 @@ export function logThemeError(themeError: ThemeError): void {
 }
 
 /**
- * Convenience function to create and log an error in one call.
+ * Convenience function to log a ThemeError.
  *
- * @param errorFactory - A function from ThemeErrors that creates the error
+ * @param error - The ThemeError instance to log
  */
 export function logError<T extends ThemeError>(error: T): void {
   logThemeError(error);

@@ -22,27 +22,52 @@ const HEX_COLOR_PATTERN = /^#(?:[0-9a-fA-F]{3}){1,2}$|^#(?:[0-9a-fA-F]{4}){1,2}$
 const CSS_VAR_PATTERN = /--[\w-]+\s*:/;
 
 /**
- * Convert hex color to RGB components
+ * Convert hex color to RGB components.
+ * Supports 3, 4, 6, and 8 digit hex formats.
+ * For 4/8 digit formats, the alpha channel is ignored.
  */
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  if (!result) {
-    // Try short format #RGB
-    const short = /^#?([a-f\d])([a-f\d])([a-f\d])$/i.exec(hex);
-    if (short) {
-      return {
-        r: parseInt(short[1] + short[1], 16),
-        g: parseInt(short[2] + short[2], 16),
-        b: parseInt(short[3] + short[3], 16),
-      };
-    }
-    return null;
+  // Try 6-digit format #RRGGBB
+  const result6 = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (result6) {
+    return {
+      r: parseInt(result6[1], 16),
+      g: parseInt(result6[2], 16),
+      b: parseInt(result6[3], 16),
+    };
   }
-  return {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16),
-  };
+
+  // Try 8-digit format #RRGGBBAA (ignore alpha)
+  const result8 = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})[a-f\d]{2}$/i.exec(hex);
+  if (result8) {
+    return {
+      r: parseInt(result8[1], 16),
+      g: parseInt(result8[2], 16),
+      b: parseInt(result8[3], 16),
+    };
+  }
+
+  // Try short 3-digit format #RGB
+  const short3 = /^#?([a-f\d])([a-f\d])([a-f\d])$/i.exec(hex);
+  if (short3) {
+    return {
+      r: parseInt(short3[1] + short3[1], 16),
+      g: parseInt(short3[2] + short3[2], 16),
+      b: parseInt(short3[3] + short3[3], 16),
+    };
+  }
+
+  // Try short 4-digit format #RGBA (ignore alpha)
+  const short4 = /^#?([a-f\d])([a-f\d])([a-f\d])[a-f\d]$/i.exec(hex);
+  if (short4) {
+    return {
+      r: parseInt(short4[1] + short4[1], 16),
+      g: parseInt(short4[2] + short4[2], 16),
+      b: parseInt(short4[3] + short4[3], 16),
+    };
+  }
+
+  return null;
 }
 
 /**

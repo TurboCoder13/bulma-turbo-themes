@@ -66,16 +66,22 @@ export function createThemeItemElement(
   const isActive = theme.id === currentThemeId;
   setItemActiveState(item, isActive);
 
-  // Icon
-  const icon = documentObj.createElement('img');
-  icon.className = 'theme-icon';
+  // Icon (only render if theme has an icon)
   if (theme.icon) {
+    const icon = documentObj.createElement('img');
+    icon.className = 'theme-icon';
     icon.src = baseUrl ? `${baseUrl}/${theme.icon}` : theme.icon;
     icon.alt = `${familyMeta.name} ${theme.name}`;
+    icon.width = 24;
+    icon.height = 24;
+    item.appendChild(icon);
+  } else {
+    // Add placeholder for consistent spacing
+    const placeholder = documentObj.createElement('span');
+    placeholder.className = 'theme-icon theme-icon-placeholder';
+    placeholder.setAttribute('aria-hidden', 'true');
+    item.appendChild(placeholder);
   }
-  icon.width = 24;
-  icon.height = 24;
-  item.appendChild(icon);
 
   // Text content
   const copy = documentObj.createElement('div');
