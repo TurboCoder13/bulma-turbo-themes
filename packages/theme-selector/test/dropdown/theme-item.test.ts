@@ -102,9 +102,9 @@ describe('createThemeItemElement', () => {
   it('handles theme without icon', () => {
     mockTheme.icon = undefined;
     const item = createThemeItemElement(mockContext, mockTheme, mockFamilyMeta);
-    const icon = item.querySelector('img.theme-icon') as HTMLImageElement;
-    expect(icon).not.toBeNull();
-    expect(icon.src).toBe('');
+    const icon = item.querySelector('img.theme-icon');
+    // When theme has no icon, the img element should not be created
+    expect(icon).toBeNull();
   });
 
   it('creates title element', () => {

@@ -8,6 +8,7 @@ from assertpy import assert_that
 from turbo_themes.manager import (
     ThemeManager,
     get_theme_manager,
+    reset_theme_manager,
     set_theme,
     get_current_theme,
     cycle_theme,
@@ -186,16 +187,26 @@ def test_global_functions():
 
 def test_get_theme_manager():
     """Test getting the global theme manager."""
+    reset_theme_manager()  # Ensure clean state
     manager = get_theme_manager()
     assert_that(manager).is_instance_of(ThemeManager)
     assert_that(manager.current_theme_id).is_equal_to("catppuccin-mocha")
 
 
-def test_get_theme_manager_resets_on_changed_state():
-    """Test that get_theme_manager resets if state changed."""
-    # Change the global theme
+def test_get_theme_manager_preserves_state():
+    """Test that get_theme_manager preserves theme state between calls."""
+    reset_theme_manager()  # Start clean
     set_theme("github-light")
-    # get_theme_manager should reset to default
+    # get_theme_manager should preserve the changed state
+    manager = get_theme_manager()
+    assert_that(manager.current_theme_id).is_equal_to("github-light")
+    reset_theme_manager()  # Clean up
+
+
+def test_reset_theme_manager():
+    """Test that reset_theme_manager resets to default state."""
+    set_theme("dracula")
+    reset_theme_manager()
     manager = get_theme_manager()
     assert_that(manager.current_theme_id).is_equal_to("catppuccin-mocha")
 

@@ -36,8 +36,9 @@ describe('CSS_BASE', () => {
   });
 
   it('should include body styling', () => {
-    expect(CSS_BASE).toContain('var(--turbo-bg-base)');
-    expect(CSS_BASE).toContain('var(--turbo-text-primary)');
+    // Variables now include fallbacks, so check for the variable name part
+    expect(CSS_BASE).toContain('--turbo-bg-base');
+    expect(CSS_BASE).toContain('--turbo-text-primary');
   });
 
   it('should include heading styles', () => {
@@ -52,14 +53,16 @@ describe('CSS_BASE', () => {
 
   it('should include selection styles', () => {
     expect(CSS_BASE).toContain('::selection');
-    expect(CSS_BASE).toContain('var(--turbo-selection-fg)');
-    expect(CSS_BASE).toContain('var(--turbo-selection-bg)');
+    // Variables now include fallbacks
+    expect(CSS_BASE).toContain('--turbo-selection-fg');
+    expect(CSS_BASE).toContain('--turbo-selection-bg');
   });
 
   it('should include code styles', () => {
-    expect(CSS_BASE).toContain('var(--turbo-code-inline-fg)');
-    expect(CSS_BASE).toContain('var(--turbo-code-block-bg)');
-    expect(CSS_BASE).toContain('var(--turbo-font-mono');
+    // Variables now include fallbacks
+    expect(CSS_BASE).toContain('--turbo-code-inline-fg');
+    expect(CSS_BASE).toContain('--turbo-code-block-bg');
+    expect(CSS_BASE).toContain('--turbo-font-mono');
   });
 
   it('should include blockquote styles', () => {
