@@ -54,8 +54,24 @@ try {
   if (!existsSync(siteDistDir)) {
     mkdirSync(siteDistDir, { recursive: true });
   }
+
+  // Preserve the Astro-generated index.html before clearing examples directory
+  const examplesIndexPath = join(siteExamplesDir, 'index.html');
+  let examplesIndexContent = null;
+  if (existsSync(examplesIndexPath)) {
+    const { readFileSync } = await import('fs');
+    examplesIndexContent = readFileSync(examplesIndexPath, 'utf8');
+  }
+
   rmSync(siteExamplesDir, { recursive: true, force: true });
   mkdirSync(siteExamplesDir, { recursive: true });
+
+  // Restore the Astro-generated index.html
+  if (examplesIndexContent) {
+    const { writeFileSync } = await import('fs');
+    writeFileSync(examplesIndexPath, examplesIndexContent);
+    console.log('Restored examples/index.html from Astro build');
+  }
 
   // html-vanilla (static - copy entire directory and CSS files)
   const htmlVanilla = join(rootDir, 'examples', 'html-vanilla');

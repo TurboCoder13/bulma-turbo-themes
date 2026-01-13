@@ -112,7 +112,7 @@ const examples = [
   {examples.map((section) => (
     <section class="examples-section">
       <div class="examples-card">
-        <h2 class="examples-category">{section.category}</h2>
+        <h4 class="examples-category">{section.category}</h4>
         <div class="examples-grid">
           {section.items.map((example) => (
             <ExampleCard {...example} />
@@ -194,9 +194,11 @@ const examples = [
 
   .examples-grid {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: row;
+    flex-wrap: nowrap;
     justify-content: center;
-    gap: 2rem;
+    align-items: flex-start;
+    gap: 1.5rem;
     padding-top: 1rem;
   }
 

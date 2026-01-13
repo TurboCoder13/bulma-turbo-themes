@@ -2846,11 +2846,31 @@ html:root .footer-links a:hover {
 }
 
 /* ==========================================================================
+   Examples Page Grid
+   ========================================================================== */
+
+.examples-section {
+  text-align: center;
+}
+
+.examples-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding-top: 1rem;
+}
+
+/* ==========================================================================
    Example Cards - Bubble Style
    ========================================================================== */
 
 .example-card {
-  width: 280px;
+  flex: 1 1 200px;
+  min-width: 180px;
+  max-width: 280px;
   display: flex;
   flex-direction: column;
   align-items: center;

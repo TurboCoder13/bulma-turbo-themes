@@ -1,7 +1,7 @@
 .PHONY: all clean test test-fast test-parallel test-browser-parallel playground-html playground-jekyll playground-swift playground-tailwind playground-bootstrap playground-react playground-vue playground-python playground-all playground-help \
 	build-help build-all build-core build-themes build-js build-js-only build-html build-site build-tailwind build-swift build-examples examples-prep build-gem \
 	test-unit test-e2e test-examples test-example-bootstrap test-example-html test-example-jekyll test-example-react test-example-tailwind test-example-vue \
-	test-python test-swift test-lhci test-links test-all test-help ensure-deps ensure-report-dirs serve-reports _serve serve serve-quick
+	test-python test-swift test-lhci test-links test-all test-help ensure-deps ensure-report-dirs copy-reports serve-reports _serve serve serve-quick
 
 all: build-all
 
@@ -275,6 +275,11 @@ ensure-deps:
 ensure-report-dirs:
 	@mkdir -p coverage lighthouse-reports playwright-report
 
+# Copy test reports to site dist (run after tests to update reports in dist)
+copy-reports:
+	@echo "📊 Copying test reports to site dist..."
+	@cd apps/site && node scripts/post-build.mjs
+
 serve-reports:
 	@if ! command -v bunx >/dev/null 2>&1; then \
 		echo "❌ bunx required to serve reports (http-server)."; exit 1; \
@@ -295,8 +300,9 @@ build-help:
 	@echo "  build-swift     SwiftUI preview (open in Xcode)"
 	@echo "  build-gem       Ruby gem for Jekyll"
 	@echo "  examples-prep   copy built examples into site dist"
+	@echo "  copy-reports    copy test reports to site dist"
 	@echo "  build-all       core + js + examples + site + prep + gem"
-	@echo "  serve           serve existing dist (use after build-all && test)"
+	@echo "  serve           serve existing dist (copies reports first)"
 	@echo "  serve-quick     build site and serve (no tests)"
 
 build-core:
@@ -324,7 +330,7 @@ _serve:
 	@cd apps/site && bun run preview
 
 # Serve existing dist (use after: make build-all && make test)
-serve: ensure-report-dirs
+serve: copy-reports
 	@$(MAKE) _serve
 
 # Build site and serve (no tests)
