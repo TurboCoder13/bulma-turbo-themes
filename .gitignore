@@ -74,6 +74,7 @@ lighthouse/
 
 # Playwright E2E test artifacts
 test-results/
+.test-results/
 playwright-report/
 playwright/.cache/
 playwright/
