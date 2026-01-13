@@ -234,13 +234,13 @@ $info: #89dceb;
 ```
 
 > **Note:** Sass variables like `$primary` cannot be set to CSS variables directly
-> (e.g., `$primary: var(--turbo-brand-primary)`) because Sass evaluates these at
-> compile time, not runtime.
+> (e.g., `$primary: var(--turbo-brand-primary)`) because Sass evaluates these at compile
+> time, not runtime.
 
 ## Limitations
 
-- Bootstrap's Sass compilation happens at build time, so Sass variables must be
-  static color values
+- Bootstrap's Sass compilation happens at build time, so Sass variables must be static
+  color values
 - For full dynamic theming, use the CSS variable approach shown above
 - Some Bootstrap components may need additional CSS overrides
 
