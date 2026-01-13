@@ -76,8 +76,8 @@ export const CSS_BASE = `/* Turbo Themes - Base Semantic Styles */
 
 body {
   font-family: var(--turbo-font-sans, system-ui, -apple-system, sans-serif);
-  color: var(--turbo-text-primary);
-  background-color: var(--turbo-bg-base);
+  color: var(--turbo-text-primary, #000);
+  background-color: var(--turbo-bg-base, #fff);
 }
 
 /* Typography */
@@ -109,8 +109,8 @@ a:hover {
 
 /* Selection */
 ::selection {
-  color: var(--turbo-selection-fg);
-  background-color: var(--turbo-selection-bg);
+  color: var(--turbo-selection-fg, #fff);
+  background-color: var(--turbo-selection-bg, #3273dc);
 }
 
 /* Code */
@@ -123,16 +123,16 @@ pre {
 
 code {
   padding: 0.125rem 0.25rem;
-  color: var(--turbo-code-inline-fg);
-  background-color: var(--turbo-code-inline-bg);
+  color: var(--turbo-code-inline-fg, #e83e8c);
+  background-color: var(--turbo-code-inline-bg, #f8f9fa);
   border-radius: 0.25rem;
   font-size: 0.875em;
 }
 
 pre {
   padding: 1rem;
-  color: var(--turbo-code-block-fg);
-  background-color: var(--turbo-code-block-bg);
+  color: var(--turbo-code-block-fg, #f8f9fa);
+  background-color: var(--turbo-code-block-bg, #2b2b2b);
   border-radius: 0.5rem;
   overflow-x: auto;
 }
