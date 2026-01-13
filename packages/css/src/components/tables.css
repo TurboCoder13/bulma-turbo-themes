@@ -4,6 +4,7 @@
 
 .table {
   width: 100%;
+
   /* Use separate + spacing:0 to allow border-radius while removing cell gaps */
   border-collapse: separate;
   border-spacing: 0;
