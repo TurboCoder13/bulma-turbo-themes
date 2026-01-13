@@ -139,28 +139,47 @@ try {
   const jekyllTarget = join(siteExamplesDir, 'jekyll');
   if (existsSync(jekyllSource)) {
     console.log('Building Jekyll example...');
-    // Build Jekyll (uses local _layouts now, doesn't need gem)
+
+    // Check if Jekyll is available
+    let jekyllAvailable = false;
     try {
-      execSync(
-        'bundle exec jekyll build --source examples/jekyll --destination apps/site/dist/examples/jekyll --config examples/jekyll/_config.yml',
-        {
-          cwd: rootDir,
-          stdio: 'inherit',
-        }
-      );
-    } catch (e) {
-      // If bundle exec fails, try plain jekyll
-      console.log('bundle exec failed, trying plain jekyll...');
-      execSync(
-        'jekyll build --source examples/jekyll --destination apps/site/dist/examples/jekyll --config examples/jekyll/_config.yml',
-        {
-          cwd: rootDir,
-          stdio: 'inherit',
-        }
-      );
+      execSync('which jekyll || which bundle', { stdio: 'pipe' });
+      jekyllAvailable = true;
+    } catch {
+      jekyllAvailable = false;
     }
 
-    // Copy turbo-themes CSS to Jekyll example's assets
+    if (!jekyllAvailable) {
+      console.log('⚠️  Jekyll not available. Skipping Jekyll example build.');
+      console.log('   Run "gem install jekyll bundler" to enable Jekyll builds locally.');
+    } else {
+      // Build Jekyll (uses local _layouts now, doesn't need gem)
+      try {
+        execSync(
+          'bundle exec jekyll build --source examples/jekyll --destination apps/site/dist/examples/jekyll --config examples/jekyll/_config.yml',
+          {
+            cwd: rootDir,
+            stdio: 'inherit',
+          }
+        );
+      } catch (e) {
+        // If bundle exec fails, try plain jekyll
+        console.log('bundle exec failed, trying plain jekyll...');
+        try {
+          execSync(
+            'jekyll build --source examples/jekyll --destination apps/site/dist/examples/jekyll --config examples/jekyll/_config.yml',
+            {
+              cwd: rootDir,
+              stdio: 'inherit',
+            }
+          );
+        } catch (e2) {
+          console.log('⚠️  Jekyll build failed. Skipping Jekyll example.');
+        }
+      }
+    }
+
+    // Copy turbo-themes CSS to Jekyll example's assets (if Jekyll was built)
     const cssSrc = join(rootDir, 'packages', 'css', 'dist');
     const cssDest = join(jekyllTarget, 'assets', 'css');
     if (existsSync(cssSrc) && existsSync(jekyllTarget)) {
