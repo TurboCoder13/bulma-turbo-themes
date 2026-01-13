@@ -338,24 +338,28 @@ export async function removeThemeCSSInterception(page: Page): Promise<void> {
  * @param themeId - The theme ID to wait for (optional, just verifies CSS vars exist)
  * @param timeoutMs - Maximum time to wait (default: 5000ms)
  */
-export async function waitForThemeApplied(page: Page, themeId?: string, timeoutMs = 5000): Promise<void> {
-  await page.waitForFunction(
-    (expectedTheme) => {
-      const style = getComputedStyle(document.documentElement);
-      const bgBase = style.getPropertyValue('--turbo-bg-base');
-      // Check that CSS variables are populated (non-empty)
-      if (!bgBase || bgBase.trim() === '') {
-        return false;
-      }
-      // If a specific theme is expected, verify the data-theme attribute
-      if (expectedTheme) {
-        return document.documentElement.dataset.theme === expectedTheme;
-      }
-      return true;
-    },
-    themeId,
-    { timeout: timeoutMs }
-  ).catch(() => {
-    // Swallow timeout - CSS may still be loading, test will continue
-  });
+export async function waitForThemeApplied(page: Page, themeId?: string, timeoutMs = 5000): Promise<boolean> {
+  try {
+    await page.waitForFunction(
+      (expectedTheme) => {
+        const style = getComputedStyle(document.documentElement);
+        const bgBase = style.getPropertyValue('--turbo-bg-base');
+        // Check that CSS variables are populated (non-empty)
+        if (!bgBase || bgBase.trim() === '') {
+          return false;
+        }
+        // If a specific theme is expected, verify the data-theme attribute
+        if (expectedTheme) {
+          return document.documentElement.dataset.theme === expectedTheme;
+        }
+        return true;
+      },
+      themeId,
+      { timeout: timeoutMs }
+    );
+    return true;
+  } catch {
+    console.warn(`Theme application timed out after ${timeoutMs}ms${themeId ? ` for theme "${themeId}"` : ''}`);
+    return false;
+  }
 }

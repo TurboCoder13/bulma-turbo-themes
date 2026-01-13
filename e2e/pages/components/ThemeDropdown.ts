@@ -1,5 +1,5 @@
 import { type Locator, type Page, expect } from '@playwright/test';
-import { escapeRegex } from '../../helpers';
+import { escapeCssAttributeSelector, escapeRegex } from '../../helpers';
 
 /**
  * Theme dropdown component object.
@@ -66,7 +66,8 @@ export class ThemeDropdown {
    */
   async selectTheme(themeId: string): Promise<void> {
     await this.open();
-    const option = this.page.locator(`.theme-option[data-theme="${themeId}"]`);
+    const escapedSelector = escapeCssAttributeSelector(themeId);
+    const option = this.page.locator(`.theme-option[data-theme="${escapedSelector}"]`);
     await option.click();
     // Verify theme was applied by checking data-theme attribute on html element
     const escapedThemeId = escapeRegex(themeId);
