@@ -332,6 +332,11 @@
   border-left-color: var(--sidebar-border);
 }
 
+.sidebar-menu-sub-button:focus-visible {
+  outline: 2px solid var(--sidebar-accent);
+  outline-offset: -2px;
+}
+
 .sidebar-menu-sub-button[data-active='true'],
 .sidebar-menu-sub-button.active {
   color: var(--sidebar-accent);

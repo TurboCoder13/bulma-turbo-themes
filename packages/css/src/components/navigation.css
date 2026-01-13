@@ -146,10 +146,15 @@
   transition: all var(--transition-fast);
 }
 
-.pagination-item:hover {
+.pagination-item:hover:not(:disabled):not(.disabled) {
   background: var(--turbo-bg-overlay);
   border-color: var(--turbo-brand-primary);
   color: var(--turbo-text-primary);
+}
+
+.pagination-item:focus-visible {
+  outline: 2px solid var(--turbo-brand-primary);
+  outline-offset: 2px;
 }
 
 .pagination-item.active {

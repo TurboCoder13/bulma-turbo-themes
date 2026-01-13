@@ -21,8 +21,13 @@
   transition: all var(--transition-fast);
 }
 
-.tab:hover {
+.tab:hover:not(:disabled) {
   color: var(--turbo-text-primary);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--turbo-brand-primary);
+  outline-offset: 2px;
 }
 
 .tab.active {

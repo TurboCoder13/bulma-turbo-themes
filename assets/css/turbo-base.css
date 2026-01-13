@@ -111,6 +111,11 @@ a:hover {
   text-decoration: underline;
 }
 
+a:focus-visible {
+  outline: 2px solid var(--turbo-brand-primary);
+  outline-offset: 2px;
+}
+
 /* Selection */
 ::selection {
   color: var(--turbo-selection-fg);
@@ -217,7 +222,8 @@ textarea {
 
 input:focus,
 select:focus,
-textarea:focus {
+textarea:focus,
+button:focus-visible {
   outline: 2px solid var(--turbo-brand-primary);
   outline-offset: 2px;
 }
