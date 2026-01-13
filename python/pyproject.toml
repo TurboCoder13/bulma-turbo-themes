@@ -42,7 +42,6 @@ addopts = [
     "--verbose",
     "--tb=short",
     "--strict-markers",
-    "--disable-warnings",
     "--cov=turbo_themes",
     "--cov-branch",
     "--cov-report=term-missing",

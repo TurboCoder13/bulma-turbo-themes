@@ -1,5 +1,5 @@
 import { type Page, test as base } from '@playwright/test';
-import { themeIds } from '@turbocoder13/turbo-themes-core/tokens';
+import { themeIds } from '../../packages/core/src/tokens/index.js';
 
 /**
  * Valid theme IDs used across all examples.

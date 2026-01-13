@@ -131,15 +131,21 @@ test-unit:
 test-e2e:
 	@if [ "$${SKIP_E2E:-0}" = "1" ]; then \
 		echo "⏭️  Skipping E2E (SKIP_E2E=1)"; \
+	elif ! command -v bun >/dev/null 2>&1 || [ ! -f "package.json" ]; then \
+		echo "❌ bun or package.json missing. Install bun and deps first."; \
+		exit 1; \
 	else \
-		$(call check_bun) && bun run e2e:ci; \
+		bun run e2e:ci; \
 	fi
 
 test-lhci:
 	@if [ "$${SKIP_LHCI:-0}" = "1" ]; then \
 		echo "⏭️  Skipping Lighthouse (SKIP_LHCI=1)"; \
+	elif ! command -v bun >/dev/null 2>&1 || [ ! -f "package.json" ]; then \
+		echo "❌ bun or package.json missing. Install bun and deps first."; \
+		exit 1; \
 	else \
-		$(call check_bun) && bunx lhci autorun --config=lighthouserc.json --collect.numberOfRuns=1; \
+		bunx lhci autorun --config=lighthouserc.json --collect.numberOfRuns=1; \
 	fi
 
 test-links: build-site
