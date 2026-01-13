@@ -7,7 +7,10 @@
   "private": false,
   "workspaces": [
     "packages/*",
-    "packages/adapters/*"
+    "packages/adapters/*",
+    "examples/react",
+    "examples/vue",
+    "examples/bootstrap"
   ],
   "repository": {
     "type": "git",
