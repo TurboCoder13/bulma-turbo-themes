@@ -81,8 +81,8 @@ def apply_optional_spacing(
     spacing = tokens.spacing
     for prop in config.properties:
         value = getattr(spacing, prop, None)
-        if value:
-            variables[f"--{prefix}-{config.prefix}-{prop}"] = value
+        if value is not None:
+            variables[f"--{prefix}-{config.prefix}-{prop}"] = str(value)
 
     return variables
 
@@ -118,8 +118,8 @@ def apply_optional_elevation(
     elevation = tokens.elevation
     for prop in config.properties:
         value = getattr(elevation, prop, None)
-        if value:
-            variables[f"--{prefix}-{config.prefix}-{prop}"] = value
+        if value is not None:
+            variables[f"--{prefix}-{config.prefix}-{prop}"] = str(value)
 
     return variables
 
@@ -154,8 +154,8 @@ def apply_optional_animation(
 
     for mapping in config.mappings:
         value = resolve_token_path(tokens, mapping.token_path)
-        if value:
-            variables[f"--{prefix}-{config.prefix}-{mapping.css_var}"] = value
+        if value is not None:
+            variables[f"--{prefix}-{config.prefix}-{mapping.css_var}"] = str(value)
 
     return variables
 

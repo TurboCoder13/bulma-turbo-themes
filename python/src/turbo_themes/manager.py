@@ -289,14 +289,22 @@ _default_manager = ThemeManager()
 def get_theme_manager() -> ThemeManager:
     """Get the default global theme manager instance.
 
+    Note: This returns the global singleton. Theme state is preserved
+    between calls. For test isolation, create a new ThemeManager instance.
+
     Returns:
         The global ThemeManager instance.
     """
-    # Reset to default to avoid cross-test pollution or stale state
-    global _default_manager
-    if _default_manager.current_theme_id != "catppuccin-mocha":
-        _default_manager = ThemeManager()
     return _default_manager
+
+
+def reset_theme_manager() -> None:
+    """Reset the global theme manager to default state.
+
+    This is primarily useful for test cleanup to avoid cross-test pollution.
+    """
+    global _default_manager
+    _default_manager = ThemeManager()
 
 
 def set_theme(theme_id: str) -> None:

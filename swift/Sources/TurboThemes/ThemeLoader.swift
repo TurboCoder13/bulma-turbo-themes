@@ -19,11 +19,18 @@ public enum ThemeLoader {
         "github-light"
     ]
 
+    /// Thread synchronization lock for cache access.
+    private static let lock = NSLock()
+
     /// Cached loaded themes.
     private static var _themes: TurboThemes?
 
     /// Load all themes from bundled JSON resource.
+    /// Thread-safe: uses locking to prevent data races during initialization.
     public static func loadThemes() throws -> TurboThemes {
+        lock.lock()
+        defer { lock.unlock() }
+
         if let cached = _themes {
             return cached
         }

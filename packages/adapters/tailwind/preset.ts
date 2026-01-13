@@ -112,18 +112,18 @@ export default function preset(userOptions: TurboThemePresetOptions = {}) {
             header: 'var(--turbo-table-header-fg)',
           },
 
-          // Spacing (if available)
-          spacing: {
-            xs: 'var(--turbo-spacing-xs, 0.25rem)',
-            sm: 'var(--turbo-spacing-sm, 0.5rem)',
-            md: 'var(--turbo-spacing-md, 1rem)',
-            lg: 'var(--turbo-spacing-lg, 1.5rem)',
-            xl: 'var(--turbo-spacing-xl, 2rem)',
-          },
-
           // Custom color mappings
           ...colorMappings,
           ...options.colors,
+        },
+
+        // Spacing tokens (separate from colors)
+        spacing: {
+          'turbo-xs': 'var(--turbo-spacing-xs, 0.25rem)',
+          'turbo-sm': 'var(--turbo-spacing-sm, 0.5rem)',
+          'turbo-md': 'var(--turbo-spacing-md, 1rem)',
+          'turbo-lg': 'var(--turbo-spacing-lg, 1.5rem)',
+          'turbo-xl': 'var(--turbo-spacing-xl, 2rem)',
         },
 
         // Shadow/elevation support

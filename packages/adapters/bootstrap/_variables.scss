@@ -5,6 +5,12 @@
  * Maps Turbo Theme design tokens to Bootstrap 5 SCSS variables.
  * Import this file after Bootstrap's defaults but before your custom styles.
  *
+ * IMPORTANT: These variables use CSS custom properties (var(--turbo-*)).
+ * Sass treats these as strings, so Bootstrap's color functions (darken,
+ * lighten, mix, etc.) won't work with them. For full color manipulation,
+ * use static color values at compile time and CSS variable overrides at
+ * runtime. See the documentation for the recommended approach.
+ *
  * @example
  * ```scss
  * @import "~bootstrap/scss/functions";
