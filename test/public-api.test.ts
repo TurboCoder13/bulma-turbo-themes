@@ -255,7 +255,7 @@ describe('public API', () => {
     expect(document.documentElement.classList.add).toHaveBeenCalledWith('theme-catppuccin-mocha');
   });
 
-  it('wireFlavorSelector returns early when elements are missing', () => {
+  it('wireFlavorSelector returns early when elements are missing', async () => {
     const originalAbortController = global.AbortController;
     const mockAbortController = {
       abort: vi.fn(),
@@ -277,7 +277,7 @@ describe('public API', () => {
         writable: true,
       });
 
-      const result = wireFlavorSelector(document, window);
+      const result = await wireFlavorSelector(document, window);
       expect(document.getElementById).toHaveBeenCalledWith('theme-flavor-menu');
       expect(document.getElementById).toHaveBeenCalledWith('theme-flavor-trigger');
       // Note: dropdown is now obtained via trigger.closest(), not getElementById
@@ -1020,16 +1020,17 @@ describe('public API', () => {
         if (tag === 'button') {
           // Capture index at creation time (before push)
           const capturedIndex = mockMenuItems.length;
+          // Order must match actual theme order from generated data
           const themes = [
-            'bulma-light',
             'bulma-dark',
-            'catppuccin-latte',
+            'bulma-light',
             'catppuccin-frappe',
+            'catppuccin-latte',
             'catppuccin-macchiato',
             'catppuccin-mocha',
             'dracula',
-            'github-light',
             'github-dark',
+            'github-light',
           ];
           const item = {
             ...mockElement,
@@ -1077,7 +1078,7 @@ describe('public API', () => {
       writable: true,
     });
 
-    wireFlavorSelector(document, window);
+    await wireFlavorSelector(document, window);
 
     // Find a specific menu item and its click handler
     const catppuccinLatteItem = mockMenuItems.find((item) => {
@@ -2105,7 +2106,7 @@ describe('public API', () => {
     }
   });
 
-  it('wireFlavorSelector cleanup function calls abortController.abort', () => {
+  it('wireFlavorSelector cleanup function calls abortController.abort', async () => {
     // Test cleanup function execution (coverage for lines 461-462)
     const originalAbortController = global.AbortController;
     const mockAbortController = {
@@ -2117,7 +2118,7 @@ describe('public API', () => {
     (global as any).AbortController = MockAbortController;
 
     try {
-      const result = wireFlavorSelector(document, window);
+      const result = await wireFlavorSelector(document, window);
       expect(result).toBeDefined();
       expect(result.cleanup).toBeDefined();
       expect(typeof result.cleanup).toBe('function');
@@ -2390,6 +2391,7 @@ describe('public API', () => {
       const mockNavbarItem = {
         href: 'http://localhost/components/',
         classList: { add: vi.fn(), remove: vi.fn() },
+        setAttribute: vi.fn(),
       } as any;
 
       Object.defineProperty(document, 'querySelectorAll', {
@@ -2431,6 +2433,7 @@ describe('public API', () => {
       const mockNavbarItem = {
         href: 'http://localhost/components/',
         classList: { add: vi.fn(), remove: vi.fn() },
+        setAttribute: vi.fn(),
       } as any;
 
       Object.defineProperty(document, 'querySelectorAll', {
@@ -2452,6 +2455,7 @@ describe('public API', () => {
       const mockNavbarItem = {
         href: 'http://localhost/',
         classList: { add: vi.fn(), remove: vi.fn() },
+        setAttribute: vi.fn(),
       } as any;
 
       Object.defineProperty(document, 'querySelectorAll', {
@@ -3064,8 +3068,8 @@ describe('public API', () => {
 
       await initTheme(document, window);
 
-      // Verify theme link was created with correct href
-      expect(mockThemeLink.href).toContain('/bulma-turbo-themes/assets/css/themes/');
+      // Verify theme link was created with correct href (uses packages/css/dist/themes/ path)
+      expect(mockThemeLink.href).toContain('/bulma-turbo-themes/packages/css/dist/themes/');
     });
 
     it('correctly creates theme selector elements in wireFlavorSelector', () => {
@@ -3097,7 +3101,7 @@ describe('public API', () => {
       expect(document.createElement).toHaveBeenCalledWith('span');
     });
 
-    it('displays fallback text span in trigger icon when theme has no icon', () => {
+    it('displays fallback text span in trigger icon when theme has no icon', async () => {
       const triggerIconEl = {
         src: '',
         alt: '',
@@ -3116,7 +3120,7 @@ describe('public API', () => {
         writable: true,
       });
 
-      initTheme(document, window);
+      await initTheme(document, window);
 
       // When theme has an icon, src is set
       // Note: All current themes have icons, so this verifies icon src is set correctly
