@@ -204,29 +204,43 @@ function setTheme(themeName) {
 
 ## Using with Bootstrap Sass
 
-If you're using Bootstrap's Sass source:
+If you're using Bootstrap's Sass source, note that Bootstrap Sass variables require
+static values at compile time. For dynamic theming, use CSS custom properties after
+compilation:
 
 ```scss
-// Import Turbo variables first
-@import 'turbo-themes/css/turbo-core.css';
+// 1. First, define static fallback colors for Sass compilation
+$body-bg: #1e1e2e; // Catppuccin Mocha default
+$body-color: #cdd6f4;
+$primary: #89b4fa;
+$success: #a6e3a1;
+$warning: #f9e2af;
+$danger: #f38ba8;
+$info: #89dceb;
 
-// Override Bootstrap variables
-$body-bg: var(--turbo-bg-base);
-$body-color: var(--turbo-text-primary);
-$primary: var(--turbo-brand-primary);
-$success: var(--turbo-state-success);
-$warning: var(--turbo-state-warning);
-$danger: var(--turbo-state-danger);
-$info: var(--turbo-state-info);
-
-// Import Bootstrap
+// 2. Import Bootstrap with static values
 @import 'bootstrap/scss/bootstrap';
+
+// 3. Override with CSS variables for runtime theming
+:root {
+  --bs-body-bg: var(--turbo-bg-base);
+  --bs-body-color: var(--turbo-text-primary);
+  --bs-primary: var(--turbo-brand-primary);
+  --bs-success: var(--turbo-state-success);
+  --bs-warning: var(--turbo-state-warning);
+  --bs-danger: var(--turbo-state-danger);
+  --bs-info: var(--turbo-state-info);
+}
 ```
+
+> **Note:** Sass variables like `$primary` cannot be set to CSS variables directly
+> (e.g., `$primary: var(--turbo-brand-primary)`) because Sass evaluates these at
+> compile time, not runtime.
 
 ## Limitations
 
-- Bootstrap's Sass compilation happens at build time, so some values can't be CSS
-  variables
+- Bootstrap's Sass compilation happens at build time, so Sass variables must be
+  static color values
 - For full dynamic theming, use the CSS variable approach shown above
 - Some Bootstrap components may need additional CSS overrides
 

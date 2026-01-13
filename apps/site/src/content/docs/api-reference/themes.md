@@ -59,6 +59,10 @@ A balanced dark theme, not too dark, not too light.
 | Text Primary       | `#cad3f5` |
 | Text Secondary     | `#a5adcb` |
 | Brand Primary      | `#8aadf4` |
+| State Success      | `#a6da95` |
+| State Warning      | `#eed49f` |
+| State Danger       | `#ed8796` |
+| State Info         | `#91d7e3` |
 
 ### Catppuccin Frappé (Dark)
 
@@ -72,6 +76,10 @@ A softer dark theme with lighter tones.
 | Text Primary       | `#c6d0f5` |
 | Text Secondary     | `#a5adce` |
 | Brand Primary      | `#8caaee` |
+| State Success      | `#a6d189` |
+| State Warning      | `#e5c890` |
+| State Danger       | `#e78284` |
+| State Info         | `#99d1db` |
 
 ### Catppuccin Latte (Light)
 
@@ -85,6 +93,10 @@ A warm, creamy light theme.
 | Text Primary       | `#4c4f69` |
 | Text Secondary     | `#6c6f85` |
 | Brand Primary      | `#1e66f5` |
+| State Success      | `#40a02b` |
+| State Warning      | `#df8e1d` |
+| State Danger       | `#d20f39` |
+| State Info         | `#04a5e5` |
 
 ## Dracula Theme
 

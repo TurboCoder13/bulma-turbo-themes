@@ -173,8 +173,15 @@ bun run build
 ### Port Already in Use
 
 ```bash
-# Kill process on port 4321
+# macOS/Linux: Kill process on port 4321
 lsof -ti:4321 | xargs kill -9
+
+# Windows (PowerShell): Kill process on port 4321
+Get-NetTCPConnection -LocalPort 4321 | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
+
+# Windows (cmd): Find and kill process on port 4321
+netstat -ano | findstr :4321
+taskkill /PID <PID> /F
 ```
 
 ### Type Errors
