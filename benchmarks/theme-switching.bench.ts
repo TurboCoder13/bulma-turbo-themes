@@ -61,10 +61,11 @@ describe('Theme Switching Benchmarks', () => {
       flavors.find((f) => f.id === themeId);
     });
 
+    // Pre-construct Set outside the benchmark
+    const themeIdSet = new Set(flavors.map((f) => f.id));
     bench('lookup theme by ID (Set)', () => {
       const themeId = 'catppuccin-mocha';
-      const themeIds = new Set(flavors.map((f) => f.id));
-      themeIds.has(themeId);
+      themeIdSet.has(themeId);
     });
   });
 
@@ -110,8 +111,9 @@ describe('Theme Switching Benchmarks', () => {
       mockStorage.set('turbo-theme', 'catppuccin-mocha');
     });
 
+    // Pre-construct Set outside the benchmark
+    const validIds = new Set(flavors.map((f) => f.id));
     bench('validate theme ID against Set', () => {
-      const validIds = new Set(flavors.map((f) => f.id));
       const themeId = 'catppuccin-mocha';
       validIds.has(themeId);
     });
