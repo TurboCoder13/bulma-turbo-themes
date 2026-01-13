@@ -370,11 +370,13 @@ export const setupThemeLinkAutoLoad = (
 };
 
 /**
- * Legacy helper for backward compatibility
+ * Legacy helper for backward compatibility.
+ * Returns an object with the mock link and a cleanup function.
  */
 export const mockThemeLoading = () => {
-  setupThemeLinkAutoLoad();
-  return createAutoLoadThemeLink();
+  const cleanup = setupThemeLinkAutoLoad();
+  const link = createAutoLoadThemeLink();
+  return { link, cleanup };
 };
 
 // ============================================================================

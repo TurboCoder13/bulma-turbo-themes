@@ -186,12 +186,14 @@ describe('initNavbar - error handling', () => {
       return new OriginalURL(input, base);
     }) as any;
 
-    mocks.mockLocalStorage.getItem.mockReturnValue('catppuccin-frappe');
-    // Should not reject - await the Promise for proper async testing
-    await expect(initTheme(document as any, window as any)).resolves.not.toThrow();
-
-    // Restore URL
-    (globalThis as any).URL = OriginalURL as any;
+    try {
+      mocks.mockLocalStorage.getItem.mockReturnValue('catppuccin-frappe');
+      // Should not reject - await the Promise for proper async testing
+      await expect(initTheme(document as any, window as any)).resolves.not.toThrow();
+    } finally {
+      // Restore URL even if test fails
+      (globalThis as any).URL = OriginalURL as any;
+    }
   });
 
   it('handles URL errors gracefully in wireFlavorSelector dropdown items', async () => {
@@ -216,17 +218,19 @@ describe('initNavbar - error handling', () => {
       writable: true,
     });
 
-    await wireFlavorSelector(document, window);
+    try {
+      await wireFlavorSelector(document, window);
 
-    // Should not throw and should create theme items (buttons instead of anchors)
-    expect(document.createElement).toHaveBeenCalledWith('button');
-    // Should also create div elements for containers and icons
-    expect(document.createElement).toHaveBeenCalledWith('div');
-    // Should create span elements for titles and descriptions
-    expect(document.createElement).toHaveBeenCalledWith('span');
-
-    // Restore URL
-    (globalThis as any).URL = OriginalURL as any;
+      // Should not throw and should create theme items (buttons instead of anchors)
+      expect(document.createElement).toHaveBeenCalledWith('button');
+      // Should also create div elements for containers and icons
+      expect(document.createElement).toHaveBeenCalledWith('div');
+      // Should create span elements for titles and descriptions
+      expect(document.createElement).toHaveBeenCalledWith('span');
+    } finally {
+      // Restore URL even if test fails
+      (globalThis as any).URL = OriginalURL as any;
+    }
   });
 
   it('applyTheme uses text fallback for themes without icons', async () => {
