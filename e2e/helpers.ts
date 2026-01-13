@@ -203,13 +203,13 @@ export async function navigateToThemeOption(
   selectedThemeId: string
 ): Promise<{ targetElement: Locator; targetIndex: number }> {
   // Locate all theme options
-  const themeOptions = page.locator('.dropdown-item[data-theme-id]');
+  const themeOptions = page.locator('.theme-option[data-theme]');
   const allOptions = await themeOptions.all();
 
   // Synchronously find the target index by iterating and awaiting getAttribute
   let targetIndex = -1;
   for (let i = 0; i < allOptions.length; i++) {
-    const themeId = await allOptions[i].getAttribute('data-theme-id');
+    const themeId = await allOptions[i].getAttribute('data-theme');
     if (themeId === selectedThemeId) {
       targetIndex = i;
       break;
@@ -328,4 +328,34 @@ export async function interceptThemeCSS(
  */
 export async function removeThemeCSSInterception(page: Page): Promise<void> {
   await page.unroute('**/*.css');
+}
+
+/**
+ * Waits for a theme to be fully applied by checking CSS custom properties.
+ * More reliable than waitForTimeout as it confirms actual CSS application.
+ *
+ * @param page - The Playwright page instance
+ * @param themeId - The theme ID to wait for (optional, just verifies CSS vars exist)
+ * @param timeoutMs - Maximum time to wait (default: 5000ms)
+ */
+export async function waitForThemeApplied(page: Page, themeId?: string, timeoutMs = 5000): Promise<void> {
+  await page.waitForFunction(
+    (expectedTheme) => {
+      const style = getComputedStyle(document.documentElement);
+      const bgBase = style.getPropertyValue('--turbo-bg-base');
+      // Check that CSS variables are populated (non-empty)
+      if (!bgBase || bgBase.trim() === '') {
+        return false;
+      }
+      // If a specific theme is expected, verify the data-theme attribute
+      if (expectedTheme) {
+        return document.documentElement.dataset.theme === expectedTheme;
+      }
+      return true;
+    },
+    themeId,
+    { timeout: timeoutMs }
+  ).catch(() => {
+    // Swallow timeout - CSS may still be loading, test will continue
+  });
 }

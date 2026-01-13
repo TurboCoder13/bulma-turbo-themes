@@ -1,4 +1,5 @@
 import type { Locator } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { escapeCssAttributeSelector } from '../helpers';
 import { BasePage } from './BasePage';
 
@@ -35,5 +36,31 @@ export class HomePage extends BasePage {
   getThemeOption(themeId: string): Locator {
     const escapedThemeId = escapeCssAttributeSelector(themeId);
     return this.page.locator(`[data-theme-id="${escapedThemeId}"]`);
+  }
+
+  /**
+   * Get the theme dropdown wrapper element.
+   */
+  getThemeDropdown(): Locator {
+    return this.page.locator('#theme-dropdown');
+  }
+
+  /**
+   * Open the theme dropdown menu.
+   */
+  async openThemeDropdown(): Promise<void> {
+    const trigger = this.page.locator('#theme-trigger');
+    await trigger.click();
+    const menu = this.page.locator('#theme-menu');
+    await expect(menu).toBeVisible();
+  }
+
+  /**
+   * Close the theme dropdown menu.
+   */
+  async closeThemeDropdown(): Promise<void> {
+    await this.page.keyboard.press('Escape');
+    const menu = this.page.locator('#theme-menu');
+    await expect(menu).not.toBeVisible();
   }
 }
