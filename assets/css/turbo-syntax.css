@@ -36,7 +36,7 @@ pre.astro-code {
 /* Base highlight container - only applies to pre elements */
 .highlight,
 pre.highlight,
-pre[class*='language-'] {
+pre[class*="language-"] {
   background-color: var(--turbo-syntax-bg, var(--turbo-code-block-bg));
   color: var(--turbo-syntax-fg, var(--turbo-code-block-fg));
 }
@@ -45,7 +45,7 @@ pre[class*='language-'] {
 .highlight pre,
 .highlight code,
 pre code,
-pre code[class*='language-'] {
+pre code[class*="language-"] {
   background-color: transparent;
   color: inherit;
 }
@@ -235,8 +235,8 @@ pre code[class*='language-'] {
 
 /* Selection within code */
 .highlight ::selection,
-pre[class*='language-'] ::selection,
-code[class*='language-'] ::selection {
+pre[class*="language-"] ::selection,
+code[class*="language-"] ::selection {
   background-color: var(--turbo-selection-bg);
   color: var(--turbo-selection-fg);
 }
