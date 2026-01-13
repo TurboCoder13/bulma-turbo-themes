@@ -33,6 +33,23 @@ main() {
     local token="$1"
     local repository="$2"
 
+    # Validate inputs are not empty
+    if [[ -z "$token" ]]; then
+        log_error "Token cannot be empty"
+        exit 2
+    fi
+
+    if [[ -z "$repository" ]]; then
+        log_error "Repository cannot be empty"
+        exit 2
+    fi
+
+    # Validate repository format (owner/repo)
+    if [[ ! "$repository" =~ ^[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+$ ]]; then
+        log_error "Repository must be in format 'owner/repo'"
+        exit 2
+    fi
+
     log_info "Configuring git with app token..."
 
     # Set git user for the app

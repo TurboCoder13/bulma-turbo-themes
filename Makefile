@@ -229,7 +229,8 @@ test-workflows-dry:
 
 test-workflows-clean:
 	@echo "Cleaning up stale ACT containers..."
-	@docker ps -a --filter "name=act-" -q | xargs -r docker rm -f 2>/dev/null || true
+	@# Note: removed -r flag from xargs for macOS/BSD compatibility
+	@docker ps -a --filter "name=act-" -q | xargs docker rm -f 2>/dev/null || true
 
 ensure-deps:
 	@if ! command -v bun >/dev/null 2>&1; then \
