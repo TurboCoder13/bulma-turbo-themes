@@ -34,7 +34,7 @@ const tokensDir = join(projectRoot, 'dist', 'tokens', 'style-dictionary');
  */
 function getThemeTokenFiles() {
   return readdirSync(tokensDir)
-    .filter((f) => f.endsWith('.json') && f !== 'themes.json')
+    .filter((f) => f.endsWith('.json') && f !== 'themes.json' && f !== 'tokens.json')
     .map((f) => join(tokensDir, f));
 }
 
