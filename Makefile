@@ -1,6 +1,7 @@
 .PHONY: all clean test test-fast test-parallel test-browser-parallel playground-html playground-jekyll playground-swift playground-tailwind playground-bootstrap playground-react playground-vue playground-python playground-all playground-help \
 	build-help build-all build-core build-themes build-js build-js-only build-html build-site build-tailwind build-swift build-examples examples-prep build-gem \
-	test-unit test-e2e test-examples test-python test-swift test-lhci test-links test-all test-help ensure-deps ensure-report-dirs serve-reports _serve serve serve-quick serve-only
+	test-unit test-e2e test-examples test-example-bootstrap test-example-html test-example-jekyll test-example-react test-example-tailwind test-example-vue \
+	test-python test-swift test-lhci test-links test-all test-help ensure-deps ensure-report-dirs serve-reports _serve serve serve-quick serve-only
 
 all: build-all
 
@@ -105,23 +106,37 @@ test-parallel:
 	[ -f .test-results/swift.ok ] && echo "  ✅ Swift tests passed" || echo "  ❌ Swift tests failed"; \
 	[ -f .test-results/unit.ok ] && [ -f .test-results/python.ok ] && [ -f .test-results/swift.ok ]
 
-# Phase 3: Browser-based tests in parallel (examples + e2e)
+# Phase 3: Browser-based tests (sequential suites, each internally parallelized)
 test-browser-parallel:
-	@echo "🚀 Phase 3: Running browser tests in parallel..."
-	@( $(MAKE) test-examples > .test-results/examples.log 2>&1 && touch .test-results/examples.ok ) & \
-	( $(MAKE) test-e2e > .test-results/e2e.log 2>&1 && touch .test-results/e2e.ok ) & \
-	wait; \
-	echo ""; \
-	echo "📋 Phase 3 Results:"; \
-	[ -f .test-results/examples.ok ] && echo "  ✅ Example tests passed" || echo "  ❌ Example tests failed"; \
-	[ -f .test-results/e2e.ok ] && echo "  ✅ E2E tests passed" || echo "  ❌ E2E tests failed"; \
-	[ -f .test-results/examples.ok ] && [ -f .test-results/e2e.ok ]
+	@echo "🚀 Phase 3: Running browser test suites sequentially..."
+	@$(MAKE) test-e2e
+	@$(MAKE) test-examples
 
 # Fast tests without lighthouse (for quick local verification)
 test-fast: ensure-deps test-parallel build-examples examples-prep test-browser-parallel
 
+# Individual example test targets
+test-example-bootstrap:
+	@node scripts/test-examples.mjs bootstrap
+
+test-example-html:
+	@node scripts/test-examples.mjs html-vanilla
+
+test-example-jekyll:
+	@node scripts/test-examples.mjs jekyll
+
+test-example-react:
+	@node scripts/test-examples.mjs react
+
+test-example-tailwind:
+	@node scripts/test-examples.mjs tailwind
+
+test-example-vue:
+	@node scripts/test-examples.mjs vue
+
+# Run all example tests (sequential, used for standalone runs)
 test-examples:
-	@echo "🧪 Running example tests..."
+	@echo "🧪 Running all example tests..."
 	@bun run examples:test
 
 test-unit:

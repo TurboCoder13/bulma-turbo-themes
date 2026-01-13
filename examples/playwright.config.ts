@@ -15,6 +15,7 @@ const platformName =
   platform === 'darwin' ? 'macos' : platform === 'win32' ? 'windows' : 'linux';
 
 const isCI = !!process.env.CI;
+const skipServer = process.env.PLAYWRIGHT_SKIP_SERVER === '1';
 
 export default defineConfig({
   testDir: '.',
@@ -71,13 +72,16 @@ export default defineConfig({
   },
 
   // Web server configuration - serves the site with examples
-  webServer: {
-    command: 'bun run e2e:start',
-    port: 4173,
-    cwd: '..',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000, // 2 minutes for build + serve
-  },
+  // Disabled when PLAYWRIGHT_SKIP_SERVER=1 (used when server is managed externally)
+  webServer: skipServer
+    ? undefined
+    : {
+        command: 'bun run e2e:start',
+        port: 4173,
+        cwd: '..',
+        reuseExistingServer: !process.env.CI,
+        timeout: 120 * 1000, // 2 minutes for build + serve
+      },
 
   // Screenshot and snapshot settings
   expect: {
