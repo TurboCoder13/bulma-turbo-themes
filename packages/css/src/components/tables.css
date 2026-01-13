@@ -4,7 +4,9 @@
 
 .table {
   width: 100%;
-  border-collapse: collapse;
+  /* Use separate + spacing:0 to allow border-radius while removing cell gaps */
+  border-collapse: separate;
+  border-spacing: 0;
   background: var(--turbo-bg-surface);
   border-radius: var(--radius-lg);
   overflow: hidden;
