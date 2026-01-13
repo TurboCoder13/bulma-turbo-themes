@@ -61,7 +61,7 @@ describe('CSS Output - turbo-core.css', () => {
     const fontSans = variables.get('--turbo-font-sans');
 
     expect(fontSans).toBeDefined();
-    // Should contain Inter as primary font and system-ui as fallback
+    // Should contain Inter as primary font and system-ui fallback
     expect(fontSans).toContain('Inter');
     expect(fontSans).toMatch(/system-ui/);
   });

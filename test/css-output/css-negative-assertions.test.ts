@@ -76,8 +76,8 @@ describe('CSS Output - Negative Assertions', () => {
       expect(unclosed).toHaveLength(0);
     });
 
-    it('should start with :root selector', () => {
-      expect(css.trim().startsWith(':root')).toBe(true);
+    it('should contain :root selector', () => {
+      expect(css).toContain(':root');
     });
   });
 

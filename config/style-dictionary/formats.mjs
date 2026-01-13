@@ -71,6 +71,11 @@ export const cssVariablesWithMetadata = {
  *   'bg-base': (#ffffff, 'color'),
  *   'spacing-sm': (0.5rem, 'dimension'),
  * );
+ *
+ * For values containing commas (like multi-shadow or font-family lists),
+ * wraps the value in parentheses to create a proper 2-element tuple:
+ *   'elevation-md': ((shadow1, shadow2), 'shadow'),
+ *   'font-sans': ((font1, font2, font3), 'fontFamily'),
  */
 export const scssMapWithTypes = {
   name: 'scss/map-with-types',
@@ -82,7 +87,10 @@ export const scssMapWithTypes = {
     dictionary.allTokens.forEach((token) => {
       const name = token.name.replace(/^-+/, '');
       const type = token.$type || 'unknown';
-      lines.push(`  '${name}': (${getTokenValue(token)}, '${type}'),`);
+      const value = String(getTokenValue(token));
+      // Wrap comma-separated values in parentheses to create proper 2-element tuple
+      const wrappedValue = value.includes(',') ? `(${value})` : value;
+      lines.push(`  '${name}': (${wrappedValue}, '${type}'),`);
     });
 
     lines.push(');');

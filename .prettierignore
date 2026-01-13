@@ -18,6 +18,13 @@ _site
 assets/js/*.min.js
 rspec-coverage
 
+# Generated token files (output by Style Dictionary)
+assets/scss/_tokens.scss
+assets/css/turbo-*.css
+packages/core/src/themes/tokens.json
+python/src/turbo_themes/tokens.json
+swift/Sources/TurboThemes/Resources/tokens.json
+
 # JS/TS files are formatted by Biome, not Prettier
 *.ts
 *.tsx
