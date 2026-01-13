@@ -53,6 +53,10 @@ export default defineConfig({
         'packages/core/src/themes/factories/index.ts',
         'packages/theme-selector/src/types.ts',
         'src/index.ts',
+        // Root src/ legacy files (covered by packages/ or type-only)
+        'src/themes/css.ts',
+        'src/themes/types.ts',
+        'src/tokens/index.ts',
       ],
       thresholds: {
         lines: 85,
