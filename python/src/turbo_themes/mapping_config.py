@@ -208,7 +208,7 @@ def build_token_getter(path: str) -> Callable[[Tokens], Optional[str]]:
 
 
 def get_core_mappings_as_tuples() -> (
-    List[Tuple[str, Callable[[Tokens], Optional[str]]]]
+    List[Tuple[str, Callable[[Tokens], Optional[str]]]]  # fmt: skip
 ):
     """Get core mappings as (css_suffix, getter) tuples.
 

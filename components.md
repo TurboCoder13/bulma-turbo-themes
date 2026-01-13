@@ -4,7 +4,7 @@ title: Components
 permalink: /components/
 ---
 
-### Tabs
+## Tabs
 
 <div class="tabs is-toggle is-toggle-rounded is-fullwidth">
   <ul>

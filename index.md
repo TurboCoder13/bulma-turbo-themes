@@ -8,7 +8,7 @@ Welcome to the Bulma demo. Use the toggle to switch theme.
 Text can be **bold**, _italic_, or ~~strikethrough~~. There should be whitespace between
 paragraphs.
 
-### Typography
+## Typography
 
 # Heading 1
 

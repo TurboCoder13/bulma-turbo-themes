@@ -99,4 +99,25 @@ disallow_untyped_calls = false
 check_untyped_defs = true
 
 [tool.bandit]
-skips = ["B101"]
+# Skip B101 (assert) - standard in test files
+# Skip B105/B106 - false positives on design token paths (e.g., 'background.base')
+skips = ["B101", "B105", "B106"]
+
+[tool.ruff]
+# Exclude files where black is the authoritative formatter
+extend-exclude = [
+    "src/turbo_themes/mapping_config.py",
+    "tests/test_css_variables.py",
+    "src/turbo_themes/generated/*",
+    "**/mapping_config.py",
+    "**/test_css_variables.py",
+]
+line-length = 88
+
+[tool.ruff.format]
+quote-style = "double"
+# Exclude files where black is the authoritative formatter
+exclude = [
+    "src/turbo_themes/mapping_config.py",
+    "tests/test_css_variables.py",
+]

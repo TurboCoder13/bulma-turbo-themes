@@ -27,6 +27,13 @@ python/src/turbo_themes/themes.py
 python/src/turbo_themes/tokens.py
 python/src/turbo_themes/generated_types.py
 
+# Files where black is authoritative formatter (ruff format conflicts)
+# These need multiple patterns for different CWD contexts
+python/src/turbo_themes/mapping_config.py
+python/tests/test_css_variables.py
+src/turbo_themes/mapping_config.py
+tests/test_css_variables.py
+
 # Cache directories
 .jekyll-cache/**
 .sass-cache/**
