@@ -17,6 +17,25 @@ const VALID_THEME_ID_PATTERN = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
 const VALID_VERSION_PATTERN = /^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?(\+[a-zA-Z0-9.-]+)?$/;
 
 /**
+ * Swift reserved keywords that need backtick escaping when used as identifiers.
+ * This set is at module scope to avoid recreation on each call.
+ */
+const SWIFT_KEYWORDS = new Set([
+  'associatedtype', 'class', 'deinit', 'enum', 'extension', 'fileprivate',
+  'func', 'import', 'init', 'inout', 'internal', 'let', 'open', 'operator',
+  'private', 'protocol', 'public', 'rethrows', 'static', 'struct', 'subscript',
+  'typealias', 'var', 'break', 'case', 'continue', 'default', 'defer', 'do',
+  'else', 'fallthrough', 'for', 'guard', 'if', 'in', 'repeat', 'return',
+  'switch', 'where', 'while', 'as', 'Any', 'catch', 'false', 'is', 'nil',
+  'super', 'self', 'Self', 'throw', 'throws', 'true', 'try', 'Type',
+  // Context-sensitive keywords
+  'associativity', 'convenience', 'dynamic', 'didSet', 'final', 'get',
+  'infix', 'indirect', 'lazy', 'left', 'mutating', 'none', 'nonmutating',
+  'optional', 'override', 'postfix', 'precedence', 'prefix', 'Protocol',
+  'required', 'right', 'set', 'some', 'unowned', 'weak', 'willSet',
+]);
+
+/**
  * Validates a theme ID to ensure it only contains safe characters.
  * Theme IDs are used in CSS selectors and file paths.
  *
@@ -85,37 +104,47 @@ export function validateVersion(version) {
  * @returns {string} The escaped identifier safe for Swift
  */
 export function escapeSwiftIdentifier(identifier) {
-  // Swift reserved keywords that need backtick escaping
-  const swiftKeywords = new Set([
-    'associatedtype', 'class', 'deinit', 'enum', 'extension', 'fileprivate',
-    'func', 'import', 'init', 'inout', 'internal', 'let', 'open', 'operator',
-    'private', 'protocol', 'public', 'rethrows', 'static', 'struct', 'subscript',
-    'typealias', 'var', 'break', 'case', 'continue', 'default', 'defer', 'do',
-    'else', 'fallthrough', 'for', 'guard', 'if', 'in', 'repeat', 'return',
-    'switch', 'where', 'while', 'as', 'Any', 'catch', 'false', 'is', 'nil',
-    'super', 'self', 'Self', 'throw', 'throws', 'true', 'try', 'Type',
-    // Context-sensitive keywords
-    'associativity', 'convenience', 'dynamic', 'didSet', 'final', 'get',
-    'infix', 'indirect', 'lazy', 'left', 'mutating', 'none', 'nonmutating',
-    'optional', 'override', 'postfix', 'precedence', 'prefix', 'Protocol',
-    'required', 'right', 'set', 'some', 'unowned', 'weak', 'willSet',
-  ]);
+  // Handle empty or non-string input
+  if (typeof identifier !== 'string' || identifier.length === 0) {
+    return '_';
+  }
 
-  // If it's a keyword, wrap in backticks
-  if (swiftKeywords.has(identifier)) {
+  // If it's already a keyword, wrap in backticks
+  if (SWIFT_KEYWORDS.has(identifier)) {
     return `\`${identifier}\``;
   }
 
   // Check if identifier is valid (starts with letter/underscore, contains only valid chars)
   if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(identifier)) {
     // Replace invalid characters with underscores
-    const sanitized = identifier
+    let sanitized = identifier
       .replace(/^[^a-zA-Z_]/, '_')
       .replace(/[^a-zA-Z0-9_]/g, '_');
+
+    // Handle case where sanitization results in empty string
+    if (sanitized.length === 0) {
+      return '_';
+    }
+
+    // Check if sanitized result is now a keyword
+    if (SWIFT_KEYWORDS.has(sanitized)) {
+      return `\`${sanitized}\``;
+    }
+
     return sanitized;
   }
 
   return identifier;
+}
+
+/**
+ * Checks if a string is a Swift keyword.
+ *
+ * @param {string} identifier - The identifier to check
+ * @returns {boolean} True if the identifier is a Swift keyword
+ */
+export function isSwiftKeyword(identifier) {
+  return SWIFT_KEYWORDS.has(identifier);
 }
 
 /**

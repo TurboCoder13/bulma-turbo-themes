@@ -370,10 +370,19 @@ export const setupThemeLinkAutoLoad = (
 };
 
 /**
- * Legacy helper for backward compatibility.
- * Returns an object with the mock link and a cleanup function.
+ * Convenience helper that sets up theme loading mocks.
+ *
+ * Returns an object with:
+ * - `link`: The mock theme link element with auto-load behavior
+ * - `cleanup`: Function to call in afterEach to restore original behavior
+ *
+ * @example
+ * ```ts
+ * const { link, cleanup } = mockThemeLoading();
+ * afterEach(() => cleanup());
+ * ```
  */
-export const mockThemeLoading = () => {
+export const mockThemeLoading = (): { link: HTMLLinkElement; cleanup: () => void } => {
   const cleanup = setupThemeLinkAutoLoad();
   const link = createAutoLoadThemeLink();
   return { link, cleanup };

@@ -11,7 +11,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { escapeSwiftIdentifier } from '../utils/validation.mjs';
+import { escapeSwiftIdentifier, isSwiftKeyword } from '../utils/validation.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -120,10 +120,15 @@ function generateStruct(name, schema, defs) {
       const safeName = escapeSwiftIdentifier(propName);
       // If the name was transformed, we need an explicit mapping
       if (safeName !== propName || propName.startsWith('$')) {
-        const codingKeyName = safeName.replace(/^`|`$/g, ''); // Remove backticks for enum case
-        lines.push(`        case ${codingKeyName} = "${propName}"`);
+        // Get the raw identifier (remove backticks if present)
+        const rawName = safeName.replace(/^`|`$/g, '');
+        // For enum case, wrap in backticks if it's a keyword
+        const caseName = isSwiftKeyword(rawName) ? `\`${rawName}\`` : rawName;
+        lines.push(`        case ${caseName} = "${propName}"`);
       } else {
-        lines.push(`        case ${propName}`);
+        // Even non-transformed names might be keywords
+        const caseName = isSwiftKeyword(propName) ? `\`${propName}\`` : propName;
+        lines.push(`        case ${caseName}`);
       }
     }
     lines.push('    }');

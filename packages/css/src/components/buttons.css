@@ -44,7 +44,7 @@
   box-shadow: var(--shadow-md);
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
 
@@ -55,7 +55,7 @@
   border: 1px solid var(--turbo-border-default);
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover:not(:disabled) {
   background: var(--turbo-bg-overlay);
   border-color: var(--turbo-brand-primary);
 }
@@ -66,7 +66,7 @@
   background: transparent;
 }
 
-.btn-ghost:hover {
+.btn-ghost:hover:not(:disabled) {
   color: var(--turbo-text-primary);
   background: color-mix(in srgb, var(--turbo-brand-primary) 10%, transparent);
 }
@@ -78,7 +78,7 @@
   border: 2px solid var(--turbo-brand-primary);
 }
 
-.btn-outline:hover {
+.btn-outline:hover:not(:disabled) {
   color: var(--turbo-text-inverse);
   background: var(--turbo-brand-primary);
 }
@@ -89,7 +89,7 @@
   background: var(--turbo-state-success);
 }
 
-.btn-success:hover {
+.btn-success:hover:not(:disabled) {
   background: color-mix(in srgb, var(--turbo-state-success) 85%, black);
 }
 
@@ -98,7 +98,7 @@
   background: var(--turbo-state-warning);
 }
 
-.btn-warning:hover {
+.btn-warning:hover:not(:disabled) {
   background: color-mix(in srgb, var(--turbo-state-warning) 85%, black);
 }
 
@@ -107,7 +107,7 @@
   background: var(--turbo-state-danger);
 }
 
-.btn-danger:hover {
+.btn-danger:hover:not(:disabled) {
   background: color-mix(in srgb, var(--turbo-state-danger) 85%, black);
 }
 
@@ -116,7 +116,7 @@
   background: var(--turbo-state-info);
 }
 
-.btn-info:hover {
+.btn-info:hover:not(:disabled) {
   background: color-mix(in srgb, var(--turbo-state-info) 85%, black);
 }
 

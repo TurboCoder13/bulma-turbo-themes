@@ -127,14 +127,26 @@
   background: color-mix(in srgb, var(--turbo-brand-primary) 10%, transparent);
 }
 
-/* Bordered table */
+/* Bordered table - use single-direction borders to avoid doubling with border-collapse: separate */
 .table-bordered {
   border: 1px solid var(--turbo-border-default);
 }
 
 .table-bordered th,
 .table-bordered td {
-  border: 1px solid var(--turbo-border-default);
+  border-bottom: 1px solid var(--turbo-border-default);
+  border-right: 1px solid var(--turbo-border-default);
+}
+
+/* Remove right border from last column */
+.table-bordered th:last-child,
+.table-bordered td:last-child {
+  border-right: none;
+}
+
+/* Remove bottom border from last row (already handled by .table tr:last-child td) */
+.table-bordered tr:last-child td {
+  border-bottom: none;
 }
 
 /* Compact table */
