@@ -195,6 +195,7 @@ textarea {
   padding: 0.5rem 0.75rem;
 }
 
+button:focus-visible,
 input:focus,
 select:focus,
 textarea:focus {
