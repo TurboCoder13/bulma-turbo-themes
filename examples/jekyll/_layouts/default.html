@@ -17,11 +17,26 @@
     <!-- FOUC Prevention -->
     <script>
       (function () {
-        var saved = localStorage.getItem('turbo-theme') || 'catppuccin-mocha';
-        document.documentElement.setAttribute('data-theme', saved);
+        var DEFAULT_THEME = 'catppuccin-mocha';
+        var VALID_THEMES = [
+          'catppuccin-mocha',
+          'catppuccin-macchiato',
+          'catppuccin-frappe',
+          'catppuccin-latte',
+          'dracula',
+          'github-dark',
+          'github-light',
+          'bulma-dark',
+          'bulma-light',
+        ];
+        var saved = localStorage.getItem('turbo-theme');
+        var theme = saved && VALID_THEMES.indexOf(saved) !== -1 ? saved : DEFAULT_THEME;
+
+        document.documentElement.setAttribute('data-theme', theme);
         var link = document.getElementById('theme-css');
-        if (link)
-          link.href = '{{ "/assets/css/themes/" | relative_url }}' + saved + '.css';
+        if (link) {
+          link.href = '{{ "/assets/css/themes/" | relative_url }}' + theme + '.css';
+        }
       })();
     </script>
 

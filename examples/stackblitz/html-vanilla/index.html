@@ -78,24 +78,44 @@
     </div>
 
     <script>
+      const VALID_THEMES = [
+        'catppuccin-mocha',
+        'catppuccin-latte',
+        'dracula',
+        'github-dark',
+        'github-light',
+      ];
+      const DEFAULT_THEME = 'catppuccin-mocha';
+
       const selector = document.getElementById('theme-selector');
       const themeLink = document.getElementById('theme-css');
 
-      // Load saved theme
-      const saved = localStorage.getItem('turbo-theme');
-      if (saved) {
-        selector.value = saved;
-        themeLink.href = `https://unpkg.com/turbo-themes/css/themes/turbo/${saved}.css`;
-        document.documentElement.setAttribute('data-theme', saved);
+      function isValidTheme(theme) {
+        return theme && VALID_THEMES.includes(theme);
       }
 
+      function applyTheme(theme) {
+        const safeTheme = isValidTheme(theme) ? theme : DEFAULT_THEME;
+        if (themeLink) {
+          themeLink.href = `https://unpkg.com/turbo-themes/css/themes/turbo/${safeTheme}.css`;
+        }
+        document.documentElement.setAttribute('data-theme', safeTheme);
+        localStorage.setItem('turbo-theme', safeTheme);
+        if (selector) {
+          selector.value = safeTheme;
+        }
+      }
+
+      // Load saved theme
+      const saved = localStorage.getItem('turbo-theme');
+      applyTheme(saved || DEFAULT_THEME);
+
       // Handle theme change
-      selector.addEventListener('change', (e) => {
-        const theme = e.target.value;
-        themeLink.href = `https://unpkg.com/turbo-themes/css/themes/turbo/${theme}.css`;
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('turbo-theme', theme);
-      });
+      if (selector) {
+        selector.addEventListener('change', (e) => {
+          applyTheme(e.target.value);
+        });
+      }
     </script>
   </body>
 </html>

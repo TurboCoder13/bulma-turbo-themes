@@ -15,15 +15,30 @@
     <!-- FOUC Prevention -->
     <script>
       (function () {
-        var saved = localStorage.getItem('turbo-theme') || 'catppuccin-mocha';
+        var DEFAULT_THEME = 'catppuccin-mocha';
+        var VALID_THEMES = [
+          'catppuccin-mocha',
+          'catppuccin-macchiato',
+          'catppuccin-frappe',
+          'catppuccin-latte',
+          'dracula',
+          'github-dark',
+          'github-light',
+          'bulma-dark',
+          'bulma-light',
+        ];
         var lightThemes = ['catppuccin-latte', 'github-light', 'bulma-light'];
-        document.documentElement.setAttribute('data-theme', saved);
+
+        var saved = localStorage.getItem('turbo-theme');
+        var theme = saved && VALID_THEMES.indexOf(saved) !== -1 ? saved : DEFAULT_THEME;
+
+        document.documentElement.setAttribute('data-theme', theme);
         document.documentElement.setAttribute(
           'data-bs-theme',
-          lightThemes.includes(saved) ? 'light' : 'dark'
+          lightThemes.indexOf(theme) !== -1 ? 'light' : 'dark'
         );
         var link = document.getElementById('theme-css');
-        if (link) link.href = './turbo-themes/themes/' + saved + '.css';
+        if (link) link.href = './turbo-themes/themes/' + theme + '.css';
       })();
     </script>
     <!-- Bootstrap + Custom Styles -->

@@ -177,8 +177,10 @@ export const pythonDataclass = {
       const name = token.name.replace(/^-+/, '').replace(/-/g, '_');
       const type = token.$type || 'unknown';
       const rawValue = getTokenValue(token);
-      // Escape inner double quotes and wrap in quotes
-      const escaped = String(rawValue).replace(/"/g, '\\"');
+      // Escape backslashes first, then double quotes, and wrap in quotes
+      const escaped = String(rawValue)
+        .replace(/\\/g, '\\\\')
+        .replace(/"/g, '\\"');
       const value = `"${escaped}"`;
       lines.push(`    ${name}: str = ${value}  # ${type}`);
     });
