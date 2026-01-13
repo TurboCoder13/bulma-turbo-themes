@@ -187,7 +187,7 @@ download_lighthouse() {
 }
 
 # Copy reports into apps/site/dist directory
-copy_reports_toapps/site/dist() {
+copy_reports_to_site_dist() {
   log_info "Copying reports into apps/site/dist directory..."
   
   # Coverage
@@ -223,8 +223,8 @@ main() {
   download_playwright
   download_lighthouse
   
-  copy_reports_toapps/site/dist
-  
+  copy_reports_to_site_dist
+
   log_success "Artifact download completed"
 }
 
