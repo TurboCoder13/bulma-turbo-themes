@@ -1,7 +1,7 @@
 .PHONY: all clean test test-fast test-parallel test-browser-parallel playground-html playground-jekyll playground-swift playground-tailwind playground-bootstrap playground-react playground-vue playground-python playground-all playground-help \
 	build-help build-all build-core build-themes build-js build-js-only build-html build-site build-tailwind build-swift build-examples examples-prep build-gem \
 	test-unit test-e2e test-examples test-example-bootstrap test-example-html test-example-jekyll test-example-react test-example-tailwind test-example-vue \
-	test-python test-swift test-lhci test-links test-all test-help ensure-deps ensure-report-dirs serve-reports _serve serve serve-quick serve-only
+	test-python test-swift test-lhci test-links test-all test-help ensure-deps ensure-report-dirs serve-reports _serve serve serve-quick
 
 all: build-all
 
@@ -296,9 +296,8 @@ build-help:
 	@echo "  build-gem       Ruby gem for Jekyll"
 	@echo "  examples-prep   copy built examples into site dist"
 	@echo "  build-all       core + js + examples + site + prep + gem"
-	@echo "  serve           run all tests, build site with reports, and serve"
-	@echo "  serve-quick     build and serve without running tests"
-	@echo "  serve-only      serve existing dist without rebuilding"
+	@echo "  serve           serve existing dist (use after build-all && test)"
+	@echo "  serve-quick     build site and serve (no tests)"
 
 build-core:
 	bun run build
@@ -324,18 +323,12 @@ _serve:
 	@echo "🚀 Starting preview server..."
 	@cd apps/site && bun run preview
 
-# Run all tests and generate reports, then build and serve
-serve: build-core build-js-only ensure-report-dirs build-site test-unit test-python test-swift test-e2e test-lhci
-	@echo "📦 Rebuilding site with test reports..."
-	@cd apps/site && bun run build
+# Serve existing dist (use after: make build-all && make test)
+serve: ensure-report-dirs
 	@$(MAKE) _serve
 
-# Quick serve without running tests (uses existing reports)
+# Build site and serve (no tests)
 serve-quick: build-site
-	@$(MAKE) _serve
-
-# Serve without rebuilding (uses existing dist)
-serve-only: ensure-report-dirs
 	@$(MAKE) _serve
 
 build-tailwind:
