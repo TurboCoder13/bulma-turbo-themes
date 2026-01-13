@@ -12,6 +12,7 @@
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateThemeId } from './utils/validation.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -173,6 +174,9 @@ function loadTheme(filePath) {
 
   // Extract theme metadata
   const { id, label, vendor, appearance, iconUrl, tokens } = data;
+
+  // Validate theme ID before using it in file paths or CSS selectors
+  validateThemeId(id);
 
   // Transform tokens to Style Dictionary format (preserving $type)
   const transformedTokens = transformTokenTree(tokens);

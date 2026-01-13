@@ -15,6 +15,21 @@ function getTokenValue(token) {
 }
 
 /**
+ * Sanitize a CSS value to prevent CSS injection.
+ * Removes potentially dangerous characters that could break CSS structure.
+ */
+function sanitizeCssValue(value) {
+  // Convert to string and remove potentially dangerous characters
+  return String(value)
+    .replace(/[<>]/g, '') // Remove angle brackets (script injection)
+    .replace(/[{}]/g, '') // Remove braces (CSS structure breaking)
+    .replace(/;/g, '') // Remove semicolons (property injection)
+    .replace(/\\/g, '\\\\') // Escape backslashes
+    .replace(/\/\*/g, '') // Remove comment starts
+    .replace(/\*\//g, ''); // Remove comment ends
+}
+
+/**
  * Format: CSS custom properties with type metadata as comments
  *
  * Generates CSS like:
@@ -38,7 +53,9 @@ export const cssVariablesWithMetadata = {
       const name = token.name.replace(/^-+/, '');
       const varName = `--${prefix}-${name}`;
       const comment = token.$type ? ` /* ${token.$type} */` : '';
-      lines.push(`  ${varName}: ${getTokenValue(token)};${comment}`);
+      // Sanitize CSS values to prevent injection
+      const safeValue = sanitizeCssValue(getTokenValue(token));
+      lines.push(`  ${varName}: ${safeValue};${comment}`);
     });
 
     lines.push('}');

@@ -11,6 +11,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { escapeSwiftIdentifier } from '../utils/validation.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -102,18 +103,25 @@ function generateStruct(name, schema, defs) {
       lines.push(`    /// ${propSchema.description}`);
     }
 
-    lines.push(`    public let ${propName}: ${swiftType}`);
+    // Escape property name for Swift (handles keywords and invalid characters)
+    const safePropName = escapeSwiftIdentifier(propName);
+    lines.push(`    public let ${safePropName}: ${swiftType}`);
   }
 
   // Add CodingKeys enum if we need to map any property names
-  const needsCodingKeys = Object.keys(properties).some((p) => p.startsWith('$'));
+  // Needed when: property starts with $, or when property name requires escaping
+  const needsCodingKeys = Object.keys(properties).some(
+    (p) => p.startsWith('$') || escapeSwiftIdentifier(p) !== p
+  );
   if (needsCodingKeys) {
     lines.push('');
     lines.push('    enum CodingKeys: String, CodingKey {');
     for (const propName of Object.keys(properties)) {
-      if (propName.startsWith('$')) {
-        const safeName = propName.replace('$', '');
-        lines.push(`        case ${safeName} = "${propName}"`);
+      const safeName = escapeSwiftIdentifier(propName);
+      // If the name was transformed, we need an explicit mapping
+      if (safeName !== propName || propName.startsWith('$')) {
+        const codingKeyName = safeName.replace(/^`|`$/g, ''); // Remove backticks for enum case
+        lines.push(`        case ${codingKeyName} = "${propName}"`);
       } else {
         lines.push(`        case ${propName}`);
       }

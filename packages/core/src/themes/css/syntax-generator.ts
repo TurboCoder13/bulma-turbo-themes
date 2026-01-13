@@ -2,7 +2,7 @@
 // Syntax highlighting CSS generation
 
 import type { ThemeFlavor } from '../types.js';
-import { escapeCssId } from './helpers.js';
+import { escapeCssId, sanitizeCssColor } from './helpers.js';
 import { SYNTAX_CLASS_GROUPS } from './mappings.js';
 
 /**
@@ -12,15 +12,16 @@ export function generateSyntaxHighlightingCSS(flavor: ThemeFlavor): string {
   const { tokens } = flavor;
   const escapedId = escapeCssId(flavor.id);
 
+  // Sanitize all color values to prevent CSS injection
   const syntaxColors = {
-    fg: tokens.content.codeInline.fg,
-    bg: tokens.content.codeInline.bg,
-    comment: tokens.text.secondary,
-    keyword: tokens.brand.primary,
-    string: tokens.state.success,
-    number: tokens.state.warning,
-    title: tokens.state.info,
-    attr: tokens.accent.link,
+    fg: sanitizeCssColor(tokens.content.codeInline.fg),
+    bg: sanitizeCssColor(tokens.content.codeInline.bg),
+    comment: sanitizeCssColor(tokens.text.secondary),
+    keyword: sanitizeCssColor(tokens.brand.primary),
+    string: sanitizeCssColor(tokens.state.success),
+    number: sanitizeCssColor(tokens.state.warning),
+    title: sanitizeCssColor(tokens.state.info),
+    attr: sanitizeCssColor(tokens.accent.link),
   };
 
   const selector = (classes: readonly string[]): string =>

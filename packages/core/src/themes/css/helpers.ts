@@ -120,6 +120,40 @@ export function escapeCssId(id: string): string {
 }
 
 /**
+ * Validates and sanitizes a CSS color value.
+ * Returns the value if valid, or a transparent fallback if invalid.
+ */
+export function sanitizeCssColor(value: string | undefined): string {
+  if (!value || typeof value !== 'string') {
+    return 'transparent';
+  }
+  // Allow hex colors, rgb/rgba/hsl/hsla functions, and named colors
+  const trimmed = value.trim();
+  // Hex color validation
+  if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(trimmed)) {
+    return trimmed;
+  }
+  // RGB/RGBA/HSL/HSLA function validation
+  if (/^(rgb|rgba|hsl|hsla)\([^)]+\)$/i.test(trimmed)) {
+    // Additional check: no semicolons or braces in the value
+    if (!/[;{}]/.test(trimmed)) {
+      return trimmed;
+    }
+  }
+  // Named color validation (common named colors only)
+  const namedColors = new Set([
+    'transparent', 'inherit', 'currentColor', 'initial', 'unset',
+    'black', 'white', 'red', 'green', 'blue', 'yellow', 'orange',
+    'purple', 'gray', 'grey', 'pink', 'brown', 'cyan', 'magenta',
+  ]);
+  if (namedColors.has(trimmed.toLowerCase())) {
+    return trimmed;
+  }
+  // Default fallback for invalid values
+  return 'transparent';
+}
+
+/**
  * Generates CSS variable declarations from a mapping array.
  */
 export function generateVariables(tokens: ThemeTokens, mappings: CSSVariableMapping[]): string[] {

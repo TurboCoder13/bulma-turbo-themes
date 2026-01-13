@@ -57,23 +57,22 @@ main() {
         exit 0
     fi
 
-    # Find all shell scripts
-    local files
-    files=$(git ls-files '*.sh' 2>/dev/null || true)
+    # Find all shell scripts using array for safe handling
+    local -a files=()
+    while IFS= read -r file; do
+        [[ -n "$file" ]] && files+=("$file")
+    done < <(git ls-files '*.sh' 2>/dev/null || true)
 
-    if [[ -z "$files" ]]; then
+    if [[ ${#files[@]} -eq 0 ]]; then
         log_info "No shell scripts found"
         exit 0
     fi
 
-    local file_count
-    file_count=$(echo "$files" | wc -l | tr -d ' ')
-    log_info "Found $file_count shell scripts"
+    log_info "Found ${#files[@]} shell scripts"
 
-    # Run shellcheck
+    # Run shellcheck with array expansion (safe for filenames with spaces)
     local exit_code=0
-    # shellcheck disable=SC2086
-    if shellcheck -S style -x $files; then
+    if shellcheck -S style -x "${files[@]}"; then
         log_success "shellcheck passed with no issues"
     else
         exit_code=$?

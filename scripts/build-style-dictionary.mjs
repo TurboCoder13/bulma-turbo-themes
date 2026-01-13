@@ -7,12 +7,13 @@
  */
 
 import { readdirSync, mkdirSync, existsSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import StyleDictionary from 'style-dictionary';
 
 import { allTransforms } from '../config/style-dictionary/transforms.mjs';
 import { allFormats } from '../config/style-dictionary/formats.mjs';
+import { validateThemeId } from './utils/validation.mjs';
 
 // Register formats and transforms globally before creating instances
 for (const transform of allTransforms) {
@@ -228,7 +229,9 @@ async function main() {
   // Build each theme
   const themeFiles = getThemeTokenFiles();
   for (const file of themeFiles) {
-    const themeId = file.replace(tokensDir + '/', '').replace('.json', '');
+    // Extract and validate theme ID from filename
+    const themeId = basename(file, '.json');
+    validateThemeId(themeId);
     await buildTheme(file, themeId);
   }
 
