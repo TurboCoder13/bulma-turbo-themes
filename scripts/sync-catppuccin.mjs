@@ -104,6 +104,10 @@ function buildPackage() {
 }
 
 const outPath = path.join(projectRoot, 'packages', 'core', 'src', 'themes', 'packs', 'catppuccin.synced.ts');
+
+// Ensure output directory exists
+fs.mkdirSync(path.dirname(outPath), { recursive: true });
+
 const pkg = buildPackage();
 // Generate properly formatted TypeScript content
 function formatObject(obj, indent = 0) {
