@@ -47,7 +47,7 @@ test.describe('Reports Links @reports', () => {
     await assertPopupLoadsWithTitle(
       page,
       'nav-reports-playwright',
-      /(Playwright Test Report|Playwright E2E Test Reports)/i
+      /(Playwright Test Report|Playwright E2E (Test )?Reports)/i
     );
   });
 

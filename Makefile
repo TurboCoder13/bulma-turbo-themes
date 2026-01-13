@@ -165,7 +165,7 @@ test-links: build-site
 	fi
 
 test-python:
-	@cd python && uv run pytest tests/ -v
+	@cd python && uv sync --extra dev && uv run pytest tests/ -v
 
 test-swift:
 	@if [ "$${SKIP_SWIFT:-0}" = "1" ]; then \

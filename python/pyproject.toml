@@ -49,6 +49,11 @@ addopts = [
     "--cov-report=html",
     "--cov-fail-under=78",
 ]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Slow running tests",
+]
 
 [tool.coverage.run]
 omit = [
@@ -62,11 +67,6 @@ exclude_lines = [
     "pragma: no cover",
     "if TYPE_CHECKING:",
     "raise NotImplementedError",
-]
-markers = [
-    "unit: Unit tests",
-    "integration: Integration tests",
-    "slow: Slow running tests",
 ]
 
 [tool.mypy]
