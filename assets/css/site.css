@@ -2856,11 +2856,11 @@ html:root .footer-links a:hover {
 .examples-grid {
   display: flex;
   flex-direction: row;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
-  gap: 1.5rem;
-  padding-top: 1rem;
+  gap: var(--space-lg);
+  padding-top: var(--space-md);
 }
 
 /* ==========================================================================
