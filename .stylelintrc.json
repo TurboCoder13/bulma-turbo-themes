@@ -39,13 +39,7 @@
     "property-no-deprecated": null,
     "no-descending-specificity": null,
     "import-notation": null,
-    "comment-empty-line-before": [
-      "always",
-      {
-        "except": ["first-nested"],
-        "ignore": ["after-comment", "stylelint-commands"]
-      }
-    ],
+    "comment-empty-line-before": null,
     "rule-empty-line-before": [
       "always-multi-line",
       {
@@ -85,6 +79,8 @@
     "**/dist/**/*",
     "**/htmlcov/**/*",
     "**/coverage/**/*",
-    "assets/css/themes/**/*"
+    "assets/css/themes/**/*",
+    "apps/site/assets/**/*",
+    "apps/site/public/**/*"
   ]
 }
