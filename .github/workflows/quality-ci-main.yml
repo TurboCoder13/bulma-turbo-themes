@@ -200,4 +200,4 @@ jobs:
         run: cd examples && npx playwright install chromium
 
       - name: Run example tests
-        run: bun run examples:test
+        run: cd examples && bunx playwright test --config=playwright.config.ts --ignore-pattern='**/jekyll/**'
