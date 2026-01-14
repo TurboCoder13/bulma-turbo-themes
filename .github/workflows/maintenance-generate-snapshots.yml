@@ -47,8 +47,6 @@ jobs:
 
       - name: Generate snapshots
         run: bun run e2e --update-snapshots --grep @visual
-        env:
-          UPDATE_SNAPSHOTS: '1'
 
       - name: Upload Linux snapshots
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
