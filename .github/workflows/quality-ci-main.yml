@@ -199,5 +199,12 @@ jobs:
       - name: Install Playwright browsers
         run: cd examples && npx playwright install chromium
 
-      - name: Run example tests
-        run: cd examples && bunx playwright test --config=playwright.config.ts --ignore-pattern='**/jekyll/**'
+      - name: Run example tests (excluding Jekyll - requires Ruby)
+        run: |
+          cd examples
+          bunx playwright test --config=playwright.config.ts \
+            bootstrap/test/ \
+            html-vanilla/test/ \
+            react/test/ \
+            tailwind/test/ \
+            vue/test/
