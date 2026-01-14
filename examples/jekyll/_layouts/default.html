@@ -279,19 +279,18 @@
         var currentThemeEl = document.getElementById('current-theme');
 
         function applyTheme(themeId) {
-          if (!VALID_THEMES.includes(themeId)) {
-            themeId = DEFAULT_THEME;
-          }
-          document.documentElement.setAttribute('data-theme', themeId);
+          // Validate theme ID against whitelist to prevent XSS
+          var safeThemeId = VALID_THEMES.includes(themeId) ? themeId : DEFAULT_THEME;
+          document.documentElement.setAttribute('data-theme', safeThemeId);
           if (themeLink) {
             themeLink.href =
-              '{{ "/assets/css/themes/" | relative_url }}' + themeId + '.css';
+              '{{ "/assets/css/themes/" | relative_url }}' + safeThemeId + '.css';
           }
           if (currentThemeEl) {
-            currentThemeEl.textContent = themeId;
+            currentThemeEl.textContent = safeThemeId;
           }
           try {
-            localStorage.setItem(STORAGE_KEY, themeId);
+            localStorage.setItem(STORAGE_KEY, safeThemeId);
           } catch (e) {
             console.warn('Could not persist theme selection', e);
           }

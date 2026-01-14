@@ -161,7 +161,9 @@ expect.extend({
    * expect(cssContent).toContainCssVariable('--turbo-text-primary');
    */
   toContainCssVariable(received: string, varName: string) {
-    const pattern = new RegExp(`${varName.replace(/-/g, '\\-')}\\s*:`, 'g');
+    // Escape special regex characters (backslash first, then others)
+    const escaped = varName.replace(/\\/g, '\\\\').replace(/[-/{}()*+?.^$|[\]]/g, '\\$&');
+    const pattern = new RegExp(`${escaped}\\s*:`, 'g');
     const pass = pattern.test(received);
     return {
       pass,

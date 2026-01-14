@@ -7,11 +7,21 @@ const THEMES = [
   { id: 'dracula', name: 'Dracula' },
   { id: 'github-dark', name: 'GitHub Dark' },
   { id: 'github-light', name: 'GitHub Light' },
-];
+] as const;
 
-const theme = ref('catppuccin-mocha');
+const VALID_THEME_IDS = THEMES.map((t) => t.id);
+const DEFAULT_THEME = 'catppuccin-mocha';
+
+function isValidTheme(themeId: string): themeId is (typeof THEMES)[number]['id'] {
+  return VALID_THEME_IDS.includes(themeId as (typeof THEMES)[number]['id']);
+}
+
+const theme = ref<string>(DEFAULT_THEME);
 
 function applyTheme(themeId: string) {
+  // Validate theme before using in URL to prevent XSS
+  if (!isValidTheme(themeId)) return;
+
   const link = document.getElementById('theme-css') as HTMLLinkElement;
   if (link) {
     link.href = `/node_modules/turbo-themes/css/themes/turbo/${themeId}.css`;

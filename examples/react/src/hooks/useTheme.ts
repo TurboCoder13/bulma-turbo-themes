@@ -62,6 +62,9 @@ export function useTheme() {
 
   // Sync with DOM on mount
   useEffect(() => {
+    // Validate theme before using in URL to prevent XSS
+    if (!VALID_THEMES.includes(theme)) return;
+
     document.documentElement.setAttribute('data-theme', theme);
     const themeLink = document.getElementById('theme-css') as HTMLLinkElement | null;
     if (themeLink) {
