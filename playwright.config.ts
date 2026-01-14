@@ -113,16 +113,15 @@ const config = defineConfig({
       // Run all tests except mobile-specific ones
       testIgnore: '**/mobile-*.spec.ts',
     },
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-        viewport: { width: 1280, height: 800 },
-      },
-      // Firefox: skip visual regression tests (they run only on chromium for baseline consistency)
-      // and skip mobile tests
-      testIgnore: ['**/visual-*.spec.ts', '**/mobile-*.spec.ts', '**/playground-visual.spec.ts'],
-    },
+    // Firefox disabled - install issues in CI and redundant with Chromium coverage
+    // {
+    //   name: 'firefox',
+    //   use: {
+    //     ...devices['Desktop Firefox'],
+    //     viewport: { width: 1280, height: 800 },
+    //   },
+    //   testIgnore: ['**/visual-*.spec.ts', '**/mobile-*.spec.ts', '**/playground-visual.spec.ts'],
+    // },
     // Webkit/Safari disabled due to consistent CSS loading timing issues
     // These are timing-related, not functional issues - the code works in Safari
     // TODO: Re-enable when webkit timing issues are resolved
