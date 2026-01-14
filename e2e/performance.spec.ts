@@ -186,12 +186,18 @@ test.describe('Performance @performance', () => {
 
     test('should have good FCP (First Contentful Paint)', async ({ page }) => {
       await page.goto('/');
+      // Wait for load to ensure FCP is recorded
+      await page.waitForLoadState('load');
 
-      // Get FCP from Performance API
-      const fcp = await page.evaluate(() => {
-        const entries = performance.getEntriesByName('first-contentful-paint');
-        if (entries.length > 0) {
-          return entries[0].startTime;
+      // Get FCP from Performance API with retry for timing
+      const fcp = await page.evaluate(async () => {
+        // FCP may not be immediately available, wait up to 2s
+        for (let i = 0; i < 20; i++) {
+          const entries = performance.getEntriesByName('first-contentful-paint');
+          if (entries.length > 0) {
+            return entries[0].startTime;
+          }
+          await new Promise((r) => setTimeout(r, 100));
         }
         return null;
       });

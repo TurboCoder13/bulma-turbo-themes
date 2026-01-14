@@ -9,8 +9,15 @@ const cpuCount = os.cpus().length;
 const optimalWorkers = Math.max(1, Math.floor(cpuCount / 2));
 
 /**
- * Detect the platform for snapshot storage
- * Values: 'darwin' (macOS), 'linux', or 'win32'
+ * Detect the platform for snapshot storage.
+ *
+ * Uses platform-specific snapshot directories to handle rendering differences
+ * (fonts, anti-aliasing) between macOS, Linux, and Windows.
+ *
+ * Snapshots are stored in e2e/snapshots/{platform}/:
+ * - macos: Generated on macOS (darwin)
+ * - linux: Generated on Linux (CI uses ubuntu)
+ * - windows: Generated on Windows (win32)
  */
 const platform = os.platform();
 const platformName =

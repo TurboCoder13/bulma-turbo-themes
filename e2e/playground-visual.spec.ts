@@ -5,7 +5,7 @@ import { expect, test } from '@playwright/test';
  *
  * Tests representative themes across example pages using Playwright's
  * built-in screenshot comparison. Baselines are stored per-platform in
- * e2e/snapshots/{platform}/.
+ * e2e/snapshots/{platform}/ to handle rendering differences.
  *
  * Note: Visual tests run only on Chromium for consistency.
  * Different browsers render fonts and colors differently, so

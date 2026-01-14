@@ -5,6 +5,13 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      update_snapshots:
+        description: 'Generate/update visual regression snapshots'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -18,6 +25,7 @@ concurrency:
 env:
   CHECKOUT_FETCH_DEPTH: 1
   NODE_VERSION: 22
+  UPDATE_SNAPSHOTS: ${{ inputs.update_snapshots && '1' || '0' }}
 
 jobs:
   e2e-matrix:
@@ -91,6 +99,8 @@ jobs:
         run: bun run e2e:prep
       - name: Run tests
         run: ${{ matrix.run_command }}
+        env:
+          UPDATE_SNAPSHOTS: ${{ env.UPDATE_SNAPSHOTS }}
       - name: Generate Playwright PR comment
         if: github.event_name == 'pull_request' && always()
         run: ./scripts/ci/generate-playwright-comment.sh
@@ -123,6 +133,13 @@ jobs:
           path: test-results/
           retention-days: 30
           if-no-files-found: ignore
+      - name: Upload generated snapshots
+        if: inputs.update_snapshots && matrix.id == 'e2e'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: e2e-snapshots-linux
+          path: e2e/snapshots/linux/
+          retention-days: 30
       - name: Validate action pinning (strict)
         if: matrix.id == 'e2e'
         run: ./scripts/ci/validate-action-pinning.sh --strict
