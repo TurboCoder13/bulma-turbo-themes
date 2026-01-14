@@ -521,4 +521,3 @@ export function createStateStyles(themeId: string) {
     infoText: { color: tokens.state.info },
   };
 }
-

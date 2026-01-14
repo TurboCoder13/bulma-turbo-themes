@@ -109,7 +109,8 @@ export default defineConfig({
     toHaveScreenshot: {
       // Locally allow creating missing baselines; in CI, never auto-update
       // Can override with UPDATE_SNAPSHOTS=1 to generate new baselines
-      updateSnapshots: process.env.UPDATE_SNAPSHOTS === '1' ? 'all' : (process.env.CI ? 'none' : 'missing'),
+      updateSnapshots:
+        process.env.UPDATE_SNAPSHOTS === '1' ? 'all' : process.env.CI ? 'none' : 'missing',
       // Reduced tolerances for stricter visual comparison
       // Allows only minor anti-aliasing noise while catching real visual regressions
       maxDiffPixels: 50,

@@ -134,4 +134,3 @@ export function getColorPalette(themeId: string): FlatColorPalette | undefined {
 export const palettes: Record<string, FlatColorPalette> = Object.fromEntries(
   flavors.map((f) => [f.id, flattenTokens(f.tokens)])
 );
-

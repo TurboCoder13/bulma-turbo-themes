@@ -8,7 +8,8 @@
  * - Persistence (optional)
  */
 
-import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
+import type React from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { getTheme, getThemesByAppearance, type ThemeFlavor } from '../index.js';
 import { getColorPalette, type FlatColorPalette } from './colors.js';
 import { createBaseStyles, type BaseStyles } from './styles.js';
@@ -160,10 +161,7 @@ export function ThemeProvider({
 
   // Toggle between light and dark
   const toggleAppearance = useCallback(() => {
-    const newTheme =
-      theme.appearance === 'dark'
-        ? lightTheme
-        : darkTheme;
+    const newTheme = theme.appearance === 'dark' ? lightTheme : darkTheme;
     handleSetTheme(newTheme);
   }, [theme.appearance, lightTheme, darkTheme, handleSetTheme]);
 
@@ -180,11 +178,7 @@ export function ThemeProvider({
     [theme, colors, styles, handleSetTheme, toggleAppearance]
   );
 
-  return (
-    <ThemeContext.Provider value={contextValue}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 }
 
 /**
@@ -219,4 +213,3 @@ export function useThemeContext(): ThemeContextValue {
 export function getThemesForAppearance(appearance: 'light' | 'dark'): readonly ThemeFlavor[] {
   return getThemesByAppearance(appearance);
 }
-
