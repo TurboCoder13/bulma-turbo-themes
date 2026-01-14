@@ -47,13 +47,14 @@ export default defineConfig({
         viewport: { width: 1280, height: 800 },
       },
     },
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-        viewport: { width: 1280, height: 800 },
-      },
-    },
+    // Firefox disabled - install issues in CI and redundant with Chromium coverage
+    // {
+    //   name: 'firefox',
+    //   use: {
+    //     ...devices['Desktop Firefox'],
+    //     viewport: { width: 1280, height: 800 },
+    //   },
+    // },
   ],
 
   // Shared test configuration
