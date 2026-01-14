@@ -86,12 +86,17 @@ async function buildTheme(tokenFile, themeId) {
 async function buildCore() {
   console.log('[style-dictionary] Building core tokens...');
 
-  // Use the first theme file as a source for shared tokens structure
+  // Use catppuccin-mocha as the default theme for core tokens
   const themeFiles = getThemeTokenFiles();
   if (themeFiles.length === 0) {
     console.error('[style-dictionary] No theme token files found!');
     process.exit(1);
   }
+
+  // Find catppuccin-mocha as the default, fall back to first theme
+  const defaultThemeFile =
+    themeFiles.find((f) => basename(f, '.json') === 'catppuccin-mocha') || themeFiles[0];
+  console.log(`[style-dictionary] Using default theme: ${basename(defaultThemeFile, '.json')}`);
 
   // Ensure all output directories exist
   const outputDirs = [
@@ -111,7 +116,7 @@ async function buildCore() {
   }
 
   const sd = new StyleDictionary({
-    source: [themeFiles[0]], // Use first theme for structure
+    source: [defaultThemeFile], // Use default theme (catppuccin-mocha) for structure
 
     log: {
       verbosity: 'default',
