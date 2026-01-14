@@ -23,3 +23,6 @@ exclude = ["_site/Dockerfile"]
 
 [tool.lintro.tool.actionlint]
 exclude = ["**/vendor/**"]
+
+[tool.lintro.tool.yamllint]
+exclude = [".github/workflows/**", ".github/actions/**", ".allstar/**"]
