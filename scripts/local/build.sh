@@ -341,8 +341,12 @@ fi
 
 # Step 7: Jekyll build
 print_status "$BLUE" "🏗️  Step 7: Jekyll build..."
-print_status "$YELLOW" "  Building Jekyll site..."
-bundle exec jekyll build --config "$JEKYLL_CONFIG" --trace --strict_front_matter
+if command_exists "bundle"; then
+    print_status "$YELLOW" "  Building Jekyll site..."
+    bundle exec jekyll build --config "$JEKYLL_CONFIG" --trace --strict_front_matter
+else
+    print_status "$YELLOW" "  ⏭️  Skipping Jekyll build (bundle not available)..."
+fi
 
 # Step 8: E2E tests with Playwright (skip in quick mode or if --skip-tests flag is set)
 if [ "$QUICK_MODE" = false ] && [ "$SKIP_TESTS" = false ]; then
@@ -367,7 +371,9 @@ fi
 
 # Step 9: HTMLProofer
 print_status "$BLUE" "🔍 Step 9: HTMLProofer validation..."
-if [ "$PROD_MODE" = true ]; then
+if ! command_exists "bundle"; then
+    print_status "$YELLOW" "  ⏭️  Skipping HTMLProofer (no Jekyll site to validate)..."
+elif [ "$PROD_MODE" = true ]; then
     # Production builds: Skip validation (baseurl prefix makes local paths invalid)
     print_status "$YELLOW" "  ⏭️  Skipping HTMLProofer for production build (validation happens on GitHub Pages)..."
 else
@@ -427,13 +433,17 @@ fi
 
 # Step 12: Final Jekyll build to include all reports
 print_status "$BLUE" "🏗️  Step 12: Final Jekyll build (including all reports)..."
-print_status "$YELLOW" "  Rebuilding Jekyll to include all test reports..."
-print_status "$YELLOW" "  The Jekyll plugin simplify_urls.rb will automatically create simplified paths (/coverage/, /playwright/, /lighthouse/)"
-if ! bundle exec jekyll build --config "$JEKYLL_CONFIG" --trace --strict_front_matter; then
-    print_status "$RED" "  ❌ Failed to rebuild Jekyll with reports"
-    exit 1
+if command_exists "bundle"; then
+    print_status "$YELLOW" "  Rebuilding Jekyll to include all test reports..."
+    print_status "$YELLOW" "  The Jekyll plugin simplify_urls.rb will automatically create simplified paths (/coverage/, /playwright/, /lighthouse/)"
+    if ! bundle exec jekyll build --config "$JEKYLL_CONFIG" --trace --strict_front_matter; then
+        print_status "$RED" "  ❌ Failed to rebuild Jekyll with reports"
+        exit 1
+    fi
+    print_status "$GREEN" "  ✅ All reports included in site (available at /coverage/, /playwright/, /lighthouse/)"
+else
+    print_status "$YELLOW" "  ⏭️  Skipping final Jekyll build (bundle not available)..."
 fi
-print_status "$GREEN" "  ✅ All reports included in site (available at /coverage/, /playwright/, /lighthouse/)"
 
 # Summary
 print_status "$GREEN" "✅ CI pipeline completed successfully!"
