@@ -169,7 +169,9 @@ jobs:
             bun.sh:443 raw.githubusercontent.com:443
             github-releases.githubusercontent.com:443 release-assets.githubusercontent.com:443
             pypi.org:443 files.pythonhosted.org:443
-            playwright.azureedge.net:443
+            cdn.playwright.dev:443 playwright.download.prss.microsoft.com:443
+            playwright.azureedge.net:443 playwright-akamai.azureedge.net:443
+            playwright-verizon.azureedge.net:443
 
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
@@ -195,7 +197,7 @@ jobs:
         run: bun run examples:build
 
       - name: Install Playwright browsers
-        run: cd examples && npx playwright install chromium --with-deps
+        run: cd examples && npx playwright install chromium
 
       - name: Run example tests
         run: bun run examples:test
