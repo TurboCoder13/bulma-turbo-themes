@@ -147,7 +147,7 @@ run_python_tests() {
   local python_dir="${1:-python}"
   if [[ -d "$python_dir" ]]; then
     log_info "Running Python tests..."
-    cd "$python_dir" && uv run pytest tests/ -v
+    cd "$python_dir" && uv sync --extra dev && uv run pytest tests/ -v
   else
     log_warn "Python directory not found: $python_dir"
     return 0
