@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <BaseLayout title="Themes" wide={true}>
@@ -10,7 +11,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="theme-family">
         <button class="family-header" aria-expanded="true">
           <span class="family-label">
-            <img class="family-icon" src="/assets/img/catppuccin-logo-macchiato.png" alt="" width="24" height="24" />
+            <img class="family-icon" src={`${baseUrl}/assets/img/catppuccin-logo-macchiato.png`} alt="" width="24" height="24" />
             <span class="family-name">Catppuccin</span>
           </span>
           <span class="family-count">4</span>
@@ -38,7 +39,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="theme-family">
         <button class="family-header" aria-expanded="true">
           <span class="family-label">
-            <img class="family-icon" src="/assets/img/dracula-logo.png" alt="" width="24" height="24" />
+            <img class="family-icon" src={`${baseUrl}/assets/img/dracula-logo.png`} alt="" width="24" height="24" />
             <span class="family-name">Dracula</span>
           </span>
           <span class="family-count">1</span>
@@ -54,7 +55,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="theme-family">
         <button class="family-header" aria-expanded="true">
           <span class="family-label">
-            <img class="family-icon" src="/assets/img/github-logo-light.png" alt="" width="24" height="24" />
+            <img class="family-icon" src={`${baseUrl}/assets/img/github-logo-light.png`} alt="" width="24" height="24" />
             <span class="family-name">GitHub</span>
           </span>
           <span class="family-count">2</span>
@@ -74,7 +75,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="theme-family">
         <button class="family-header" aria-expanded="true">
           <span class="family-label">
-            <img class="family-icon" src="/assets/img/turbo-themes-logo.png" alt="" width="24" height="24" />
+            <img class="family-icon" src={`${baseUrl}/assets/img/turbo-themes-logo.png`} alt="" width="24" height="24" />
             <span class="family-name">Bulma</span>
           </span>
           <span class="family-count">2</span>

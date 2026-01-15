@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://turbocoder13.github.io',
-  base: '/',
+  base: '/turbo-themes/',
   output: 'static',
   integrations: [sitemap()],
   markdown: {

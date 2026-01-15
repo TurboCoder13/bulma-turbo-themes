@@ -18,13 +18,16 @@ const { title = 'Turbo Themes', description = 'Platform-agnostic design tokens f
 
 const siteTitle = 'Turbo Themes Demo';
 const pageTitle = title === 'Home' ? siteTitle : `${title} | ${siteTitle}`;
+
+// Get base URL from Astro config (removes trailing slash for data attribute)
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <!doctype html>
 <html
   lang="en"
   data-theme="catppuccin-mocha"
-  data-baseurl=""
+  data-baseurl={baseUrl}
 >
   <head>
     <meta charset="utf-8" />
@@ -49,31 +52,31 @@ const pageTitle = title === 'Home' ? siteTitle : `${title} | ${siteTitle}`;
     </noscript>
 
     <!-- Turbo Themes: Pure CSS Custom Properties -->
-    <link rel="stylesheet" href="/assets/css/turbo-core.css" />
-    <link rel="stylesheet" href="/assets/css/turbo-base.css" />
-    <link rel="stylesheet" href="/assets/css/turbo-syntax.css" />
-    <link rel="stylesheet" href="/assets/css/turbo-components.css" />
+    <link rel="stylesheet" href={`${baseUrl}/assets/css/turbo-core.css`} />
+    <link rel="stylesheet" href={`${baseUrl}/assets/css/turbo-base.css`} />
+    <link rel="stylesheet" href={`${baseUrl}/assets/css/turbo-syntax.css`} />
+    <link rel="stylesheet" href={`${baseUrl}/assets/css/turbo-components.css`} />
     <link
       id="turbo-theme-css"
       rel="stylesheet"
-      href="/assets/css/themes/turbo/catppuccin-mocha.css"
+      href={`${baseUrl}/assets/css/themes/turbo/catppuccin-mocha.css`}
     />
 
     <!-- Site CSS (always loaded) -->
-    <link rel="stylesheet" href="/assets/css/site.css" />
+    <link rel="stylesheet" href={`${baseUrl}/assets/css/site.css`} />
 
     <!-- Favicon -->
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href={`${baseUrl}/favicon.ico`} />
     <link
       rel="icon"
       type="image/png"
-      href="/assets/img/turbo-themes-logo.png"
+      href={`${baseUrl}/assets/img/turbo-themes-logo.png`}
       media="(prefers-color-scheme: light)"
     />
     <link
       rel="icon"
       type="image/png"
-      href="/assets/img/turbo-themes-logo-dark.png"
+      href={`${baseUrl}/assets/img/turbo-themes-logo-dark.png`}
       media="(prefers-color-scheme: dark)"
     />
 
