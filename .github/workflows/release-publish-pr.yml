@@ -125,9 +125,9 @@ jobs:
             sbom/sbom.cyclonedx.xml.sig
             sbom/sbom.cyclonedx.xml.cert
           body: |
-            ## 📦 @turbocoder13/bulma-turbo-themes ${{ github.ref_name }}
+            ## 📦 @turbocoder13/turbo-themes ${{ github.ref_name }}
 
-            Published to npm: https://www.npmjs.com/package/@turbocoder13/bulma-turbo-themes
+            Published to npm: https://www.npmjs.com/package/@turbocoder13/turbo-themes
 
             ### 📋 Software Bill of Materials (SBOM)
 

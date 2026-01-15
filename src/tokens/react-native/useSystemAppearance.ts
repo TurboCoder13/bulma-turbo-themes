@@ -32,7 +32,7 @@ export type UseColorSchemeHook = () => ColorScheme;
  * @example
  * ```tsx
  * import { useColorScheme } from 'react-native';
- * import { useSystemAppearance } from '@turbocoder13/bulma-turbo-themes/tokens/react-native';
+ * import { useSystemAppearance } from '@turbocoder13/turbo-themes/tokens/react-native';
  *
  * function MyComponent() {
  *   const appearance = useSystemAppearance(useColorScheme);

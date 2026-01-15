@@ -15,17 +15,17 @@ SimpleCov.start do
 
   # Use absolute paths for grouping
   add_group "Lib", File.join(REPO_ROOT, "lib")
-  add_group "Plugins", File.join(REPO_ROOT, "apps/site/_plugins")
 
-  # Track all Ruby files with absolute paths
-  track_files File.join(REPO_ROOT, "{lib,apps/site/_plugins}/**/*.rb")
+  # Track turbo-themes lib files
+  track_files File.join(REPO_ROOT, "lib/**/*.rb")
 
   # Enable branch coverage
   enable_coverage :branch
 
-  # Minimum coverage threshold - lowered for minimal Jekyll theme gem
-  # The gem only contains version.rb (5 lines) and turbo-themes.rb (9 lines)
-  minimum_coverage 35
+  # Minimum coverage threshold
+  # The gem is minimal: turbo-themes.rb (module definition) and version.rb (VERSION constant)
+  # SimpleCov shows 40% because version.rb lines appear uncovered despite being executed
+  minimum_coverage 40
 end
 
 # Load the gem

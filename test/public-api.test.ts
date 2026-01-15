@@ -3034,7 +3034,7 @@ describe('public API', () => {
       mockLocalStorage.getItem.mockReturnValue('catppuccin-latte');
       Object.defineProperty(document.documentElement, 'getAttribute', {
         value: vi.fn((attr) => {
-          if (attr === 'data-baseurl') return '/bulma-turbo-themes';
+          if (attr === 'data-baseurl') return '/turbo-themes';
           return null;
         }),
         writable: true,
@@ -3069,13 +3069,13 @@ describe('public API', () => {
       await initTheme(document, window);
 
       // Verify theme link was created with correct href (uses packages/css/dist/themes/ path)
-      expect(mockThemeLink.href).toContain('/bulma-turbo-themes/packages/css/dist/themes/');
+      expect(mockThemeLink.href).toContain('/turbo-themes/packages/css/dist/themes/');
     });
 
     it('correctly creates theme selector elements in wireFlavorSelector', () => {
       Object.defineProperty(document.documentElement, 'getAttribute', {
         value: vi.fn((attr) => {
-          if (attr === 'data-baseurl') return '/bulma-turbo-themes';
+          if (attr === 'data-baseurl') return '/turbo-themes';
           return null;
         }),
         writable: true,
