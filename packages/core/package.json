@@ -1,0 +1,40 @@
+{
+  "name": "@turbocoder13/turbo-themes-core",
+  "version": "0.11.0",
+  "description": "Core design tokens and theme definitions for Turbo Themes",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tokens": {
+      "types": "./dist/tokens/index.d.ts",
+      "import": "./dist/tokens/index.js"
+    },
+    "./themes": {
+      "types": "./dist/themes/registry.d.ts",
+      "import": "./dist/themes/registry.js"
+    },
+    "./themes/types": {
+      "types": "./dist/themes/types.d.ts",
+      "import": "./dist/themes/types.js"
+    },
+    "./css/mappings": {
+      "types": "./dist/themes/css/mappings.d.ts",
+      "import": "./dist/themes/css/mappings.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run --config vitest.config.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  }
+}

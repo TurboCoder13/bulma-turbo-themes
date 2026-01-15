@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Verify that commit messages will trigger semantic release
 #
 # This script checks if commits between a base and head reference contain

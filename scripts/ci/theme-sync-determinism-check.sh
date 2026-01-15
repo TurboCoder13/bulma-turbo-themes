@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Run theme sync determinism check
 # Usage: theme-sync-determinism-check.sh
 

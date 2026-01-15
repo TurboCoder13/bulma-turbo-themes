@@ -1,0 +1,121 @@
+/* ==========================================================================
+   Turbo Themes - Tags / Badges
+   ========================================================================== */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-xs) var(--space-md);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--turbo-text-primary);
+  background: var(--turbo-bg-overlay);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+}
+
+/* Color variants */
+.tag-primary {
+  color: var(--turbo-text-inverse);
+  background: var(--turbo-brand-primary);
+}
+
+.tag-secondary {
+  color: var(--turbo-text-primary);
+  background: var(--turbo-bg-surface);
+  border: 1px solid var(--turbo-border-default);
+}
+
+.tag-success {
+  color: var(--turbo-bg-base);
+  background: var(--turbo-state-success);
+}
+
+.tag-warning {
+  color: var(--turbo-bg-base);
+  background: var(--turbo-state-warning);
+}
+
+.tag-danger {
+  color: var(--turbo-bg-base);
+  background: var(--turbo-state-danger);
+}
+
+.tag-info {
+  color: var(--turbo-bg-base);
+  background: var(--turbo-state-info);
+}
+
+/* Outline variants */
+.tag-outline {
+  background: transparent;
+  border: 1px solid var(--turbo-border-default);
+  color: var(--turbo-text-primary);
+}
+
+.tag-outline-primary {
+  background: transparent;
+  border: 1px solid var(--turbo-brand-primary);
+  color: var(--turbo-brand-primary);
+}
+
+.tag-outline-success {
+  background: transparent;
+  border: 1px solid var(--turbo-state-success);
+  color: var(--turbo-state-success);
+}
+
+.tag-outline-warning {
+  background: transparent;
+  border: 1px solid var(--turbo-state-warning);
+  color: var(--turbo-state-warning);
+}
+
+.tag-outline-danger {
+  background: transparent;
+  border: 1px solid var(--turbo-state-danger);
+  color: var(--turbo-state-danger);
+}
+
+.tag-outline-info {
+  background: transparent;
+  border: 1px solid var(--turbo-state-info);
+  color: var(--turbo-state-info);
+}
+
+/* Size variants */
+.tag-sm {
+  padding: calc(var(--space-xs) / 2) var(--space-sm);
+  font-size: 0.75rem;
+}
+
+.tag-lg {
+  padding: var(--space-sm) var(--space-lg);
+  font-size: 0.9375rem;
+}
+
+/* Tag group */
+.tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+/* Removable tag */
+.tag-remove {
+  margin-left: var(--space-xs);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity var(--transition-fast);
+  border-radius: var(--radius-sm);
+}
+
+.tag-remove:hover {
+  opacity: 1;
+}
+
+.tag-remove:focus-visible {
+  outline: 2px solid var(--turbo-brand-primary);
+  outline-offset: 1px;
+  opacity: 1;
+}

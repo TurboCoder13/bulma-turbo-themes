@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Check for existing version PR in open state
 # Sets outputs: pr_exists=true|false, pr_number=<number>
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 """
 Debug script to list and verify artifact contents

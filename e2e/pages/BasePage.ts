@@ -1,14 +1,6 @@
-import { type Page, type Locator, expect } from '@playwright/test';
-import { ThemeDropdown } from './components/ThemeDropdown';
+import { type Locator, type Page, expect } from '@playwright/test';
 
-/**
- * Extended Window interface to include initNavbar function.
- */
-interface Window {
-  initNavbar?: (doc: globalThis.Document) => void;
-}
-
-import { escapeRegex, escapeCssAttributeSelector } from '../helpers';
+import { escapeRegex } from '../helpers';
 
 /**
  * Base page object with common navigation and theme functionality.
@@ -16,46 +8,17 @@ import { escapeRegex, escapeCssAttributeSelector } from '../helpers';
  */
 export class BasePage {
   readonly page: Page;
-  #themeDropdown: ThemeDropdown | undefined;
 
   constructor(page: Page) {
     this.page = page;
   }
 
   /**
-   * Ensure navbar is initialized after page load.
-   * Waits for DOM content, checks for initNavbar function, calls it, and verifies navbar is ready.
-   */
-  async #ensureNavbarInitialized(): Promise<void> {
-    // Wait for page to be interactive
-    await this.page.waitForLoadState('domcontentloaded');
-
-    // Wait for the script module to load and initNavbar to be available
-    await this.page.waitForFunction(
-      () => typeof window !== 'undefined' && typeof (window as Window).initNavbar === 'function',
-      { timeout: 5000 }
-    );
-
-    // Ensure navbar is initialized by calling initNavbar
-    await this.page.evaluate(() => {
-      const win = window as Window;
-      if (win.initNavbar) {
-        win.initNavbar(document);
-      }
-    });
-
-    // Wait for navbar to be initialized (check for active link if on a page with nav)
-    await this.page.waitForSelector('nav .navbar-item.is-active', { timeout: 2000 }).catch(() => {
-      // If no active link found, that's okay - might be on a page without matching nav
-    });
-  }
-
-  /**
    * Navigate to a specific path.
    */
-  async goto(path: string = '/'): Promise<void> {
+  async goto(path = '/'): Promise<void> {
     await this.page.goto(path);
-    await this.#ensureNavbarInitialized();
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   /**
@@ -119,7 +82,7 @@ export class BasePage {
       );
     }
 
-    await this.#ensureNavbarInitialized();
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   /**
@@ -127,7 +90,7 @@ export class BasePage {
    */
   async expectNavLinkActive(pageName: string): Promise<void> {
     const link = this.getNavLink(pageName);
-    await expect(link).toHaveClass(/is-active/);
+    await expect(link).toHaveClass(/active/);
   }
 
   /**
@@ -183,10 +146,10 @@ export class BasePage {
   }
 
   /**
-   * Get the theme dropdown element.
+   * Get the theme selector element (the trigger button).
    */
-  getThemeDropdown(): Locator {
-    return this.page.getByTestId('theme-dropdown');
+  getThemeSelector(): Locator {
+    return this.page.locator('#theme-trigger');
   }
 
   /**
@@ -197,32 +160,21 @@ export class BasePage {
   }
 
   /**
-   * Get a ThemeDropdown instance for interacting with the theme dropdown.
-   * Returns a cached instance to maintain state consistency.
-   */
-  getThemeDropdownComponent(): ThemeDropdown {
-    if (!this.#themeDropdown) {
-      this.#themeDropdown = new ThemeDropdown(this.page);
-    }
-    return this.#themeDropdown;
-  }
-
-  /**
-   * Open the theme dropdown by hovering.
-   * Delegates to ThemeDropdown component.
-   */
-  async openThemeDropdown(): Promise<void> {
-    const themeDropdown = this.getThemeDropdownComponent();
-    await themeDropdown.open();
-  }
-
-  /**
-   * Select a theme from the dropdown.
-   * Delegates to ThemeDropdown component and waits for theme to be applied.
+   * Select a theme from the dropdown menu.
    */
   async selectTheme(themeId: string): Promise<void> {
-    const themeDropdown = this.getThemeDropdownComponent();
-    await themeDropdown.selectTheme(themeId);
+    // Click the theme trigger to open the dropdown
+    const themeTrigger = this.getThemeTrigger();
+    await themeTrigger.click();
+
+    // Wait for dropdown to be visible
+    const themeMenu = this.page.locator('#theme-menu');
+    await themeMenu.waitFor({ state: 'visible', timeout: 5000 });
+
+    // Click the theme option
+    const themeOption = this.page.locator(`.theme-option[data-theme="${themeId}"]`);
+    await themeOption.click();
+
     // Wait for theme to be applied before returning
     await this.expectThemeApplied(themeId);
   }
@@ -231,36 +183,33 @@ export class BasePage {
    * Verify the current theme is applied.
    */
   async expectThemeApplied(themeId: string): Promise<void> {
-    // Check HTML theme CSS class
+    // Check data-theme attribute
     const escapedThemeId = escapeRegex(themeId);
-    await expect(this.page.locator('html')).toHaveClass(
-      new RegExp(`(?:^|\\s)theme-${escapedThemeId}(?:\\s|$)`)
+    await expect(this.page.locator('html')).toHaveAttribute(
+      'data-theme',
+      new RegExp(`^${escapedThemeId}$`)
     );
 
     // Check localStorage with polling to handle race conditions
     await expect
       .poll(
         async () => {
-          return await this.page.evaluate(() => localStorage.getItem('bulma-theme-flavor'));
+          return await this.page.evaluate(() => localStorage.getItem('turbo-theme'));
         },
         { timeout: 5000 }
       )
       .toBe(themeId);
 
-    // Check that theme CSS is loaded (dynamically added link element)
-    const escapedThemeIdForCss = escapeRegex(themeId);
-    const themeCss = this.page.locator(
-      `link[data-theme-id="${escapeCssAttributeSelector(themeId)}"]`
-    );
-    await expect(themeCss).toHaveAttribute('href', new RegExp(`${escapedThemeIdForCss}\\.css`));
+    // Check that theme CSS is loaded
+    const themeCss = this.page.locator('#turbo-theme-css');
+    await expect(themeCss).toHaveAttribute('href', new RegExp(`${escapedThemeId}\\.css`));
   }
 
   /**
-   * Verify theme dropdown is visible.
+   * Verify theme selector is visible.
    */
-  async expectThemeDropdownVisible(): Promise<void> {
-    await expect(this.getThemeDropdown()).toBeVisible();
-    await expect(this.getThemeTrigger()).toBeVisible();
+  async expectThemeSelectorVisible(): Promise<void> {
+    await expect(this.getThemeSelector()).toBeVisible();
   }
 
   /**
@@ -288,6 +237,6 @@ export class BasePage {
    * Get the theme CSS link element.
    */
   getThemeCss(): Locator {
-    return this.page.locator('#theme-flavor-css');
+    return this.page.locator('#turbo-theme-css');
   }
 }

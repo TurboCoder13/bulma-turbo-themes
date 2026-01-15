@@ -1,0 +1,164 @@
+name: Quality Check - Examples
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'examples/**'
+      - 'packages/**'
+      - '.github/workflows/quality-examples.yml'
+  pull_request:
+    paths:
+      - 'examples/**'
+      - 'packages/**'
+      - '.github/workflows/quality-examples.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: examples-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-examples:
+    name: 🔨 Build Examples
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        example:
+          - name: html-vanilla
+            build: false
+          - name: tailwind
+            build: true
+          - name: react
+            build: true
+          - name: vue
+            build: true
+          - name: bootstrap
+            build: true
+    steps:
+      - name: Harden Runner
+        if: ${{ !env.ACT }}
+        uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          skip-ruby: 'true'
+
+      - name: Build core packages
+        run: bun run build
+
+      - name: Install example dependencies
+        if: matrix.example.build
+        working-directory: examples/${{ matrix.example.name }}
+        run: bun install
+
+      - name: Build example
+        if: matrix.example.build
+        working-directory: examples/${{ matrix.example.name }}
+        run: bun run build
+
+      - name: Verify HTML vanilla example
+        if: matrix.example.name == 'html-vanilla'
+        run: |
+          # Check that required files exist
+          test -f examples/html-vanilla/index.html
+          # Validate HTML structure
+          grep -q 'id="theme-selector"' examples/html-vanilla/index.html
+          grep -q 'id="theme-css"' examples/html-vanilla/index.html
+          grep -q 'data-theme=' examples/html-vanilla/index.html
+
+      - name: Upload build artifact
+        if: matrix.example.build
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: example-${{ matrix.example.name }}-build
+          path: examples/${{ matrix.example.name }}/dist/
+          retention-days: 7
+          if-no-files-found: warn
+
+  build-jekyll:
+    name: 🔨 Build Jekyll Example
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Harden Runner
+        if: ${{ !env.ACT }}
+        uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          skip-ruby: 'false'
+
+      - name: Build core packages
+        run: bun run build
+
+      - name: Install Jekyll dependencies
+        working-directory: examples/jekyll
+        run: bundle install
+
+      - name: Build Jekyll site
+        working-directory: examples/jekyll
+        run: bundle exec jekyll build
+
+      - name: Upload Jekyll build artifact
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: example-jekyll-build
+          path: examples/jekyll/_site/
+          retention-days: 7
+          if-no-files-found: warn
+
+  test-examples:
+    name: 🧪 Test Examples
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    needs: [build-examples, build-jekyll]
+    steps:
+      - name: Harden Runner
+        if: ${{ !env.ACT }}
+        uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          skip-ruby: 'false'
+
+      - name: Install Playwright browsers
+        run: bunx playwright install chromium firefox
+
+      - name: Build and prepare for E2E
+        run: bun run e2e:prep
+
+      - name: Run example tests
+        working-directory: examples
+        run: bunx playwright test --config=playwright.config.ts
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: examples-playwright-report
+          path: examples/playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore

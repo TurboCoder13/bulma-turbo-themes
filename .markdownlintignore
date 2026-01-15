@@ -5,8 +5,12 @@ vendor/**
 vendor/bundle/**
 .bundle/
 _site/
+**/site/_site/
+apps/site/_site/
 dist/
 coverage/
 .git/
 playwright-report/
 lighthouse-reports/
+.bin/
+.lintro/

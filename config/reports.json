@@ -1,0 +1,54 @@
+{
+  "$schema": "./reports.schema.json",
+  "reports": {
+    "coverage": {
+      "path": "/coverage",
+      "title": "Coverage Reports (JS)",
+      "source": "coverage",
+      "placeholder": "No coverage reports available. Run tests with coverage enabled.",
+      "generateIndex": false
+    },
+    "coverage-python": {
+      "path": "/coverage-python",
+      "title": "Python Coverage Reports",
+      "source": "python/htmlcov",
+      "placeholder": "No Python coverage reports available. Run: make test-python",
+      "generateIndex": false
+    },
+    "coverage-swift": {
+      "path": "/coverage-swift",
+      "title": "Swift Coverage Reports",
+      "source": "examples/swift-swiftui/htmlcov",
+      "placeholder": "No Swift coverage reports available. Run: make test-swift",
+      "generateIndex": false
+    },
+    "coverage-ruby": {
+      "path": "/coverage-ruby",
+      "title": "Ruby Coverage Reports",
+      "source": "rspec-coverage",
+      "placeholder": "No Ruby coverage reports available. Run RSpec tests.",
+      "generateIndex": false
+    },
+    "playwright": {
+      "path": "/playwright",
+      "title": "Playwright E2E Reports",
+      "source": "playwright-report",
+      "placeholder": "No Playwright reports available. Run: make test-e2e",
+      "generateIndex": false
+    },
+    "playwright-examples": {
+      "path": "/playwright-examples",
+      "title": "Playwright Examples Reports",
+      "source": "examples/playwright-report",
+      "placeholder": "No examples test reports available. Run: make test-examples",
+      "generateIndex": false
+    },
+    "lighthouse": {
+      "path": "/lighthouse",
+      "title": "Lighthouse Reports",
+      "source": ["lighthouse-reports", ".lighthouseci"],
+      "placeholder": "No Lighthouse reports available. Run: make test-lhci",
+      "generateIndex": true
+    }
+  }
+}

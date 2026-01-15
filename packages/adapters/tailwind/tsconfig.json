@@ -1,0 +1,19 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@turbocoder13/turbo-themes-core": ["../../core/src/index.ts"],
+      "@turbocoder13/turbo-themes-core/*": ["../../core/src/*"]
+    }
+  },
+  "include": ["*.ts"],
+  "exclude": ["dist", "node_modules"],
+  "references": [{ "path": "../../core" }]
+}

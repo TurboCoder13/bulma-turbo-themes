@@ -16,3 +16,6 @@ $danger: hsl(0, 84%, 60%);
 @use 'variables';
 @use 'custom/overrides';
 @use 'custom/hacks';
+
+// Centralized font imports (all themes share these)
+@use 'fonts';

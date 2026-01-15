@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Install Syft (SBOM generator)
 # Usage: install-syft.sh
 

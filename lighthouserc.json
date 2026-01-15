@@ -4,12 +4,16 @@
       "url": [
         "http://localhost:4000",
         "http://localhost:4000/components/",
-        "http://localhost:4000/forms/",
-        "http://localhost:4000/es/introduccion/"
+        "http://localhost:4000/demo/"
       ],
-      "startServerCommand": "bundle exec jekyll serve --port 4000 --config _config.yml --detach",
-      "startServerReadyPattern": "Server address:",
-      "startServerReadyTimeout": 30000
+      "numberOfRuns": 1,
+      "startServerCommand": "bunx http-server apps/site/dist -p 4000 -c-1",
+      "startServerReadyPattern": "Available on:",
+      "startServerReadyTimeout": 10000,
+      "settings": {
+        "chromeFlags": "--headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage",
+        "maxWaitForLoad": 30000
+      }
     },
     "assert": {
       "assertions": {

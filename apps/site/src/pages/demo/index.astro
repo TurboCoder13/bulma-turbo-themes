@@ -1,0 +1,119 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Demo">
+  <p>See Turbo Themes in action. These demos show how the same design tokens work across different setups.</p>
+
+  <h2>Integration Examples</h2>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Minimal (Recommended)</h3>
+      </div>
+      <div class="card-body">
+        <p>The simplest setup. Just Turbo Themes CSS variables - no framework, no build step.</p>
+        <div class="stats" style="margin: 1rem 0;">
+          <div class="stat">
+            <span class="stat-value">~10KB</span>
+            <span class="stat-label">Total CSS</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">0</span>
+            <span class="stat-label">Dependencies</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a href="/demo/minimal/" class="btn btn-primary">View Demo</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Bulma Integration</h3>
+      </div>
+      <div class="card-body">
+        <p>For existing Bulma projects. The adapter maps Turbo tokens to Bulma's internal variables.</p>
+        <div class="stats" style="margin: 1rem 0;">
+          <div class="stat">
+            <span class="stat-value">~250KB</span>
+            <span class="stat-label">Total CSS</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">Bulma</span>
+            <span class="stat-label">Framework</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a href="/demo/with-bulma/" class="btn btn-primary">View Demo</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Tailwind Integration</h3>
+      </div>
+      <div class="card-body">
+        <p>For existing Tailwind projects. Adds Turbo colors as utility classes like <code>bg-turbo-primary</code>.</p>
+        <div class="stats" style="margin: 1rem 0;">
+          <div class="stat">
+            <span class="stat-value">~15KB</span>
+            <span class="stat-label">Total CSS</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">Tailwind</span>
+            <span class="stat-label">Framework</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a href="/demo/with-tailwind/" class="btn btn-primary">View Demo</a>
+      </div>
+    </div>
+  </div>
+
+  <h2>How It Works</h2>
+
+  <p>
+    Turbo Themes provides <strong>CSS Custom Properties</strong> (variables) that define your color palette.
+    Use them directly in your CSS:
+  </p>
+
+  <pre><code class="language-css">.my-button &#123;
+  background: var(--turbo-brand-primary);
+  color: var(--turbo-text-inverse);
+  border: 1px solid var(--turbo-border-default);
+&#125;</code></pre>
+
+  <p>
+    If you're already using Bulma or Tailwind, the adapters let you keep using those frameworks
+    while benefiting from Turbo's theme system.
+  </p>
+
+  <h3>Theme Switching</h3>
+
+  <p>
+    Switch themes by changing the <code>data-theme</code> attribute and loading the corresponding CSS file:
+  </p>
+
+  <pre><code class="language-js">// Switch to Dracula theme
+document.documentElement.setAttribute('data-theme', 'dracula');
+document.getElementById('turbo-theme-css').href = '/assets/css/themes/turbo/dracula.css';
+localStorage.setItem('turbo-theme', 'dracula');</code></pre>
+
+  <h2>Complete Examples</h2>
+
+  <p>
+    Want to see more? Check out our <a href="/examples/">complete examples</a> for React, Vue, Bootstrap,
+    and more. Each example includes full source code, tests, and StackBlitz playgrounds.
+  </p>
+
+  <div class="grid grid-3" style="margin-top: 1rem;">
+    <a href="/examples/" class="btn btn-outline">View All Examples</a>
+    <a href="https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/react" class="btn btn-primary" target="_blank" rel="noopener">Try React Example</a>
+    <a href="https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/vue" class="btn btn-primary" target="_blank" rel="noopener">Try Vue Example</a>
+  </div>
+</BaseLayout>

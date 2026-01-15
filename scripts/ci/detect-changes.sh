@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Detect changes in git repository
 # Usage: detect-changes.sh
 

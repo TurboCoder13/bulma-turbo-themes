@@ -237,7 +237,7 @@ describe('auto init', () => {
 
     // Directly call the initialization logic that the auto-init would do
     await initTheme(mockDocument, mockWindow);
-    const { cleanup } = wireFlavorSelector(mockDocument, mockWindow);
+    const { cleanup } = await wireFlavorSelector(mockDocument, mockWindow);
     enhanceAccessibility(mockDocument);
 
     // Register cleanup to run on teardown (this is what the auto-init does)

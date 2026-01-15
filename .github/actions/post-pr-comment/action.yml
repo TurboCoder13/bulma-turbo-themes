@@ -30,13 +30,9 @@ runs:
       shell: bash
       run: |
         if [ -n "${{ inputs.comment-file }}" ]; then
-          ./scripts/ci/output-file-content.sh body "${{ inputs.comment-file }}"
+          ./scripts/ci/prepare-comment-body.sh body --file "${{ inputs.comment-file }}"
         else
-          {
-            echo "body<<EOF"
-            echo "${{ inputs.comment-body }}"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+          ./scripts/ci/prepare-comment-body.sh body --body "${{ inputs.comment-body }}"
         fi
 
     - name: Find existing comment

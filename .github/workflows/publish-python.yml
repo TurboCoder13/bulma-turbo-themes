@@ -1,0 +1,53 @@
+---
+name: Publish Python Package
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
+jobs:
+  publish-python:
+    name: 📦 Publish to PyPI
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Harden Runner
+        if: ${{ !env.ACT }}
+        uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443 api.github.com:443 uploads.github.com:443
+            pipelines.actions.githubusercontent.com:443
+            objects.githubusercontent.com:443 codeload.github.com:443
+            github-releases.githubusercontent.com:443
+            release-assets.githubusercontent.com:443 pypi.org:443
+            files.pythonhosted.org:443
+
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          node-version: 22
+
+      - name: Build JS + generate types
+        run: bun run build && bun run generate:all
+
+      - name: Test Python package
+        run: ./scripts/ci/test-python-package.sh
+
+      - name: Build Python package
+        run: ./scripts/ci/build-python-package.sh
+
+      - name: Publish to PyPI (trusted publishing)
+        working-directory: python
+        run: uv publish

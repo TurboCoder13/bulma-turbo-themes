@@ -1,0 +1,141 @@
+/* ==========================================================================
+   Turbo Themes - Buttons
+   ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-xl);
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--turbo-brand-primary);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Primary */
+.btn-primary {
+  color: var(--turbo-text-inverse);
+  background: var(--gradient-primary, var(--turbo-brand-primary));
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover:not(:disabled) {
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+}
+
+/* Secondary */
+.btn-secondary {
+  color: var(--turbo-text-primary);
+  background: var(--turbo-bg-surface);
+  border: 1px solid var(--turbo-border-default);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--turbo-bg-overlay);
+  border-color: var(--turbo-brand-primary);
+}
+
+/* Ghost */
+.btn-ghost {
+  color: var(--turbo-text-secondary);
+  background: transparent;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  color: var(--turbo-text-primary);
+  background: color-mix(in srgb, var(--turbo-brand-primary) 10%, transparent);
+}
+
+/* Outline */
+.btn-outline {
+  color: var(--turbo-brand-primary);
+  background: transparent;
+  border: 2px solid var(--turbo-brand-primary);
+}
+
+.btn-outline:hover:not(:disabled) {
+  color: var(--turbo-text-inverse);
+  background: var(--turbo-brand-primary);
+}
+
+/* State variants */
+.btn-success {
+  color: var(--turbo-bg-base);
+  background: var(--turbo-state-success);
+}
+
+.btn-success:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--turbo-state-success) 85%, black);
+}
+
+.btn-warning {
+  color: var(--turbo-bg-base);
+  background: var(--turbo-state-warning);
+}
+
+.btn-warning:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--turbo-state-warning) 85%, black);
+}
+
+.btn-danger {
+  color: var(--turbo-bg-base);
+  background: var(--turbo-state-danger);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--turbo-state-danger) 85%, black);
+}
+
+.btn-info {
+  color: var(--turbo-bg-base);
+  background: var(--turbo-state-info);
+}
+
+.btn-info:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--turbo-state-info) 85%, black);
+}
+
+/* Sizes */
+.btn-sm {
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.875rem;
+  border-radius: var(--radius-md);
+}
+
+.btn-lg {
+  padding: var(--space-lg) var(--space-2xl);
+  font-size: 1.125rem;
+  border-radius: var(--radius-xl);
+}
+
+/* Button group */
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}

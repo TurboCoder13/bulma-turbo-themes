@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Validate all actions are pinned to SHA
 # Usage: validate-action-pinning.sh [--strict]
 #

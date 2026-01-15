@@ -1,0 +1,54 @@
+// Bootstrap + Turbo Themes Integration
+// Import Bootstrap with defaults, then override with CSS custom properties
+
+@import 'bootstrap/scss/bootstrap';
+
+// Override Bootstrap's CSS with Turbo Themes variables
+:root {
+  --bs-body-font-family: var(--turbo-font-sans);
+  --bs-body-color: var(--turbo-text-primary);
+  --bs-body-bg: var(--turbo-bg-base);
+  --bs-border-color: var(--turbo-border-default);
+  --bs-link-color: var(--turbo-accent-link);
+}
+
+.card {
+  --bs-card-bg: var(--turbo-bg-surface);
+  --bs-card-border-color: var(--turbo-border-default);
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--turbo-brand-primary);
+  --bs-btn-border-color: var(--turbo-brand-primary);
+}
+
+.btn-success {
+  --bs-btn-bg: var(--turbo-state-success);
+  --bs-btn-border-color: var(--turbo-state-success);
+}
+
+.btn-danger {
+  --bs-btn-bg: var(--turbo-state-danger);
+  --bs-btn-border-color: var(--turbo-state-danger);
+}
+
+.btn-warning {
+  --bs-btn-bg: var(--turbo-state-warning);
+  --bs-btn-border-color: var(--turbo-state-warning);
+}
+
+.btn-info {
+  --bs-btn-bg: var(--turbo-state-info);
+  --bs-btn-border-color: var(--turbo-state-info);
+}
+
+.form-control,
+.form-select {
+  background-color: var(--turbo-bg-overlay);
+  border-color: var(--turbo-border-default);
+  color: var(--turbo-text-primary);
+}
+
+.bg-body-tertiary {
+  background-color: var(--turbo-bg-surface) !important;
+}

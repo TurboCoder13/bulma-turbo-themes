@@ -1,0 +1,317 @@
+{
+  "$schema": "./token-mappings.schema.json",
+  "$description": "Single source of truth for CSS variable to token path mappings",
+  "prefix": "turbo",
+  "coreMappings": [
+    { "cssVar": "bg-base", "tokenPath": "background.base" },
+    { "cssVar": "bg-surface", "tokenPath": "background.surface" },
+    { "cssVar": "bg-overlay", "tokenPath": "background.overlay" },
+    { "cssVar": "text-primary", "tokenPath": "text.primary" },
+    { "cssVar": "text-secondary", "tokenPath": "text.secondary" },
+    { "cssVar": "text-inverse", "tokenPath": "text.inverse" },
+    { "cssVar": "brand-primary", "tokenPath": "brand.primary" },
+    { "cssVar": "state-info", "tokenPath": "state.info" },
+    { "cssVar": "state-success", "tokenPath": "state.success" },
+    { "cssVar": "state-warning", "tokenPath": "state.warning" },
+    { "cssVar": "state-danger", "tokenPath": "state.danger" },
+    { "cssVar": "border-default", "tokenPath": "border.default" },
+    { "cssVar": "accent-link", "tokenPath": "accent.link" },
+    { "cssVar": "font-sans", "tokenPath": "typography.fonts.sans" },
+    { "cssVar": "font-mono", "tokenPath": "typography.fonts.mono" },
+    { "cssVar": "heading-h1", "tokenPath": "content.heading.h1" },
+    { "cssVar": "heading-h2", "tokenPath": "content.heading.h2" },
+    { "cssVar": "heading-h3", "tokenPath": "content.heading.h3" },
+    { "cssVar": "heading-h4", "tokenPath": "content.heading.h4" },
+    { "cssVar": "heading-h5", "tokenPath": "content.heading.h5" },
+    { "cssVar": "heading-h6", "tokenPath": "content.heading.h6" },
+    { "cssVar": "body-primary", "tokenPath": "content.body.primary" },
+    { "cssVar": "body-secondary", "tokenPath": "content.body.secondary" },
+    { "cssVar": "link-default", "tokenPath": "content.link.default" },
+    { "cssVar": "selection-fg", "tokenPath": "content.selection.fg" },
+    { "cssVar": "selection-bg", "tokenPath": "content.selection.bg" },
+    { "cssVar": "blockquote-border", "tokenPath": "content.blockquote.border" },
+    { "cssVar": "blockquote-fg", "tokenPath": "content.blockquote.fg" },
+    { "cssVar": "blockquote-bg", "tokenPath": "content.blockquote.bg" },
+    { "cssVar": "code-inline-fg", "tokenPath": "content.codeInline.fg" },
+    { "cssVar": "code-inline-bg", "tokenPath": "content.codeInline.bg" },
+    { "cssVar": "code-block-fg", "tokenPath": "content.codeBlock.fg" },
+    { "cssVar": "code-block-bg", "tokenPath": "content.codeBlock.bg" },
+    { "cssVar": "table-border", "tokenPath": "content.table.border" },
+    { "cssVar": "table-stripe", "tokenPath": "content.table.stripe" },
+    { "cssVar": "table-thead-bg", "tokenPath": "content.table.theadBg" },
+    {
+      "cssVar": "table-cell-bg",
+      "tokenPath": "content.table.cellBg",
+      "fallback": "background.base"
+    },
+    {
+      "cssVar": "table-header-fg",
+      "tokenPath": "content.table.headerFg",
+      "fallback": "text.primary"
+    }
+  ],
+  "optionalGroups": {
+    "spacing": {
+      "prefix": "spacing",
+      "properties": ["xs", "sm", "md", "lg", "xl"]
+    },
+    "elevation": {
+      "prefix": "elevation",
+      "properties": ["none", "sm", "md", "lg", "xl"]
+    },
+    "animation": {
+      "prefix": "animation",
+      "mappings": [
+        { "cssVar": "duration-fast", "tokenPath": "animation.durationFast" },
+        { "cssVar": "duration-normal", "tokenPath": "animation.durationNormal" },
+        { "cssVar": "duration-slow", "tokenPath": "animation.durationSlow" },
+        { "cssVar": "easing-default", "tokenPath": "animation.easingDefault" },
+        { "cssVar": "easing-emphasized", "tokenPath": "animation.easingEmphasized" }
+      ]
+    },
+    "opacity": {
+      "prefix": "opacity",
+      "properties": ["disabled", "hover", "pressed"]
+    }
+  },
+  "bulma": {
+    "schemeMappings": [
+      { "cssVar": "--bulma-body-background-color", "tokenPath": "background.base" },
+      { "cssVar": "--bulma-body-color", "tokenPath": "text.primary" },
+      { "cssVar": "--bulma-scheme-main", "tokenPath": "background.base" },
+      { "cssVar": "--bulma-scheme-main-bis", "tokenPath": "background.surface" },
+      { "cssVar": "--bulma-scheme-main-ter", "tokenPath": "background.overlay" },
+      { "cssVar": "--bulma-scheme-invert", "tokenPath": "text.primary" },
+      { "cssVar": "--bulma-border", "tokenPath": "border.default" }
+    ],
+    "primaryHsl": {
+      "hVar": "--bulma-primary-h",
+      "sVar": "--bulma-primary-s",
+      "lVar": "--bulma-primary-l",
+      "tokenPath": "brand.primary"
+    },
+    "stateHslMappings": [
+      { "cssVar": "--bulma-link", "tokenPath": "accent.link" },
+      { "cssVar": "--bulma-info", "tokenPath": "state.info" },
+      { "cssVar": "--bulma-success", "tokenPath": "state.success" },
+      { "cssVar": "--bulma-warning", "tokenPath": "state.warning" },
+      { "cssVar": "--bulma-danger", "tokenPath": "state.danger" }
+    ]
+  },
+  "theme": {
+    "textMappings": [
+      { "cssVar": "--theme-text", "tokenPath": "text.primary" },
+      { "cssVar": "--theme-text-muted", "tokenPath": "text.secondary" }
+    ],
+    "headingMappings": [
+      { "cssVar": "--theme-h1", "tokenPath": "content.heading.h1" },
+      { "cssVar": "--theme-h2", "tokenPath": "content.heading.h2" },
+      { "cssVar": "--theme-h3", "tokenPath": "content.heading.h3" },
+      { "cssVar": "--theme-h4", "tokenPath": "content.heading.h4" },
+      { "cssVar": "--theme-h5", "tokenPath": "content.heading.h5" },
+      { "cssVar": "--theme-h6", "tokenPath": "content.heading.h6" }
+    ],
+    "contentMappings": [
+      { "cssVar": "--theme-link", "tokenPath": "accent.link" },
+      {
+        "cssVar": "--theme-blockquote-border",
+        "tokenPath": "content.blockquote.border"
+      },
+      { "cssVar": "--theme-blockquote-fg", "tokenPath": "content.blockquote.fg" },
+      { "cssVar": "--theme-blockquote-bg", "tokenPath": "content.blockquote.bg" },
+      { "cssVar": "--theme-code-fg", "tokenPath": "content.codeInline.fg" },
+      { "cssVar": "--theme-code-bg", "tokenPath": "content.codeInline.bg" },
+      { "cssVar": "--theme-pre-fg", "tokenPath": "content.codeBlock.fg" },
+      { "cssVar": "--theme-pre-bg", "tokenPath": "content.codeBlock.bg" },
+      { "cssVar": "--theme-selection-fg", "tokenPath": "content.selection.fg" },
+      { "cssVar": "--theme-selection-bg", "tokenPath": "content.selection.bg" }
+    ],
+    "tableMappings": [
+      { "cssVar": "--theme-table-border", "tokenPath": "content.table.border" },
+      { "cssVar": "--theme-table-stripe", "tokenPath": "content.table.stripe" },
+      { "cssVar": "--theme-table-thead-bg", "tokenPath": "content.table.theadBg" },
+      {
+        "cssVar": "--theme-table-cell-bg",
+        "tokenPath": "content.table.cellBg",
+        "fallback": "background.base"
+      },
+      {
+        "cssVar": "--theme-table-header-fg",
+        "tokenPath": "content.table.headerFg",
+        "fallback": "text.primary"
+      }
+    ],
+    "syntaxMappings": [
+      { "cssVar": "--syntax-fg", "tokenPath": "content.codeInline.fg" },
+      { "cssVar": "--syntax-bg", "tokenPath": "content.codeInline.bg" },
+      { "cssVar": "--syntax-keyword", "tokenPath": "brand.primary" },
+      { "cssVar": "--syntax-string", "tokenPath": "state.success" },
+      { "cssVar": "--syntax-number", "tokenPath": "state.warning" },
+      { "cssVar": "--syntax-comment", "tokenPath": "text.secondary" },
+      { "cssVar": "--syntax-title", "tokenPath": "state.info" },
+      { "cssVar": "--syntax-attr", "tokenPath": "accent.link" }
+    ],
+    "surfaceMappings": [
+      { "cssVar": "--theme-surface-0", "tokenPath": "background.base" },
+      { "cssVar": "--theme-surface-1", "tokenPath": "background.surface" },
+      { "cssVar": "--theme-surface-2", "tokenPath": "background.overlay" },
+      { "cssVar": "--theme-border", "tokenPath": "border.default" }
+    ]
+  },
+  "components": [
+    {
+      "cssVar": "--theme-card-bg",
+      "componentPath": "card.bg",
+      "fallback": "background.surface"
+    },
+    {
+      "cssVar": "--theme-card-border",
+      "componentPath": "card.border",
+      "fallback": "border.default"
+    },
+    {
+      "cssVar": "--theme-card-header-bg",
+      "componentPath": "card.headerBg",
+      "fallback": "background.overlay"
+    },
+    {
+      "cssVar": "--theme-card-footer-bg",
+      "componentPath": "card.footerBg",
+      "fallback": "background.surface"
+    },
+    {
+      "cssVar": "--theme-message-bg",
+      "componentPath": "message.bg",
+      "fallback": "background.surface"
+    },
+    {
+      "cssVar": "--theme-message-header-bg",
+      "componentPath": "message.headerBg",
+      "fallback": "background.overlay"
+    },
+    {
+      "cssVar": "--theme-message-border",
+      "componentPath": "message.border",
+      "fallback": "border.default"
+    },
+    {
+      "cssVar": "--theme-message-body-fg",
+      "componentPath": "message.bodyFg",
+      "fallback": "text.primary"
+    },
+    {
+      "cssVar": "--theme-panel-bg",
+      "componentPath": "panel.bg",
+      "fallback": "background.surface"
+    },
+    {
+      "cssVar": "--theme-panel-header-bg",
+      "componentPath": "panel.headerBg",
+      "fallback": "background.overlay"
+    },
+    {
+      "cssVar": "--theme-panel-header-fg",
+      "componentPath": "panel.headerFg",
+      "fallback": "text.primary"
+    },
+    {
+      "cssVar": "--theme-panel-border",
+      "componentPath": "panel.border",
+      "fallback": "border.default"
+    },
+    {
+      "cssVar": "--theme-panel-block-bg",
+      "componentPath": "panel.blockBg",
+      "fallback": "background.surface"
+    },
+    {
+      "cssVar": "--theme-panel-block-hover-bg",
+      "componentPath": "panel.blockHoverBg",
+      "fallback": "background.overlay"
+    },
+    {
+      "cssVar": "--theme-panel-block-active-bg",
+      "componentPath": "panel.blockActiveBg",
+      "fallback": "background.overlay"
+    },
+    {
+      "cssVar": "--theme-box-bg",
+      "componentPath": "box.bg",
+      "fallback": "background.surface"
+    },
+    {
+      "cssVar": "--theme-box-border",
+      "componentPath": "box.border",
+      "fallback": "border.default"
+    },
+    {
+      "cssVar": "--theme-notification-bg",
+      "componentPath": "notification.bg",
+      "fallback": "background.surface"
+    },
+    {
+      "cssVar": "--theme-notification-border",
+      "componentPath": "notification.border",
+      "fallback": "border.default"
+    },
+    { "cssVar": "--theme-modal-bg", "componentPath": "modal.bg", "fallback": "" },
+    {
+      "cssVar": "--theme-modal-card-bg",
+      "componentPath": "modal.cardBg",
+      "fallback": "background.surface"
+    },
+    {
+      "cssVar": "--theme-modal-header-bg",
+      "componentPath": "modal.headerBg",
+      "fallback": "background.overlay"
+    },
+    {
+      "cssVar": "--theme-modal-footer-bg",
+      "componentPath": "modal.footerBg",
+      "fallback": "background.surface"
+    },
+    {
+      "cssVar": "--theme-dropdown-bg",
+      "componentPath": "dropdown.bg",
+      "fallback": "background.surface"
+    },
+    {
+      "cssVar": "--theme-dropdown-item-hover-bg",
+      "componentPath": "dropdown.itemHoverBg",
+      "fallback": "background.overlay"
+    },
+    {
+      "cssVar": "--theme-dropdown-border",
+      "componentPath": "dropdown.border",
+      "fallback": "border.default"
+    },
+    {
+      "cssVar": "--theme-tabs-border",
+      "componentPath": "tabs.border",
+      "fallback": "border.default"
+    },
+    {
+      "cssVar": "--theme-tabs-link-bg",
+      "componentPath": "tabs.linkBg",
+      "fallback": "background.surface"
+    },
+    {
+      "cssVar": "--theme-tabs-link-active-bg",
+      "componentPath": "tabs.linkActiveBg",
+      "fallback": "background.base"
+    },
+    {
+      "cssVar": "--theme-tabs-link-hover-bg",
+      "componentPath": "tabs.linkHoverBg",
+      "fallback": "background.overlay"
+    }
+  ],
+  "syntaxClassGroups": {
+    "comment": [".c", ".cm", ".c1"],
+    "keyword": [".k", ".kc", ".kd"],
+    "string": [".s", ".s1", ".sb", ".sd", ".s2"],
+    "number": [".m", ".mi", ".mf", ".mh"],
+    "attr": [".nt", ".na"],
+    "title": [".nn", ".nc", ".no", ".nf"]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@turbocoder13/turbo-themes-adapter-tailwind",
+  "version": "0.11.0",
+  "description": "Tailwind CSS adapter for Turbo Themes",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "main": "./dist/preset.js",
+  "types": "./dist/preset.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/preset.d.ts",
+      "import": "./dist/preset.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@turbocoder13/turbo-themes-core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

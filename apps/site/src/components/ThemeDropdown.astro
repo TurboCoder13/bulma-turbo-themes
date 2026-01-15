@@ -1,0 +1,81 @@
+---
+/**
+ * Theme dropdown component for selecting themes.
+ */
+---
+
+<div class="theme-dropdown" id="theme-dropdown">
+  <button
+    class="theme-trigger"
+    id="theme-trigger"
+    aria-expanded="false"
+    aria-haspopup="listbox"
+    data-testid="theme-trigger"
+  >
+    <span class="visually-hidden">Select theme: </span>
+    <img
+      class="theme-trigger-icon"
+      id="theme-trigger-icon"
+      src="/assets/img/catppuccin-logo-macchiato.png"
+      alt=""
+      width="20"
+      height="20"
+    />
+    <span class="theme-label" id="theme-label">Mocha</span>
+  </button>
+  <div
+    class="theme-menu"
+    id="theme-menu"
+    role="listbox"
+    aria-label="Theme options"
+  >
+    <div class="theme-group">
+      <div class="theme-group-label">Catppuccin</div>
+      <button class="theme-option" data-theme="catppuccin-mocha" role="option">
+        <img class="theme-icon" src="/assets/img/catppuccin-logo-macchiato.png" alt="Catppuccin" width="20" height="20" />
+        Mocha
+      </button>
+      <button class="theme-option" data-theme="catppuccin-macchiato" role="option">
+        <img class="theme-icon" src="/assets/img/catppuccin-logo-macchiato.png" alt="Catppuccin" width="20" height="20" />
+        Macchiato
+      </button>
+      <button class="theme-option" data-theme="catppuccin-frappe" role="option">
+        <img class="theme-icon" src="/assets/img/catppuccin-logo-macchiato.png" alt="Catppuccin" width="20" height="20" />
+        Frappe
+      </button>
+      <button class="theme-option" data-theme="catppuccin-latte" role="option">
+        <img class="theme-icon" src="/assets/img/catppuccin-logo-latte.png" alt="Catppuccin" width="20" height="20" />
+        Latte
+      </button>
+    </div>
+    <div class="theme-group">
+      <div class="theme-group-label">Dracula</div>
+      <button class="theme-option" data-theme="dracula" role="option">
+        <img class="theme-icon" src="/assets/img/dracula-logo.png" alt="Dracula" width="20" height="20" />
+        Dracula
+      </button>
+    </div>
+    <div class="theme-group">
+      <div class="theme-group-label">GitHub</div>
+      <button class="theme-option" data-theme="github-dark" role="option">
+        <img class="theme-icon" src="/assets/img/github-logo-dark.png" alt="GitHub" width="20" height="20" />
+        Dark
+      </button>
+      <button class="theme-option" data-theme="github-light" role="option">
+        <img class="theme-icon" src="/assets/img/github-logo-light.png" alt="GitHub" width="20" height="20" />
+        Light
+      </button>
+    </div>
+    <div class="theme-group">
+      <div class="theme-group-label">Bulma</div>
+      <button class="theme-option" data-theme="bulma-dark" role="option">
+        <img class="theme-icon" src="/assets/img/turbo-themes-logo-dark.png" alt="Bulma" width="20" height="20" />
+        Dark
+      </button>
+      <button class="theme-option" data-theme="bulma-light" role="option">
+        <img class="theme-icon" src="/assets/img/turbo-themes-logo.png" alt="Bulma" width="20" height="20" />
+        Light
+      </button>
+    </div>
+  </div>
+</div>

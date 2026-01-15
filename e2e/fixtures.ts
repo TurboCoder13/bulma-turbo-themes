@@ -1,6 +1,6 @@
-import { test as base, type Page } from '@playwright/test';
-import { HomePage } from './pages/HomePage';
+import { type Page, test as base } from '@playwright/test';
 import { BasePage } from './pages/BasePage';
+import { HomePage } from './pages/HomePage';
 import { ThemeDropdown } from './pages/components/ThemeDropdown';
 
 /**

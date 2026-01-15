@@ -1,0 +1,157 @@
+/* ==========================================================================
+   Turbo Themes - Cards
+   ========================================================================== */
+
+.card {
+  background: var(--turbo-bg-surface);
+  border: 1px solid var(--turbo-border-default);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: color-mix(
+    in srgb,
+    var(--turbo-brand-primary) 30%,
+    var(--turbo-border-default)
+  );
+}
+
+.card-header {
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--turbo-border-default);
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: var(--space-md);
+  color: var(--turbo-brand-primary);
+  background: color-mix(in srgb, var(--turbo-brand-primary) 10%, transparent);
+  border-radius: var(--radius-lg);
+}
+
+.card-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.card-body {
+  color: var(--turbo-text-secondary);
+}
+
+.card-footer {
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--turbo-border-default);
+}
+
+/* Featured card with gradient border */
+.card-featured {
+  position: relative;
+  background: var(--turbo-bg-surface);
+  border: none;
+}
+
+.card-featured::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-xl);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Colored card variants with gradient borders */
+.card-primary,
+.card-info,
+.card-success,
+.card-warning,
+.card-danger {
+  position: relative;
+  background: var(--turbo-bg-surface);
+  border: none;
+}
+
+.card-primary::before,
+.card-info::before,
+.card-success::before,
+.card-warning::before,
+.card-danger::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: var(--radius-xl);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.card-primary::before {
+  background: linear-gradient(
+    135deg,
+    var(--turbo-brand-primary),
+    color-mix(in srgb, var(--turbo-brand-primary) 60%, var(--turbo-state-info))
+  );
+}
+
+.card-info::before {
+  background: linear-gradient(
+    135deg,
+    var(--turbo-state-info),
+    color-mix(in srgb, var(--turbo-state-info) 60%, var(--turbo-brand-primary))
+  );
+}
+
+.card-success::before {
+  background: linear-gradient(
+    135deg,
+    var(--turbo-state-success),
+    color-mix(in srgb, var(--turbo-state-success) 60%, var(--turbo-state-info))
+  );
+}
+
+.card-warning::before {
+  background: linear-gradient(
+    135deg,
+    var(--turbo-state-warning),
+    color-mix(in srgb, var(--turbo-state-warning) 60%, var(--turbo-state-danger))
+  );
+}
+
+.card-danger::before {
+  background: linear-gradient(
+    135deg,
+    var(--turbo-state-danger),
+    color-mix(in srgb, var(--turbo-state-danger) 60%, var(--turbo-state-warning))
+  );
+}

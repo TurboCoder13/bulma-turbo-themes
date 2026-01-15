@@ -3,11 +3,16 @@
 # Jekyll build output
 _site/**
 _site/*
+**/_site/**
 
-# Ruby/Bundler generated content
+# Built site examples (copied from source)
+apps/site/public/examples/**
+
+# Ruby/Bundler generated content (at any depth)
 vendor/**
 **/vendor/**
 .bundle/**
+**/.bundle/**
 
 # Node.js dependencies
 node_modules/**
@@ -17,6 +22,18 @@ dist/**
 coverage/**
 **/.build/**
 
+# Generated Python theme files (long font-family strings)
+python/src/turbo_themes/themes.py
+python/src/turbo_themes/tokens.py
+python/src/turbo_themes/generated_types.py
+
+# Files where black is authoritative formatter (ruff format conflicts)
+# These need multiple patterns for different CWD contexts
+python/src/turbo_themes/mapping_config.py
+python/tests/test_css_variables.py
+src/turbo_themes/mapping_config.py
+tests/test_css_variables.py
+
 # Cache directories
 .jekyll-cache/**
 .sass-cache/**
@@ -24,6 +41,8 @@ coverage/**
 playwright/.cache/**
 .lintro/**
 .pytest_cache/**
+**/.lintro/**
+**/.mypy_cache/**
 
 # Test and report artifacts
 test-results/**
@@ -41,3 +60,7 @@ apps/site/public/**
 
 # Minified files
 assets/js/*.min.js
+
+# GitHub metadata and policies handled externally
+.github/**
+.allstar/**

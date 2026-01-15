@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 # Run Lighthouse CI with proper error handling and debugging
@@ -13,7 +13,7 @@ echo "🚀 Starting Lighthouse build pipeline..."
 ./scripts/ci/build-for-lighthouse.sh
 
 echo "🔦 Running Lighthouse CI..."
-# Lighthouse CI will start the Jekyll server automatically based on lighthouserc.json
+# Lighthouse CI will start the http-server automatically based on lighthouserc.json
 npx @lhci/cli@0.15.x autorun
 
 echo "🔍 Checking if Lighthouse reports were generated..."
