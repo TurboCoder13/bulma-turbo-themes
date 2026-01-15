@@ -66,7 +66,6 @@ test.describe('Mobile Viewport @mobile', () => {
         };
       });
 
-      console.log('Horizontal overflow metrics:', overflowInfo);
       expect(overflowInfo.clientWidth).toBeGreaterThan(0);
       expect(overflowInfo.scrollWidth).toBeGreaterThanOrEqual(
         overflowInfo.clientWidth
