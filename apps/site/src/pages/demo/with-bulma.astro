@@ -1,0 +1,204 @@
+---
+/**
+ * Bulma demo - Turbo Themes + Bulma CSS framework.
+ * Standalone page without the main site layout.
+ */
+---
+
+<!doctype html>
+<html lang="en" data-theme="catppuccin-mocha">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Turbo Themes + Bulma Demo</title>
+
+    <!-- 1. Turbo Themes Core (defines CSS variables) -->
+    <link rel="stylesheet" href="/assets/css/turbo-core.css" />
+    <link id="turbo-theme-css" rel="stylesheet" href="/assets/css/themes/turbo/catppuccin-mocha.css" />
+
+    <!-- 2. Bulma Adapter (maps turbo vars to Bulma vars) -->
+    <link rel="stylesheet" href="/assets/css/adapters/bulma.css" />
+
+    <!-- 3. Bulma CSS (uses the mapped variables) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css" />
+
+    <style>
+      .demo-header { padding: 1rem 0; border-bottom: 1px solid var(--bulma-border, #ddd); margin-bottom: 2rem; }
+      .demo-header .container { display: flex; justify-content: space-between; align-items: center; }
+      .demo-footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--bulma-border, #ddd); text-align: center; }
+    </style>
+
+    <script is:inline>
+      (function() {
+        var STORAGE_KEY = 'turbo-theme';
+        var savedTheme = localStorage.getItem(STORAGE_KEY) || 'catppuccin-mocha';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        var themeLink = document.getElementById('turbo-theme-css');
+        if (themeLink) themeLink.href = '/assets/css/themes/turbo/' + savedTheme + '.css';
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="demo-header">
+      <div class="container">
+        <a href="/" class="has-text-weight-bold is-size-5">Turbo Themes</a>
+        <div class="select">
+          <select id="theme-selector" aria-label="Select theme">
+            <option value="catppuccin-mocha">Catppuccin Mocha</option>
+            <option value="catppuccin-macchiato">Catppuccin Macchiato</option>
+            <option value="catppuccin-frappe">Catppuccin Frappe</option>
+            <option value="catppuccin-latte">Catppuccin Latte</option>
+            <option value="dracula">Dracula</option>
+            <option value="github-dark">GitHub Dark</option>
+            <option value="github-light">GitHub Light</option>
+            <option value="bulma-dark">Bulma Dark</option>
+            <option value="bulma-light">Bulma Light</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="section">
+        <h1 class="title">Turbo Themes + Bulma</h1>
+        <p class="subtitle">This demo shows Bulma components themed by Turbo Themes via the Bulma adapter.</p>
+        <div class="notification is-info is-light">
+          <strong>How it works:</strong> The Bulma adapter maps Turbo's <code>--turbo-*</code> variables to Bulma's <code>--bulma-*</code> variables.
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="title is-4">Buttons</h2>
+        <div class="buttons">
+          <button class="button is-primary">Primary</button>
+          <button class="button is-link">Link</button>
+          <button class="button is-info">Info</button>
+          <button class="button is-success">Success</button>
+          <button class="button is-warning">Warning</button>
+          <button class="button is-danger">Danger</button>
+        </div>
+        <div class="buttons">
+          <button class="button is-primary is-outlined">Outlined</button>
+          <button class="button is-primary is-light">Light</button>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="title is-4">Cards</h2>
+        <div class="columns">
+          <div class="column is-one-third">
+            <div class="card">
+              <header class="card-header"><p class="card-header-title">Card Title</p></header>
+              <div class="card-content"><div class="content">This is a Bulma card component themed by Turbo Themes.</div></div>
+              <footer class="card-footer">
+                <a href="#" class="card-footer-item">Save</a>
+                <a href="#" class="card-footer-item">Edit</a>
+              </footer>
+            </div>
+          </div>
+          <div class="column is-one-third">
+            <div class="card">
+              <div class="card-content">
+                <p class="title is-5">Simple Card</p>
+                <p>A card with just content, no header or footer.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="title is-4">Messages</h2>
+        <article class="message is-primary">
+          <div class="message-header"><p>Primary</p></div>
+          <div class="message-body">A primary message styled with Bulma's message component.</div>
+        </article>
+        <article class="message is-info">
+          <div class="message-header"><p>Info</p></div>
+          <div class="message-body">An info message for informational content.</div>
+        </article>
+        <article class="message is-warning">
+          <div class="message-body">A warning message without a header.</div>
+        </article>
+      </section>
+
+      <section class="section">
+        <h2 class="title is-4">Form</h2>
+        <div class="field">
+          <label class="label">Name</label>
+          <div class="control"><input class="input" type="text" placeholder="Text input" /></div>
+        </div>
+        <div class="field">
+          <label class="label">Subject</label>
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select><option>Select dropdown</option><option>With options</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Message</label>
+          <div class="control"><textarea class="textarea" placeholder="Textarea"></textarea></div>
+        </div>
+        <div class="field is-grouped">
+          <div class="control"><button class="button is-primary">Submit</button></div>
+          <div class="control"><button class="button is-light">Cancel</button></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="title is-4">Tags</h2>
+        <div class="tags">
+          <span class="tag">Default</span>
+          <span class="tag is-primary">Primary</span>
+          <span class="tag is-info">Info</span>
+          <span class="tag is-success">Success</span>
+          <span class="tag is-warning">Warning</span>
+          <span class="tag is-danger">Danger</span>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="title is-4">Progress</h2>
+        <progress class="progress is-primary" value="15" max="100">15%</progress>
+        <progress class="progress is-success" value="45" max="100">45%</progress>
+        <progress class="progress is-warning" value="75" max="100">75%</progress>
+      </section>
+
+      <section class="section">
+        <h2 class="title is-4">Table</h2>
+        <table class="table is-fullwidth is-striped is-hoverable">
+          <thead>
+            <tr><th>Name</th><th>Job</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Jane Doe</td><td>Developer</td><td><span class="tag is-success">Active</span></td></tr>
+            <tr><td>John Smith</td><td>Designer</td><td><span class="tag is-warning">Away</span></td></tr>
+            <tr><td>Bob Wilson</td><td>Manager</td><td><span class="tag is-danger">Busy</span></td></tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <footer class="demo-footer">
+      <div class="container">
+        <p><strong>Turbo Themes</strong> + <strong>Bulma</strong> - <a href="/demo/">Back to demos</a></p>
+      </div>
+    </footer>
+
+    <script is:inline>
+      const selector = document.getElementById('theme-selector');
+      const themeLink = document.getElementById('turbo-theme-css');
+      const STORAGE_KEY = 'turbo-theme';
+      const savedTheme = localStorage.getItem(STORAGE_KEY) || 'catppuccin-mocha';
+      selector.value = savedTheme;
+
+      selector.addEventListener('change', (e) => {
+        const theme = e.target.value;
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem(STORAGE_KEY, theme);
+        themeLink.href = '/assets/css/themes/turbo/' + theme + '.css';
+      });
+    </script>
+  </body>
+</html>

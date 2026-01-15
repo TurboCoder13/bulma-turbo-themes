@@ -1,0 +1,191 @@
+{
+  "$schema": "../../turbo-themes.schema.json#/$defs/ThemeFile",
+  "id": "github-light",
+  "label": "GitHub Light",
+  "vendor": "github",
+  "appearance": "light",
+  "tokens": {
+    "background": {
+      "base": {
+        "$value": "#ffffff",
+        "$type": "color"
+      },
+      "surface": {
+        "$value": "#f6f8fa",
+        "$type": "color"
+      },
+      "overlay": {
+        "$value": "#f6f8fa",
+        "$type": "color"
+      }
+    },
+    "text": {
+      "primary": {
+        "$value": "#1f2328",
+        "$type": "color"
+      },
+      "secondary": {
+        "$value": "#59636e",
+        "$type": "color"
+      },
+      "inverse": {
+        "$value": "#ffffff",
+        "$type": "color"
+      }
+    },
+    "brand": {
+      "primary": {
+        "$value": "#0969da",
+        "$type": "color"
+      }
+    },
+    "state": {
+      "info": {
+        "$value": "#0969da",
+        "$type": "color"
+      },
+      "success": {
+        "$value": "#1a7f37",
+        "$type": "color"
+      },
+      "warning": {
+        "$value": "#9a6700",
+        "$type": "color"
+      },
+      "danger": {
+        "$value": "#d1242f",
+        "$type": "color"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "#d1d9e0",
+        "$type": "color"
+      }
+    },
+    "accent": {
+      "link": {
+        "$value": "#0969da",
+        "$type": "color"
+      }
+    },
+    "typography": {
+      "fonts": {
+        "sans": {
+          "$value": "\"Mona Sans\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Noto Sans\", Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\"",
+          "$type": "fontFamily"
+        },
+        "mono": {
+          "$value": "\"Hubot Sans\", ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, \"Liberation Mono\", monospace",
+          "$type": "fontFamily"
+        }
+      },
+      "webFonts": [
+        "https://github.githubassets.com/assets/mona-sans-webfont.woff2",
+        "https://github.githubassets.com/assets/hubot-sans-webfont.woff2"
+      ]
+    },
+    "content": {
+      "heading": {
+        "h1": {
+          "$value": "#1a7f37",
+          "$type": "color"
+        },
+        "h2": {
+          "$value": "#0969da",
+          "$type": "color"
+        },
+        "h3": {
+          "$value": "#0969da",
+          "$type": "color"
+        },
+        "h4": {
+          "$value": "#9a6700",
+          "$type": "color"
+        },
+        "h5": {
+          "$value": "#1a7f37",
+          "$type": "color"
+        },
+        "h6": {
+          "$value": "#d1242f",
+          "$type": "color"
+        }
+      },
+      "body": {
+        "primary": {
+          "$value": "#1f2328",
+          "$type": "color"
+        },
+        "secondary": {
+          "$value": "#59636e",
+          "$type": "color"
+        }
+      },
+      "link": {
+        "default": {
+          "$value": "#0969da",
+          "$type": "color"
+        }
+      },
+      "selection": {
+        "fg": {
+          "$value": "#1f2328",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#b6e3ff",
+          "$type": "color"
+        }
+      },
+      "blockquote": {
+        "border": {
+          "$value": "#d1d9e0",
+          "$type": "color"
+        },
+        "fg": {
+          "$value": "#59636e",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#f6f8fa",
+          "$type": "color"
+        }
+      },
+      "codeInline": {
+        "fg": {
+          "$value": "#1f2328",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#f6f8fa",
+          "$type": "color"
+        }
+      },
+      "codeBlock": {
+        "fg": {
+          "$value": "#1f2328",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#f6f8fa",
+          "$type": "color"
+        }
+      },
+      "table": {
+        "border": {
+          "$value": "#d1d9e0",
+          "$type": "color"
+        },
+        "stripe": {
+          "$value": "#f6f8fa",
+          "$type": "color"
+        },
+        "theadBg": {
+          "$value": "#f6f8fa",
+          "$type": "color"
+        }
+      }
+    }
+  }
+}

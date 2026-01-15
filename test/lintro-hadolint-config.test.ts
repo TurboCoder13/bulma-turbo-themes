@@ -1,6 +1,6 @@
-import { describe, expect, test } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { describe, expect, test } from 'vitest';
 
 describe('lintro hadolint configuration', () => {
   test('defines hadolint tool with _site/Dockerfile exclusion', () => {

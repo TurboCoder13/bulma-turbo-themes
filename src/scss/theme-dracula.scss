@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Theme-specific Bulma configuration for dracula
+// Note: Font imports are centralized in _fonts.scss (via base.scss)
 @use 'bulma/sass' with (
   $primary: hsl(265, 89%, 78%),
   $link: hsl(191, 97%, 77%),
@@ -12,11 +13,6 @@
 // Import custom overrides and hacks
 @use 'custom/overrides';
 @use 'custom/hacks';
-
-// Web font imports (compiled to top of CSS output)
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap');
-
-
 
 // Theme-specific overrides using Bulma's generated CSS variables
 // Note: Bulma automatically generates --bulma-primary-* CSS variables (00-100 shades)

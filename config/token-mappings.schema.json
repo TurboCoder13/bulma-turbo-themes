@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://turbocoder13.github.io/turbo-themes/schema/token-mappings/v1",
+  "title": "Token Mappings Configuration",
+  "description": "Single source of truth for CSS variable to token path mappings",
+  "type": "object",
+  "required": ["prefix", "coreMappings"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference"
+    },
+    "$description": {
+      "type": "string",
+      "description": "Human-readable description of this configuration"
+    },
+    "prefix": {
+      "type": "string",
+      "description": "Default CSS variable prefix (e.g., 'turbo' for --turbo-*)",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "coreMappings": {
+      "type": "array",
+      "description": "Core token mappings that are always applied",
+      "items": { "$ref": "#/$defs/CSSVariableMapping" }
+    },
+    "optionalGroups": {
+      "type": "object",
+      "description": "Optional token groups that may not be present in all themes",
+      "additionalProperties": { "$ref": "#/$defs/OptionalGroup" }
+    },
+    "bulma": {
+      "type": "object",
+      "description": "Bulma framework-specific mappings",
+      "properties": {
+        "schemeMappings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/CSSVariableMapping" }
+        },
+        "primaryHsl": { "$ref": "#/$defs/HSLMapping" },
+        "stateHslMappings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/CSSVariableMapping" }
+        }
+      }
+    },
+    "theme": {
+      "type": "object",
+      "description": "Generic theme variable mappings (--theme-* prefix)",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/CSSVariableMapping" }
+      }
+    },
+    "components": {
+      "type": "array",
+      "description": "Component-specific mappings with fallback support",
+      "items": { "$ref": "#/$defs/ComponentMapping" }
+    },
+    "syntaxClassGroups": {
+      "type": "object",
+      "description": "Syntax highlighting CSS class groupings",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "CSSVariableMapping": {
+      "type": "object",
+      "required": ["cssVar", "tokenPath"],
+      "properties": {
+        "cssVar": {
+          "type": "string",
+          "description": "CSS variable name or suffix (without prefix if using default)"
+        },
+        "tokenPath": {
+          "type": "string",
+          "description": "Dot-separated path to token value (e.g., 'background.base')",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9]*(\\.[a-zA-Z][a-zA-Z0-9]*)*$"
+        },
+        "fallback": {
+          "type": "string",
+          "description": "Fallback token path if primary path is undefined"
+        }
+      }
+    },
+    "ComponentMapping": {
+      "type": "object",
+      "required": ["cssVar", "componentPath", "fallback"],
+      "properties": {
+        "cssVar": {
+          "type": "string",
+          "description": "Full CSS variable name"
+        },
+        "componentPath": {
+          "type": "string",
+          "description": "Path within components.* (e.g., 'card.bg')"
+        },
+        "fallback": {
+          "type": "string",
+          "description": "Fallback token path (can be empty string for no fallback)"
+        }
+      }
+    },
+    "HSLMapping": {
+      "type": "object",
+      "required": ["hVar", "sVar", "lVar", "tokenPath"],
+      "properties": {
+        "hVar": { "type": "string", "description": "Hue CSS variable name" },
+        "sVar": { "type": "string", "description": "Saturation CSS variable name" },
+        "lVar": { "type": "string", "description": "Lightness CSS variable name" },
+        "tokenPath": { "type": "string", "description": "Token path to hex color" }
+      }
+    },
+    "OptionalGroup": {
+      "type": "object",
+      "properties": {
+        "prefix": {
+          "type": "string",
+          "description": "CSS variable prefix for this group"
+        },
+        "properties": {
+          "type": "array",
+          "description": "Simple property names that map directly",
+          "items": { "type": "string" }
+        },
+        "mappings": {
+          "type": "array",
+          "description": "Custom mappings for this group",
+          "items": { "$ref": "#/$defs/CSSVariableMapping" }
+        }
+      }
+    }
+  }
+}

@@ -55,8 +55,75 @@
 }
 
 @keyframes theme-loading-spin {
-
   to {
     transform: rotate(360deg);
   }
+}
+
+/*
+ * Preserve Rouge/Jekyll syntax highlighting colors.
+ * Override Bulma's global "pre code { color: currentColor }" rule.
+ * Use unset to remove inherited color so span rules can apply.
+ */
+.highlight code,
+.highlight pre code,
+pre.highlight code {
+  color: unset !important;
+}
+
+/*
+ * Syntax highlighting token colors using theme CSS variables.
+ * These must have high specificity to override Bulma's rules.
+ */
+.highlight .c,
+.highlight .cm,
+.highlight .c1 {
+  color: var(--syntax-comment, #6c7086) !important;
+}
+
+.highlight .k,
+.highlight .kc,
+.highlight .kd,
+.highlight .kn,
+.highlight .kp,
+.highlight .kr,
+.highlight .kt {
+  color: var(--syntax-keyword, #89b4fa) !important;
+}
+
+.highlight .s,
+.highlight .s1,
+.highlight .s2,
+.highlight .sb,
+.highlight .sc,
+.highlight .sd,
+.highlight .se,
+.highlight .sh,
+.highlight .si,
+.highlight .sx,
+.highlight .sr,
+.highlight .ss {
+  color: var(--syntax-string, #a6e3a1) !important;
+}
+
+.highlight .m,
+.highlight .mb,
+.highlight .mf,
+.highlight .mh,
+.highlight .mi,
+.highlight .mo,
+.highlight .mx {
+  color: var(--syntax-number, #f9e2af) !important;
+}
+
+.highlight .na,
+.highlight .nt {
+  color: var(--syntax-attr, #89b4fa) !important;
+}
+
+.highlight .nc,
+.highlight .nf,
+.highlight .nn,
+.highlight .no {
+  color: var(--syntax-title, #74c7ec) !important;
 }

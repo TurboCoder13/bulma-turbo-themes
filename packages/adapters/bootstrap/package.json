@@ -1,0 +1,15 @@
+{
+  "name": "@turbocoder13/turbo-themes-adapter-bootstrap",
+  "version": "0.11.0",
+  "description": "Bootstrap SCSS adapter for Turbo Themes",
+  "license": "MIT",
+  "private": true,
+  "files": [
+    "_variables.scss",
+    "_utilities.scss"
+  ],
+  "exports": {
+    "./variables": "./_variables.scss",
+    "./utilities": "./_utilities.scss"
+  }
+}

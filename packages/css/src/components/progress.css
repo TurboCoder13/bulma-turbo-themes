@@ -1,0 +1,113 @@
+/* ==========================================================================
+   Turbo Themes - Progress
+   ========================================================================== */
+
+.progress {
+  width: 100%;
+  height: 0.75rem;
+  appearance: none;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--turbo-bg-overlay);
+  overflow: hidden;
+}
+
+.progress::-webkit-progress-bar {
+  background: var(--turbo-bg-overlay);
+  border-radius: var(--radius-full);
+}
+
+.progress::-webkit-progress-value {
+  background: var(--gradient-primary, var(--turbo-brand-primary));
+  border-radius: var(--radius-full);
+  transition: width var(--transition-normal);
+}
+
+.progress::-moz-progress-bar {
+  background: var(--gradient-primary, var(--turbo-brand-primary));
+  border-radius: var(--radius-full);
+}
+
+/* Progress wrapper with label */
+.progress-wrapper {
+  margin-bottom: var(--space-lg);
+}
+
+.progress-wrapper label {
+  display: block;
+  margin-bottom: var(--space-sm);
+}
+
+/* Size variants */
+.progress-sm {
+  height: 0.5rem;
+}
+
+.progress-lg {
+  height: 1rem;
+}
+
+/* Color variants */
+.progress-success::-webkit-progress-value {
+  background: linear-gradient(
+    90deg,
+    var(--turbo-state-success),
+    color-mix(in srgb, var(--turbo-state-success) 70%, var(--turbo-state-info))
+  );
+}
+
+.progress-success::-moz-progress-bar {
+  background: linear-gradient(
+    90deg,
+    var(--turbo-state-success),
+    color-mix(in srgb, var(--turbo-state-success) 70%, var(--turbo-state-info))
+  );
+}
+
+.progress-warning::-webkit-progress-value {
+  background: linear-gradient(
+    90deg,
+    var(--turbo-state-warning),
+    color-mix(in srgb, var(--turbo-state-warning) 70%, var(--turbo-state-danger))
+  );
+}
+
+.progress-warning::-moz-progress-bar {
+  background: linear-gradient(
+    90deg,
+    var(--turbo-state-warning),
+    color-mix(in srgb, var(--turbo-state-warning) 70%, var(--turbo-state-danger))
+  );
+}
+
+.progress-danger::-webkit-progress-value {
+  background: linear-gradient(
+    90deg,
+    var(--turbo-state-danger),
+    color-mix(in srgb, var(--turbo-state-danger) 70%, var(--turbo-state-warning))
+  );
+}
+
+.progress-danger::-moz-progress-bar {
+  background: linear-gradient(
+    90deg,
+    var(--turbo-state-danger),
+    color-mix(in srgb, var(--turbo-state-danger) 70%, var(--turbo-state-warning))
+  );
+}
+
+.progress-info::-webkit-progress-value {
+  background: linear-gradient(
+    90deg,
+    var(--turbo-state-info),
+    color-mix(in srgb, var(--turbo-state-info) 70%, var(--turbo-brand-primary))
+  );
+}
+
+.progress-info::-moz-progress-bar {
+  background: linear-gradient(
+    90deg,
+    var(--turbo-state-info),
+    color-mix(in srgb, var(--turbo-state-info) 70%, var(--turbo-brand-primary))
+  );
+}

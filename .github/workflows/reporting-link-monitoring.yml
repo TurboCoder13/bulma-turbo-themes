@@ -21,6 +21,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Harden Runner
+        if: ${{ !env.ACT }}
         uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
         with:
           egress-policy: audit
@@ -28,27 +29,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@675dd7ba1b06c8786a1480d89c384f5620a42647 # v1.281.0
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
         with:
-          ruby-version: '3.4.7'
-          bundler-cache: true
+          node-version: '22'
+          skip-ruby: 'true'
 
-      - name: Build Jekyll site
-        run: bundle exec jekyll build --trace --strict_front_matter
+      - name: Build Astro site
+        run: bun run build:ci:site
 
       - name: Validate external links
         id: link-check
-        run: |
-          bundle exec htmlproofer \
-            --assume-extension \
-            --allow-hash-href \
-            --allow-missing-href \
-            --no-enforce-https \
-            --typhoeus '{"timeout": 30, "max_redirects": 5, "retry": {"max_retries": 2}}' \
-            --report-missing-doctype false \
-            --report-sce false \
-            ./_site 2>&1 | tee link-check-output.txt || true
+        run:
+          ./scripts/ci/run-htmlproofer.sh --site-dir apps/site/dist --output
+          link-check-output.txt
 
       - name: Parse link check results
         id: results
@@ -68,8 +62,15 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 title: '🔗 External Link Issues Detected',
-                body:
-                  `## External Link Validation Report\n\n\`\`\`\n${output}\n\`\`\`\n\n**Note:** External link failures are non-blocking and may be transient.\nPlease review and investigate persistent failures.`,
+                body: [
+                  '## External Link Validation Report',
+                  '```',
+                  output,
+                  '```',
+                  '',
+                  '**Note:** External link failures are non-blocking and may be transient.',
+                  'Please review and investigate persistent failures.',
+                ].join('\\n'),
                 labels: ['type:monitoring', 'priority:low'],
               });
             }

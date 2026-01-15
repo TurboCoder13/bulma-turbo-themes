@@ -8,26 +8,26 @@
  * Usage: node scripts/ci/create-version-pr.mjs [--dry-run]
  */
 
-import { execSync } from "child_process";
-import { readFileSync, writeFileSync } from "fs";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { execSync } from 'child_process';
+import { readFileSync, writeFileSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 import {
-  determineBumpType,
   calculateNextVersion,
+  determineBumpType,
   generateChangelogEntry,
-} from "./version-bump.mjs";
+} from './version-bump.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const projectRoot = join(__dirname, "../..");
+const projectRoot = join(__dirname, '../..');
 
 // Configuration
 const CONFIG = {
-  changelogFile: join(projectRoot, "CHANGELOG.md"),
-  packageFile: join(projectRoot, "package.json"),
-  branchPrefix: "release/version-",
-  prTitlePrefix: "chore(release): version",
+  changelogFile: join(projectRoot, 'CHANGELOG.md'),
+  packageFile: join(projectRoot, 'package.json'),
+  branchPrefix: 'release/version-',
+  prTitlePrefix: 'chore(release): version',
 };
 
 /**
@@ -35,31 +35,31 @@ const CONFIG = {
  */
 function getCommitsSinceLastTag() {
   try {
-    const lastTag = execSync("git describe --tags --abbrev=0", {
-      encoding: "utf8",
+    const lastTag = execSync('git describe --tags --abbrev=0', {
+      encoding: 'utf8',
       cwd: projectRoot,
     }).trim();
 
     const commits = execSync(`git log ${lastTag}..HEAD --oneline --no-merges`, {
-      encoding: "utf8",
+      encoding: 'utf8',
       cwd: projectRoot,
     })
       .trim()
-      .split("\n")
+      .split('\n')
       .filter(Boolean)
-      .filter((commit) => !commit.includes("chore(release):")); // Exclude release commits
+      .filter((commit) => !commit.includes('chore(release):')); // Exclude release commits
 
     return { lastTag, commits };
   } catch {
     // No tags found, get all commits
-    const commits = execSync("git log --oneline --no-merges", {
-      encoding: "utf8",
+    const commits = execSync('git log --oneline --no-merges', {
+      encoding: 'utf8',
       cwd: projectRoot,
     })
       .trim()
-      .split("\n")
+      .split('\n')
       .filter(Boolean)
-      .filter((commit) => !commit.includes("chore(release):")); // Exclude release commits
+      .filter((commit) => !commit.includes('chore(release):')); // Exclude release commits
 
     return { lastTag: null, commits };
   }
@@ -72,7 +72,7 @@ function checkExistingVersionPR() {
   try {
     const existingPRs = execSync(
       `gh pr list --state=open --search "${CONFIG.prTitlePrefix}" --json number,title,headRefName`,
-      { encoding: "utf8", cwd: projectRoot },
+      { encoding: 'utf8', cwd: projectRoot }
     );
 
     const prs = JSON.parse(existingPRs);
@@ -88,9 +88,9 @@ function checkExistingVersionPR() {
 function checkRemoteBranch(branchName) {
   try {
     const output = execSync(`git ls-remote --heads origin ${branchName}`, {
-      encoding: "utf8",
+      encoding: 'utf8',
       cwd: projectRoot,
-      stdio: "pipe",
+      stdio: 'pipe',
     }).trim();
     // Branch exists only if output is non-empty
     return output.length > 0;
@@ -111,7 +111,7 @@ function hasCommonAncestor(branchName) {
   try {
     execSync(`git merge-base main origin/${branchName}`, {
       cwd: projectRoot,
-      stdio: "pipe",
+      stdio: 'pipe',
     });
     return true;
   } catch {
@@ -126,7 +126,7 @@ function deleteRemoteBranch(branchName) {
   try {
     execSync(`git push origin --delete ${branchName}`, {
       cwd: projectRoot,
-      stdio: "pipe",
+      stdio: 'pipe',
     });
     console.log(`🗑️  Deleted orphaned remote branch ${branchName}`);
     return true;
@@ -150,7 +150,7 @@ function createVersionBranch(newVersion) {
     try {
       execSync(`git fetch origin ${branchName}`, {
         cwd: projectRoot,
-        stdio: "pipe",
+        stdio: 'pipe',
       });
     } catch {
       // Fetch failed, but continue to check common ancestry
@@ -159,15 +159,9 @@ function createVersionBranch(newVersion) {
     // Check if the remote branch has common ancestry with main
     // This can happen if main was rebased/resigned after the branch was created
     if (!hasCommonAncestor(branchName)) {
-      console.warn(
-        `⚠️  Remote branch ${branchName} has no common history with main`,
-      );
-      console.warn(
-        `   This usually happens when main was rebased or commits were resigned.`,
-      );
-      console.warn(
-        `   Deleting orphaned branch and creating a fresh one...`,
-      );
+      console.warn(`⚠️  Remote branch ${branchName} has no common history with main`);
+      console.warn(`   This usually happens when main was rebased or commits were resigned.`);
+      console.warn(`   Deleting orphaned branch and creating a fresh one...`);
 
       // Delete the orphaned remote branch
       if (deleteRemoteBranch(branchName)) {
@@ -177,7 +171,7 @@ function createVersionBranch(newVersion) {
         throw new Error(
           `Cannot delete orphaned remote branch ${branchName}. ` +
             `The branch has no common history with main and cannot be used to create a PR. ` +
-            `Please manually delete the remote branch and retry.`,
+            `Please manually delete the remote branch and retry.`
         );
       }
     } else {
@@ -193,21 +187,19 @@ function createVersionBranch(newVersion) {
         // Re-check if branch actually exists (might have been deleted between check and fetch)
         if (!checkRemoteBranch(branchName)) {
           console.log(
-            `ℹ️  Remote branch ${branchName} no longer exists (may have been deleted), will create new branch`,
+            `ℹ️  Remote branch ${branchName} no longer exists (may have been deleted), will create new branch`
           );
           // Fall through to create new branch logic below
         } else {
           // Branch exists but fetch/checkout failed - try local branch as fallback
-          console.warn(
-            `⚠️  Failed to fetch/checkout remote branch ${branchName}: ${error.message}`,
-          );
+          console.warn(`⚠️  Failed to fetch/checkout remote branch ${branchName}: ${error.message}`);
           try {
             execSync(`git checkout ${branchName}`, { cwd: projectRoot });
             console.log(`🌿 Checked out existing local branch ${branchName}`);
             return branchName;
           } catch (localError) {
             console.error(
-              `❌ Failed to checkout branch ${branchName} (both remote and local attempts failed)`,
+              `❌ Failed to checkout branch ${branchName} (both remote and local attempts failed)`
             );
             console.error(`   Remote error: ${error.message}`);
             console.error(`   Local error: ${localError.message}`);
@@ -215,7 +207,7 @@ function createVersionBranch(newVersion) {
               `Cannot checkout existing branch ${branchName}. ` +
                 `The remote branch exists but cannot be checked out. ` +
                 `This may indicate the branch points to an unreachable commit or there's a git state issue. ` +
-                `Consider manually deleting the remote branch and retrying.`,
+                `Consider manually deleting the remote branch and retrying.`
             );
           }
         }
@@ -243,7 +235,7 @@ function createVersionBranch(newVersion) {
  */
 function generatePRDescription(commits, version, bumpType, lastTag) {
   const commitCount = commits.length;
-  const sinceText = lastTag ? `since ${lastTag}` : "from the beginning";
+  const sinceText = lastTag ? `since ${lastTag}` : 'from the beginning';
 
   let description = `## 📦 Version Bump: ${version}\n\n`;
   description += `This PR automatically bumps the version based on ${commitCount} conventional commits ${sinceText}.\n\n`;
@@ -251,7 +243,7 @@ function generatePRDescription(commits, version, bumpType, lastTag) {
   description += `### 🔍 Analysis\n\n`;
   description += `- **Bump Type**: ${bumpType}\n`;
   description += `- **Commits Analyzed**: ${commitCount}\n`;
-  description += `- **Last Tag**: ${lastTag || "None (first release)"}\n\n`;
+  description += `- **Last Tag**: ${lastTag || 'None (first release)'}\n\n`;
 
   description += `### 📋 Changes\n\n`;
   description += `- Updated \`package.json\` version to \`${version}\`\n`;
@@ -291,10 +283,10 @@ function createPullRequest(branchName, version, description) {
   try {
     const existingPR = execSync(
       `gh pr list --head ${branchName} --base main --json number,url,title --jq '.[0]'`,
-      { encoding: "utf8", cwd: projectRoot },
+      { encoding: 'utf8', cwd: projectRoot }
     );
-    
-    if (existingPR && existingPR.trim() !== "") {
+
+    if (existingPR && existingPR.trim() !== '') {
       const prData = JSON.parse(existingPR);
       console.log(`ℹ️  PR already exists for branch ${branchName}`);
       console.log(`   #${prData.number}: ${prData.title}`);
@@ -307,12 +299,12 @@ function createPullRequest(branchName, version, description) {
 
   try {
     // Write description to temporary file to avoid shell escaping issues
-    const tempFile = join(projectRoot, ".pr-description.tmp");
-    writeFileSync(tempFile, description, "utf8");
+    const tempFile = join(projectRoot, '.pr-description.tmp');
+    writeFileSync(tempFile, description, 'utf8');
 
     const prOutput = execSync(
       `gh pr create --title "${title}" --body-file "${tempFile}" --head ${branchName} --base main`,
-      { encoding: "utf8", cwd: projectRoot },
+      { encoding: 'utf8', cwd: projectRoot }
     );
 
     // Clean up temporary file
@@ -326,13 +318,13 @@ function createPullRequest(branchName, version, description) {
     return prOutput.trim();
   } catch (error) {
     // Check if error is about PR already existing
-    if (error.message.includes("already exists")) {
+    if (error.message.includes('already exists')) {
       console.log(`ℹ️  PR already exists for branch ${branchName}`);
       // Try to get the existing PR URL
       try {
         const existingPR = execSync(
           `gh pr list --head ${branchName} --base main --json url --jq '.[0].url'`,
-          { encoding: "utf8", cwd: projectRoot },
+          { encoding: 'utf8', cwd: projectRoot }
         );
         return existingPR.trim();
       } catch {
@@ -350,9 +342,9 @@ function createPullRequest(branchName, version, description) {
  */
 function main() {
   const args = process.argv.slice(2);
-  const isDryRun = args.includes("--dry-run");
+  const isDryRun = args.includes('--dry-run');
 
-  console.log("🚀 Creating Version PR\n");
+  console.log('🚀 Creating Version PR\n');
 
   // Check for existing version PR
   const existingPR = checkExistingVersionPR();
@@ -365,24 +357,24 @@ function main() {
 
   // Get commits since last tag
   const { lastTag, commits } = getCommitsSinceLastTag();
-  console.log(`📋 Analyzing ${commits.length} commits since ${lastTag || "beginning"}`);
+  console.log(`📋 Analyzing ${commits.length} commits since ${lastTag || 'beginning'}`);
 
   if (commits.length === 0) {
-    console.log("✅ No commits to analyze, no version bump needed");
+    console.log('✅ No commits to analyze, no version bump needed');
     return;
   }
 
   // Determine bump type
   const bumpType = determineBumpType(commits);
-  console.log(`🔍 Bump type: ${bumpType || "none"}`);
+  console.log(`🔍 Bump type: ${bumpType || 'none'}`);
 
   if (!bumpType) {
-    console.log("✅ No version bump needed based on conventional commits");
+    console.log('✅ No version bump needed based on conventional commits');
     return;
   }
 
   // Calculate next version
-  const packageContent = JSON.parse(readFileSync(CONFIG.packageFile, "utf8"));
+  const packageContent = JSON.parse(readFileSync(CONFIG.packageFile, 'utf8'));
   const currentVersion = packageContent.version;
   const nextVersion = calculateNextVersion(currentVersion, bumpType);
 
@@ -392,14 +384,14 @@ function main() {
   const changelogEntry = generateChangelogEntry(commits, nextVersion, bumpType);
 
   if (isDryRun) {
-    console.log("\n📝 Preview of changes:");
-    console.log("=".repeat(50));
+    console.log('\n📝 Preview of changes:');
+    console.log('='.repeat(50));
     console.log(changelogEntry);
-    console.log("=".repeat(50));
+    console.log('='.repeat(50));
     console.log(`\n📦 package.json: ${currentVersion} → ${nextVersion}`);
     console.log(`🌿 Branch: ${CONFIG.branchPrefix}${nextVersion}`);
     console.log(`📋 PR Title: ${CONFIG.prTitlePrefix} ${nextVersion}`);
-    console.log("\n🔍 Dry run complete - no changes made");
+    console.log('\n🔍 Dry run complete - no changes made');
     return;
   }
 
@@ -409,20 +401,20 @@ function main() {
 
     // Update package.json
     packageContent.version = nextVersion;
-    writeFileSync(CONFIG.packageFile, JSON.stringify(packageContent, null, 2) + "\n");
+    writeFileSync(CONFIG.packageFile, JSON.stringify(packageContent, null, 2) + '\n');
     console.log(`📦 Updated package.json version to ${nextVersion}`);
 
     // Update CHANGELOG.md
-    const changelogContent = readFileSync(CONFIG.changelogFile, "utf8");
+    const changelogContent = readFileSync(CONFIG.changelogFile, 'utf8');
     const updatedContent = changelogContent.replace(
       /## \[Unreleased\][\s\S]*?(?=## \[|$)/,
-      `## [Unreleased]\n\n### Added\n\n- TBD\n\n${changelogEntry}`,
+      `## [Unreleased]\n\n### Added\n\n- TBD\n\n${changelogEntry}`
     );
     writeFileSync(CONFIG.changelogFile, updatedContent);
     console.log(`📝 Updated CHANGELOG.md`);
 
     // Commit changes
-    execSync("git add package.json CHANGELOG.md", { cwd: projectRoot });
+    execSync('git add package.json CHANGELOG.md', { cwd: projectRoot });
     execSync(`git commit --no-verify -m "chore(release): version ${nextVersion}"`, {
       cwd: projectRoot,
     });
@@ -436,7 +428,7 @@ function main() {
     const description = generatePRDescription(commits, nextVersion, bumpType, lastTag);
     const prUrl = createPullRequest(branchName, nextVersion, description);
 
-    console.log("\n✅ Version PR created successfully!");
+    console.log('\n✅ Version PR created successfully!');
     console.log(`🔗 PR URL: ${prUrl}`);
     console.log(`📦 New version: ${nextVersion}`);
     console.log(`🌿 Branch: ${branchName}`);

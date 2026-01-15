@@ -1,0 +1,262 @@
+/* SPDX-License-Identifier: MIT */
+/**
+ * Shared demo styles for Turbo Themes examples.
+ * Framework-agnostic CSS using Turbo Themes custom properties.
+ */
+
+/* ========================================
+   Base Styles
+   ======================================== */
+
+:root {
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  line-height: 1.4;
+}
+
+body {
+  margin: 0;
+  background: var(--turbo-bg-base);
+  color: var(--turbo-text-primary);
+}
+
+/* ========================================
+   Layout
+   ======================================== */
+
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.header-content {
+  flex: 1;
+}
+
+.title {
+  margin: 0 0 0.25rem;
+  font-size: 1.75rem;
+  color: var(--turbo-brand-primary);
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--turbo-text-muted);
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ========================================
+   Theme Selector
+   ======================================== */
+
+.theme-selector-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.theme-selector-text {
+  font-size: 0.875rem;
+  color: var(--turbo-text-muted);
+}
+
+.theme-selector {
+  padding: 0.5rem;
+  background: var(--turbo-bg-overlay);
+  color: var(--turbo-text-primary);
+  border: 1px solid var(--turbo-border-default);
+  border-radius: 0.375rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.theme-selector:focus {
+  outline: 2px solid var(--turbo-brand-primary);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   Cards
+   ======================================== */
+
+.card {
+  background: var(--turbo-bg-surface);
+  border: 1px solid var(--turbo-border-default);
+  border-radius: 0.625rem;
+  padding: 1rem;
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--turbo-shadow-200) 60%, transparent);
+}
+
+.card-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  color: var(--turbo-text-primary);
+}
+
+.card-content {
+  color: var(--turbo-text-primary);
+}
+
+/* ========================================
+   Buttons
+   ======================================== */
+
+.buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  font: inherit;
+  color: var(--turbo-text-inverse);
+  transition: opacity 0.2s ease;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn:focus {
+  outline: 2px solid var(--turbo-brand-primary);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background: var(--turbo-brand-primary);
+}
+
+.btn-success {
+  background: var(--turbo-state-success);
+}
+
+.btn-danger {
+  background: var(--turbo-state-danger);
+}
+
+/* ========================================
+   Content Typography
+   ======================================== */
+
+.muted {
+  color: var(--turbo-text-muted);
+}
+
+code {
+  background: var(--turbo-bg-overlay);
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.875em;
+}
+
+ul {
+  padding-left: 1.25rem;
+}
+
+li {
+  margin-bottom: 0.25rem;
+}
+
+/* ========================================
+   Metrics
+   ======================================== */
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+.metric {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: var(--turbo-bg-overlay);
+  border: 1px solid var(--turbo-border-strong);
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  color: var(--turbo-text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.metric-value {
+  font-size: 1.25rem;
+  color: var(--turbo-text-primary);
+}
+
+/* ========================================
+   Color Swatches
+   ======================================== */
+
+.swatches {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.swatch {
+  width: 48px;
+  height: 48px;
+  border-radius: 0.5rem;
+  border: 2px solid var(--turbo-border-default);
+}
+
+.swatch-primary {
+  background: var(--turbo-brand-primary);
+}
+
+.swatch-success {
+  background: var(--turbo-state-success);
+}
+
+.swatch-warning {
+  background: var(--turbo-state-warning);
+}
+
+.swatch-danger {
+  background: var(--turbo-state-danger);
+}
+
+.swatch-info {
+  background: var(--turbo-state-info);
+}
+
+/* ========================================
+   Footer
+   ======================================== */
+
+.footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--turbo-border-default);
+  text-align: center;
+  color: var(--turbo-text-muted);
+}
+
+.footer p {
+  margin: 0;
+}

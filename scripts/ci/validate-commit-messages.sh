@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Validate commit messages against Conventional Commits
 # Usage: validate-commit-messages.sh [base_ref] [head_ref]
 

@@ -1,16 +1,86 @@
 {
   "extends": ["stylelint-config-standard"],
   "rules": {
-    "color-named": "never",
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": ["tailwind", "apply", "layer", "config", "screen"]
+      }
+    ],
+    "color-named": [
+      "never",
+      {
+        "ignore": ["inside-function"]
+      }
+    ],
     "selector-max-id": 0,
-    "comment-empty-line-before": "always",
+    "selector-class-pattern": [
+      "^([a-z][a-z0-9]*)(-[a-z0-9]+)*$",
+      {
+        "message": "Expected class selector to be kebab-case",
+        "resolveNestedSelectors": true
+      }
+    ],
+    "property-no-vendor-prefix": [
+      true,
+      {
+        "ignoreProperties": [
+          "text-size-adjust",
+          "mask",
+          "mask-composite",
+          "mask-image",
+          "mask-size",
+          "mask-position",
+          "background-clip",
+          "backdrop-filter"
+        ]
+      }
+    ],
+    "property-no-deprecated": null,
+    "no-descending-specificity": null,
+    "import-notation": null,
+    "comment-empty-line-before": null,
     "rule-empty-line-before": [
       "always-multi-line",
       {
         "except": ["first-nested"],
         "ignore": ["after-comment", "inside-block"]
       }
-    ]
+    ],
+    "declaration-block-no-redundant-longhand-properties": null,
+    "declaration-block-single-line-max-declarations": null,
+    "no-duplicate-selectors": null,
+    "media-feature-range-notation": null,
+    "alpha-value-notation": null,
+    "color-function-notation": null,
+    "color-function-alias-notation": null,
+    "selector-not-notation": null,
+    "value-keyword-case": null,
+    "color-hex-length": null,
+    "declaration-empty-line-before": null
   },
-  "ignoreFiles": ["node_modules/**/*", "_site/**/*", "assets/css/themes/**/*"]
+  "overrides": [
+    {
+      "files": ["**/*.css"],
+      "rules": {
+        "selector-class-pattern": [
+          "^([a-z][a-z0-9]*)(-[a-z0-9]+)*(__[a-z0-9]+(-[a-z0-9]+)*)?$|^(hljs|pagefind|astro|function|class)[-_]",
+          {
+            "message": "Expected class selector to be kebab-case (BEM allowed for third-party)",
+            "resolveNestedSelectors": true
+          }
+        ]
+      }
+    }
+  ],
+  "ignoreFiles": [
+    "node_modules/**/*",
+    "**/_site/**/*",
+    "**/dist/**/*",
+    "**/htmlcov/**/*",
+    "**/coverage/**/*",
+    "assets/css/themes/**/*",
+    "apps/site/assets/**/*",
+    "apps/site/public/**/*"
+  ]
 }

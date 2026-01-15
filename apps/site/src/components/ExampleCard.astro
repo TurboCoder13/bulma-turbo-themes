@@ -1,0 +1,46 @@
+---
+export interface Props {
+  name: string;
+  description: string;
+  icon: string;
+  sourceUrl: string;
+  playgroundUrl: string | null;
+  tags: string[];
+  size: string;
+}
+
+const { name, description, icon, sourceUrl, playgroundUrl, tags, size } = Astro.props;
+---
+
+<article class="example-card">
+  <div class="example-bubble">
+    <span class="example-icon" set:html={icon} /></div>
+  <div class="example-body">
+    <h3 class="example-title">{name}</h3>
+    <p class="example-description">{description}</p>
+    <div class="example-tags">
+      {tags.map((tag) => (
+        <span class="example-tag">{tag}</span>
+      ))}
+      <span class="example-size">{size}</span>
+    </div>
+    <div class="example-actions">
+      <a href={sourceUrl} class="btn btn-outline" target="_blank" rel="noopener">
+        View Source
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+          <polyline points="15 3 21 3 21 9"/>
+          <line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+      </a>
+      {playgroundUrl && (
+        <a href={playgroundUrl} class="btn btn-primary" target="_blank" rel="noopener">
+          Try in StackBlitz
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </a>
+      )}
+    </div>
+  </div>
+</article>

@@ -1,0 +1,264 @@
+---
+/**
+ * Base layout for all pages.
+ * Includes header, footer, theme selector, and framework selector.
+ */
+import SEOHead from '../components/SEOHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  wide?: boolean;
+  isHome?: boolean;
+}
+
+const { title = 'Turbo Themes', description = 'Platform-agnostic design tokens for any framework', wide = false, isHome = false } = Astro.props;
+
+const siteTitle = 'Turbo Themes Demo';
+const pageTitle = title === 'Home' ? siteTitle : `${title} | ${siteTitle}`;
+---
+
+<!doctype html>
+<html
+  lang="en"
+  data-theme="catppuccin-mocha"
+  data-baseurl=""
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <SEOHead title={pageTitle} description={description} />
+
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      onload="this.onload=null;this.rel='stylesheet';"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      />
+    </noscript>
+
+    <!-- Turbo Themes: Pure CSS Custom Properties -->
+    <link rel="stylesheet" href="/assets/css/turbo-core.css" />
+    <link rel="stylesheet" href="/assets/css/turbo-base.css" />
+    <link rel="stylesheet" href="/assets/css/turbo-syntax.css" />
+    <link rel="stylesheet" href="/assets/css/turbo-components.css" />
+    <link
+      id="turbo-theme-css"
+      rel="stylesheet"
+      href="/assets/css/themes/turbo/catppuccin-mocha.css"
+    />
+
+    <!-- Site CSS (always loaded) -->
+    <link rel="stylesheet" href="/assets/css/site.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/assets/img/turbo-themes-logo.png"
+      media="(prefers-color-scheme: light)"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/assets/img/turbo-themes-logo-dark.png"
+      media="(prefers-color-scheme: dark)"
+    />
+
+    <!-- Theme blocking script (prevents FOUC) -->
+    <script is:inline>
+      (function () {
+        try {
+          var STORAGE_KEY = 'turbo-theme';
+          var DEFAULT_THEME = 'catppuccin-mocha';
+          var VALID_THEMES = [
+            'catppuccin-latte',
+            'catppuccin-frappe',
+            'catppuccin-macchiato',
+            'catppuccin-mocha',
+            'dracula',
+            'github-light',
+            'github-dark',
+            'bulma-light',
+            'bulma-dark',
+          ];
+
+          // Migrate from legacy storage key
+          var LEGACY_KEY = 'bulma-theme-flavor';
+          var legacy = localStorage.getItem(LEGACY_KEY);
+          if (legacy && !localStorage.getItem(STORAGE_KEY)) {
+            localStorage.setItem(STORAGE_KEY, legacy);
+            localStorage.removeItem(LEGACY_KEY);
+          }
+
+          var savedTheme = localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;
+          if (VALID_THEMES.indexOf(savedTheme) === -1) {
+            savedTheme = DEFAULT_THEME;
+          }
+
+          document.documentElement.setAttribute('data-theme', savedTheme);
+          window.__INITIAL_THEME__ = savedTheme;
+
+          // Update CSS link href (blocking to prevent FOUC)
+          var baseUrl = document.documentElement.getAttribute('data-baseurl') || '';
+          var themeLink = document.getElementById('turbo-theme-css');
+          if (themeLink && savedTheme !== 'catppuccin-mocha') {
+            themeLink.href = baseUrl + '/assets/css/themes/turbo/' + savedTheme + '.css';
+          }
+        } catch (e) {
+          console.warn('Unable to load saved theme:', e);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <Header siteTitle={siteTitle} />
+
+    <main class="main">
+      {isHome ? (
+        <div data-testid="main-content">
+          <slot />
+        </div>
+      ) : (
+        <div class="container">
+          <div class:list={['content', { wide }]} data-testid="main-content">
+            {title && title !== 'Home' && <h1 class="page-title">{title}</h1>}
+            <slot />
+          </div>
+        </div>
+      )}
+    </main>
+
+    <Footer siteTitle={siteTitle} />
+
+    <script is:inline>
+      (function () {
+        // Theme dropdown
+        var themeDropdown = document.getElementById('theme-dropdown');
+        var themeTrigger = document.getElementById('theme-trigger');
+        var themeMenu = document.getElementById('theme-menu');
+        var themeLabel = document.getElementById('theme-label');
+        var themeOptions = document.querySelectorAll('.theme-option');
+        var themeLink = document.getElementById('turbo-theme-css');
+        var STORAGE_KEY = 'turbo-theme';
+        var baseUrl = document.documentElement.getAttribute('data-baseurl') || '';
+
+        var themeTriggerIcon = document.getElementById('theme-trigger-icon');
+
+        // Theme name mapping for display
+        var themeNames = {
+          'catppuccin-mocha': 'Mocha',
+          'catppuccin-macchiato': 'Macchiato',
+          'catppuccin-frappe': 'Frappe',
+          'catppuccin-latte': 'Latte',
+          dracula: 'Dracula',
+          'github-dark': 'Dark',
+          'github-light': 'Light',
+          'bulma-dark': 'Dark',
+          'bulma-light': 'Light',
+        };
+
+        // Theme icon mapping
+        var themeIcons = {
+          'catppuccin-mocha': 'catppuccin-logo-macchiato.png',
+          'catppuccin-macchiato': 'catppuccin-logo-macchiato.png',
+          'catppuccin-frappe': 'catppuccin-logo-macchiato.png',
+          'catppuccin-latte': 'catppuccin-logo-latte.png',
+          dracula: 'dracula-logo.png',
+          'github-dark': 'github-logo-dark.png',
+          'github-light': 'github-logo-light.png',
+          'bulma-dark': 'turbo-themes-logo-dark.png',
+          'bulma-light': 'turbo-themes-logo.png',
+        };
+
+        // Set initial state from saved theme
+        var savedTheme = window.__INITIAL_THEME__ || 'catppuccin-mocha';
+        themeLabel.textContent = themeNames[savedTheme] || savedTheme;
+        themeTriggerIcon.src =
+          baseUrl +
+          '/assets/img/' +
+          (themeIcons[savedTheme] || 'catppuccin-logo-macchiato.png');
+        updateActiveTheme(savedTheme);
+
+        // Toggle dropdown
+        themeTrigger.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var isOpen = themeDropdown.classList.toggle('open');
+          themeTrigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+          if (!themeDropdown.contains(e.target)) {
+            themeDropdown.classList.remove('open');
+            themeTrigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        // Handle theme option clicks
+        themeOptions.forEach(function (option) {
+          option.addEventListener('click', function () {
+            var theme = this.getAttribute('data-theme');
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem(STORAGE_KEY, theme);
+
+            // Update CSS link
+            var newHref = baseUrl + '/assets/css/themes/turbo/' + theme + '.css';
+            themeLink.href = newHref;
+
+            // Update label, icon, and active state
+            themeLabel.textContent = themeNames[theme] || theme;
+            themeTriggerIcon.src =
+              baseUrl +
+              '/assets/img/' +
+              (themeIcons[theme] || 'catppuccin-logo-macchiato.png');
+            updateActiveTheme(theme);
+
+            // Close dropdown
+            themeDropdown.classList.remove('open');
+            themeTrigger.setAttribute('aria-expanded', 'false');
+          });
+        });
+
+        function updateActiveTheme(theme) {
+          themeOptions.forEach(function (opt) {
+            opt.classList.toggle('active', opt.getAttribute('data-theme') === theme);
+          });
+        }
+
+        // Mobile menu toggle
+        var menuToggle = document.getElementById('menu-toggle');
+        var navLinks = document.getElementById('nav-links');
+        if (menuToggle && navLinks) {
+          menuToggle.addEventListener('click', function () {
+            var isOpen = navLinks.classList.toggle('open');
+            menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+          });
+        }
+
+        // Navigation active state
+        var currentPath = window.location.pathname;
+        var links = document.querySelectorAll('.nav-link');
+        links.forEach(function (link) {
+          var href = link.getAttribute('href');
+          if (href === currentPath || (href !== '/' && currentPath.startsWith(href))) {
+            link.classList.add('active');
+            link.setAttribute('aria-current', 'page');
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

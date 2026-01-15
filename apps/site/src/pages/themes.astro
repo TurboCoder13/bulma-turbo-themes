@@ -1,0 +1,362 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Themes" wide={true}>
+  <div class="theme-explorer">
+    <aside class="theme-sidebar">
+      <h3 class="sidebar-title">Theme Families</h3>
+
+      <div class="theme-family">
+        <button class="family-header" aria-expanded="true">
+          <span class="family-label">
+            <img class="family-icon" src="/assets/img/catppuccin-logo-macchiato.png" alt="" width="24" height="24" />
+            <span class="family-name">Catppuccin</span>
+          </span>
+          <span class="family-count">4</span>
+        </button>
+        <div class="family-themes">
+          <button class="theme-option" data-theme="catppuccin-mocha">
+            <span class="theme-dot" style="background: #1e1e2e"></span>
+            Mocha
+          </button>
+          <button class="theme-option" data-theme="catppuccin-macchiato">
+            <span class="theme-dot" style="background: #24273a"></span>
+            Macchiato
+          </button>
+          <button class="theme-option" data-theme="catppuccin-frappe">
+            <span class="theme-dot" style="background: #303446"></span>
+            Frappé
+          </button>
+          <button class="theme-option" data-theme="catppuccin-latte">
+            <span class="theme-dot" style="background: #eff1f5"></span>
+            Latte
+          </button>
+        </div>
+      </div>
+
+      <div class="theme-family">
+        <button class="family-header" aria-expanded="true">
+          <span class="family-label">
+            <img class="family-icon" src="/assets/img/dracula-logo.png" alt="" width="24" height="24" />
+            <span class="family-name">Dracula</span>
+          </span>
+          <span class="family-count">1</span>
+        </button>
+        <div class="family-themes">
+          <button class="theme-option" data-theme="dracula">
+            <span class="theme-dot" style="background: #282a36"></span>
+            Dracula
+          </button>
+        </div>
+      </div>
+
+      <div class="theme-family">
+        <button class="family-header" aria-expanded="true">
+          <span class="family-label">
+            <img class="family-icon" src="/assets/img/github-logo-light.png" alt="" width="24" height="24" />
+            <span class="family-name">GitHub</span>
+          </span>
+          <span class="family-count">2</span>
+        </button>
+        <div class="family-themes">
+          <button class="theme-option" data-theme="github-dark">
+            <span class="theme-dot" style="background: #0d1117"></span>
+            Dark
+          </button>
+          <button class="theme-option" data-theme="github-light">
+            <span class="theme-dot" style="background: #ffffff"></span>
+            Light
+          </button>
+        </div>
+      </div>
+
+      <div class="theme-family">
+        <button class="family-header" aria-expanded="true">
+          <span class="family-label">
+            <img class="family-icon" src="/assets/img/turbo-themes-logo.png" alt="" width="24" height="24" />
+            <span class="family-name">Bulma</span>
+          </span>
+          <span class="family-count">2</span>
+        </button>
+        <div class="family-themes">
+          <button class="theme-option" data-theme="bulma-dark">
+            <span class="theme-dot" style="background: #1a1a2e"></span>
+            Dark
+          </button>
+          <button class="theme-option" data-theme="bulma-light">
+            <span class="theme-dot" style="background: #ffffff"></span>
+            Light
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="theme-main">
+      <div class="theme-info">
+        <h2 class="theme-name" id="current-theme-name">Catppuccin Mocha</h2>
+        <span class="theme-mode" id="current-theme-mode">Dark</span>
+      </div>
+
+      <div class="color-palette" id="color-palette">
+        <h3>Color Palette</h3>
+        <div class="palette-grid">
+          <div class="palette-item" data-var="--turbo-bg-base">
+            <span class="palette-swatch"></span>
+            <span class="palette-name">Background</span>
+            <span class="palette-value"></span>
+          </div>
+          <div class="palette-item" data-var="--turbo-bg-surface">
+            <span class="palette-swatch"></span>
+            <span class="palette-name">Surface</span>
+            <span class="palette-value"></span>
+          </div>
+          <div class="palette-item" data-var="--turbo-bg-overlay">
+            <span class="palette-swatch"></span>
+            <span class="palette-name">Overlay</span>
+            <span class="palette-value"></span>
+          </div>
+          <div class="palette-item" data-var="--turbo-text-primary">
+            <span class="palette-swatch"></span>
+            <span class="palette-name">Text</span>
+            <span class="palette-value"></span>
+          </div>
+          <div class="palette-item" data-var="--turbo-brand-primary">
+            <span class="palette-swatch"></span>
+            <span class="palette-name">Primary</span>
+            <span class="palette-value"></span>
+          </div>
+          <div class="palette-item" data-var="--turbo-state-success">
+            <span class="palette-swatch"></span>
+            <span class="palette-name">Success</span>
+            <span class="palette-value"></span>
+          </div>
+          <div class="palette-item" data-var="--turbo-state-warning">
+            <span class="palette-swatch"></span>
+            <span class="palette-name">Warning</span>
+            <span class="palette-value"></span>
+          </div>
+          <div class="palette-item" data-var="--turbo-state-danger">
+            <span class="palette-swatch"></span>
+            <span class="palette-name">Danger</span>
+            <span class="palette-value"></span>
+          </div>
+          <div class="palette-item" data-var="--turbo-state-info">
+            <span class="palette-swatch"></span>
+            <span class="palette-name">Info</span>
+            <span class="palette-value"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="theme-preview-section">
+        <h3>Live Preview</h3>
+        <div class="preview-panel">
+          <div class="preview-content">
+            <div class="preview-row">
+              <h4>Buttons</h4>
+              <div class="btn-group">
+                <button class="btn btn-primary">Primary</button>
+                <button class="btn btn-secondary">Secondary</button>
+                <button class="btn btn-outline">Outline</button>
+                <button class="btn btn-ghost">Ghost</button>
+              </div>
+            </div>
+
+            <div class="preview-row">
+              <h4>State Buttons</h4>
+              <div class="btn-group">
+                <button class="btn btn-success">Success</button>
+                <button class="btn btn-warning">Warning</button>
+                <button class="btn btn-danger">Danger</button>
+                <button class="btn btn-info">Info</button>
+              </div>
+            </div>
+
+            <div class="preview-row">
+              <h4>Tags</h4>
+              <div class="tag-group">
+                <span class="tag">Default</span>
+                <span class="tag tag-primary">Primary</span>
+                <span class="tag tag-success">Success</span>
+                <span class="tag tag-warning">Warning</span>
+                <span class="tag tag-danger">Danger</span>
+                <span class="tag tag-info">Info</span>
+              </div>
+            </div>
+
+            <div class="preview-row">
+              <h4>Form Elements</h4>
+              <div class="form-preview">
+                <input type="text" placeholder="Text input" class="form-input" aria-label="Text input example" />
+                <select class="form-select" aria-label="Example select">
+                  <option>Select option</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="preview-row">
+              <h4>Card</h4>
+              <div class="card" style="max-width: 320px;">
+                <div class="card-header">
+                  <h3 class="card-title">Sample Card</h3>
+                </div>
+                <div class="card-body">
+                  This card adapts to the selected theme colors automatically.
+                </div>
+                <div class="card-footer">
+                  <a href="#" class="card-footer-link">Action</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="preview-row">
+              <h4>Notifications</h4>
+              <div class="notification notification-success">
+                A success notification.
+              </div>
+              <div class="notification notification-warning">
+                A warning notification.
+              </div>
+            </div>
+
+            <div class="preview-row">
+              <h4>Code Block</h4>
+              <pre class="code-preview"><code><span class="syntax-comment">// Syntax highlighting with theme colors</span>
+<span class="syntax-keyword">function</span> <span class="syntax-function">greet</span>(<span class="syntax-parameter">name</span>) &#123;
+  <span class="syntax-keyword">return</span> <span class="syntax-string">`Hello, </span><span class="syntax-variable">$&#123;name&#125;</span><span class="syntax-string">!`</span>;
+&#125;</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="css-variables-section">
+        <h3>CSS Variables</h3>
+        <p class="css-variables-hint">Click any variable to copy</p>
+        <div class="css-variables" id="css-variables">
+          <code class="css-var" data-var="--turbo-bg-base">--turbo-bg-base</code>
+          <code class="css-var" data-var="--turbo-bg-surface">--turbo-bg-surface</code>
+          <code class="css-var" data-var="--turbo-bg-overlay">--turbo-bg-overlay</code>
+          <code class="css-var" data-var="--turbo-text-primary">--turbo-text-primary</code>
+          <code class="css-var" data-var="--turbo-text-secondary">--turbo-text-secondary</code>
+          <code class="css-var" data-var="--turbo-text-inverse">--turbo-text-inverse</code>
+          <code class="css-var" data-var="--turbo-brand-primary">--turbo-brand-primary</code>
+          <code class="css-var" data-var="--turbo-state-success">--turbo-state-success</code>
+          <code class="css-var" data-var="--turbo-state-warning">--turbo-state-warning</code>
+          <code class="css-var" data-var="--turbo-state-danger">--turbo-state-danger</code>
+          <code class="css-var" data-var="--turbo-state-info">--turbo-state-info</code>
+          <code class="css-var" data-var="--turbo-border-default">--turbo-border-default</code>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script is:inline>
+  (function() {
+    var themeNames = {
+      'catppuccin-mocha': { name: 'Catppuccin Mocha', mode: 'Dark' },
+      'catppuccin-macchiato': { name: 'Catppuccin Macchiato', mode: 'Dark' },
+      'catppuccin-frappe': { name: 'Catppuccin Frappé', mode: 'Dark' },
+      'catppuccin-latte': { name: 'Catppuccin Latte', mode: 'Light' },
+      'dracula': { name: 'Dracula', mode: 'Dark' },
+      'github-dark': { name: 'GitHub Dark', mode: 'Dark' },
+      'github-light': { name: 'GitHub Light', mode: 'Light' },
+      'bulma-dark': { name: 'Bulma Dark', mode: 'Dark' },
+      'bulma-light': { name: 'Bulma Light', mode: 'Light' }
+    };
+
+    function updatePalette() {
+      var styles = getComputedStyle(document.documentElement);
+      document.querySelectorAll('.palette-item').forEach(function(item) {
+        var varName = item.getAttribute('data-var');
+        var value = styles.getPropertyValue(varName).trim();
+        var swatch = item.querySelector('.palette-swatch');
+        var valueEl = item.querySelector('.palette-value');
+        if (swatch) swatch.style.backgroundColor = value;
+        if (valueEl) valueEl.textContent = value;
+      });
+    }
+
+    function updateThemeInfo(theme) {
+      var info = themeNames[theme] || { name: theme, mode: 'Unknown' };
+      var nameEl = document.getElementById('current-theme-name');
+      var modeEl = document.getElementById('current-theme-mode');
+      if (nameEl) nameEl.textContent = info.name;
+      if (modeEl) modeEl.textContent = info.mode;
+    }
+
+    function setActiveOption(theme) {
+      document.querySelectorAll('.theme-option').forEach(function(opt) {
+        opt.classList.toggle('active', opt.getAttribute('data-theme') === theme);
+      });
+    }
+
+    // Theme option click handlers
+    document.querySelectorAll('.theme-option').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        var theme = this.getAttribute('data-theme');
+        var selector = document.getElementById('theme-selector');
+        var themeLink = document.getElementById('turbo-theme-css');
+        var baseUrl = document.documentElement.getAttribute('data-baseurl') || '';
+
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('turbo-theme', theme);
+        if (selector) selector.value = theme;
+
+        if (themeLink) {
+          themeLink.href = baseUrl + '/assets/css/themes/turbo/' + theme + '.css';
+        }
+
+        setActiveOption(theme);
+        updateThemeInfo(theme);
+
+        // Wait for CSS to load then update palette
+        setTimeout(updatePalette, 100);
+      });
+    });
+
+    // Family header toggle
+    document.querySelectorAll('.family-header').forEach(function(header) {
+      header.addEventListener('click', function() {
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', !expanded);
+        var themes = this.nextElementSibling;
+        if (themes) themes.style.display = expanded ? 'none' : 'block';
+      });
+    });
+
+    // CSS variable copy
+    document.querySelectorAll('.css-var').forEach(function(el) {
+      el.addEventListener('click', function() {
+        var varName = this.getAttribute('data-var');
+        var styles = getComputedStyle(document.documentElement);
+        var value = styles.getPropertyValue(varName).trim();
+        var text = varName + ': ' + value + ';';
+
+        navigator.clipboard.writeText(text).then(function() {
+          el.classList.add('copied');
+          setTimeout(function() { el.classList.remove('copied'); }, 1500);
+        });
+      });
+    });
+
+    // Initialize
+    var currentTheme = document.documentElement.getAttribute('data-theme') || 'catppuccin-mocha';
+    setActiveOption(currentTheme);
+    updateThemeInfo(currentTheme);
+    updatePalette();
+
+    // Update on theme change from header selector
+    var headerSelector = document.getElementById('theme-selector');
+    if (headerSelector) {
+      headerSelector.addEventListener('change', function() {
+        var theme = this.value;
+        setActiveOption(theme);
+        updateThemeInfo(theme);
+        setTimeout(updatePalette, 100);
+      });
+    }
+  })();
+  </script>
+</BaseLayout>

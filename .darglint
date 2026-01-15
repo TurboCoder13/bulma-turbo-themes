@@ -1,0 +1,9 @@
+[darglint]
+# Documentation style (google, numpy, or sphinx)
+docstring_style = google
+
+# Strictness level (short, long, full) - full matches lintro's config
+strictness = full
+
+# Message template for error output
+message_template = {path}:{line}: {msg_id} {msg}

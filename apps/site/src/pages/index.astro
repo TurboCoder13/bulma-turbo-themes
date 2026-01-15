@@ -1,0 +1,384 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Code } from 'astro:components';
+
+const installNpm = `npm install turbo-themes`;
+
+const installCdn = `<link rel="stylesheet" href="https://unpkg.com/turbo-themes/css/turbo-core.css" />
+<link rel="stylesheet" href="https://unpkg.com/turbo-themes/css/themes/turbo/catppuccin-mocha.css" />`;
+
+const installPython = `pip install turbo-themes`;
+
+const installRuby = `gem "turbo-themes"`;
+
+const previewCode = `const theme = {
+  name: 'catppuccin-mocha',
+  type: 'dark',
+};`;
+---
+
+<BaseLayout title="Home" isHome={true}>
+  <section class="hero">
+    <div class="hero-background"></div>
+    <div class="container hero-content">
+      <span class="hero-badge">Open Source</span>
+      <h1 class="hero-title">
+        <span class="gradient-text">Beautiful themes</span>
+        <br />for any project
+      </h1>
+      <p class="hero-subtitle">
+        A design token system with 9 curated color themes. Switch themes instantly with CSS custom properties.
+      </p>
+      <div class="hero-actions">
+        <a href="/docs/" class="btn btn-primary btn-lg">
+          Get Started
+        </a>
+        <a href="/themes/" class="btn btn-outline btn-lg">
+          Explore Themes
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+
+      <div class="hero-theme-strip">
+        <span class="hero-theme-label">Try a theme:</span>
+        <div class="hero-theme-options">
+          <button class="hero-theme-btn" data-theme-preview="catppuccin-mocha" title="Catppuccin Mocha">
+            <img class="hero-theme-icon" src="/assets/img/catppuccin-logo-macchiato.png" alt="Catppuccin Mocha" width="28" height="28" />
+          </button>
+          <button class="hero-theme-btn" data-theme-preview="dracula" title="Dracula">
+            <img class="hero-theme-icon" src="/assets/img/dracula-logo.png" alt="Dracula" width="28" height="28" />
+          </button>
+          <button class="hero-theme-btn" data-theme-preview="github-dark" title="GitHub Dark">
+            <img class="hero-theme-icon" src="/assets/img/github-logo-dark.png" alt="GitHub Dark" width="28" height="28" />
+          </button>
+          <button class="hero-theme-btn" data-theme-preview="catppuccin-latte" title="Catppuccin Latte">
+            <img class="hero-theme-icon" src="/assets/img/catppuccin-logo-latte.png" alt="Catppuccin Latte" width="28" height="28" />
+          </button>
+        </div>
+        <a href="/themes/" class="hero-theme-more">View all</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section features-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Why Turbo Themes?</h2>
+        <p class="section-subtitle">Everything you need for beautiful, consistent theming</p>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 6v6l4 2"></path>
+              </svg>
+            </div>
+            <h3 class="card-title">9 Beautiful Themes</h3>
+            <p>Catppuccin, Dracula, GitHub, and Bulma variants - carefully crafted dark and light modes.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                <path d="M3 9h18M9 21V9"></path>
+              </svg>
+            </div>
+            <h3 class="card-title">Pure CSS</h3>
+            <p>Zero dependencies. Just CSS custom properties you reference with <code>var(--turbo-*)</code>.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+              </svg>
+            </div>
+            <h3 class="card-title">Multi-Platform</h3>
+            <p>Available as npm package, Ruby gem, Python library, and Swift package.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 16v-4M12 8h.01"></path>
+              </svg>
+            </div>
+            <h3 class="card-title">Accessible</h3>
+            <p>WCAG compliant contrast ratios. Keyboard navigation and screen reader support built-in.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt quick-install-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Quick Install</h2>
+        <p class="section-subtitle">Get started in seconds with your preferred package manager</p>
+      </div>
+
+      <div class="install-tabs-container">
+        <div class="tabs tabs-boxed" role="tablist">
+          <button class="tab active" role="tab" aria-selected="true" data-tab="npm">npm</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="cdn">CDN</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="python">Python</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="ruby">Ruby</button>
+        </div>
+
+        <div class="tab-panels">
+          <div class="tab-content active" data-panel="npm">
+            <Code code={installNpm} lang="bash" theme="css-variables" />
+            <p class="install-hint">Then import the CSS in your project</p>
+          </div>
+          <div class="tab-content" data-panel="cdn">
+            <Code code={installCdn} lang="html" theme="css-variables" />
+            <p class="install-hint">No build step required</p>
+          </div>
+          <div class="tab-content" data-panel="python">
+            <Code code={installPython} lang="bash" theme="css-variables" />
+            <p class="install-hint">Use ThemeManager to access tokens in Python</p>
+          </div>
+          <div class="tab-content" data-panel="ruby">
+            <Code code={installRuby} lang="ruby" theme="css-variables" />
+            <p class="install-hint">Add to your Gemfile for Jekyll sites</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="install-cta">
+        <a href="/docs/installation/" class="btn btn-ghost">
+          View full installation guide
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">See It In Action</h2>
+        <p class="section-subtitle">Components adapt seamlessly to your chosen theme</p>
+      </div>
+
+      <div class="preview-panel">
+        <div class="preview-content">
+          <div class="preview-row">
+            <h4>Buttons</h4>
+            <div class="btn-group">
+              <button class="btn btn-primary">Primary</button>
+              <button class="btn btn-secondary">Secondary</button>
+              <button class="btn btn-outline">Outline</button>
+              <button class="btn btn-ghost">Ghost</button>
+            </div>
+          </div>
+
+          <div class="preview-row">
+            <h4>State Buttons</h4>
+            <div class="btn-group">
+              <button class="btn btn-success">Success</button>
+              <button class="btn btn-warning">Warning</button>
+              <button class="btn btn-danger">Danger</button>
+              <button class="btn btn-info">Info</button>
+            </div>
+          </div>
+
+          <div class="preview-row">
+            <h4>Form Elements</h4>
+            <div class="form-preview">
+              <input type="text" placeholder="Text input" class="form-input" aria-label="Text input example" />
+              <select class="form-select" aria-label="Example select">
+                <option>Select option</option>
+                <option>Option 2</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="preview-row">
+            <h4>Tags</h4>
+            <div class="tag-group">
+              <span class="tag">Default</span>
+              <span class="tag tag-primary">Primary</span>
+              <span class="tag tag-success">Success</span>
+              <span class="tag tag-warning">Warning</span>
+              <span class="tag tag-danger">Danger</span>
+              <span class="tag tag-info">Info</span>
+            </div>
+          </div>
+
+          <div class="preview-row">
+            <h4>Notifications</h4>
+            <div class="notification notification-info">
+              An info notification with theme colors.
+            </div>
+          </div>
+
+          <div class="preview-row">
+            <h4>Code Block</h4>
+            <Code code={previewCode} lang="js" theme="css-variables" />
+          </div>
+        </div>
+      </div>
+
+      <div class="section-footer">
+        <a href="/components/" class="btn btn-ghost">
+          View all components
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Integrations Available</h2>
+        <p class="section-subtitle">Adapters for popular CSS frameworks if you need them</p>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+              </svg>
+            </div>
+            <h3 class="card-title">Bulma</h3>
+            <p>Adapter maps Turbo variables to Bulma's internal CSS variables.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+              </svg>
+            </div>
+            <h3 class="card-title">Tailwind</h3>
+            <p>Preset adds Turbo colors as utility classes like <code>bg-turbo-primary</code>.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            <h3 class="card-title">Bootstrap</h3>
+            <p>SCSS variables and utilities that integrate with Bootstrap 5.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-cta">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title">Ready to get started?</h2>
+        <p class="cta-subtitle">Install Turbo Themes and start building beautiful, themeable interfaces.</p>
+        <div class="cta-actions">
+          <a href="/docs/" class="btn btn-primary btn-lg">
+            Read the Docs
+          </a>
+          <a href="https://github.com/TurboCoder13/turbo-themes" class="btn btn-outline btn-lg" target="_blank" rel="noopener">
+            View on GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    // Hero theme button click handler
+    document.querySelectorAll('.hero-theme-btn[data-theme-preview]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var theme = this.getAttribute('data-theme-preview');
+        var themeLink = document.getElementById('turbo-theme-css');
+        var baseUrl = document.documentElement.getAttribute('data-baseurl') || '';
+
+        // Update theme
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('turbo-theme', theme);
+
+        // Update CSS link
+        if (themeLink) {
+          themeLink.href = baseUrl + '/assets/css/themes/turbo/' + theme + '.css';
+        }
+
+        // Update header dropdown label if present
+        var themeLabel = document.getElementById('theme-label');
+        if (themeLabel) {
+          var themeNames = {
+            'catppuccin-mocha': 'Mocha',
+            'catppuccin-macchiato': 'Macchiato',
+            'catppuccin-frappe': 'Frappé',
+            'catppuccin-latte': 'Latte',
+            'dracula': 'Dracula',
+            'github-dark': 'GitHub Dark',
+            'github-light': 'GitHub Light',
+            'bulma-dark': 'Bulma Dark',
+            'bulma-light': 'Bulma Light'
+          };
+          themeLabel.textContent = themeNames[theme] || theme;
+        }
+
+        // Update active state
+        document.querySelectorAll('.hero-theme-btn').forEach(function(b) {
+          b.classList.remove('active');
+        });
+        this.classList.add('active');
+      });
+
+      // Set initial active state
+      var currentTheme = document.documentElement.getAttribute('data-theme');
+      if (btn.getAttribute('data-theme-preview') === currentTheme) {
+        btn.classList.add('active');
+      }
+    });
+
+    // Install tabs
+    document.querySelectorAll('.install-tabs-container .tab').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var tab = this.getAttribute('data-tab');
+
+        // Update active button
+        document.querySelectorAll('.install-tabs-container .tab').forEach(function(b) {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        this.classList.add('active');
+        this.setAttribute('aria-selected', 'true');
+
+        // Update active panel
+        document.querySelectorAll('.install-tabs-container .tab-content').forEach(function(p) {
+          p.classList.remove('active');
+        });
+        document.querySelector('.install-tabs-container .tab-content[data-panel="' + tab + '"]').classList.add('active');
+      });
+    });
+  </script>
+</BaseLayout>

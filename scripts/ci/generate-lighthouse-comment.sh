@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Generate Lighthouse PR comment with scores and report links
 # Usage: generate-lighthouse-comment.sh
 # Environment variables:

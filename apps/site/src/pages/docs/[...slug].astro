@@ -1,0 +1,49 @@
+---
+/**
+ * Dynamic route for all documentation pages.
+ * Renders markdown content from the docs content collection.
+ */
+import { getCollection, type CollectionEntry } from 'astro:content';
+import DocsLayout from '../../layouts/DocsLayout.astro';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs', ({ data }) => !data.draft);
+
+  return docs.map(doc => ({
+    params: { slug: doc.slug },
+    props: { doc },
+  }));
+}
+
+interface Props {
+  doc: CollectionEntry<'docs'>;
+}
+
+const { doc } = Astro.props;
+const { Content, headings } = await doc.render();
+
+// Category labels for display
+const categoryLabels: Record<string, string> = {
+  'getting-started': 'Getting Started',
+  'installation': 'Installation',
+  'integrations': 'Integrations',
+  'api-reference': 'API Reference',
+  'guides': 'Guides',
+  'contributing': 'Contributing',
+};
+---
+
+<DocsLayout
+  title={doc.data.title}
+  description={doc.data.description}
+  category={doc.data.category}
+  categoryLabel={categoryLabels[doc.data.category] || doc.data.category}
+  headings={headings}
+  slug={doc.slug}
+  showToc={doc.data.toc}
+  prev={doc.data.prev}
+  next={doc.data.next}
+  lastUpdated={doc.data.lastUpdated}
+>
+  <Content />
+</DocsLayout>

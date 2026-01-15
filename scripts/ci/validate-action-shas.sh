@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Validate GitHub Action SHAs are actually resolvable
 # This script validates both format AND existence of action SHAs
 # Usage: validate-action-shas.sh [--strict]

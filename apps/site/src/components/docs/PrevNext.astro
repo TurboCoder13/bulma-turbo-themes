@@ -1,0 +1,48 @@
+---
+/**
+ * Previous/Next navigation links for documentation pages.
+ */
+import { getCollection } from 'astro:content';
+
+interface Props {
+  prev?: string;
+  next?: string;
+}
+
+const { prev, next } = Astro.props;
+
+const allDocs = await getCollection('docs');
+
+const prevDoc = prev ? allDocs.find(d => d.slug === prev) : null;
+const nextDoc = next ? allDocs.find(d => d.slug === next) : null;
+---
+
+{(prevDoc || nextDoc) && (
+  <nav class="prev-next" aria-label="Previous and next pages">
+    <div class="prev-next-inner">
+      {prevDoc ? (
+        <a href={`/docs/${prevDoc.slug}/`} class="prev-next-link prev">
+          <span class="prev-next-direction">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Previous
+          </span>
+          <span class="prev-next-title">{prevDoc.data.title}</span>
+        </a>
+      ) : <div />}
+
+      {nextDoc ? (
+        <a href={`/docs/${nextDoc.slug}/`} class="prev-next-link next">
+          <span class="prev-next-direction">
+            Next
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </span>
+          <span class="prev-next-title">{nextDoc.data.title}</span>
+        </a>
+      ) : <div />}
+    </div>
+  </nav>
+)}

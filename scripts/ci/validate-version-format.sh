@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Validate version format
 # Usage: validate-version-format.sh <version>
 

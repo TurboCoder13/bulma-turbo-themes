@@ -1,0 +1,37 @@
+---
+/**
+ * Site footer component.
+ */
+
+interface Props {
+  siteTitle?: string;
+}
+
+const { siteTitle = 'Turbo Themes Demo' } = Astro.props;
+---
+
+<footer class="footer">
+  <div class="container footer-content">
+    <div class="footer-brand">
+      <span class="footer-logo">✦</span>
+      <span class="footer-title">{siteTitle}</span>
+    </div>
+    <p class="footer-tagline">
+      Platform-agnostic design tokens for any CSS framework.
+    </p>
+    <div class="footer-links">
+      <a
+        href="https://github.com/TurboCoder13/turbo-themes"
+        target="_blank"
+        rel="noopener"
+      >
+        GitHub
+      </a>
+      <span class="footer-separator">·</span>
+      <a href="/docs/">Documentation</a>
+      <span class="footer-separator">·</span>
+      <a href="/themes/">Themes</a>
+    </div>
+    <p class="footer-copyright">Made with care. MIT License.</p>
+  </div>
+</footer>

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Check if an artifact directory exists and is not empty
 # Sets output: exists=true|false
 

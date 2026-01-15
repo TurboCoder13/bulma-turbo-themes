@@ -1,7 +1,37 @@
-[tool.uv]
-dev-dependencies = [
+[project]
+name = "turbo-themes-workspace"
+version = "0.1.0"
+requires-python = ">=3.11"
+
+[dependency-groups]
+dev = [
     "lintro==0.24.1",
 ]
+
+[tool.black]
+line-length = 88
+extend-exclude = '''
+(
+    python/src/turbo_themes/themes\.py
+    | python/src/turbo_themes/generated/.*
+)
+'''
+
+[tool.ruff]
+extend-exclude = [
+    "python/src/turbo_themes/themes.py",
+    "python/src/turbo_themes/generated/*",
+    # Exclude files where black is the authoritative formatter
+    "python/src/turbo_themes/mapping_config.py",
+    "python/tests/test_css_variables.py",
+    # Also exclude with relative paths for lintro python directory
+    "**/mapping_config.py",
+    "**/test_css_variables.py",
+]
+line-length = 88
+
+[tool.ruff.format]
+quote-style = "double"
 
 [tool.lintro]
 exclude = [
@@ -16,6 +46,19 @@ exclude = [
     "test-results/",
     ".lintro/",
     "**/.build/",
+    "python/src/turbo_themes/generated/",
+]
+
+[tool.lintro.tool.black]
+exclude = ["python/src/turbo_themes/generated/*", "src/turbo_themes/generated/*"]
+
+[tool.lintro.tool.ruff]
+exclude = [
+    "python/src/turbo_themes/generated/*",
+    "src/turbo_themes/generated/*",
+    # Exclude files where black is the authoritative formatter (lintro runs from python/)
+    "src/turbo_themes/mapping_config.py",
+    "tests/test_css_variables.py",
 ]
 
 [tool.lintro.tool.hadolint]
@@ -23,6 +66,14 @@ exclude = ["_site/Dockerfile"]
 
 [tool.lintro.tool.actionlint]
 exclude = ["**/vendor/**"]
+
+[tool.bandit]
+# Skip B101 (assert) - standard in test files
+# Skip B105/B106 - false positives on design token paths (e.g., 'background.base')
+skips = ["B101", "B105", "B106"]
+
+[tool.lintro.tool.bandit]
+# Use native bandit config from [tool.bandit]
 
 [tool.lintro.tool.yamllint]
 exclude = [".github/workflows/**", ".github/actions/**", ".allstar/**"]

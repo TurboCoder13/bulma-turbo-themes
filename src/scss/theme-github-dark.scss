@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Theme-specific Bulma configuration for github-dark
+// Note: Font imports are centralized in _fonts.scss (via base.scss)
 @use 'bulma/sass' with (
   $primary: hsl(216, 84%, 52%),
   $link: hsl(214, 93%, 62%),
@@ -12,25 +13,6 @@
 // Import custom overrides and hacks
 @use 'custom/overrides';
 @use 'custom/hacks';
-
-// Web font imports (compiled to top of CSS output)
-@font-face {
-  font-family: 'Mona Sans';
-  src: url('https://github.githubassets.com/assets/mona-sans-webfont.woff2') format('woff2');
-  font-weight: 200 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Hubot Sans';
-  src: url('https://github.githubassets.com/assets/hubot-sans-webfont.woff2') format('woff2');
-  font-weight: 200 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-
 
 // Theme-specific overrides using Bulma's generated CSS variables
 // Note: Bulma automatically generates --bulma-primary-* CSS variables (00-100 shades)

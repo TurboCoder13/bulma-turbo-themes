@@ -1,0 +1,191 @@
+{
+  "$schema": "../../turbo-themes.schema.json#/$defs/ThemeFile",
+  "id": "catppuccin-macchiato",
+  "label": "Catppuccin Macchiato",
+  "vendor": "catppuccin",
+  "appearance": "dark",
+  "tokens": {
+    "background": {
+      "base": {
+        "$value": "#24273a",
+        "$type": "color"
+      },
+      "surface": {
+        "$value": "#1e2030",
+        "$type": "color"
+      },
+      "overlay": {
+        "$value": "#181926",
+        "$type": "color"
+      }
+    },
+    "text": {
+      "primary": {
+        "$value": "#cad3f5",
+        "$type": "color"
+      },
+      "secondary": {
+        "$value": "#a5adcb",
+        "$type": "color"
+      },
+      "inverse": {
+        "$value": "#24273a",
+        "$type": "color"
+      }
+    },
+    "brand": {
+      "primary": {
+        "$value": "#8aadf4",
+        "$type": "color"
+      }
+    },
+    "state": {
+      "info": {
+        "$value": "#91d7e3",
+        "$type": "color"
+      },
+      "success": {
+        "$value": "#a6da95",
+        "$type": "color"
+      },
+      "warning": {
+        "$value": "#eed49f",
+        "$type": "color"
+      },
+      "danger": {
+        "$value": "#ed8796",
+        "$type": "color"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "#6e738d",
+        "$type": "color"
+      }
+    },
+    "accent": {
+      "link": {
+        "$value": "#8aadf4",
+        "$type": "color"
+      }
+    },
+    "typography": {
+      "fonts": {
+        "sans": {
+          "$value": "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, \"Apple Color Emoji\", \"Segoe UI Emoji\"",
+          "$type": "fontFamily"
+        },
+        "mono": {
+          "$value": "JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace",
+          "$type": "fontFamily"
+        }
+      },
+      "webFonts": [
+        "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap",
+        "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap"
+      ]
+    },
+    "content": {
+      "heading": {
+        "h1": {
+          "$value": "#a6da95",
+          "$type": "color"
+        },
+        "h2": {
+          "$value": "#8aadf4",
+          "$type": "color"
+        },
+        "h3": {
+          "$value": "#7dc4e4",
+          "$type": "color"
+        },
+        "h4": {
+          "$value": "#eed49f",
+          "$type": "color"
+        },
+        "h5": {
+          "$value": "#c6a0f6",
+          "$type": "color"
+        },
+        "h6": {
+          "$value": "#ed8796",
+          "$type": "color"
+        }
+      },
+      "body": {
+        "primary": {
+          "$value": "#cad3f5",
+          "$type": "color"
+        },
+        "secondary": {
+          "$value": "#a5adcb",
+          "$type": "color"
+        }
+      },
+      "link": {
+        "default": {
+          "$value": "#8aadf4",
+          "$type": "color"
+        }
+      },
+      "selection": {
+        "fg": {
+          "$value": "#cad3f5",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#8087a2",
+          "$type": "color"
+        }
+      },
+      "blockquote": {
+        "border": {
+          "$value": "#8087a2",
+          "$type": "color"
+        },
+        "fg": {
+          "$value": "#cad3f5",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#1e2030",
+          "$type": "color"
+        }
+      },
+      "codeInline": {
+        "fg": {
+          "$value": "#cad3f5",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#363a4f",
+          "$type": "color"
+        }
+      },
+      "codeBlock": {
+        "fg": {
+          "$value": "#cad3f5",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#363a4f",
+          "$type": "color"
+        }
+      },
+      "table": {
+        "border": {
+          "$value": "#8087a2",
+          "$type": "color"
+        },
+        "stripe": {
+          "$value": "#363a4f",
+          "$type": "color"
+        },
+        "theadBg": {
+          "$value": "#494d64",
+          "$type": "color"
+        }
+      }
+    }
+  }
+}

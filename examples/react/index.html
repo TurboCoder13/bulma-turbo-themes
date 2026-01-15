@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" data-theme="catppuccin-mocha">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Turbo Themes - React</title>
+    <!-- Turbo Themes CSS -->
+    <link rel="stylesheet" href="./turbo-themes/turbo-core.css" />
+    <link rel="stylesheet" href="./turbo-themes/turbo-base.css" />
+    <link
+      id="theme-css"
+      rel="stylesheet"
+      href="./turbo-themes/themes/catppuccin-mocha.css"
+    />
+    <!-- FOUC Prevention -->
+    <script>
+      (function () {
+        var DEFAULT_THEME = 'catppuccin-mocha';
+        var VALID_THEMES = [
+          'catppuccin-mocha',
+          'catppuccin-macchiato',
+          'catppuccin-frappe',
+          'catppuccin-latte',
+          'dracula',
+          'github-dark',
+          'github-light',
+          'bulma-dark',
+          'bulma-light',
+        ];
+        var saved = localStorage.getItem('turbo-theme');
+        var theme = saved && VALID_THEMES.indexOf(saved) !== -1 ? saved : DEFAULT_THEME;
+
+        document.documentElement.setAttribute('data-theme', theme);
+        var link = document.getElementById('theme-css');
+        if (link) link.href = './turbo-themes/themes/' + theme + '.css';
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

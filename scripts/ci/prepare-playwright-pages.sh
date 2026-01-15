@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Prepare Playwright report artifacts for GitHub Pages deployment
 # Validates artifact structure and copies to deployment directory
@@ -25,12 +25,12 @@ if [ ! -d "$ARTIFACT_PATH/_assets" ]; then
 fi
 
 echo "✅ Artifact structure validated"
-mkdir -p _site/playwright
-cp -r "$ARTIFACT_PATH"/* _site/playwright/ || {
+mkdir -p apps/site/dist/playwright
+cp -r "$ARTIFACT_PATH"/* apps/site/dist/playwright/ || {
   echo "❌ Error: Failed to copy Playwright report" >&2
   exit 1
 }
 
 echo "✅ Playwright reports prepared for deployment"
-ls -la _site/playwright/
+ls -la apps/site/dist/playwright/
 

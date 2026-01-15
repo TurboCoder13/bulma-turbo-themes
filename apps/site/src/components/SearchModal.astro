@@ -1,0 +1,316 @@
+---
+/**
+ * Command-palette style search modal (Linear/Raycast inspired).
+ * Opens with Cmd+K / Ctrl+K keyboard shortcut.
+ * Uses Pagefind for static search.
+ */
+---
+
+<link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+
+<div class="search-modal" id="search-modal" role="dialog" aria-modal="true" aria-label="Search documentation">
+  <div class="search-modal-backdrop" id="search-modal-backdrop"></div>
+  <div class="search-modal-content">
+    <div class="search-modal-header">
+      <div id="search-modal-input"></div>
+      <button class="search-modal-close" id="search-modal-close" aria-label="Close search">
+        <kbd>esc</kbd>
+      </button>
+    </div>
+    <div class="search-modal-results" id="search-modal-results"></div>
+  </div>
+</div>
+
+<script is:inline>
+  (function() {
+    var modal = document.getElementById('search-modal');
+    var backdrop = document.getElementById('search-modal-backdrop');
+    var closeBtn = document.getElementById('search-modal-close');
+    var searchInitialized = false;
+
+    function openModal() {
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      initSearch();
+      // Focus the search input after a brief delay
+      setTimeout(function() {
+        var input = modal.querySelector('.pagefind-ui__search-input');
+        if (input) input.focus();
+      }, 50);
+    }
+
+    function closeModal() {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    async function initSearch() {
+      if (searchInitialized) return;
+
+      try {
+        var PagefindUI = (await import('/pagefind/pagefind-ui.js')).PagefindUI;
+        new PagefindUI({
+          element: '#search-modal-input',
+          showImages: false,
+          showSubResults: true,
+          placeholder: 'Search documentation...',
+          resetStyles: false,
+          autofocus: true,
+        });
+        searchInitialized = true;
+      } catch (e) {
+        var container = document.getElementById('search-modal-input');
+        if (container) {
+          container.innerHTML = '<input type="search" placeholder="Search not available" class="search-fallback" disabled />';
+        }
+      }
+    }
+
+    // Focus trap for modal accessibility
+    function trapFocus(e) {
+      if (!modal.classList.contains('open')) return;
+
+      var focusableElements = modal.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      var firstElement = focusableElements[0];
+      var lastElement = focusableElements[focusableElements.length - 1];
+
+      if (e.key === 'Tab') {
+        if (e.shiftKey && document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    }
+
+    // Keyboard shortcut: Cmd+K / Ctrl+K
+    document.addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        if (modal.classList.contains('open')) {
+          closeModal();
+        } else {
+          openModal();
+        }
+      }
+
+      // Escape to close
+      if (e.key === 'Escape' && modal.classList.contains('open')) {
+        closeModal();
+      }
+
+      // Focus trap when modal is open
+      trapFocus(e);
+    });
+
+    // Click backdrop to close
+    backdrop.addEventListener('click', closeModal);
+
+    // Close button
+    closeBtn.addEventListener('click', closeModal);
+
+    // Search trigger button in header
+    var searchTrigger = document.getElementById('search-trigger');
+    if (searchTrigger) {
+      searchTrigger.addEventListener('click', openModal);
+    }
+  })();
+</script>
+
+<style>
+  .search-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+  }
+
+  .search-modal.open {
+    display: block;
+  }
+
+  .search-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+  }
+
+  .search-modal-content {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    max-width: calc(100% - 2rem);
+    max-height: 70vh;
+    background: var(--turbo-bg-surface);
+    border: 1px solid var(--turbo-border-default);
+    border-radius: 1rem;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .search-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--turbo-border-default);
+  }
+
+  .search-modal-close {
+    flex-shrink: 0;
+    background: var(--turbo-bg-overlay);
+    border: 1px solid var(--turbo-border-default);
+    border-radius: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .search-modal-close:hover {
+    background: var(--turbo-bg-base);
+  }
+
+  .search-modal-close kbd {
+    font-family: var(--turbo-font-mono, monospace);
+    font-size: 0.75rem;
+    color: var(--turbo-text-secondary);
+  }
+
+  .search-modal-results {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+  }
+
+  /* Pagefind UI overrides for modal */
+  #search-modal-input {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .search-modal :global(.pagefind-ui) {
+    --pagefind-ui-scale: 1;
+    --pagefind-ui-primary: var(--turbo-brand-primary);
+    --pagefind-ui-text: var(--turbo-text-primary);
+    --pagefind-ui-background: transparent;
+    --pagefind-ui-border: transparent;
+    --pagefind-ui-border-width: 0;
+    --pagefind-ui-border-radius: 0;
+    --pagefind-ui-font: inherit;
+  }
+
+  .search-modal :global(.pagefind-ui__form) {
+    position: relative;
+  }
+
+  .search-modal :global(.pagefind-ui__search-input) {
+    width: 100%;
+    padding: 0.5rem 0;
+    font-size: 1.125rem;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--turbo-text-primary);
+  }
+
+  .search-modal :global(.pagefind-ui__search-input)::placeholder {
+    color: var(--turbo-text-secondary);
+  }
+
+  .search-modal :global(.pagefind-ui__search-clear) {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--turbo-text-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+  .search-modal :global(.pagefind-ui__search-clear:hover) {
+    color: var(--turbo-text-primary);
+  }
+
+  /* Move results drawer to the results area */
+  .search-modal :global(.pagefind-ui__drawer) {
+    position: static;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .search-modal :global(.pagefind-ui__results-area) {
+    padding: 0;
+  }
+
+  .search-modal :global(.pagefind-ui__result) {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    margin: 0.25rem 0;
+    transition: background-color 0.15s ease;
+  }
+
+  .search-modal :global(.pagefind-ui__result:hover) {
+    background: var(--turbo-bg-overlay);
+  }
+
+  .search-modal :global(.pagefind-ui__result-link) {
+    color: var(--turbo-text-primary);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.9375rem;
+  }
+
+  .search-modal :global(.pagefind-ui__result-link:hover) {
+    color: var(--turbo-brand-primary);
+  }
+
+  .search-modal :global(.pagefind-ui__result-title) {
+    margin-bottom: 0.25rem;
+  }
+
+  .search-modal :global(.pagefind-ui__result-excerpt) {
+    color: var(--turbo-text-secondary);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .search-modal :global(.pagefind-ui__result-excerpt mark) {
+    background: var(--turbo-brand-primary);
+    color: var(--turbo-text-inverse, #fff);
+    padding: 0.0625rem 0.25rem;
+    border-radius: 0.1875rem;
+  }
+
+  .search-modal :global(.pagefind-ui__message) {
+    color: var(--turbo-text-secondary);
+    font-size: 0.875rem;
+    padding: 2rem 1rem;
+    text-align: center;
+  }
+
+  /* Fallback input */
+  .search-fallback {
+    width: 100%;
+    padding: 0.5rem 0;
+    font-size: 1.125rem;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--turbo-text-secondary);
+    cursor: not-allowed;
+  }
+</style>

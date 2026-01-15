@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en" data-theme="catppuccin-mocha">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ page.title | default: site.title }}</title>
+
+    <!-- Turbo Themes CSS -->
+    <link rel="stylesheet" href="{{ '/assets/css/turbo-core.css' | relative_url }}" />
+    <link rel="stylesheet" href="{{ '/assets/css/turbo-base.css' | relative_url }}" />
+    <link
+      id="theme-css"
+      rel="stylesheet"
+      href="{{ '/assets/css/themes/catppuccin-mocha.css' | relative_url }}"
+    />
+
+    <!-- FOUC Prevention -->
+    <script>
+      (function () {
+        var DEFAULT_THEME = 'catppuccin-mocha';
+        var VALID_THEMES = [
+          'catppuccin-mocha',
+          'catppuccin-macchiato',
+          'catppuccin-frappe',
+          'catppuccin-latte',
+          'dracula',
+          'github-dark',
+          'github-light',
+          'bulma-dark',
+          'bulma-light',
+        ];
+        var saved = localStorage.getItem('turbo-theme');
+        var theme = saved && VALID_THEMES.indexOf(saved) !== -1 ? saved : DEFAULT_THEME;
+
+        document.documentElement.setAttribute('data-theme', theme);
+        var link = document.getElementById('theme-css');
+        if (link) {
+          link.href = '{{ "/assets/css/themes/" | relative_url }}' + theme + '.css';
+        }
+      })();
+    </script>
+
+    <style>
+      :root {
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+        line-height: 1.6;
+      }
+      body {
+        margin: 0;
+        background: var(--turbo-bg-base);
+        color: var(--turbo-text-primary);
+      }
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+      .site-title {
+        margin: 0;
+        font-size: 1.5rem;
+        color: var(--turbo-brand-primary);
+      }
+      .site-title a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .theme-selector-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .theme-selector-label {
+        font-size: 0.875rem;
+        color: var(--turbo-text-muted);
+      }
+      #theme-selector {
+        font: inherit;
+        padding: 0.375rem 0.75rem;
+        border: 1px solid var(--turbo-border-default);
+        border-radius: 0.375rem;
+        background: var(--turbo-bg-surface);
+        color: var(--turbo-text-primary);
+        cursor: pointer;
+      }
+      main {
+        margin-bottom: 2rem;
+      }
+      h1,
+      h2,
+      h3 {
+        color: var(--turbo-text-primary);
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      h3 {
+        font-size: 1.25rem;
+      }
+      p {
+        margin: 0.75rem 0;
+      }
+      blockquote {
+        margin: 1rem 0;
+        padding: 0.75rem 1rem;
+        border-left: 4px solid var(--turbo-brand-primary);
+        background: var(--turbo-bg-surface);
+        color: var(--turbo-text-muted);
+      }
+      blockquote p {
+        margin: 0;
+      }
+      code {
+        background: var(--turbo-bg-overlay);
+        padding: 0.1rem 0.3rem;
+        border-radius: 0.25rem;
+        font-family: ui-monospace, monospace;
+        font-size: 0.875em;
+      }
+      pre {
+        background: var(--turbo-bg-surface);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+        border: 1px solid var(--turbo-border-default);
+      }
+      pre code {
+        background: none;
+        padding: 0;
+      }
+      .buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin: 1rem 0;
+      }
+      .button {
+        border: none;
+        border-radius: 0.375rem;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        font: inherit;
+        color: var(--turbo-text-inverse);
+        transition: opacity 0.2s ease;
+      }
+      .button:hover {
+        opacity: 0.9;
+      }
+      .button.is-primary {
+        background: var(--turbo-brand-primary);
+      }
+      .button.is-link {
+        background: var(--turbo-state-info);
+      }
+      .button.is-info {
+        background: var(--turbo-state-info);
+      }
+      .button.is-success {
+        background: var(--turbo-state-success);
+      }
+      .button.is-warning {
+        background: var(--turbo-state-warning);
+        color: var(--turbo-text-primary);
+      }
+      .button.is-danger {
+        background: var(--turbo-state-danger);
+      }
+      .columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+      .card {
+        background: var(--turbo-bg-surface);
+        border: 1px solid var(--turbo-border-default);
+        border-radius: 0.5rem;
+        overflow: hidden;
+      }
+      .card-header {
+        padding: 0.75rem 1rem;
+        background: var(--turbo-bg-overlay);
+        border-bottom: 1px solid var(--turbo-border-default);
+      }
+      .card-header-title {
+        margin: 0;
+        font-weight: 600;
+      }
+      .card-content {
+        padding: 1rem;
+      }
+      .card-footer {
+        display: flex;
+        border-top: 1px solid var(--turbo-border-default);
+      }
+      .card-footer-item {
+        flex: 1;
+        padding: 0.75rem;
+        text-align: center;
+        color: var(--turbo-brand-primary);
+        text-decoration: none;
+        border-right: 1px solid var(--turbo-border-default);
+      }
+      .card-footer-item:last-child {
+        border-right: none;
+      }
+      .card-footer-item:hover {
+        background: var(--turbo-bg-overlay);
+      }
+      footer {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--turbo-border-default);
+        text-align: center;
+        color: var(--turbo-text-muted);
+        font-size: 0.875rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1 class="site-title">
+          <a href="{{ '/' | relative_url }}">{{ site.title }}</a>
+        </h1>
+        <div class="theme-selector-wrapper">
+          <label class="theme-selector-label" for="theme-selector">Theme</label>
+          <select id="theme-selector" aria-label="Select theme">
+            <option value="catppuccin-mocha">Catppuccin Mocha</option>
+            <option value="catppuccin-latte">Catppuccin Latte</option>
+            <option value="dracula">Dracula</option>
+            <option value="github-dark">GitHub Dark</option>
+            <option value="github-light">GitHub Light</option>
+            <option value="bulma-dark">Bulma Dark</option>
+            <option value="bulma-light">Bulma Light</option>
+          </select>
+        </div>
+      </header>
+
+      <main>{{ content }}</main>
+
+      <footer>
+        <p>Current theme: <code id="current-theme">catppuccin-mocha</code></p>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        var STORAGE_KEY = 'turbo-theme';
+        var DEFAULT_THEME = 'catppuccin-mocha';
+        var VALID_THEMES = [
+          'catppuccin-mocha',
+          'catppuccin-latte',
+          'dracula',
+          'github-dark',
+          'github-light',
+          'bulma-dark',
+          'bulma-light',
+        ];
+
+        var selector = document.getElementById('theme-selector');
+        var themeLink = document.getElementById('theme-css');
+        var currentThemeEl = document.getElementById('current-theme');
+
+        function applyTheme(themeId) {
+          // Validate theme ID against whitelist to prevent XSS
+          var safeThemeId = VALID_THEMES.includes(themeId) ? themeId : DEFAULT_THEME;
+          document.documentElement.setAttribute('data-theme', safeThemeId);
+          if (themeLink) {
+            themeLink.href =
+              '{{ "/assets/css/themes/" | relative_url }}' + safeThemeId + '.css';
+          }
+          if (currentThemeEl) {
+            currentThemeEl.textContent = safeThemeId;
+          }
+          try {
+            localStorage.setItem(STORAGE_KEY, safeThemeId);
+          } catch (e) {
+            console.warn('Could not persist theme selection', e);
+          }
+        }
+
+        // Initialize from storage
+        var initial = DEFAULT_THEME;
+        try {
+          var saved = localStorage.getItem(STORAGE_KEY);
+          if (saved && VALID_THEMES.includes(saved)) {
+            initial = saved;
+          }
+        } catch (e) {}
+
+        if (selector) {
+          selector.value = initial;
+          selector.addEventListener('change', function (e) {
+            applyTheme(e.target.value);
+          });
+        }
+        applyTheme(initial);
+      })();
+    </script>
+  </body>
+</html>

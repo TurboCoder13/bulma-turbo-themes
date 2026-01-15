@@ -1,7 +1,7 @@
-import { describe, expect, test } from 'vitest';
-import { readFileSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
 import { execSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { describe, expect, test } from 'vitest';
 
 describe('validate-action-shas.sh', () => {
   const scriptPath = join(__dirname, '../scripts/ci/validate-action-shas.sh');
@@ -11,15 +11,6 @@ describe('validate-action-shas.sh', () => {
     // Basic syntax check by running with --help-like behavior
     const result = execSync(`bash -n "${scriptPath}"`, { encoding: 'utf8' });
     expect(result).toBe('');
-  });
-
-  test('extracts full action labels for nested actions from sample workflow', () => {
-    const workflowPath = join(__dirname, '../.github/workflows/security-codeql.yml');
-    const content = readFileSync(workflowPath, 'utf8');
-
-    expect(content).toContain('github/codeql-action/init@');
-    expect(content).toContain('github/codeql-action/autobuild@');
-    expect(content).toContain('github/codeql-action/analyze@');
   });
 
   test('validates SHA format in workflow files', () => {

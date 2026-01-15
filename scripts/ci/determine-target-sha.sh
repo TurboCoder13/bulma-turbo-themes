@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Determine target SHA for internal reference updates
 # Usage: determine-target-sha.sh
 # Environment variables:

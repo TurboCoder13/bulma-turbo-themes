@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Skip dependency review (requires Advanced Security)
 # Usage: skip-dependency-review.sh
 

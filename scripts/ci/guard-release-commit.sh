@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # guard-release-commit.sh
-# Set ok=true in GITHUB_OUTPUT if last commit subject starts with 'chore(release):'
+# Set is_release=true in GITHUB_OUTPUT if last commit subject starts with 'chore(release):'
 # This prevents the version PR workflow from running after merging a version PR
 
 if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
@@ -12,8 +12,8 @@ Guard that last commit message is a release bump.
 Usage:
   scripts/ci/guard-release-commit.sh
 
-Writes ok=true|false to $GITHUB_OUTPUT.
-Returns exit code 0 if it's a release commit, 1 otherwise.
+Writes is_release=true|false to $GITHUB_OUTPUT.
+Always exits 0 (use output variable for conditional logic).
 EOF
   exit 0
 fi
@@ -21,24 +21,20 @@ fi
 msg=$(git log -1 --pretty=%s)
 echo "Last commit: $msg"
 
-ok=false
+is_release=false
 if echo "$msg" | grep -Eq '^chore\(release\):'; then
-  ok=true
+  is_release=true
   echo "✅ This is a release commit - version PR workflow will be skipped"
 else
   echo "📝 Not a release commit - version PR workflow will proceed"
 fi
 
 if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
-  echo "ok=$ok" >> "$GITHUB_OUTPUT"
+  echo "is_release=$is_release" >> "$GITHUB_OUTPUT"
 else
-  echo "ok=$ok"
+  echo "is_release=$is_release"
 fi
 
-# Exit with appropriate code for conditional steps
-if [[ "$ok" == "true" ]]; then
-  exit 0
-else
-  exit 1
-fi
+# Always exit 0 - use output variable for conditional logic in workflow
+exit 0
 

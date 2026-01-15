@@ -1,5 +1,19 @@
 assets/css/themes/*.css
+assets/css/themes/turbo/*.css
+assets/css/turbo-core.css
 
 coverage/**
 lighthouse-reports/**
 playwright-report/**
+
+# Coverage HTML reports
+python/htmlcov/**
+htmlcov/**
+rspec-coverage/**
+
+# Python virtual environments
+.venv/**
+python/.venv/**
+
+# Tailwind example uses @tailwind directives not recognized by standard Stylelint
+examples/tailwind/**

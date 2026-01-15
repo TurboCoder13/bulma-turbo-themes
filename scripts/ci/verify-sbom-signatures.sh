@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Verify SBOM signatures
 # Usage: verify-sbom-signatures.sh
 
