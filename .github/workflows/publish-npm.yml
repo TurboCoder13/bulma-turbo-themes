@@ -138,7 +138,6 @@ jobs:
           egress-policy: block
           allowed-endpoints: >
             api.github.com:443
-            bun.sh:443
             codeload.github.com:443
             github.com:443
             objects.githubusercontent.com:443

@@ -29,6 +29,7 @@ jobs:
             codeload.github.com:443
             fulcio.sigstore.dev:443
             get.anchore.io:443
+            ghcr.io:443
             github.com:443
             npmjs.org:443
             objects.githubusercontent.com:443

@@ -33,6 +33,7 @@ jobs:
             pipelines.actions.githubusercontent.com:443
             pypi.org:443
             release-assets.githubusercontent.com:443
+            upload.pypi.org:443
             uploads.github.com:443
 
       - name: Checkout
