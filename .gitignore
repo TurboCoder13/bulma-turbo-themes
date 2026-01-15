@@ -80,7 +80,6 @@ playwright/.cache/
 playwright/
 .lintro
 .bin/
-e2e/snapshots/
 
 # -------------------- Linting --------------------
 .lintro/
