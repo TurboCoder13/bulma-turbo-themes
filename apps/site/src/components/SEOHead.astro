@@ -9,7 +9,9 @@ interface Props {
   image?: string;
 }
 
-const { title, description, image = '/assets/img/turbo-themes-logo.png' } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+const defaultImage = `${baseUrl}/assets/img/turbo-themes-logo.png`;
+const { title, description, image = defaultImage } = Astro.props;
 ---
 
 <meta name="description" content={description} />
