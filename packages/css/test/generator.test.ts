@@ -127,6 +127,70 @@ describe('generateThemeCss', () => {
 
     expect(css).toContain("@import url('https://fonts.googleapis.com/css2?family=Inter')");
   });
+
+  it('should reject HTTP font URLs (non-HTTPS)', () => {
+    const flavorWithHttpFont: ThemeFlavor = {
+      ...mockFlavor,
+      tokens: {
+        ...mockTokens,
+        typography: {
+          ...mockTokens.typography,
+          webFonts: ['http://fonts.googleapis.com/css2?family=Inter'],
+        },
+      },
+    };
+    const css = generateThemeCss(flavorWithHttpFont);
+
+    expect(css).not.toContain('@import');
+  });
+
+  it('should reject font URLs from untrusted domains', () => {
+    const flavorWithUntrustedFont: ThemeFlavor = {
+      ...mockFlavor,
+      tokens: {
+        ...mockTokens,
+        typography: {
+          ...mockTokens.typography,
+          webFonts: ['https://malicious-domain.com/evil-font.css'],
+        },
+      },
+    };
+    const css = generateThemeCss(flavorWithUntrustedFont);
+
+    expect(css).not.toContain('@import');
+  });
+
+  it('should reject invalid font URLs', () => {
+    const flavorWithInvalidFont: ThemeFlavor = {
+      ...mockFlavor,
+      tokens: {
+        ...mockTokens,
+        typography: {
+          ...mockTokens.typography,
+          webFonts: ['not-a-valid-url'],
+        },
+      },
+    };
+    const css = generateThemeCss(flavorWithInvalidFont);
+
+    expect(css).not.toContain('@import');
+  });
+
+  it('should accept fonts from trusted subdomains', () => {
+    const flavorWithSubdomainFont: ThemeFlavor = {
+      ...mockFlavor,
+      tokens: {
+        ...mockTokens,
+        typography: {
+          ...mockTokens.typography,
+          webFonts: ['https://fonts.bunny.net/css?family=Inter'],
+        },
+      },
+    };
+    const css = generateThemeCss(flavorWithSubdomainFont);
+
+    expect(css).toContain("@import url('https://fonts.bunny.net/css?family=Inter')");
+  });
 });
 
 describe('generateCoreCss', () => {

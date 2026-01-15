@@ -57,6 +57,63 @@ describe('generateCssVarsFromTokens - optional elevation tokens', () => {
   });
 });
 
+describe('generateCssVarsFromTokens - optional animation tokens', () => {
+  it('should include animation tokens when provided', () => {
+    const tokensWithAnimation: ThemeTokens = {
+      ...baseMockTokens,
+      animation: {
+        durationFast: '100ms',
+        durationNormal: '200ms',
+        durationSlow: '300ms',
+        easingDefault: 'ease-out',
+        easingEmphasized: 'ease-in-out',
+      },
+    };
+    const lines = generateCssVarsFromTokens(tokensWithAnimation);
+    const joined = lines.join('\n');
+
+    expect(joined).toContain('--turbo-animation-duration-fast: 100ms');
+    expect(joined).toContain('--turbo-animation-duration-normal: 200ms');
+    expect(joined).toContain('--turbo-animation-duration-slow: 300ms');
+    expect(joined).toContain('--turbo-animation-easing-default: ease-out');
+    expect(joined).toContain('--turbo-animation-easing-emphasized: ease-in-out');
+  });
+});
+
+describe('generateCssVarsFromTokens - optional opacity tokens', () => {
+  it('should include opacity tokens when provided', () => {
+    const tokensWithOpacity: ThemeTokens = {
+      ...baseMockTokens,
+      opacity: {
+        disabled: 0.5,
+        hover: 0.8,
+        pressed: 0.6,
+      },
+    };
+    const lines = generateCssVarsFromTokens(tokensWithOpacity);
+    const joined = lines.join('\n');
+
+    expect(joined).toContain('--turbo-opacity-disabled: 0.5');
+    expect(joined).toContain('--turbo-opacity-hover: 0.8');
+    expect(joined).toContain('--turbo-opacity-pressed: 0.6');
+  });
+
+  it('should handle opacity value of 0', () => {
+    const tokensWithZeroOpacity: ThemeTokens = {
+      ...baseMockTokens,
+      opacity: {
+        disabled: 0,
+        hover: 0.8,
+        pressed: 0.6,
+      },
+    };
+    const lines = generateCssVarsFromTokens(tokensWithZeroOpacity);
+    const joined = lines.join('\n');
+
+    expect(joined).toContain('--turbo-opacity-disabled: 0');
+  });
+});
+
 describe('generateCssVarsFromTokens - optional component tokens', () => {
   it('should include component tokens when provided', () => {
     const tokensWithComponents: ThemeTokens = {

@@ -51,6 +51,9 @@ export default defineConfig({
         'packages/core/src/index.ts',
         'packages/core/src/themes/registry.ts',
         'packages/core/src/themes/factories/index.ts',
+        // Re-export and type-only files (no runtime logic)
+        'packages/core/src/themes/css/global-overrides.ts',
+        'packages/core/src/themes/css/types.ts',
         'packages/theme-selector/src/types.ts',
         'src/index.ts',
         // Root src/ legacy files (covered by packages/ or type-only)
