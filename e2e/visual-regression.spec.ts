@@ -25,7 +25,7 @@ const themes = [
   { id: 'github-light', type: 'light' },
 ];
 
-test.describe('Homepage Visual Regression', () => {
+test.describe('Homepage Visual Regression @visual', () => {
   for (const theme of themes) {
     test(`homepage renders correctly with ${theme.id}`, async ({ page }) => {
       await page.goto('/');
@@ -51,7 +51,7 @@ test.describe('Homepage Visual Regression', () => {
   }
 });
 
-test.describe('Demo Page Visual Regression', () => {
+test.describe('Demo Page Visual Regression @visual', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/demo/');
     await page.waitForLoadState('networkidle');
@@ -75,7 +75,7 @@ test.describe('Demo Page Visual Regression', () => {
   }
 });
 
-test.describe('Component State Visual Regression', () => {
+test.describe('Component State Visual Regression @visual', () => {
   test('theme selector hover state', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
@@ -121,7 +121,7 @@ test.describe('Component State Visual Regression', () => {
   });
 });
 
-test.describe('Responsive Layout Visual Regression', () => {
+test.describe('Responsive Layout Visual Regression @visual', () => {
   const viewports = [
     { name: 'desktop', width: 1280, height: 800 },
     { name: 'tablet', width: 768, height: 1024 },
@@ -141,7 +141,7 @@ test.describe('Responsive Layout Visual Regression', () => {
   }
 });
 
-test.describe('Theme Transition Visual Regression', () => {
+test.describe('Theme Transition Visual Regression @visual', () => {
   test('captures theme transition', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
@@ -172,7 +172,7 @@ test.describe('Theme Transition Visual Regression', () => {
   });
 });
 
-test.describe('Dark/Light Mode Contrast', () => {
+test.describe('Dark/Light Mode Contrast @visual', () => {
   test('dark theme has dark background', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');

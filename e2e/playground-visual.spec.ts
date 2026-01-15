@@ -30,7 +30,7 @@ const examples = [
   { name: 'jekyll', path: '/examples/jekyll/index.html' },
 ];
 
-test.describe('Example Visual Regression', () => {
+test.describe('Example Visual Regression @visual', () => {
   for (const example of examples) {
     test.describe(example.name, () => {
       for (const theme of themes) {
@@ -62,7 +62,7 @@ test.describe('Example Visual Regression', () => {
   }
 });
 
-test.describe('Theme Selector Component', () => {
+test.describe('Theme Selector Component @visual', () => {
   const selectorThemes = ['catppuccin-mocha', 'dracula'];
 
   for (const theme of selectorThemes) {
