@@ -16,6 +16,7 @@ permissions:
 
 env:
   NODE_VERSION: 22
+  PLAYWRIGHT_SNAPSHOT_DIR: snapshots
 
 jobs:
   generate-snapshots:
