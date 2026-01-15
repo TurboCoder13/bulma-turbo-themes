@@ -316,11 +316,7 @@ describe('tokens/react-native/ThemeProvider', () => {
     });
 
     it('allows custom theme overrides', () => {
-      const theme = getDefaultThemeForAppearance(
-        'dark',
-        'github-light',
-        'github-dark'
-      );
+      const theme = getDefaultThemeForAppearance('dark', 'github-light', 'github-dark');
       expect(theme).toBe('github-dark');
     });
   });
@@ -404,17 +400,13 @@ describe('tokens/react-native/useSystemAppearance', () => {
 
     it('uses fallback when hook returns null', () => {
       const mockColorScheme = vi.fn(() => null);
-      const { result } = renderHook(() =>
-        useSystemAppearance(mockColorScheme, 'light')
-      );
+      const { result } = renderHook(() => useSystemAppearance(mockColorScheme, 'light'));
       expect(result.current).toBe('light');
     });
 
     it('uses fallback when hook returns undefined', () => {
       const mockColorScheme = vi.fn(() => undefined);
-      const { result } = renderHook(() =>
-        useSystemAppearance(mockColorScheme, 'dark')
-      );
+      const { result } = renderHook(() => useSystemAppearance(mockColorScheme, 'dark'));
       expect(result.current).toBe('dark');
     });
   });
@@ -447,17 +439,13 @@ describe('tokens/react-native/useSystemAppearance', () => {
     it('returns all dark themes', () => {
       const darkThemes = getAvailableThemesForAppearance('dark');
       expect(darkThemes).toContain('catppuccin-mocha');
-      expect(darkThemes.every((id) => getTheme(id)?.appearance === 'dark')).toBe(
-        true
-      );
+      expect(darkThemes.every((id) => getTheme(id)?.appearance === 'dark')).toBe(true);
     });
 
     it('returns all light themes', () => {
       const lightThemes = getAvailableThemesForAppearance('light');
       expect(lightThemes).toContain('catppuccin-latte');
-      expect(
-        lightThemes.every((id) => getTheme(id)?.appearance === 'light')
-      ).toBe(true);
+      expect(lightThemes.every((id) => getTheme(id)?.appearance === 'light')).toBe(true);
     });
   });
 

@@ -1,6 +1,6 @@
 import { test, expect } from './fixtures';
 import { takeScreenshotWithHighlight, takeScreenshotWithMultipleHighlights } from './helpers';
-import { BasePage } from './pages/BasePage';
+import type { BasePage } from './pages/BasePage';
 
 /**
  * Navigation smoke tests.

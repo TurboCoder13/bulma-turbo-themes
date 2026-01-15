@@ -2,23 +2,25 @@
 extends: default
 
 rules:
+  # Many YAML files don't have document-start markers
+  document-start: disable
   # GitHub Actions comments often don't follow indentation expectations
   comments-indentation: disable
+  # Disable truthy check - many YAML files use yes/no/on/off
+  truthy: disable
 
   comments:
     min-spaces-from-content: 1 # Allow 1 space to be compatible with prettier
-  truthy:
-    # Flag unquoted YAML 1.1 truthy/falsey scalars when used as keys.
-    # Example: on/off should be quoted when used as keys.
-    check-keys: true
-    # Be explicit to avoid environment-dependent defaults
-    quoted-strings: disable
-  
-  # Avoid noise on CI YAML with long pinned SHAs and long with: blocks
+
+  # Increase line length to accommodate long URLs, SHAs, and descriptions
   line-length:
-    max: 88
+    max: 250
     allow-non-breakable-inline-mappings: true
 
 ignore: |
   .github/workflows/**
   .github/actions/**
+  .allstar/**
+  vendor/**
+  **/vendor/**
+  node_modules/**

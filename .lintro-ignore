@@ -6,6 +6,7 @@ _site/*
 
 # Ruby/Bundler generated content
 vendor/**
+**/vendor/**
 .bundle/**
 
 # Node.js dependencies
@@ -14,6 +15,7 @@ node_modules/**
 # Build artifacts
 dist/**
 coverage/**
+**/.build/**
 
 # Cache directories
 .jekyll-cache/**
@@ -21,12 +23,21 @@ coverage/**
 .jekyll-metadata
 playwright/.cache/**
 .lintro/**
+.pytest_cache/**
 
 # Test and report artifacts
 test-results/**
 playwright-report/**
 lighthouse-reports/**
 e2e/snapshots/**
+rspec-coverage/**
 
 # Generated badges
 assets/static/badges/**
+
+# Generated/built site content
+**/.astro/**
+apps/site/public/**
+
+# Minified files
+assets/js/*.min.js

@@ -74,9 +74,7 @@ export function getTokens(id: string): ThemeTokens | undefined {
  * @param appearance - 'light' or 'dark'
  * @returns Array of matching theme flavors
  */
-export function getThemesByAppearance(
-  appearance: 'light' | 'dark'
-): readonly ThemeFlavor[] {
+export function getThemesByAppearance(appearance: 'light' | 'dark'): readonly ThemeFlavor[] {
   return flavors.filter((f) => f.appearance === appearance);
 }
 
@@ -97,6 +95,4 @@ export const themeIds: readonly string[] = flavors.map((f) => f.id);
 /**
  * List of all available vendors
  */
-export const vendors: readonly string[] = [
-  ...new Set(flavors.map((f) => f.vendor)),
-];
+export const vendors: readonly string[] = [...new Set(flavors.map((f) => f.vendor))];

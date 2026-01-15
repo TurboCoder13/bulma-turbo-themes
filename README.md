@@ -181,9 +181,7 @@ function MyComponent() {
   return (
     <View style={styles.container}>
       <Text style={styles.h1}>{theme.label}</Text>
-      <Text style={[styles.text, { color: colors.brandPrimary }]}>
-        Primary color text
-      </Text>
+      <Text style={[styles.text, { color: colors.brandPrimary }]}>Primary color text</Text>
     </View>
   );
 }
@@ -192,7 +190,10 @@ function MyComponent() {
 #### With ThemeProvider (Recommended)
 
 ```tsx
-import { ThemeProvider, useThemeContext } from '@turbocoder13/bulma-turbo-themes/tokens/react-native';
+import {
+  ThemeProvider,
+  useThemeContext,
+} from '@turbocoder13/bulma-turbo-themes/tokens/react-native';
 import { useColorScheme } from 'react-native';
 
 // Wrap your app with ThemeProvider
@@ -227,12 +228,12 @@ function MyApp() {
 
 #### Available Exports
 
-| Import Path | Use Case |
-|-------------|----------|
-| `@turbocoder13/bulma-turbo-themes/tokens` | Platform-agnostic tokens (pure data) |
+| Import Path                                            | Use Case                                   |
+| ------------------------------------------------------ | ------------------------------------------ |
+| `@turbocoder13/bulma-turbo-themes/tokens`              | Platform-agnostic tokens (pure data)       |
 | `@turbocoder13/bulma-turbo-themes/tokens/react-native` | React Native utilities, hooks, and context |
-| `@turbocoder13/bulma-turbo-themes/tokens.json` | JSON tokens for Flutter, Swift, Kotlin |
-| `@turbocoder13/bulma-turbo-themes/css/*` | CSS files for web |
+| `@turbocoder13/bulma-turbo-themes/tokens.json`         | JSON tokens for Flutter, Swift, Kotlin     |
+| `@turbocoder13/bulma-turbo-themes/css/*`               | CSS files for web                          |
 
 #### Pre-built Styles
 
