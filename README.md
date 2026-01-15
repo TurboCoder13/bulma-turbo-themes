@@ -18,9 +18,27 @@ Universal, accessible theme packs and a drop-in theme selector.
 [![npm](https://img.shields.io/npm/v/%40turbocoder13%2Fturbo-themes)](https://www.npmjs.com/package/@turbocoder13/turbo-themes)
 [![RubyGems](https://img.shields.io/gem/v/turbo-themes.svg)](https://rubygems.org/gems/turbo-themes)
 
+[![Bulma](https://img.shields.io/badge/Bulma-00D1B2?style=flat&logo=bulma&logoColor=white)](https://bulma.io/)
+[![Catppuccin](https://img.shields.io/badge/Catppuccin-EBA0AC?style=flat)](https://catppuccin.com/)
+[![Dracula](https://img.shields.io/badge/Dracula-BD93F9?style=flat)](https://draculatheme.com/)
+[![GitHub Primer](https://img.shields.io/badge/GitHub_Primer-8B949E?style=flat&logo=github&logoColor=white)](https://primer.style/)
+
+## Included Theme Packs
+
+Built on [Bulma](https://bulma.io/) CSS framework with color palettes from these amazing
+projects:
+
+| Theme                                                                                                           | Variants                        | Source                                        |
+| --------------------------------------------------------------------------------------------------------------- | ------------------------------- | --------------------------------------------- |
+| <img src="./assets/img/catppuccin-logo-macchiato.png" width="20" height="20" alt="Catppuccin" /> **Catppuccin** | Mocha, Macchiato, Frappé, Latte | [catppuccin.com](https://catppuccin.com/)     |
+| <img src="./assets/img/dracula-logo.png" width="20" height="20" alt="Dracula" /> **Dracula**                    | Dark                            | [draculatheme.com](https://draculatheme.com/) |
+| <img src="./assets/img/github-logo-dark.png" width="20" height="20" alt="GitHub" /> **GitHub**                  | Light, Dark                     | [primer.style](https://primer.style/)         |
+| <img src="./assets/img/bulma-logo.png" width="20" height="20" alt="Bulma" /> **Bulma**                          | Light, Dark                     | [bulma.io](https://bulma.io/)                 |
+
 ## Features
 
-- Catppuccin, Dracula, GitHub (light/dark) flavor packs
+- **Catppuccin** (Mocha, Macchiato, Frappé, Latte), **Dracula**, **GitHub**
+  (light/dark), **Bulma** (light/dark) flavor packs
 - Accessible theme selector with keyboard and screen reader support
 - Inline or link-based CSS delivery; CSP-friendly
 - Tested with coverage, Lighthouse CI, and stylelint
@@ -30,7 +48,22 @@ Universal, accessible theme packs and a drop-in theme selector.
 
 ## Installation
 
-### For Jekyll Sites (Recommended)
+Install via Bun (recommended) or npm:
+
+```bash
+# Using Bun (recommended - 5-10x faster)
+bun add @turbocoder13/turbo-themes
+
+# Using npm
+npm install @turbocoder13/turbo-themes
+```
+
+### Advanced Theming
+
+For advanced customization options including custom breakpoints, spacing, shadows, and
+Bulma mixins, see the [Advanced Theming Guide](docs/ADVANCED-THEMING.md).
+
+### For Jekyll Sites
 
 Install as a Ruby gem:
 
@@ -53,72 +86,9 @@ bundle exec jekyll serve
 
 Assets are automatically available - no copying needed!
 
-### Advanced Theming
-
-For advanced customization options including custom breakpoints, spacing, shadows, and
-Bulma mixins, see the [Advanced Theming Guide](docs/ADVANCED-THEMING.md).
-
-### For Non-Jekyll Projects
-
-Install via Bun (recommended) or npm:
-
-```bash
-# Using Bun (recommended - 5-10x faster)
-bun add @turbocoder13/turbo-themes
-
-# Using npm
-npm install @turbocoder13/turbo-themes
-```
-
 ## Quick start
 
-### Jekyll Sites
-
-1. Install the gem (see above)
-2. Include CSS links in your layout:
-
-```html
-<link
-  id="theme-global-css"
-  rel="stylesheet"
-  href="{{ '/assets/css/themes/global.css' | relative_url }}"
-/>
-<link id="theme-flavor-css" rel="stylesheet" href="#" />
-```
-
-1. Add selector markup and initialize:
-
-```html
-<div class="navbar-item has-dropdown is-hoverable">
-  <button
-    class="navbar-link"
-    id="theme-flavor-trigger"
-    type="button"
-    aria-haspopup="true"
-    aria-expanded="false"
-    aria-controls="theme-flavor-menu"
-  >
-    <span class="icon is-small" id="theme-flavor-trigger-icon"></span>
-    Theme
-  </button>
-  <div
-    class="navbar-dropdown"
-    id="theme-flavor-menu"
-    aria-labelledby="theme-flavor-trigger"
-  >
-    <div class="dropdown-content" id="theme-flavor-items"></div>
-  </div>
-</div>
-<div class="select is-rounded is-small is-hidden">
-  <select id="theme-flavor-select" aria-label="Theme flavor" disabled></select>
-</div>
-```
-
-```html
-<script src="{{ '/assets/js/theme-selector.js' | relative_url }}"></script>
-```
-
-### Non-Jekyll Projects
+### JavaScript/TypeScript Projects
 
 1. Copy CSS files from `node_modules/@turbocoder13/turbo-themes/assets/css/themes/` to
    your project:
@@ -167,6 +137,52 @@ document.addEventListener('DOMContentLoaded', () => {
   initTheme(document, window);
   wireFlavorSelector(document, window);
 });
+```
+
+### Jekyll Sites
+
+1. Install the gem (see above)
+2. Include CSS links in your layout:
+
+```html
+<link
+  id="theme-global-css"
+  rel="stylesheet"
+  href="{{ '/assets/css/themes/global.css' | relative_url }}"
+/>
+<link id="theme-flavor-css" rel="stylesheet" href="#" />
+```
+
+1. Add selector markup and initialize:
+
+```html
+<div class="navbar-item has-dropdown is-hoverable">
+  <button
+    class="navbar-link"
+    id="theme-flavor-trigger"
+    type="button"
+    aria-haspopup="true"
+    aria-expanded="false"
+    aria-controls="theme-flavor-menu"
+  >
+    <span class="icon is-small" id="theme-flavor-trigger-icon"></span>
+    Theme
+  </button>
+  <div
+    class="navbar-dropdown"
+    id="theme-flavor-menu"
+    aria-labelledby="theme-flavor-trigger"
+  >
+    <div class="dropdown-content" id="theme-flavor-items"></div>
+  </div>
+</div>
+<div class="select is-rounded is-small is-hidden">
+  <select id="theme-flavor-select" aria-label="Theme flavor" disabled></select>
+</div>
+```
+
+```html
+<script src="{{ '/assets/js/theme-selector.js' | relative_url }}"></script>
 ```
 
 ### Python (PyPI)
@@ -266,7 +282,7 @@ For detailed E2E testing documentation, see `docs/E2E-TESTING.md`.
 
 - **Bun** 1.3+ (recommended) - [Install Bun](https://bun.sh/docs/installation)
 - **Node.js** 22+ (alternative)
-- **Ruby** 3.3+ with Bundler (for Jekyll demo site)
+- **Ruby** 3.3+ with Bundler (for gem build and Jekyll example)
 
 ### Quick Start
 

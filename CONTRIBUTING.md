@@ -8,7 +8,7 @@ Thanks for contributing! Please follow these guidelines to keep things smooth.
 
 - **Bun** (recommended): 1.3+ - [Install Bun](https://bun.sh/docs/installation)
 - **Node.js** (alternative): 22+ with npm
-- **Ruby**: 3.3+ with Bundler (for Jekyll demo site)
+- **Ruby**: 3.3+ with Bundler (for gem build and Jekyll example)
 - **uv**: Python package manager (required for linting) -
   [Install uv](https://docs.astral.sh/uv/getting-started/installation/)
 
@@ -43,12 +43,12 @@ npm run serve
 
 ### Build Commands
 
-| Command                   | Description                                      |
-| ------------------------- | ------------------------------------------------ |
-| `bun run build`           | Compile TypeScript to JavaScript                 |
-| `bun run build:themes`    | Generate CSS theme files in `assets/css/themes/` |
-| `bun run build:ci:jekyll` | Build Jekyll site for CI                         |
-| `bun run serve`           | Build and serve with live reload                 |
+| Command                 | Description                                      |
+| ----------------------- | ------------------------------------------------ |
+| `bun run build`         | Compile TypeScript to JavaScript                 |
+| `bun run build:themes`  | Generate CSS theme files in `assets/css/themes/` |
+| `bun run build:ci:site` | Build Astro site for CI                          |
+| `bun run serve`         | Build and serve with live reload                 |
 
 **Note:** CSS theme files in `assets/css/themes/` are build artifacts and are
 git-ignored. They are automatically generated during the build process and should not be
