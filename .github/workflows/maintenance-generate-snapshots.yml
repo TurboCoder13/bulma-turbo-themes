@@ -1,0 +1,58 @@
+---
+name: Maintenance - Generate E2E Snapshots
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to generate snapshots for'
+        required: true
+        default: 'main'
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  NODE_VERSION: 22
+  PLAYWRIGHT_SNAPSHOT_DIR: snapshots
+
+jobs:
+  generate-snapshots:
+    name: Generate Linux Snapshots
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          node-version: '${{ env.NODE_VERSION }}'
+          skip-ruby: 'false'
+
+      - name: Install Playwright browsers
+        run: bun run e2e:install
+
+      - name: Build site
+        run: bun run e2e:prep
+
+      - name: Generate snapshots
+        run: bun run e2e --update-snapshots --grep @visual
+
+      - name: Upload Linux snapshots
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: e2e-snapshots-linux
+          path: e2e/snapshots/linux/
+          retention-days: 30
+          if-no-files-found: error

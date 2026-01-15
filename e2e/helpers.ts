@@ -1,4 +1,4 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from '@playwright/test';
 
 /**
  * Escapes a string for safe use in CSS attribute selectors.

@@ -493,14 +493,14 @@ input[type='file']::file-selector-button:hover {
       border-color: var(--theme-table-border, $theme-table-border);
 
       &:hover {
-  background-color: var(--theme-table-stripe, $theme-table-stripe);
+        background-color: var(--theme-table-stripe, $theme-table-stripe);
       }
     }
   }
 
   td,
   th {
-  border-color: var(--theme-table-border, $theme-table-border);
+    border-color: var(--theme-table-border, $theme-table-border);
     color: var(--theme-text, $theme-text);
   }
 
@@ -524,11 +524,14 @@ input[type='file']::file-selector-button:hover {
   background-color: var(--theme-card-bg, var(--theme-surface-1, $theme-surface-1));
   border: 1px solid var(--theme-card-border, var(--theme-table-border, $theme-table-border));
   border-radius: var(--bulma-radius-large, 0.5rem);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.1);
 
   .card-header {
     background-color: var(--theme-card-header-bg, var(--theme-surface-2, $theme-surface-2));
-    border-bottom: 1px solid var(--theme-card-border, var(--theme-table-border, $theme-table-border));
+    border-bottom: 1px solid
+      var(--theme-card-border, var(--theme-table-border, $theme-table-border));
     box-shadow: none;
 
     .card-header-title {
@@ -593,7 +596,8 @@ input[type='file']::file-selector-button:hover {
     .message-body {
       color: var(--theme-message-body-fg, var(--theme-text, $theme-text));
       border-color: transparent;
-      border-left: 4px solid var(--theme-message-border, var(--theme-table-border, $theme-table-border));
+      border-left: 4px solid
+        var(--theme-message-border, var(--theme-table-border, $theme-table-border));
     }
   }
 
@@ -622,14 +626,16 @@ input[type='file']::file-selector-button:hover {
   .panel-heading {
     background-color: var(--theme-panel-header-bg, var(--theme-surface-2, $theme-surface-2));
     color: var(--theme-panel-header-fg, var(--theme-text, $theme-text));
-    border-bottom: 1px solid var(--theme-panel-border, var(--theme-table-border, $theme-table-border));
+    border-bottom: 1px solid
+      var(--theme-panel-border, var(--theme-table-border, $theme-table-border));
     border-radius: var(--bulma-radius, 0.375rem) var(--bulma-radius, 0.375rem) 0 0;
     font-weight: 600;
     font-size: 1.1em;
   }
 
   .panel-tabs {
-    border-bottom: 1px solid var(--theme-panel-border, var(--theme-table-border, $theme-table-border));
+    border-bottom: 1px solid
+      var(--theme-panel-border, var(--theme-table-border, $theme-table-border));
 
     a {
       color: var(--theme-text-muted, $theme-text-muted);
@@ -650,14 +656,18 @@ input[type='file']::file-selector-button:hover {
   .panel-block {
     background-color: var(--theme-panel-block-bg, var(--theme-surface-1, $theme-surface-1));
     color: var(--theme-text, $theme-text);
-    border-bottom: 1px solid var(--theme-panel-border, var(--theme-table-border, $theme-table-border));
+    border-bottom: 1px solid
+      var(--theme-panel-border, var(--theme-table-border, $theme-table-border));
 
     &:hover {
       background-color: var(--theme-panel-block-hover-bg, var(--theme-surface-2, $theme-surface-2));
     }
 
     &.is-active {
-      background-color: var(--theme-panel-block-active-bg, color-mix(in srgb, var(--theme-link, $theme-link) 15%, transparent));
+      background-color: var(
+        --theme-panel-block-active-bg,
+        color-mix(in srgb, var(--theme-link, $theme-link) 15%, transparent)
+      );
       color: var(--theme-link, $theme-link);
       border-left: 3px solid var(--theme-link, $theme-link);
 
@@ -685,7 +695,9 @@ input[type='file']::file-selector-button:hover {
   background-color: var(--theme-box-bg, var(--theme-surface-1, $theme-surface-1));
   border: 1px solid var(--theme-box-border, var(--theme-table-border, $theme-table-border));
   color: var(--theme-text, $theme-text);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 // ============================================================================
@@ -697,9 +709,12 @@ input[type='file']::file-selector-button:hover {
 
 .notification {
   // Default (non-semantic) notification styling uses theme tokens
-  &:not(.is-primary):not(.is-link):not(.is-info):not(.is-success):not(.is-warning):not(.is-danger):not(.is-light):not(.is-dark) {
+  &:not(.is-primary):not(.is-link):not(.is-info):not(.is-success):not(.is-warning):not(
+      .is-danger
+    ):not(.is-light):not(.is-dark) {
     background-color: var(--theme-notification-bg, var(--theme-surface-1, $theme-surface-1));
-    border: 1px solid var(--theme-notification-border, var(--theme-table-border, $theme-table-border));
+    border: 1px solid
+      var(--theme-notification-border, var(--theme-table-border, $theme-table-border));
     color: var(--theme-text, $theme-text);
 
     .delete {
@@ -772,7 +787,10 @@ input[type='file']::file-selector-button:hover {
       color: var(--theme-text, $theme-text);
 
       &:hover {
-        background-color: var(--theme-dropdown-item-hover-bg, var(--theme-surface-2, $theme-surface-2));
+        background-color: var(
+          --theme-dropdown-item-hover-bg,
+          var(--theme-surface-2, $theme-surface-2)
+        );
         color: var(--theme-link, $theme-link);
       }
 
@@ -788,7 +806,10 @@ input[type='file']::file-selector-button:hover {
 
     a.dropdown-item {
       &:hover {
-        background-color: var(--theme-dropdown-item-hover-bg, var(--theme-surface-2, $theme-surface-2));
+        background-color: var(
+          --theme-dropdown-item-hover-bg,
+          var(--theme-surface-2, $theme-surface-2)
+        );
         color: var(--theme-link, $theme-link);
       }
     }
@@ -826,7 +847,10 @@ input[type='file']::file-selector-button:hover {
 
       &:hover {
         background-color: var(--theme-tabs-link-hover-bg, var(--theme-surface-2, $theme-surface-2));
-        border-bottom-color: var(--theme-tabs-border, var(--theme-table-border, $theme-table-border));
+        border-bottom-color: var(
+          --theme-tabs-border,
+          var(--theme-table-border, $theme-table-border)
+        );
       }
     }
 

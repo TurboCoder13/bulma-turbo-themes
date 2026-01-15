@@ -143,7 +143,9 @@ function generateThemeCSSVariables(flavor: ThemeFlavor): string {
   /* Table component tokens (with fallbacks) */
   --theme-table-cell-bg: ${tokens.content.table.cellBg ?? tokens.background.base};
   --theme-table-header-fg: ${tokens.content.table.headerFg ?? tokens.text.primary};
-${tokens.components ? `  /* Card component tokens */
+${
+  tokens.components
+    ? `  /* Card component tokens */
   --theme-card-bg: ${tokens.components.card?.bg ?? tokens.background.surface};
   --theme-card-border: ${tokens.components.card?.border ?? tokens.border.default};
   --theme-card-header-bg: ${tokens.components.card?.headerBg ?? tokens.background.overlay};
@@ -181,7 +183,9 @@ ${tokens.components ? `  /* Card component tokens */
   --theme-tabs-link-bg: ${tokens.components.tabs?.linkBg ?? tokens.background.surface};
   --theme-tabs-link-active-bg: ${tokens.components.tabs?.linkActiveBg ?? tokens.background.base};
   --theme-tabs-link-hover-bg: ${tokens.components.tabs?.linkHoverBg ?? tokens.background.overlay};
-` : ''}  color-scheme: ${flavor.appearance};
+`
+    : ''
+}  color-scheme: ${flavor.appearance};
 }`;
 }
 

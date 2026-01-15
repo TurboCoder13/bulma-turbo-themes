@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import {
@@ -106,10 +106,7 @@ describe('ThemeProvider', () => {
     it('calls onThemeChange callback when theme changes', () => {
       const onThemeChange = vi.fn();
       const wrapper = ({ children }: { children: React.ReactNode }) => (
-        <ThemeProvider
-          initialTheme="catppuccin-mocha"
-          onThemeChange={onThemeChange}
-        >
+        <ThemeProvider initialTheme="catppuccin-mocha" onThemeChange={onThemeChange}>
           {children}
         </ThemeProvider>
       );
@@ -172,11 +169,7 @@ describe('ThemeProvider', () => {
     it('initialTheme overrides followSystem', () => {
       const mockColorScheme = vi.fn(() => 'light' as const);
       const wrapper = ({ children }: { children: React.ReactNode }) => (
-        <ThemeProvider
-          initialTheme="dracula"
-          followSystem
-          useColorScheme={mockColorScheme}
-        >
+        <ThemeProvider initialTheme="dracula" followSystem useColorScheme={mockColorScheme}>
           {children}
         </ThemeProvider>
       );
@@ -319,4 +312,3 @@ describe('createThemeCycler', () => {
     }
   });
 });
-

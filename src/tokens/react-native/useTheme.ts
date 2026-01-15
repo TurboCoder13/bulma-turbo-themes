@@ -149,9 +149,5 @@ export function useTheme(themeId: string): {
   const styles = useThemeStyles(themeId);
   const tokens = useThemeTokens(themeId);
 
-  return useMemo(
-    () => ({ theme, colors, styles, tokens }),
-    [theme, colors, styles, tokens]
-  );
+  return useMemo(() => ({ theme, colors, styles, tokens }), [theme, colors, styles, tokens]);
 }
-

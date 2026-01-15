@@ -3,6 +3,20 @@ build
 dist
 node_modules
 .venv
+vendor
+**/vendor
+.pytest_cache
+coverage
+playwright-report
+test-results
+_site
+.lintro
+**/.build
+**/.astro
+
+# Generated/minified files
+assets/js/*.min.js
+rspec-coverage
 
 # Ignore generated CSS and SCSS files (they're build artifacts)
 assets/css/themes/*.css

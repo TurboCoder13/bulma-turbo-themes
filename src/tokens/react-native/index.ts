@@ -43,12 +43,7 @@
  */
 
 // Colors - flattened color palettes
-export {
-  flattenTokens,
-  getColorPalette,
-  palettes,
-  type FlatColorPalette,
-} from './colors.js';
+export { flattenTokens, getColorPalette, palettes, type FlatColorPalette } from './colors.js';
 
 // Styles - pre-built component styles
 export {
@@ -107,4 +102,3 @@ export {
   type ThemeTokens,
   type ThemePackage,
 } from '../index.js';
-
