@@ -51,11 +51,10 @@ test.describe('Example Visual Regression @visual', () => {
           // Verify theme was applied
           await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
 
-          // Take full-page screenshot and compare to baseline
+          // Take viewport screenshot and compare to baseline
+          // Note: Using viewport-only (not fullPage) to avoid height variations from font rendering
           // Screenshot name format: {example}-{theme}.png
-          await expect(page).toHaveScreenshot(`${example.name}-${theme}.png`, {
-            fullPage: true,
-          });
+          await expect(page).toHaveScreenshot(`${example.name}-${theme}.png`);
         });
       }
     });

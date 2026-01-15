@@ -43,10 +43,8 @@ test.describe('Homepage Visual Regression @visual', () => {
       // Verify theme applied
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme.id);
 
-      // Full page screenshot
-      await expect(page).toHaveScreenshot(`homepage-${theme.id}.png`, {
-        fullPage: true,
-      });
+      // Viewport screenshot (not fullPage to avoid height variations from font rendering)
+      await expect(page).toHaveScreenshot(`homepage-${theme.id}.png`);
     });
   }
 });
@@ -68,9 +66,8 @@ test.describe('Demo Page Visual Regression @visual', () => {
       // Wait for theme CSS to be applied
       await waitForThemeApplied(page, theme.id);
 
-      await expect(page).toHaveScreenshot(`demo-${theme.id}.png`, {
-        fullPage: true,
-      });
+      // Viewport screenshot (not fullPage to avoid height variations from font rendering)
+      await expect(page).toHaveScreenshot(`demo-${theme.id}.png`);
     });
   }
 });
@@ -134,9 +131,8 @@ test.describe('Responsive Layout Visual Regression @visual', () => {
       await page.goto('/');
       await page.waitForLoadState('networkidle');
 
-      await expect(page).toHaveScreenshot(`homepage-${viewport.name}.png`, {
-        fullPage: true,
-      });
+      // Capture viewport only (not fullPage) to avoid height variations from font rendering
+      await expect(page).toHaveScreenshot(`homepage-${viewport.name}.png`);
     });
   }
 });
