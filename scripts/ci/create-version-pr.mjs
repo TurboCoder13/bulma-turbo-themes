@@ -8,7 +8,7 @@
  * Usage: node scripts/ci/create-version-pr.mjs [--dry-run]
  */
 
-import { execSync } from 'child_process';
+import { execSync, execFileSync } from 'child_process';
 import { readFileSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -413,7 +413,7 @@ function main() {
 
     // Run sync-version.mjs to update all platform packages
     // This syncs: package.json, Python, Ruby, Swift, Dart, Kotlin
-    execSync(`node ${CONFIG.syncScript}`, { cwd: projectRoot, stdio: 'inherit' });
+    execFileSync('node', [CONFIG.syncScript], { cwd: projectRoot, stdio: 'inherit' });
     console.log(`🔄 Synced version across all platforms`);
 
     // Update CHANGELOG.md
