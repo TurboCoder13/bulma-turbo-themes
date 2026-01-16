@@ -143,6 +143,9 @@ jobs:
             github.com:443
             objects.githubusercontent.com:443
             registry.npmjs.org:443
+            fulcio.sigstore.dev:443
+            rekor.sigstore.dev:443
+            tuf-repo-cdn.sigstore.dev:443
 
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
@@ -159,10 +162,8 @@ jobs:
           node-version: '22'
           registry-url: https://registry.npmjs.org
 
-      - name: Publish to npm
+      - name: Publish to npm (OIDC)
         run: npm publish ./*.tgz --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Summary
         run: |
