@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    turbo-themes (0.12.5)
+    turbo-themes (0.12.6)
       jekyll (>= 3.5, < 5.0)
 
 GEM
