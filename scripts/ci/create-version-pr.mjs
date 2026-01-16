@@ -381,9 +381,8 @@ function main() {
     return;
   }
 
-  // Calculate next version
-  const packageContent = JSON.parse(readFileSync(CONFIG.packageFile, 'utf8'));
-  const currentVersion = packageContent.version;
+  // Calculate next version from VERSION file (source of truth)
+  const currentVersion = readFileSync(CONFIG.versionFile, 'utf8').trim();
   const nextVersion = calculateNextVersion(currentVersion, bumpType);
 
   console.log(`📈 Version bump: ${currentVersion} → ${nextVersion}`);
@@ -425,17 +424,8 @@ function main() {
     writeFileSync(CONFIG.changelogFile, updatedContent);
     console.log(`📝 Updated CHANGELOG.md`);
 
-    // Commit changes - include all version-synced files
-    const filesToAdd = [
-      'VERSION',
-      'package.json',
-      'CHANGELOG.md',
-      'lib/turbo-themes/version.rb',
-      'python/pyproject.toml',
-      'python/src/turbo_themes/__init__.py',
-      'swift/Sources/TurboThemes/Version.swift',
-    ];
-    execSync(`git add ${filesToAdd.join(' ')}`, { cwd: projectRoot });
+    // Stage all modified tracked files produced by sync-version.mjs
+    execSync('git add -u', { cwd: projectRoot });
     execSync(`git commit --no-verify -m "chore(release): version ${nextVersion}"`, {
       cwd: projectRoot,
     });
