@@ -94,7 +94,8 @@ jobs:
         id: checksum
         run: |
           npm pack --dry-run 2>&1 | tee pack-output.txt
-          TARBALL=$(npm pack 2>/dev/null)
+          # Use tail -1 to get only the tarball name, ignoring prepare script output
+          TARBALL=$(npm pack 2>/dev/null | tail -1)
           SHA256=$(sha256sum "$TARBALL" | cut -d' ' -f1)
           echo "sha256=$SHA256" >> "$GITHUB_OUTPUT"
           echo "tarball=$TARBALL" >> "$GITHUB_OUTPUT"

@@ -43,6 +43,7 @@ jobs:
         uses: ./.github/actions/setup-env
         with:
           node-version: 22
+          skip-ruby: true
 
       - name: Build JS + generate types
         run: bun run build && bun run generate:all
