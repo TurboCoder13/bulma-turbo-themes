@@ -15,7 +15,7 @@ const __dirname = dirname(__filename);
 const rootDir = join(__dirname, '..');
 
 /**
- * Check if dist is already built (has index.html)
+ * Check if dist is already built (has index.html).
  */
 function isSiteBuilt() {
   return existsSync(join(rootDir, 'apps', 'site', 'dist', 'index.html'));

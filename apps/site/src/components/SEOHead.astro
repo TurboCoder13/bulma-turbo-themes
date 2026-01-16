@@ -9,7 +9,16 @@ interface Props {
   image?: string;
 }
 
-const { title, description, image = '/assets/img/turbo-themes-logo.png' } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+const siteOrigin = Astro.site?.origin ?? 'https://turbocoder13.github.io';
+const defaultImage = `${siteOrigin}${baseUrl}/assets/img/turbo-themes-logo.png`;
+const { title, description, image: propImage } = Astro.props;
+// Ensure image is always an absolute URL
+const image = propImage
+  ? propImage.startsWith('http')
+    ? propImage
+    : `${siteOrigin}${propImage.startsWith('/') ? '' : baseUrl + '/'}${propImage}`
+  : defaultImage;
 ---
 
 <meta name="description" content={description} />

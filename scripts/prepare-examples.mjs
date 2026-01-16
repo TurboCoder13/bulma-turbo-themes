@@ -19,6 +19,34 @@ const copyDir = (from, to) => {
 };
 
 /**
+ * Copy turbo-themes CSS files to a target directory
+ * @param {string} targetDir - The target directory
+ * @param {string} destSubdir - Subdirectory name for CSS files (default: 'turbo-themes')
+ */
+const copyTurboThemesCss = (targetDir, destSubdir = 'turbo-themes') => {
+  const cssSrc = join(rootDir, 'packages', 'css', 'dist');
+  const cssDest = join(targetDir, destSubdir);
+
+  if (existsSync(cssSrc)) {
+    mkdirSync(cssDest, { recursive: true });
+    // Copy core and base CSS
+    for (const file of ['turbo-core.css', 'turbo-base.css']) {
+      const src = join(cssSrc, file);
+      if (existsSync(src)) {
+        cpSync(src, join(cssDest, file));
+      }
+    }
+    // Copy themes directory
+    const themesDir = join(cssSrc, 'themes');
+    if (existsSync(themesDir)) {
+      cpSync(themesDir, join(cssDest, 'themes'), { recursive: true });
+    }
+  } else {
+    console.warn(`⚠️  turbo-themes CSS not found at ${cssSrc}`);
+  }
+};
+
+/**
  * Copy only the dist folder of a built example
  */
 const copyBuiltExample = (exampleName) => {
@@ -29,6 +57,8 @@ const copyBuiltExample = (exampleName) => {
     console.log(`Copying built ${exampleName} example...`);
     mkdirSync(targetDir, { recursive: true });
     cpSync(distDir, targetDir, { recursive: true });
+    // Copy turbo-themes CSS to the example
+    copyTurboThemesCss(targetDir);
     return true;
   }
   return false;
@@ -81,23 +111,7 @@ try {
     copyDir(htmlVanilla, htmlVanillaTarget);
 
     // Copy turbo-themes CSS to html-vanilla example
-    const cssSrc = join(rootDir, 'packages', 'css', 'dist');
-    const cssDest = join(htmlVanillaTarget, 'turbo-themes');
-    if (existsSync(cssSrc)) {
-      mkdirSync(cssDest, { recursive: true });
-      // Copy core and base CSS
-      for (const file of ['turbo-core.css', 'turbo-base.css']) {
-        const src = join(cssSrc, file);
-        if (existsSync(src)) {
-          cpSync(src, join(cssDest, file));
-        }
-      }
-      // Copy themes directory
-      const themesDir = join(cssSrc, 'themes');
-      if (existsSync(themesDir)) {
-        cpSync(themesDir, join(cssDest, 'themes'), { recursive: true });
-      }
-    }
+    copyTurboThemesCss(htmlVanillaTarget);
 
     // Update index.html paths from ../../packages/css/dist to ./turbo-themes
     const indexPath = join(htmlVanillaTarget, 'index.html');
@@ -180,23 +194,9 @@ try {
     }
 
     // Copy turbo-themes CSS to Jekyll example's assets (if Jekyll was built)
-    const cssSrc = join(rootDir, 'packages', 'css', 'dist');
-    const cssDest = join(jekyllTarget, 'assets', 'css');
-    if (existsSync(cssSrc) && existsSync(jekyllTarget)) {
+    if (existsSync(jekyllTarget)) {
       console.log('Copying CSS to Jekyll assets...');
-      mkdirSync(cssDest, { recursive: true });
-      // Copy core and base CSS
-      for (const file of ['turbo-core.css', 'turbo-base.css']) {
-        const src = join(cssSrc, file);
-        if (existsSync(src)) {
-          cpSync(src, join(cssDest, file));
-        }
-      }
-      // Copy themes directory
-      const themesDir = join(cssSrc, 'themes');
-      if (existsSync(themesDir)) {
-        cpSync(themesDir, join(cssDest, 'themes'), { recursive: true });
-      }
+      copyTurboThemesCss(join(jekyllTarget, 'assets'), 'css');
     }
   }
 

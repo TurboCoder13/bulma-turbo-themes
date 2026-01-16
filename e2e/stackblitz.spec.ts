@@ -4,14 +4,14 @@ import { expect, test } from '@playwright/test';
  * StackBlitz E2E tests.
  *
  * Tests that StackBlitz templates load correctly and function as expected.
- * These tests are skipped in CI as they require external network access.
+ * These tests are skipped by default as they require external network access.
  *
- * To run locally:
- *   bunx playwright test e2e/stackblitz.spec.ts
+ * To run these tests explicitly:
+ *   RUN_EXTERNAL=1 bunx playwright test e2e/stackblitz.spec.ts
  */
 
-// Skip all tests in CI - StackBlitz requires external network
-test.skip(!!process.env.CI, 'StackBlitz tests require external network access');
+// Skip external tests by default - requires explicit opt-in via RUN_EXTERNAL=1
+test.skip(!process.env.RUN_EXTERNAL, 'StackBlitz tests require RUN_EXTERNAL=1 (external network access)');
 
 // StackBlitz base URL for GitHub projects
 const STACKBLITZ_BASE = 'https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz';

@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Code } from 'astro:components';
 
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const installNpm = `npm install turbo-themes`;
 
 const installCdn = `<link rel="stylesheet" href="https://unpkg.com/turbo-themes/css/turbo-core.css" />
@@ -45,16 +46,16 @@ const previewCode = `const theme = {
         <span class="hero-theme-label">Try a theme:</span>
         <div class="hero-theme-options">
           <button class="hero-theme-btn" data-theme-preview="catppuccin-mocha" title="Catppuccin Mocha">
-            <img class="hero-theme-icon" src="/assets/img/catppuccin-logo-macchiato.png" alt="Catppuccin Mocha" width="28" height="28" />
+            <img class="hero-theme-icon" src={`${baseUrl}/assets/img/catppuccin-logo-macchiato.png`} alt="Catppuccin Mocha" width="28" height="28" />
           </button>
           <button class="hero-theme-btn" data-theme-preview="dracula" title="Dracula">
-            <img class="hero-theme-icon" src="/assets/img/dracula-logo.png" alt="Dracula" width="28" height="28" />
+            <img class="hero-theme-icon" src={`${baseUrl}/assets/img/dracula-logo.png`} alt="Dracula" width="28" height="28" />
           </button>
           <button class="hero-theme-btn" data-theme-preview="github-dark" title="GitHub Dark">
-            <img class="hero-theme-icon" src="/assets/img/github-logo-dark.png" alt="GitHub Dark" width="28" height="28" />
+            <img class="hero-theme-icon" src={`${baseUrl}/assets/img/github-logo-dark.png`} alt="GitHub Dark" width="28" height="28" />
           </button>
           <button class="hero-theme-btn" data-theme-preview="catppuccin-latte" title="Catppuccin Latte">
-            <img class="hero-theme-icon" src="/assets/img/catppuccin-logo-latte.png" alt="Catppuccin Latte" width="28" height="28" />
+            <img class="hero-theme-icon" src={`${baseUrl}/assets/img/catppuccin-logo-latte.png`} alt="Catppuccin Latte" width="28" height="28" />
           </button>
         </div>
         <a href="/themes/" class="hero-theme-more">View all</a>
