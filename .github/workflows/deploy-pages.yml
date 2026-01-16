@@ -104,8 +104,6 @@ jobs:
           allowed-endpoints: >
             api.github.com:443
             github.com:443
-            npmjs.org:443
-            registry.npmjs.org:443
             uploads.github.com:443
       - id: deployment
         # v4.0.5

@@ -39,6 +39,8 @@ const copyTurboThemesCss = (targetDir) => {
     if (existsSync(themesDir)) {
       cpSync(themesDir, join(cssDest, 'themes'), { recursive: true });
     }
+  } else {
+    console.warn(`⚠️  turbo-themes CSS not found at ${cssSrc}`);
   }
 };
 
