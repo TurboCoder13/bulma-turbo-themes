@@ -74,6 +74,8 @@ jobs:
         run: bun run build:themes
       - name: Build Astro site
         run: bun run build:ci:site
+        env:
+          ASTRO_BASE: /turbo-themes/
       - name: Download test artifacts
         if: github.event_name == 'workflow_run'
         env:
