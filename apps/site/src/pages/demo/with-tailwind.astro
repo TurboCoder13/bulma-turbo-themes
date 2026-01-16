@@ -3,18 +3,19 @@
  * Tailwind demo - Turbo Themes + Tailwind CSS.
  * Standalone page without the main site layout.
  */
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <!doctype html>
-<html lang="en" data-theme="catppuccin-mocha">
+<html lang="en" data-theme="catppuccin-mocha" data-baseurl={baseUrl}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Turbo Themes + Tailwind Demo</title>
 
     <!-- 1. Turbo Themes Core (defines CSS variables) -->
-    <link rel="stylesheet" href="/assets/css/turbo-core.css" />
-    <link id="turbo-theme-css" rel="stylesheet" href="/assets/css/themes/turbo/catppuccin-mocha.css" />
+    <link rel="stylesheet" href={`${baseUrl}/assets/css/turbo-core.css`} />
+    <link id="turbo-theme-css" rel="stylesheet" href={`${baseUrl}/assets/css/themes/turbo/catppuccin-mocha.css`} />
 
     <!-- 2. Tailwind CSS (CDN with custom config) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -54,10 +55,11 @@
     <script is:inline>
       (function() {
         var STORAGE_KEY = 'turbo-theme';
+        var baseUrl = document.documentElement.getAttribute('data-baseurl') || '';
         var savedTheme = localStorage.getItem(STORAGE_KEY) || 'catppuccin-mocha';
         document.documentElement.setAttribute('data-theme', savedTheme);
         var themeLink = document.getElementById('turbo-theme-css');
-        if (themeLink) themeLink.href = '/assets/css/themes/turbo/' + savedTheme + '.css';
+        if (themeLink) themeLink.href = baseUrl + '/assets/css/themes/turbo/' + savedTheme + '.css';
       })();
     </script>
   </head>
@@ -228,6 +230,7 @@
       const selector = document.getElementById('theme-selector');
       const themeLink = document.getElementById('turbo-theme-css');
       const STORAGE_KEY = 'turbo-theme';
+      const baseUrl = document.documentElement.getAttribute('data-baseurl') || '';
       const savedTheme = localStorage.getItem(STORAGE_KEY) || 'catppuccin-mocha';
       selector.value = savedTheme;
 
@@ -235,7 +238,7 @@
         const theme = e.target.value;
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem(STORAGE_KEY, theme);
-        themeLink.href = '/assets/css/themes/turbo/' + theme + '.css';
+        themeLink.href = baseUrl + '/assets/css/themes/turbo/' + theme + '.css';
       });
     </script>
   </body>

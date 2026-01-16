@@ -27,18 +27,31 @@ jobs:
         with:
           egress-policy: block
           allowed-endpoints: >
-            github.com:443 api.github.com:443 uploads.github.com:443
-            pipelines.actions.githubusercontent.com:443
-            results-receiver.actions.githubusercontent.com:443
-            objects.githubusercontent.com:443 codeload.github.com:443
-            github-releases.githubusercontent.com:443
-            release-assets.githubusercontent.com:443 registry.npmjs.org:443
-            npmjs.org:443 bun.sh:443 pypi.org:443 files.pythonhosted.org:443
-            packages.microsoft.com:443 azure.archive.ubuntu.com:443
-            archive.ubuntu.com:443 security.ubuntu.com:443 cdn.jsdelivr.net:443
-            bulma.io:443 www.google.com:443 android.clients.google.com:443
+            android.clients.google.com:443
+            api.github.com:443
+            archive.ubuntu.com:443
+            azure.archive.ubuntu.com:443
+            bulma.io:443
+            bun.sh:443
+            cdn.jsdelivr.net:443
             chrome-devtools-frontend.appspot.com:443
-            productionresultssa3.blob.core.windows.net:443 storage.googleapis.com:443
+            codeload.github.com:443
+            files.pythonhosted.org:443
+            github-releases.githubusercontent.com:443
+            github.com:443
+            npmjs.org:443
+            objects.githubusercontent.com:443
+            packages.microsoft.com:443
+            pipelines.actions.githubusercontent.com:443
+            productionresultssa3.blob.core.windows.net:443
+            pypi.org:443
+            registry.npmjs.org:443
+            release-assets.githubusercontent.com:443
+            results-receiver.actions.githubusercontent.com:443
+            security.ubuntu.com:443
+            storage.googleapis.com:443
+            uploads.github.com:443
+            www.google.com:443
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 

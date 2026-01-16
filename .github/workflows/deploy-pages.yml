@@ -39,10 +39,24 @@ jobs:
         with:
           egress-policy: block
           allowed-endpoints: >
-            github.com:443 api.github.com:443 objects.githubusercontent.com:443
-            codeload.github.com:443 github-releases.githubusercontent.com:443
-            release-assets.githubusercontent.com:443 registry.npmjs.org:443
-            npmjs.org:443 bun.sh:443 pypi.org:443 files.pythonhosted.org:443
+            api.github.com:443
+            api.rubygems.org:443
+            bun.sh:443
+            bundler.rubygems.org:443
+            cache.ruby-lang.org:443
+            codeload.github.com:443
+            files.pythonhosted.org:443
+            github-releases.githubusercontent.com:443
+            github.com:443
+            index.rubygems.org:443
+            npmjs.org:443
+            objects.githubusercontent.com:443
+            pypi.org:443
+            registry.npmjs.org:443
+            release-assets.githubusercontent.com:443
+            rubygems-downloads.global.ssl.fastly.net:443
+            rubygems.global.ssl.fastly.net:443
+            rubygems.org:443
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           ref:
@@ -60,6 +74,8 @@ jobs:
         run: bun run build:themes
       - name: Build Astro site
         run: bun run build:ci:site
+        env:
+          ASTRO_BASE: /turbo-themes/
       - name: Download test artifacts
         if: github.event_name == 'workflow_run'
         env:
@@ -86,8 +102,9 @@ jobs:
         with:
           egress-policy: block
           allowed-endpoints: >
-            github.com:443 api.github.com:443 uploads.github.com:443
-            registry.npmjs.org:443 npmjs.org:443
+            api.github.com:443
+            github.com:443
+            uploads.github.com:443
       - id: deployment
         # v4.0.5
         uses: actions/deploy-pages@854d7aa1b99e4509c4d1b53d69b7ba4eaf39215a

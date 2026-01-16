@@ -139,8 +139,13 @@ test.describe('Mobile Viewport @mobile', () => {
         TEST_THEMES.lightDefault
       );
 
-      const newBg = await getCssVariable(page, '--turbo-bg-base');
-      expect(newBg).not.toBe(initialBg);
+      // Wait for CSS variables to update after theme switch
+      await expect
+        .poll(async () => getCssVariable(page, '--turbo-bg-base'), {
+          message: 'Waiting for CSS variable to change after theme switch',
+          timeout: 5000,
+        })
+        .not.toBe(initialBg);
     });
   });
 
