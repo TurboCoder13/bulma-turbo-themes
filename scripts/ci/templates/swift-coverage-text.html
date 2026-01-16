@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swift Coverage Report</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 1rem;
+      }
+      h1 {
+        color: #333;
+      }
+      pre {
+        background: #f5f5f5;
+        padding: 1rem;
+        overflow-x: auto;
+        border-radius: 4px;
+      }
+      .note {
+        color: #666;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Swift Coverage Report</h1>
+    <p class="note">
+      Note: Full HTML report unavailable due to Xcode coverage format compatibility.
+      Text summary below.
+    </p>
+    <pre id="report"></pre>
+    <script>
+      fetch('coverage-report.txt')
+        .then((r) => r.text())
+        .then((text) => (document.getElementById('report').textContent = text))
+        .catch(
+          () =>
+            (document.getElementById('report').textContent =
+              'Failed to load coverage report')
+        );
+    </script>
+  </body>
+</html>

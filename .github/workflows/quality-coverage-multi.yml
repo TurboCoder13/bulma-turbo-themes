@@ -100,31 +100,7 @@ jobs:
         run: swift test --enable-code-coverage
 
       - name: Generate coverage report
-        working-directory: examples/swift-swiftui
-        run: |
-          rm -rf htmlcov && mkdir -p htmlcov
-
-          # Find the test binary (architecture may vary)
-          TEST_BINARY=$(find .build -name "TurboThemesPackageTests" -type f | head -1)
-          PROFDATA=$(find .build -name "default.profdata" -type f | head -1)
-
-          if [ -z "${TEST_BINARY}" ] || [ -z "${PROFDATA}" ]; then
-            echo "⚠️ Could not find test binary or profdata"
-            echo "Test binary: ${TEST_BINARY}"
-            echo "Profdata: ${PROFDATA}"
-            exit 0
-          fi
-
-          xcrun llvm-cov show \
-            "${TEST_BINARY}" \
-            -instr-profile="${PROFDATA}" \
-            -format=html \
-            -output-dir=htmlcov \
-            -show-branches=count \
-            -ignore-filename-regex='.*Tests.*' \
-            -ignore-filename-regex='.*/.build/.*' || true
-
-          echo "✅ Swift coverage report generated"
+        run: ./scripts/ci/generate-swift-coverage.sh examples/swift-swiftui
 
       - name: Upload coverage HTML report
         if: always()

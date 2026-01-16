@@ -47,11 +47,7 @@ jobs:
         id: guard
         run: |
           chmod +x scripts/ci/guard-release-commit.sh
-          if scripts/ci/guard-release-commit.sh; then
-            echo "is_release=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "is_release=false" >> "$GITHUB_OUTPUT"
-          fi
+          scripts/ci/guard-release-commit.sh
 
       - name: Skip if release commit
         if: steps.guard.outputs.is_release == 'true'

@@ -282,7 +282,7 @@ copy_reports_to_site_dist() {
     log_success "Playwright reports copied to apps/site/dist/playwright/"
   fi
   
-  # Lighthouse
+  # Lighthouse (index.html is generated at source by run-lighthouse-ci.sh)
   if [ -d "lighthouse-reports" ] && [ -n "$(ls -A lighthouse-reports 2>/dev/null)" ]; then
     log_info "Copying Lighthouse reports..."
     mkdir -p apps/site/dist/lighthouse
