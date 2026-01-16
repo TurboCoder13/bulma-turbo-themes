@@ -20,6 +20,9 @@ echo "🔍 Checking if Lighthouse reports were generated..."
 if [ -d "lighthouse-reports" ]; then
   echo "✅ lighthouse-reports directory exists"
   ls -la lighthouse-reports/
+
+  echo "📄 Generating index.html for Lighthouse reports..."
+  node scripts/ci/generate-lighthouse-index.mjs lighthouse-reports
 else
   echo "❌ lighthouse-reports directory not found"
   echo "Checking for .lighthouse directory..."
