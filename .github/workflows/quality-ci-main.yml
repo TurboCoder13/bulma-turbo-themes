@@ -87,6 +87,10 @@ jobs:
         if: github.event_name == 'pull_request'
         run: ./scripts/ci/verify-semantic-release-trigger.sh
 
+      - name: Validate version sync
+        if: matrix.node == 22
+        run: ./scripts/ci/validate-version-sync.sh
+
       - name: Run CI pipeline
         run: ./scripts/local/build.sh --quick
 
