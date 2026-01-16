@@ -1,6 +1,6 @@
 {
   "name": "@turbocoder13/turbo-themes",
-  "version": "0.12.5",
+  "version": "0.12.6",
   "description": "Universal theme packs and an accessible theme selector.",
   "license": "MIT",
   "type": "module",
