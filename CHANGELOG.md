@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.5] - 2026-01-16
+
+### 🐛 Fixed
+
+- restore Node 24 for npm publish with OIDC provenance (#231)
+
 ## [0.12.4] - 2026-01-16
 
 ### 🐛 Fixed
