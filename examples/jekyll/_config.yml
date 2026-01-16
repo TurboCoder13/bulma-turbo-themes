@@ -6,6 +6,12 @@ url: 'http://localhost:4173'
 
 # Using local _layouts instead of turbo-themes gem for standalone example
 
+# Exclude test files from Jekyll build output
+exclude:
+  - test
+  - playwright.config.ts
+  - '*.spec.ts'
+
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
