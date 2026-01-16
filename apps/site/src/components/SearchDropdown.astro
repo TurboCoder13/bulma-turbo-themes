@@ -4,11 +4,12 @@
  * Opens with click or Cmd+K / Ctrl+K keyboard shortcut.
  * Uses Pagefind for static search.
  */
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
-<link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+<link rel="stylesheet" href={`${baseUrl}/pagefind/pagefind-ui.css`} />
 
-<div class="search-bar" id="search-bar">
+<div class="search-bar" id="search-bar" data-base-url={baseUrl}>
   <div class="search-bar-inner" id="search-trigger">
     <span class="search-bar-placeholder">What are you looking for?</span>
     <span class="search-bar-shortcut"><span class="search-bar-shortcut-mod"></span>K</span>
@@ -34,6 +35,7 @@
     var searchBar = document.getElementById('search-bar');
     var trigger = document.getElementById('search-trigger');
     var menu = document.getElementById('search-menu');
+    var baseUrl = searchBar.getAttribute('data-base-url') || '';
     var searchInitialized = false;
 
     function openSearch() {
@@ -64,7 +66,7 @@
       if (searchInitialized) return;
 
       try {
-        var PagefindUI = (await import('/pagefind/pagefind-ui.js')).PagefindUI;
+        var PagefindUI = (await import(baseUrl + '/pagefind/pagefind-ui.js')).PagefindUI;
         new PagefindUI({
           element: '#search-input-container',
           showImages: false,
