@@ -25,11 +25,12 @@ EOF
   exit 0
 fi
 
-WORKING_DIR="${1:-.}"
-cd "${WORKING_DIR}"
-
+# Resolve script directory before changing to working directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TEMPLATES_DIR="${SCRIPT_DIR}/templates"
+
+WORKING_DIR="${1:-.}"
+cd "${WORKING_DIR}"
 
 rm -rf htmlcov && mkdir -p htmlcov
 
