@@ -20,10 +20,12 @@ const copyDir = (from, to) => {
 
 /**
  * Copy turbo-themes CSS files to a target directory
+ * @param {string} targetDir - The target directory
+ * @param {string} destSubdir - Subdirectory name for CSS files (default: 'turbo-themes')
  */
-const copyTurboThemesCss = (targetDir) => {
+const copyTurboThemesCss = (targetDir, destSubdir = 'turbo-themes') => {
   const cssSrc = join(rootDir, 'packages', 'css', 'dist');
-  const cssDest = join(targetDir, 'turbo-themes');
+  const cssDest = join(targetDir, destSubdir);
 
   if (existsSync(cssSrc)) {
     mkdirSync(cssDest, { recursive: true });
@@ -192,23 +194,9 @@ try {
     }
 
     // Copy turbo-themes CSS to Jekyll example's assets (if Jekyll was built)
-    const cssSrc = join(rootDir, 'packages', 'css', 'dist');
-    const cssDest = join(jekyllTarget, 'assets', 'css');
-    if (existsSync(cssSrc) && existsSync(jekyllTarget)) {
+    if (existsSync(jekyllTarget)) {
       console.log('Copying CSS to Jekyll assets...');
-      mkdirSync(cssDest, { recursive: true });
-      // Copy core and base CSS
-      for (const file of ['turbo-core.css', 'turbo-base.css']) {
-        const src = join(cssSrc, file);
-        if (existsSync(src)) {
-          cpSync(src, join(cssDest, file));
-        }
-      }
-      // Copy themes directory
-      const themesDir = join(cssSrc, 'themes');
-      if (existsSync(themesDir)) {
-        cpSync(themesDir, join(cssDest, 'themes'), { recursive: true });
-      }
+      copyTurboThemesCss(join(jekyllTarget, 'assets'), 'css');
     }
   }
 
