@@ -104,27 +104,116 @@ jobs:
         run: |
           rm -rf htmlcov && mkdir -p htmlcov
 
-          # Find the test binary (architecture may vary)
-          TEST_BINARY=$(find .build -name "TurboThemesPackageTests" -type f | head -1)
-          PROFDATA=$(find .build -name "default.profdata" -type f | head -1)
+          # Find profdata and test binary
+          PROFDATA=$(find .build -name "default.profdata" -type f 2>/dev/null | head -1)
 
-          if [ -z "${TEST_BINARY}" ] || [ -z "${PROFDATA}" ]; then
-            echo "⚠️ Could not find test binary or profdata"
-            echo "Test binary: ${TEST_BINARY}"
-            echo "Profdata: ${PROFDATA}"
+          if [ -z "${PROFDATA}" ]; then
+            echo "⚠️ Could not find profdata file"
+            echo "Available files in .build:"
+            find .build -name "*.profdata" -o -name "*.profraw" 2>/dev/null || true
             exit 0
           fi
 
-          xcrun llvm-cov show \
+          echo "Found profdata: ${PROFDATA}"
+
+          # Find the test binary - try multiple possible locations
+          TEST_BINARY=""
+          for pattern in \
+            ".build/*/debug/TurboThemesPackageTests.xctest/Contents/MacOS/TurboThemesPackageTests" \
+            ".build/*/debug/TurboThemesPackageTests"; do
+            TEST_BINARY=$(find .build -path "${pattern}" -type f 2>/dev/null | head -1)
+            if [ -n "${TEST_BINARY}" ]; then
+              break
+            fi
+          done
+
+          if [ -z "${TEST_BINARY}" ]; then
+            echo "⚠️ Could not find test binary"
+            echo "Available executables in .build:"
+            find .build -type f -perm +111 -name "*Tests*" 2>/dev/null || true
+            exit 0
+          fi
+
+          echo "Found test binary: ${TEST_BINARY}"
+
+          # Try to generate HTML coverage report
+          # Note: Xcode 16+ uses a new coverage format that may not be compatible with llvm-cov
+          if xcrun llvm-cov show \
             "${TEST_BINARY}" \
             -instr-profile="${PROFDATA}" \
             -format=html \
             -output-dir=htmlcov \
             -show-branches=count \
             -ignore-filename-regex='.*Tests.*' \
-            -ignore-filename-regex='.*/.build/.*' || true
+            -ignore-filename-regex='.*/.build/.*' 2>&1; then
+            echo "✅ Swift coverage report generated with llvm-cov"
+          else
+            echo "⚠️ llvm-cov HTML generation failed (possibly due to coverage format version)"
+            echo "Attempting alternative: generating text coverage report..."
 
-          echo "✅ Swift coverage report generated"
+            # Generate text report as fallback
+            if xcrun llvm-cov report \
+              "${TEST_BINARY}" \
+              -instr-profile="${PROFDATA}" \
+              -ignore-filename-regex='.*Tests.*' \
+              -ignore-filename-regex='.*/.build/.*' > htmlcov/coverage-report.txt 2>&1; then
+              # Create a simple HTML wrapper for the text report
+              cat > htmlcov/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Swift Coverage Report</title>
+            <style>
+              body { font-family: system-ui, sans-serif; max-width: 1000px; margin: 2rem auto; padding: 1rem; }
+              h1 { color: #333; }
+              pre { background: #f5f5f5; padding: 1rem; overflow-x: auto; border-radius: 4px; }
+              .note { color: #666; font-style: italic; }
+            </style>
+          </head>
+          <body>
+            <h1>Swift Coverage Report</h1>
+            <p class="note">Note: Full HTML report unavailable due to Xcode coverage format compatibility. Text summary below.</p>
+            <pre id="report"></pre>
+            <script>
+              fetch('coverage-report.txt')
+                .then(r => r.text())
+                .then(text => document.getElementById('report').textContent = text)
+                .catch(() => document.getElementById('report').textContent = 'Failed to load coverage report');
+            </script>
+          </body>
+          </html>
+          EOF
+              echo "✅ Swift coverage text report generated (HTML wrapper created)"
+            else
+              echo "⚠️ Could not generate any coverage report"
+              # Create placeholder
+              cat > htmlcov/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <title>Swift Coverage Report</title>
+            <style>body { font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 1rem; }</style>
+          </head>
+          <body>
+            <h1>Swift Coverage Report</h1>
+            <p>Coverage report generation failed. This may be due to Xcode coverage format incompatibility with llvm-cov.</p>
+            <p>Tests ran successfully - coverage data exists but could not be converted to HTML format.</p>
+          </body>
+          </html>
+          EOF
+            fi
+          fi
+
+          # Verify output
+          if [ -f "htmlcov/index.html" ]; then
+            echo "📊 Coverage report files:"
+            ls -la htmlcov/
+          else
+            echo "⚠️ No index.html generated"
+          fi
 
       - name: Upload coverage HTML report
         if: always()

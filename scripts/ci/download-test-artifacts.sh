@@ -199,6 +199,64 @@ download_lighthouse() {
   fi
 }
 
+# Generate index.html for Lighthouse reports
+generate_lighthouse_index() {
+  local dest_dir="$1"
+  local index_file="${dest_dir}/index.html"
+
+  # Find all report HTML files (*.report.html or lhr-*.html)
+  local report_files=()
+  while IFS= read -r -d '' file; do
+    report_files+=("$(basename "${file}")")
+  done < <(find "${dest_dir}" -maxdepth 1 -type f \( -name "*.report.html" -o -name "lhr-*.html" \) -print0 | sort -rz)
+
+  if [ ${#report_files[@]} -eq 0 ]; then
+    log_warning "No Lighthouse report files found in ${dest_dir}"
+    return 1
+  fi
+
+  log_info "Generating Lighthouse index.html with ${#report_files[@]} reports..."
+
+  # Generate index.html
+  cat > "${index_file}" << 'LIGHTHOUSE_INDEX_HEADER'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lighthouse Reports</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 1rem; }
+    h1 { color: #333; }
+    p { color: #666; }
+    ul { list-style: none; padding: 0; }
+    li { margin: 0.5rem 0; }
+    a { color: #0066cc; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+  <h1>Lighthouse Reports</h1>
+  <ul>
+LIGHTHOUSE_INDEX_HEADER
+
+  for report in "${report_files[@]}"; do
+    # URL-encode the filename for href
+    local encoded_name
+    encoded_name=$(printf '%s' "${report}" | sed 's/ /%20/g')
+    echo "    <li><a href=\"${encoded_name}\">${report}</a></li>" >> "${index_file}"
+  done
+
+  cat >> "${index_file}" << 'LIGHTHOUSE_INDEX_FOOTER'
+  </ul>
+</body>
+</html>
+LIGHTHOUSE_INDEX_FOOTER
+
+  log_success "Lighthouse index.html generated"
+  return 0
+}
+
 # Download Examples Playwright reports
 download_examples_playwright() {
   log_info "Looking for Examples Playwright reports..."
@@ -288,6 +346,8 @@ copy_reports_to_site_dist() {
     mkdir -p apps/site/dist/lighthouse
     cp -r lighthouse-reports/* apps/site/dist/lighthouse/ || true
     log_success "Lighthouse reports copied to apps/site/dist/lighthouse/"
+    # Generate index.html for Lighthouse reports (overwrites placeholder)
+    generate_lighthouse_index "apps/site/dist/lighthouse"
   fi
 
   # Examples Playwright (nav link expects /playwright-examples/)
