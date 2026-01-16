@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.6] - 2026-01-16
+
+### 🐛 Fixed
+
+- modernize for multi-platform focus (#233)
+
 ## [0.12.5] - 2026-01-16
 
 ### 🐛 Fixed
