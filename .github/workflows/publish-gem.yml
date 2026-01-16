@@ -170,6 +170,8 @@ jobs:
 
       - name: Configure RubyGems credentials
         uses: rubygems/configure-rubygems-credentials@bc6dd217f8a4f919d6835fcfefd470ef821f5c44 # v1.0.0
+        with:
+          role-to-assume: ${{ secrets.RUBYGEMS_OIDC_ROLE }}
 
       - name: Publish to RubyGems
         run: ./scripts/ci/publish-gem.sh
