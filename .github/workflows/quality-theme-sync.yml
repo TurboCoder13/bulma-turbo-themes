@@ -47,6 +47,8 @@ jobs:
         with:
           node-version: '22'
           skip-ruby: 'true'
+      - name: Build TypeScript
+        run: bun run build
       - name: Run theme sync determinism check
         run: ./scripts/ci/theme-sync-determinism-check.sh
       - name: Run test suite (quick)
