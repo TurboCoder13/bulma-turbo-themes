@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.2] - 2026-01-16
+
+### 🐛 Fixed
+
+- use OIDC for npm and remove duplicate publish job (#225)
+
 ## [0.12.1] - 2026-01-16
 
 ### 🐛 Fixed
