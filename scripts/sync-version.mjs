@@ -7,6 +7,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { validateVersion } from './utils/validation.mjs';
 
@@ -50,6 +51,33 @@ replaceInFile(
   `VERSION = "${version}"`,
   'Ruby gem version'
 );
+
+// Regenerate Gemfile.lock to reflect the updated gemspec version
+// This is critical: bundler in deployment mode requires the lockfile to match the gemspec
+try {
+  execSync('bundle lock --update turbo-themes', { cwd: root, stdio: 'pipe' });
+  log('regenerated Gemfile.lock');
+} catch (error) {
+  // If bundle is not available, try to update the lockfile manually
+  console.warn(`⚠️  bundle lock failed (${error.message}), attempting manual fallback`);
+  const lockfilePath = path.join(root, 'Gemfile.lock');
+  if (fs.existsSync(lockfilePath)) {
+    const lockfile = fs.readFileSync(lockfilePath, 'utf8');
+    // Use global flag and handle prerelease versions (e.g., 1.0.0.pre.1)
+    const updated = lockfile.replace(
+      /turbo-themes \([0-9]+\.[0-9]+\.[0-9]+[^)]*\)/g,
+      `turbo-themes (${version})`
+    );
+    if (updated !== lockfile) {
+      fs.writeFileSync(lockfilePath, updated);
+      log('updated Gemfile.lock (fallback)');
+    } else {
+      console.warn('⚠️  No version changes made to Gemfile.lock');
+    }
+  } else {
+    console.warn('⚠️  Gemfile.lock not found, skipping lockfile update');
+  }
+}
 
 // Python package version
 replaceInFile(
