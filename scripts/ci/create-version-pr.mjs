@@ -412,7 +412,7 @@ function main() {
     console.log(`📋 Updated VERSION file to ${nextVersion}`);
 
     // Run sync-version.mjs to update all platform packages
-    // This syncs: package.json, Python, Ruby, Swift, Dart, Kotlin
+    // This syncs: package.json, Python, Ruby, Swift
     execFileSync('node', [CONFIG.syncScript], { cwd: projectRoot, stdio: 'inherit' });
     console.log(`🔄 Synced version across all platforms`);
 
