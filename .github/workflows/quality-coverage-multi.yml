@@ -1,0 +1,136 @@
+---
+name: Quality Check - Multi-Language Coverage
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'python/**'
+      - 'spec/**'
+      - 'lib/**'
+      - 'examples/swift-swiftui/**'
+      - '.github/workflows/quality-coverage-multi.yml'
+  pull_request:
+    paths:
+      - 'python/**'
+      - 'spec/**'
+      - 'lib/**'
+      - 'examples/swift-swiftui/**'
+      - '.github/workflows/quality-coverage-multi.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: coverage-multi-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Python and Ruby run on Ubuntu (fast, parallel)
+  coverage-ubuntu:
+    name: ${{ matrix.language.name }} Coverage
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          - name: 🐍 Python
+            id: python
+            working_directory: python
+            setup_command: uv sync --extra dev
+            test_command: uv run pytest tests/ -v
+            coverage_source: python/htmlcov
+            artifact_name: coverage-python-html
+          - name: 💎 Ruby
+            id: ruby
+            working_directory: .
+            setup_command: bundle install
+            test_command: bundle exec rspec
+            coverage_source: rspec-coverage
+            artifact_name: coverage-ruby-html
+    steps:
+      - name: Harden Runner
+        if: ${{ !env.ACT }}
+        uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          skip-ruby: ${{ matrix.language.id == 'python' && 'true' || 'false' }}
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.language.working_directory }}
+        run: ${{ matrix.language.setup_command }}
+
+      - name: Run tests with coverage
+        working-directory: ${{ matrix.language.working_directory }}
+        run: ${{ matrix.language.test_command }}
+
+      - name: Upload coverage HTML report
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: ${{ matrix.language.artifact_name }}
+          path: ${{ matrix.language.coverage_source }}
+          retention-days: 30
+          if-no-files-found: warn
+
+  # Swift requires macOS with Xcode
+  coverage-swift:
+    name: 🍎 Swift Coverage
+    runs-on: macos-14
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
+        with:
+          xcode-version: latest-stable
+
+      - name: Run Swift tests with coverage
+        working-directory: examples/swift-swiftui
+        run: swift test --enable-code-coverage
+
+      - name: Generate coverage report
+        working-directory: examples/swift-swiftui
+        run: |
+          rm -rf htmlcov && mkdir -p htmlcov
+
+          # Find the test binary (architecture may vary)
+          TEST_BINARY=$(find .build -name "TurboThemesPackageTests" -type f | head -1)
+          PROFDATA=$(find .build -name "default.profdata" -type f | head -1)
+
+          if [ -z "${TEST_BINARY}" ] || [ -z "${PROFDATA}" ]; then
+            echo "⚠️ Could not find test binary or profdata"
+            echo "Test binary: ${TEST_BINARY}"
+            echo "Profdata: ${PROFDATA}"
+            exit 0
+          fi
+
+          xcrun llvm-cov show \
+            "${TEST_BINARY}" \
+            -instr-profile="${PROFDATA}" \
+            -format=html \
+            -output-dir=htmlcov \
+            -show-branches=count \
+            -ignore-filename-regex='.*Tests.*' \
+            -ignore-filename-regex='.*/.build/.*' || true
+
+          echo "✅ Swift coverage report generated"
+
+      - name: Upload coverage HTML report
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: coverage-swift-html
+          path: examples/swift-swiftui/htmlcov
+          retention-days: 30
+          if-no-files-found: warn
