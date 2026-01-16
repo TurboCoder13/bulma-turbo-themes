@@ -16,6 +16,7 @@ Universal, accessible theme packs and a drop-in theme selector.
 [![Download SBOM](https://img.shields.io/badge/SBOM-download_latest-blue?logo=github)](https://github.com/TurboCoder13/turbo-themes/actions/workflows/security-sbom.yml)
 
 [![npm](https://img.shields.io/npm/v/%40turbocoder13%2Fturbo-themes)](https://www.npmjs.com/package/@turbocoder13/turbo-themes)
+[![PyPI](https://img.shields.io/pypi/v/turbo-themes)](https://pypi.org/project/turbo-themes/)
 [![RubyGems](https://img.shields.io/gem/v/turbo-themes.svg)](https://rubygems.org/gems/turbo-themes)
 
 [![Bulma](https://img.shields.io/badge/Bulma-00D1B2?style=flat&logo=bulma&logoColor=white)](https://bulma.io/)
@@ -37,155 +38,34 @@ projects:
 
 ## Features
 
-- **Catppuccin** (Mocha, Macchiato, Frappé, Latte), **Dracula**, **GitHub**
-  (light/dark), **Bulma** (light/dark) flavor packs
-- Accessible theme selector with keyboard and screen reader support
-- Inline or link-based CSS delivery; CSP-friendly
-- Tested with coverage, Lighthouse CI, and stylelint
-- Advanced Bulma customization (breakpoints, spacing, shadows, mixins)
-- Lazy-loaded themes with performance optimizations
-- Full Bulma Sass variable integration
+- **9 curated themes** from Catppuccin, Dracula, GitHub, and Bulma
+- **Multi-platform**: npm, PyPI, RubyGems, Swift Package Manager
+- **Design tokens**: Platform-agnostic JSON tokens for any framework
+- **Accessible**: WCAG-compliant with keyboard and screen reader support
+- **Framework-agnostic**: Works with React, Vue, Svelte, vanilla JS, or native apps
+- **Type-safe**: Full TypeScript, Python type hints, and Swift types
+- **Tested**: Unit tests, E2E tests, Lighthouse CI, and visual regression
 
 ## Installation
 
-Install via Bun (recommended) or npm:
+| Platform                  | Package Manager | Install Command                                        |
+| ------------------------- | --------------- | ------------------------------------------------------ |
+| **JavaScript/TypeScript** | npm / bun       | `npm install @turbocoder13/turbo-themes`               |
+| **Python**                | pip / uv        | `pip install turbo-themes`                             |
+| **Ruby**                  | bundler         | `gem "turbo-themes", "~> 0.12"`                        |
+| **Swift**                 | SPM             | Add `https://github.com/TurboCoder13/turbo-themes.git` |
+
+### JavaScript/TypeScript
 
 ```bash
-# Using Bun (recommended - 5-10x faster)
+# Using Bun (recommended)
 bun add @turbocoder13/turbo-themes
 
 # Using npm
 npm install @turbocoder13/turbo-themes
 ```
 
-### Advanced Theming
-
-For advanced customization options including custom breakpoints, spacing, shadows, and
-Bulma mixins, see the [Advanced Theming Guide](docs/ADVANCED-THEMING.md).
-
-### For Jekyll Sites
-
-Install as a Ruby gem:
-
-```ruby
-# Gemfile
-gem "turbo-themes", "~> 0.10"
-```
-
-```yaml
-# _config.yml
-theme: turbo-themes
-```
-
-Then run:
-
-```bash
-bundle install
-bundle exec jekyll serve
-```
-
-Assets are automatically available - no copying needed!
-
-## Quick start
-
-### JavaScript/TypeScript Projects
-
-1. Copy CSS files from `node_modules/@turbocoder13/turbo-themes/assets/css/themes/` to
-   your project:
-   - `global.css` (required)
-   - Flavor CSS files (e.g., `catppuccin-mocha.css`, `dracula.css`, `github-dark.css`) -
-     copy the ones you want to use
-2. Include CSS links (adjust paths to match your project structure):
-
-```html
-<link id="theme-global-css" rel="stylesheet" href="/assets/css/themes/global.css" />
-<link id="theme-flavor-css" rel="stylesheet" href="#" />
-```
-
-1. Add selector markup and initialize:
-
-```html
-<div class="navbar-item has-dropdown is-hoverable">
-  <button
-    class="navbar-link"
-    id="theme-flavor-trigger"
-    type="button"
-    aria-haspopup="true"
-    aria-expanded="false"
-    aria-controls="theme-flavor-menu"
-  >
-    <span class="icon is-small" id="theme-flavor-trigger-icon"></span>
-    Theme
-  </button>
-  <div
-    class="navbar-dropdown"
-    id="theme-flavor-menu"
-    aria-labelledby="theme-flavor-trigger"
-  >
-    <div class="dropdown-content" id="theme-flavor-items"></div>
-  </div>
-</div>
-<div class="select is-rounded is-small is-hidden">
-  <select id="theme-flavor-select" aria-label="Theme flavor" disabled></select>
-</div>
-```
-
-```ts
-import { initTheme, wireFlavorSelector } from '@turbocoder13/turbo-themes';
-
-document.addEventListener('DOMContentLoaded', () => {
-  initTheme(document, window);
-  wireFlavorSelector(document, window);
-});
-```
-
-### Jekyll Sites
-
-1. Install the gem (see above)
-2. Include CSS links in your layout:
-
-```html
-<link
-  id="theme-global-css"
-  rel="stylesheet"
-  href="{{ '/assets/css/themes/global.css' | relative_url }}"
-/>
-<link id="theme-flavor-css" rel="stylesheet" href="#" />
-```
-
-1. Add selector markup and initialize:
-
-```html
-<div class="navbar-item has-dropdown is-hoverable">
-  <button
-    class="navbar-link"
-    id="theme-flavor-trigger"
-    type="button"
-    aria-haspopup="true"
-    aria-expanded="false"
-    aria-controls="theme-flavor-menu"
-  >
-    <span class="icon is-small" id="theme-flavor-trigger-icon"></span>
-    Theme
-  </button>
-  <div
-    class="navbar-dropdown"
-    id="theme-flavor-menu"
-    aria-labelledby="theme-flavor-trigger"
-  >
-    <div class="dropdown-content" id="theme-flavor-items"></div>
-  </div>
-</div>
-<div class="select is-rounded is-small is-hidden">
-  <select id="theme-flavor-select" aria-label="Theme flavor" disabled></select>
-</div>
-```
-
-```html
-<script src="{{ '/assets/js/theme-selector.js' | relative_url }}"></script>
-```
-
-### Python (PyPI)
+### Python
 
 ```bash
 pip install turbo-themes
@@ -193,43 +73,66 @@ pip install turbo-themes
 uv add turbo-themes
 ```
 
+### Ruby (Jekyll)
+
+```ruby
+# Gemfile
+gem "turbo-themes", "~> 0.12"
+```
+
+### Swift
+
+Add via Xcode: `https://github.com/TurboCoder13/turbo-themes.git` (version `0.12.0`+)
+
+## Quick Start
+
+### Using Design Tokens (Recommended)
+
+Access theme colors as platform-agnostic JSON tokens:
+
+```ts
+import tokens from '@turbocoder13/turbo-themes/tokens.json';
+
+const mocha = tokens.themes['catppuccin-mocha'];
+console.log(mocha.tokens.brand.primary); // "#89b4fa"
+```
+
+### JavaScript/TypeScript
+
+```ts
+import { initTheme, wireFlavorSelector } from '@turbocoder13/turbo-themes';
+
+// Initialize theme system
+initTheme(document, window);
+wireFlavorSelector(document, window);
+```
+
+### Python
+
 ```python
 from turbo_themes import ThemeManager, THEMES
 
 manager = ThemeManager()
 manager.set_theme("catppuccin-mocha")
 css_vars = manager.apply_theme_to_css_variables()
-print(len(css_vars), "CSS variables ready to inject")
 ```
 
-### Swift (Swift Package Manager via GitHub)
-
-1. In Xcode, add a package dependency:  
-   URL: `https://github.com/TurboCoder13/turbo-themes.git`  
-   Version: `from 0.10.8`
-2. Add the library product **TurboThemes** to your target.
+### Swift
 
 ```swift
 import TurboThemes
 
 let mocha = ThemeRegistry.themes[.catppuccinMocha]
-// Use ThemeDefinition values in your SwiftUI views
+// Use theme colors in SwiftUI views
 ```
 
-### Supported Platforms
+### Available Exports
 
-- RubyGems (Jekyll theme)
-- npm (JS/TS + CSS assets)
-- PyPI (Python helper library)
-- Swift Package (SwiftUI previews/helpers)
-
-#### Available Exports
-
-| Import Path                              | Use Case                                         |
-| ---------------------------------------- | ------------------------------------------------ |
-| `@turbocoder13/turbo-themes/tokens`      | Platform-agnostic tokens (pure data)             |
-| `@turbocoder13/turbo-themes/tokens.json` | JSON tokens for Python/Swift or custom pipelines |
-| `@turbocoder13/turbo-themes/css/*`       | CSS files for web                                |
+| Import Path                              | Use Case                      |
+| ---------------------------------------- | ----------------------------- |
+| `@turbocoder13/turbo-themes/tokens.json` | Platform-agnostic JSON tokens |
+| `@turbocoder13/turbo-themes/tokens`      | TypeScript tokens with types  |
+| `@turbocoder13/turbo-themes/css/*`       | Pre-built CSS files           |
 
 ## Examples
 
@@ -243,7 +146,7 @@ frameworks:
 | [Vue](examples/vue)                   | Vue 3        | Composition API with `useTheme` composable | [StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/vue)          |
 | [Tailwind](examples/tailwind)         | Tailwind CSS | Preset integration with utility classes    | [StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/tailwind)     |
 | [Bootstrap](examples/bootstrap)       | Bootstrap 5  | SCSS integration with light/dark mode      | [StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/bootstrap)    |
-| [Jekyll](examples/jekyll)             | Jekyll       | Ruby gem with Bulma components             | -                                                                                                     |
+| [Jekyll](examples/jekyll)             | Jekyll       | Ruby gem integration                       | -                                                                                                     |
 | [SwiftUI](examples/swift-swiftui)     | SwiftUI      | iOS/macOS native app                       | -                                                                                                     |
 
 Each example includes theme switching, localStorage persistence, and FOUC prevention.
@@ -281,8 +184,9 @@ For detailed E2E testing documentation, see `docs/E2E-TESTING.md`.
 ### Prerequisites
 
 - **Bun** 1.3+ (recommended) - [Install Bun](https://bun.sh/docs/installation)
-- **Node.js** 22+ (alternative)
-- **Ruby** 3.3+ with Bundler (for gem build and Jekyll example)
+- **Node.js** 22+ (alternative to Bun)
+- **Python** 3.11+ with uv (for Python package development)
+- **Ruby** 3.4+ with Bundler (optional, for gem builds)
 
 ### Quick Start
 
