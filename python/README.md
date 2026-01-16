@@ -13,7 +13,7 @@ Universal design tokens and theme management for Python applications.
 - **Design tokens** as typed Python dataclasses
 - **CSS variable generation** for web integration
 - **Type-safe** with full type hints and mypy strict mode
-- **Zero runtime dependencies** (only python-dateutil)
+- **Lightweight**: single runtime dependency (python-dateutil)
 
 ## Installation
 
