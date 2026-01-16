@@ -8,7 +8,7 @@
  * Usage: node scripts/ci/create-version-pr.mjs [--dry-run]
  */
 
-import { execSync } from 'child_process';
+import { execSync, execFileSync } from 'child_process';
 import { readFileSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -26,6 +26,8 @@ const projectRoot = join(__dirname, '../..');
 const CONFIG = {
   changelogFile: join(projectRoot, 'CHANGELOG.md'),
   packageFile: join(projectRoot, 'package.json'),
+  versionFile: join(projectRoot, 'VERSION'),
+  syncScript: join(projectRoot, 'scripts', 'sync-version.mjs'),
   branchPrefix: 'release/version-',
   prTitlePrefix: 'chore(release): version',
 };
@@ -246,16 +248,22 @@ function generatePRDescription(commits, version, bumpType, lastTag) {
   description += `- **Last Tag**: ${lastTag || 'None (first release)'}\n\n`;
 
   description += `### 📋 Changes\n\n`;
-  description += `- Updated \`package.json\` version to \`${version}\`\n`;
-  description += `- Updated \`CHANGELOG.md\` with new version entry\n`;
-  description += `- Generated from conventional commits\n\n`;
+  description += `- Updated \`VERSION\` file to \`${version}\`\n`;
+  description += `- Synced version across all platforms:\n`;
+  description += `  - npm: \`package.json\`\n`;
+  description += `  - Python: \`python/pyproject.toml\`\n`;
+  description += `  - Ruby: \`lib/turbo-themes/version.rb\`\n`;
+  description += `  - Swift: \`swift/Sources/TurboThemes/Version.swift\`\n`;
+  description += `- Updated \`CHANGELOG.md\` with new version entry\n\n`;
 
   description += `### 🚀 Next Steps\n\n`;
   description += `After this PR is merged:\n`;
   description += `1. A new tag \`v${version}\` will be created\n`;
-  description += `2. The \`release-publish-pr.yml\` workflow will trigger\n`;
-  description += `3. Package will be published to npm\n`;
-  description += `4. GitHub release will be created\n\n`;
+  description += `2. Publishing workflows will trigger:\n`;
+  description += `   - \`publish-npm.yml\` → npmjs.org\n`;
+  description += `   - \`publish-python.yml\` → PyPI\n`;
+  description += `   - \`publish-gem.yml\` → RubyGems\n`;
+  description += `3. \`release-publish-pr.yml\` will create GitHub release with SBOM\n\n`;
 
   description += `### 📝 Commits Included\n\n`;
   description += `\`\`\`\n`;
@@ -373,9 +381,8 @@ function main() {
     return;
   }
 
-  // Calculate next version
-  const packageContent = JSON.parse(readFileSync(CONFIG.packageFile, 'utf8'));
-  const currentVersion = packageContent.version;
+  // Calculate next version from VERSION file (source of truth)
+  const currentVersion = readFileSync(CONFIG.versionFile, 'utf8').trim();
   const nextVersion = calculateNextVersion(currentVersion, bumpType);
 
   console.log(`📈 Version bump: ${currentVersion} → ${nextVersion}`);
@@ -399,10 +406,14 @@ function main() {
     // Create version branch
     const branchName = createVersionBranch(nextVersion);
 
-    // Update package.json
-    packageContent.version = nextVersion;
-    writeFileSync(CONFIG.packageFile, JSON.stringify(packageContent, null, 2) + '\n');
-    console.log(`📦 Updated package.json version to ${nextVersion}`);
+    // Update VERSION file (source of truth for all platforms)
+    writeFileSync(CONFIG.versionFile, `${nextVersion}\n`);
+    console.log(`📋 Updated VERSION file to ${nextVersion}`);
+
+    // Run sync-version.mjs to update all platform packages
+    // This syncs: package.json, Python, Ruby, Swift
+    execFileSync('node', [CONFIG.syncScript], { cwd: projectRoot, stdio: 'inherit' });
+    console.log(`🔄 Synced version across all platforms`);
 
     // Update CHANGELOG.md
     const changelogContent = readFileSync(CONFIG.changelogFile, 'utf8');
@@ -413,8 +424,8 @@ function main() {
     writeFileSync(CONFIG.changelogFile, updatedContent);
     console.log(`📝 Updated CHANGELOG.md`);
 
-    // Commit changes
-    execSync('git add package.json CHANGELOG.md', { cwd: projectRoot });
+    // Stage all modified tracked files produced by sync-version.mjs
+    execSync('git add -u', { cwd: projectRoot });
     execSync(`git commit --no-verify -m "chore(release): version ${nextVersion}"`, {
       cwd: projectRoot,
     });
