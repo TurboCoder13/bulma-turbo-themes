@@ -31,10 +31,10 @@ const previewCode = `const theme = {
         A design token system with 9 curated color themes. Switch themes instantly with CSS custom properties.
       </p>
       <div class="hero-actions">
-        <a href="/docs/" class="btn btn-primary btn-lg">
+        <a href={`${baseUrl}/docs/`} class="btn btn-primary btn-lg">
           Get Started
         </a>
-        <a href="/themes/" class="btn btn-outline btn-lg">
+        <a href={`${baseUrl}/themes/`} class="btn btn-outline btn-lg">
           Explore Themes
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M5 12h14M12 5l7 7-7 7"></path>
@@ -58,7 +58,7 @@ const previewCode = `const theme = {
             <img class="hero-theme-icon" src={`${baseUrl}/assets/img/catppuccin-logo-latte.png`} alt="Catppuccin Latte" width="28" height="28" />
           </button>
         </div>
-        <a href="/themes/" class="hero-theme-more">View all</a>
+        <a href={`${baseUrl}/themes/`} class="hero-theme-more">View all</a>
       </div>
     </div>
   </section>
@@ -162,7 +162,7 @@ const previewCode = `const theme = {
       </div>
 
       <div class="install-cta">
-        <a href="/docs/installation/" class="btn btn-ghost">
+        <a href={`${baseUrl}/docs/installation/`} class="btn btn-ghost">
           View full installation guide
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M5 12h14M12 5l7 7-7 7"></path>
@@ -239,7 +239,7 @@ const previewCode = `const theme = {
       </div>
 
       <div class="section-footer">
-        <a href="/components/" class="btn btn-ghost">
+        <a href={`${baseUrl}/components/`} class="btn btn-ghost">
           View all components
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M5 12h14M12 5l7 7-7 7"></path>
@@ -302,7 +302,7 @@ const previewCode = `const theme = {
         <h2 class="cta-title">Ready to get started?</h2>
         <p class="cta-subtitle">Install Turbo Themes and start building beautiful, themeable interfaces.</p>
         <div class="cta-actions">
-          <a href="/docs/" class="btn btn-primary btn-lg">
+          <a href={`${baseUrl}/docs/`} class="btn btn-primary btn-lg">
             Read the Docs
           </a>
           <a href="https://github.com/TurboCoder13/turbo-themes" class="btn btn-outline btn-lg" target="_blank" rel="noopener">

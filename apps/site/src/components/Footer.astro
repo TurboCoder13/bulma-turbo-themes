@@ -8,6 +8,7 @@ interface Props {
 }
 
 const { siteTitle = 'Turbo Themes Demo' } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <footer class="footer">
@@ -28,9 +29,9 @@ const { siteTitle = 'Turbo Themes Demo' } = Astro.props;
         GitHub
       </a>
       <span class="footer-separator">·</span>
-      <a href="/docs/">Documentation</a>
+      <a href={`${baseUrl}/docs/`}>Documentation</a>
       <span class="footer-separator">·</span>
-      <a href="/themes/">Themes</a>
+      <a href={`${baseUrl}/themes/`}>Themes</a>
     </div>
     <p class="footer-copyright">Made with care. MIT License.</p>
   </div>
