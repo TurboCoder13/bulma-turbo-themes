@@ -94,7 +94,7 @@ Access theme colors as platform-agnostic JSON tokens:
 import tokens from '@turbocoder13/turbo-themes/tokens.json';
 
 const mocha = tokens.themes['catppuccin-mocha'];
-console.log(mocha.colors.primary); // "#89b4fa"
+console.log(mocha.tokens.brand.primary); // "#89b4fa"
 ```
 
 ### JavaScript/TypeScript
