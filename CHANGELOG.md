@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.1] - 2026-01-16
+
+### 🐛 Fixed
+
+- exclude Jekyll test dir and skip Ruby in Python publish (#223)
+
 ## [0.12.0] - 2026-01-16
 
 ### ✨ Added
