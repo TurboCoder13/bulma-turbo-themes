@@ -5,5 +5,6 @@
 set -euo pipefail
 
 echo "Installing Ruby dependencies from Gemfile.lock..."
-bundle install --frozen
+bundle config set --local frozen true
+bundle install
 echo "✅ Ruby dependencies installed successfully"
