@@ -55,6 +55,7 @@ jobs:
             github.com:443
             npmjs.org:443
             objects.githubusercontent.com:443
+            pkg-containers.githubusercontent.com:443
             pipelines.actions.githubusercontent.com:443
             registry.npmjs.org:443
             release-assets.githubusercontent.com:443
@@ -145,6 +146,7 @@ jobs:
             codeload.github.com:443
             github.com:443
             objects.githubusercontent.com:443
+            pkg-containers.githubusercontent.com:443
             registry.npmjs.org:443
             fulcio.sigstore.dev:443
             rekor.sigstore.dev:443
