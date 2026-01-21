@@ -14,6 +14,13 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 ### 🐛 Fixed
 
+- update oven-sh/setup-bun action to v2.1.2 (#247)
+- update dependency @testing-library/react to v16.3.2 (#246)
+
+## [0.12.10] - 2026-01-21
+
+### 🐛 Fixed
+
 - update dependency @testing-library/react to v16.3.2 (#246)
 
 ## [0.12.9] - 2026-01-20
