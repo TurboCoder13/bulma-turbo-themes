@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.11] - 2026-01-24
+
+### 🐛 Fixed
+
+- update dependency sass to v1.97.3 (#255)
+
 ## [0.12.10] - 2026-01-24
 
 ### 🐛 Fixed
