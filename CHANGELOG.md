@@ -10,6 +10,46 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.10] - 2026-01-24
+
+### 🐛 Fixed
+
+- update actions/checkout action to v6.0.2 (#254)
+- update renovatebot/github-action action to v44.2.5 (#253)
+- update dependency @types/react to v19.2.9 (#252)
+- update oven-sh/setup-bun action to v2.1.2 (#247)
+- update dependency @testing-library/react to v16.3.2 (#246)
+
+## [0.12.10] - 2026-01-23
+
+### 🐛 Fixed
+
+- update renovatebot/github-action action to v44.2.5 (#253)
+- update dependency @types/react to v19.2.9 (#252)
+- update oven-sh/setup-bun action to v2.1.2 (#247)
+- update dependency @testing-library/react to v16.3.2 (#246)
+
+## [0.12.10] - 2026-01-23
+
+### 🐛 Fixed
+
+- update dependency @types/react to v19.2.9 (#252)
+- update oven-sh/setup-bun action to v2.1.2 (#247)
+- update dependency @testing-library/react to v16.3.2 (#246)
+
+## [0.12.10] - 2026-01-21
+
+### 🐛 Fixed
+
+- update oven-sh/setup-bun action to v2.1.2 (#247)
+- update dependency @testing-library/react to v16.3.2 (#246)
+
+## [0.12.10] - 2026-01-21
+
+### 🐛 Fixed
+
+- update dependency @testing-library/react to v16.3.2 (#246)
+
 ## [0.12.9] - 2026-01-20
 
 ### 🐛 Fixed
