@@ -207,21 +207,21 @@ wheels = [
 ]
 
 [[package]]
-name = "darglint"
-version = "1.8.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d4/2c/86e8549e349388c18ca8a4ff8661bb5347da550f598656d32a98eaaf91cc/darglint-1.8.1.tar.gz", hash = "sha256:080d5106df149b199822e7ee7deb9c012b49891538f14a11be681044f0bb20da", size = 74435, upload-time = "2021-10-18T03:40:37.283Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/69/28/85d1e0396d64422c5218d68e5cdcc53153aa8a2c83c7dbc3ee1502adf3a1/darglint-1.8.1-py3-none-any.whl", hash = "sha256:5ae11c259c17b0701618a20c3da343a3eb98b3bc4b5a83d31cdd94f5ebdced8d", size = 120767, upload-time = "2021-10-18T03:40:35.034Z" },
-]
-
-[[package]]
 name = "defusedxml"
 version = "0.7.1"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/0f/d5/c66da9b79e5bdb124974bfe172b4daf3c984ebd9c2a06e2b8a4dc7331c72/defusedxml-0.7.1.tar.gz", hash = "sha256:1bb3032db185915b62d7c6209c5a8792be6a32ab2fedacc84e01b52c51aa3e69", size = 75520, upload-time = "2021-03-08T10:59:26.269Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl", hash = "sha256:a352e7e428770286cc899e2542b6cdaedb2b4953ff269a210103ec58f6198a61", size = 25604, upload-time = "2021-03-08T10:59:24.45Z" },
+]
+
+[[package]]
+name = "docstring-parser-fork"
+version = "0.0.14"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/66/bf/27f9cab2f0cd1d17a4420572088bbc19f36d726fbcf165edf226a8926dbc/docstring_parser_fork-0.0.14.tar.gz", hash = "sha256:a2743a63d8d36c09650594f7b4ab5b2758fee8629dcf794d1b221b23179baa5c", size = 34551, upload-time = "2025-09-07T17:27:38.272Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bf/50/98b146aea0f1cd7531d25f12bea69fa9ce8d1662124f93fb30dc4511b65e/docstring_parser_fork-0.0.14-py3-none-any.whl", hash = "sha256:4c544f234ef2cc2749a3df32b70c437d77888b1099143a1ad5454452c574b9af", size = 43063, upload-time = "2025-09-07T17:27:37.012Z" },
 ]
 
 [[package]]
@@ -335,14 +335,13 @@ wheels = [
 
 [[package]]
 name = "lintro"
-version = "0.24.1"
+version = "0.38.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bandit" },
     { name = "black" },
     { name = "click" },
     { name = "coverage-badge" },
-    { name = "darglint" },
     { name = "defusedxml" },
     { name = "httpx" },
     { name = "loguru" },
@@ -350,14 +349,15 @@ dependencies = [
     { name = "packaging" },
     { name = "pathspec" },
     { name = "pydantic" },
+    { name = "pydoclint" },
     { name = "rich" },
     { name = "ruff" },
     { name = "tabulate" },
     { name = "yamllint" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/53/58/a8ca580c7145ff1a1b287d1926b0131041ebb2469b04435c0fbc861476ba/lintro-0.24.1.tar.gz", hash = "sha256:4b2530dd22829a4300a54897ec68c7e4c3ec4aa20827651c4b6cbcf3b672f55e", size = 1639802, upload-time = "2026-01-14T08:13:01.91Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/17/d3/813a7e5cd7c51b78a7554c54c5bb3c399628294ce466181859df6e5c1a2d/lintro-0.38.0.tar.gz", hash = "sha256:9e1938b2fdda1e69bac21f216d6d2ed33b866503dfc2f73aafcce74e50e6ca7d", size = 1723423, upload-time = "2026-01-26T11:52:29.944Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d9/c2/7f2e80e29fc0ed2d2f0f4da343032c881fc2d92c761db1b5733fee5206b4/lintro-0.24.1-py3-none-any.whl", hash = "sha256:729fb0dc3cf068a2e608d412a339dbcebea4b34fb15c1693f948df2a650182cf", size = 337635, upload-time = "2026-01-14T08:13:00.301Z" },
+    { url = "https://files.pythonhosted.org/packages/ff/37/2fddcd5a453cb98284610af72e597e725e173c0b490cd2dd6643ac833183/lintro-0.38.0-py3-none-any.whl", hash = "sha256:035839e88864442d5c69c48658794120205278526e5f7b8f6e259960bdb16001", size = 389009, upload-time = "2026-01-26T11:52:28.536Z" },
 ]
 
 [[package]]
@@ -582,6 +582,19 @@ wheels = [
 ]
 
 [[package]]
+name = "pydoclint"
+version = "0.8.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click" },
+    { name = "docstring-parser-fork" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/70/58/bb3c7edd2bd06b07d9bbb494e52e2d2d6d53405b166aac531b1a27cef972/pydoclint-0.8.3.tar.gz", hash = "sha256:0c69c0ed92c6f6b5aec2a14371bbd9e0a77980da8e2fa0f708092aa06b3b20b3", size = 186619, upload-time = "2025-11-26T06:53:43.361Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/87/6f/cc2b231dc78d8c3aaa674a676db190b8f8071c50134af8f8cf39b9b8e8df/pydoclint-0.8.3-py3-none-any.whl", hash = "sha256:5fc9b82d0d515afce0908cb70e8ff695a68b19042785c248c4f227ad66b4a164", size = 79075, upload-time = "2025-11-26T06:53:42.129Z" },
+]
+
+[[package]]
 name = "pygments"
 version = "2.19.2"
 source = { registry = "https://pypi.org/simple" }
@@ -733,7 +746,7 @@ dev = [
 [package.metadata]
 
 [package.metadata.requires-dev]
-dev = [{ name = "lintro", specifier = "==0.24.1" }]
+dev = [{ name = "lintro", specifier = "==0.38.0" }]
 
 [[package]]
 name = "typing-extensions"

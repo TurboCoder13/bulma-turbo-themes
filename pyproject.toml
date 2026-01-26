@@ -5,7 +5,7 @@ requires-python = ">=3.11"
 
 [dependency-groups]
 dev = [
-    "lintro==0.24.1",
+    "lintro==0.38.0",
 ]
 
 [tool.black]
