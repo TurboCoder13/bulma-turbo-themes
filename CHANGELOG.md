@@ -10,6 +10,19 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.14] - 2026-01-26
+
+### 🐛 Fixed
+
+- correct scroll drift assertion boundary condition (#279)
+- update dependency lightningcss to v1.31.1 (#251)
+
+## [0.12.14] - 2026-01-26
+
+### 🐛 Fixed
+
+- update dependency lightningcss to v1.31.1 (#251)
+
 ## [0.12.13] - 2026-01-26
 
 ### 🐛 Fixed
