@@ -178,7 +178,7 @@ test.describe('Mobile Viewport @mobile', () => {
       const scrollAfter = await page.evaluate(() => window.scrollY);
       // Allow up to 150px drift due to scrollIntoViewIfNeeded on theme selector
       // CI environments may have slightly different scroll behavior
-      expect(Math.abs(scrollAfter - scrollBefore)).toBeLessThan(150);
+      expect(Math.abs(scrollAfter - scrollBefore)).toBeLessThanOrEqual(150);
     });
   });
 
