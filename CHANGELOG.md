@@ -10,6 +10,27 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.13] - 2026-01-26
+
+### 🐛 Fixed
+
+- add artifact fallback and fix docs navigation links (#263)
+- update vitest monorepo to v4.0.18 (#261)
+- update github/codeql-action action to v4.31.11 (#260)
+
+## [0.12.13] - 2026-01-26
+
+### 🐛 Fixed
+
+- update vitest monorepo to v4.0.18 (#261)
+- update github/codeql-action action to v4.31.11 (#260)
+
+## [0.12.13] - 2026-01-26
+
+### 🐛 Fixed
+
+- update github/codeql-action action to v4.31.11 (#260)
+
 ## [0.12.12] - 2026-01-24
 
 ### 🐛 Fixed
