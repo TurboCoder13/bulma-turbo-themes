@@ -10,6 +10,12 @@
 # - Quality Check - Examples → examples-playwright-report
 # - Quality Check - Multi-Language Coverage → coverage-python-html, coverage-ruby-html, coverage-swift-html
 #
+# Fallback behavior:
+# When path-triggered workflows (Examples, Multi-Language Coverage) haven't run for the
+# specific commit, the script falls back to fetching the most recent artifacts from main branch.
+# This ensures reports remain available even when Renovate PRs are merged without touching
+# the relevant paths.
+#
 # Environment Variables:
 #   GITHUB_REPOSITORY: GitHub repository in owner/repo format
 #   GITHUB_TOKEN: GitHub token for API access (if not using gh CLI auth)
@@ -18,6 +24,7 @@ set -euo pipefail
 
 readonly COMMIT_SHA="${1:-$(git rev-parse HEAD 2>/dev/null || echo '')}"
 readonly MAX_RUNS=10
+readonly MAIN_BRANCH="main"
 
 # Helper function for logging
 log_info() {
@@ -78,6 +85,25 @@ find_workflow_run() {
 
   # Use head_sha query parameter for efficient filtering (avoids pagination issues)
   gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${commit_sha}&per_page=100" \
+    --jq "${jq_filter}" \
+    | head -1
+}
+
+# Function to find the most recent successful workflow run on main branch
+# Used as fallback when path-triggered workflows didn't run for the specific commit
+# Args: workflow_name, [require_success]
+find_latest_workflow_run_on_main() {
+  local workflow_name="$1"
+  local require_success="${2:-true}"
+
+  local jq_filter
+  if [ "${require_success}" = "false" ]; then
+    jq_filter=".workflow_runs[] | select(.name == \"${workflow_name}\" and .head_branch == \"${MAIN_BRANCH}\" and (.conclusion == \"success\" or .conclusion == \"failure\")) | .id"
+  else
+    jq_filter=".workflow_runs[] | select(.name == \"${workflow_name}\" and .head_branch == \"${MAIN_BRANCH}\" and .conclusion == \"success\") | .id"
+  fi
+
+  gh api "repos/${GITHUB_REPOSITORY}/actions/runs?branch=${MAIN_BRANCH}&per_page=50" \
     --jq "${jq_filter}" \
     | head -1
 }
@@ -200,17 +226,30 @@ download_lighthouse() {
 }
 
 # Download Examples Playwright reports
+# Falls back to most recent main branch run if not found for specific commit
 download_examples_playwright() {
   log_info "Looking for Examples Playwright reports..."
   local run_id
+  local used_fallback="false"
   run_id=$(find_workflow_run "Quality Check - Examples" "${COMMIT_SHA}")
 
   if [ -z "${run_id}" ]; then
-    log_warning "No successful Quality Check - Examples run found for commit ${COMMIT_SHA}"
+    log_info "No Examples run for commit ${COMMIT_SHA}, trying latest from main..."
+    run_id=$(find_latest_workflow_run_on_main "Quality Check - Examples")
+    used_fallback="true"
+  fi
+
+  if [ -z "${run_id}" ]; then
+    log_warning "No Quality Check - Examples run found for commit or on main branch"
     return 0
   fi
 
-  log_info "Found Examples run: ${run_id}"
+  if [ "${used_fallback}" = "true" ]; then
+    log_info "Using fallback: Found Examples run on main: ${run_id}"
+  else
+    log_info "Found Examples run: ${run_id}"
+  fi
+
   local artifact_id
   artifact_id=$(get_artifact_id "${run_id}" "examples-playwright-report")
 
@@ -228,18 +267,30 @@ download_examples_playwright() {
 
 # Download multi-language coverage reports (Python, Ruby, Swift)
 # Note: Uses require_success=false since artifacts upload with if: always()
+# Falls back to most recent main branch run if not found for specific commit
 download_multi_language_coverage() {
   log_info "Looking for multi-language coverage reports..."
   local run_id
+  local used_fallback="false"
   # Allow failed runs since coverage artifacts upload with if: always()
   run_id=$(find_workflow_run "Quality Check - Multi-Language Coverage" "${COMMIT_SHA}" "false")
 
   if [ -z "${run_id}" ]; then
-    log_warning "No Quality Check - Multi-Language Coverage run found for commit ${COMMIT_SHA}"
+    log_info "No Multi-Language Coverage run for commit ${COMMIT_SHA}, trying latest from main..."
+    run_id=$(find_latest_workflow_run_on_main "Quality Check - Multi-Language Coverage" "false")
+    used_fallback="true"
+  fi
+
+  if [ -z "${run_id}" ]; then
+    log_warning "No Quality Check - Multi-Language Coverage run found for commit or on main branch"
     return 0
   fi
 
-  log_info "Found Multi-Language Coverage run: ${run_id}"
+  if [ "${used_fallback}" = "true" ]; then
+    log_info "Using fallback: Found Multi-Language Coverage run on main: ${run_id}"
+  else
+    log_info "Found Multi-Language Coverage run: ${run_id}"
+  fi
 
   # Download each language's coverage artifact
   local languages=("python" "ruby" "swift")

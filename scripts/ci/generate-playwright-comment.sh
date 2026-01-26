@@ -90,7 +90,7 @@ fi
       echo ""
       
       if [ "$HAS_TEST_RESULTS" -eq 1 ]; then
-        echo "⚠️ **Test artifacts found**: $TEST_ARTIFACT_COUNT failure screenshots/videos captured"
+        echo "📸 **Test artifacts**: $TEST_ARTIFACT_COUNT screenshots/videos captured"
         echo ""
       fi
       

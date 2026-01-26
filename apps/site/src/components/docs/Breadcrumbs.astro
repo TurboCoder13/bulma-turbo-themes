@@ -11,23 +11,24 @@ interface Props {
 }
 
 const { category, categoryLabel, title } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const showTitle = title !== categoryLabel;
 ---
 
 <nav class="breadcrumbs" aria-label="Breadcrumb">
   <ol class="breadcrumb-list">
     <li class="breadcrumb-item">
-      <a href="/" class="breadcrumb-link">Home</a>
+      <a href={`${baseUrl}/`} class="breadcrumb-link">Home</a>
     </li>
     <li class="breadcrumb-separator" aria-hidden="true">/</li>
     <li class="breadcrumb-item">
-      <a href="/docs/" class="breadcrumb-link">Docs</a>
+      <a href={`${baseUrl}/docs/`} class="breadcrumb-link">Docs</a>
     </li>
     <li class="breadcrumb-separator" aria-hidden="true">/</li>
     {showTitle ? (
       <>
         <li class="breadcrumb-item">
-          <a href={`/docs/${category}/`} class="breadcrumb-link">{categoryLabel}</a>
+          <a href={`${baseUrl}/docs/${category}/`} class="breadcrumb-link">{categoryLabel}</a>
         </li>
         <li class="breadcrumb-separator" aria-hidden="true">/</li>
         <li class="breadcrumb-item" aria-current="page">
