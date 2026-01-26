@@ -10,6 +10,7 @@ interface Props {
 }
 
 const { currentSlug } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const allDocs = await getCollection('docs', ({ data }) => !data.draft);
 
@@ -32,7 +33,7 @@ const groupedDocs = categories.map(cat => ({
 
 <aside class="sidebar docs-sidebar" id="docs-sidebar" data-state="expanded">
   <div class="sidebar-header">
-    <a href="/" class="sidebar-logo">
+    <a href={`${baseUrl}/`} class="sidebar-logo">
       <span class="sidebar-logo-icon">✦</span>
       <span class="sidebar-logo-text">Turbo Themes</span>
     </a>
@@ -63,7 +64,7 @@ const groupedDocs = categories.map(cat => ({
               <div class="sidebar-menu-sub">
                 {category.docs.map(doc => (
                   <a
-                    href={`/docs/${doc.slug}/`}
+                    href={`${baseUrl}/docs/${doc.slug}/`}
                     class={`sidebar-menu-sub-button ${doc.slug === currentSlug ? 'active' : ''}`}
                     aria-current={doc.slug === currentSlug ? 'page' : undefined}
                   >

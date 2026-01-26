@@ -1,0 +1,78 @@
+# Configuration for actions/labeler
+# Maps file paths to labels for automatic PR labeling
+---
+enhancement:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'packages/**'
+          - 'src/**'
+          - 'lib/**'
+          - 'assets/**'
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/workflows/**'
+          - '.github/actions/**'
+          - 'scripts/ci/**'
+          - 'Dockerfile'
+          - 'docker-compose.yml'
+          - '.dockerignore'
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/**'
+          - 'apps/site/src/content/docs/**'
+          - 'README.md'
+          - 'CHANGELOG.md'
+          - '**/*.md'
+          - '!.github/**/*.md'
+
+site:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'apps/site/**'
+          - 'apps/site/src/**'
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'package.json'
+          - 'bun.lock'
+          - 'pyproject.toml'
+          - 'uv.lock'
+          - 'Gemfile'
+          - 'Gemfile.lock'
+          - 'examples/**/package.json'
+          - 'packages/**/package.json'
+
+python:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'python/**'
+          - 'pyproject.toml'
+          - 'uv.lock'
+
+swift:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'swift/**'
+          - 'Package.swift'
+
+testing:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'e2e/**'
+          - 'test/**'
+          - 'spec/**'
+          - 'tests/**'
+          - '**/*.spec.ts'
+          - '**/*.test.ts'
+          - 'vitest.config.*'
+          - 'playwright.config.*'
+
+examples:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'examples/**'
