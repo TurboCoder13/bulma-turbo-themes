@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.17] - 2026-01-27
+
+### 🐛 Fixed
+
+- pin Ruby to 4.0.0 for GitHub Actions (#283)
+
 ## [0.12.16] - 2026-01-27
 
 ### 🐛 Fixed
