@@ -5,15 +5,15 @@ Themes with various frameworks and platforms.
 
 ## Available Examples
 
-| Example                           | Framework    | Description                                | Try It                                                                                                |
-| --------------------------------- | ------------ | ------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
-| [html-vanilla](./html-vanilla/)   | HTML/JS      | Zero-dependency vanilla JavaScript         | [StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/html-vanilla) |
-| [react](./react/)                 | React 18     | TypeScript with custom `useTheme` hook     | [StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/react)        |
-| [vue](./vue/)                     | Vue 3        | Composition API with `useTheme` composable | [StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/vue)          |
-| [tailwind](./tailwind/)           | Tailwind CSS | Preset integration with utility classes    | [StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/tailwind)     |
-| [bootstrap](./bootstrap/)         | Bootstrap 5  | SCSS integration with light/dark mode      | [StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/bootstrap)    |
-| [jekyll](./jekyll/)               | Jekyll       | Ruby gem with Bulma components             | -                                                                                                     |
-| [swift-swiftui](./swift-swiftui/) | SwiftUI      | iOS/macOS native app                       | -                                                                                                     |
+| Example                           | Framework    | Description                                | Try It                                                                                           |
+| --------------------------------- | ------------ | ------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| [html-vanilla](./html-vanilla/)   | HTML/JS      | Zero-dependency vanilla JavaScript         | [StackBlitz](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/html-vanilla) |
+| [react](./react/)                 | React 18     | TypeScript with custom `useTheme` hook     | [StackBlitz](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/react)        |
+| [vue](./vue/)                     | Vue 3        | Composition API with `useTheme` composable | [StackBlitz](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/vue)          |
+| [tailwind](./tailwind/)           | Tailwind CSS | Preset integration with utility classes    | [StackBlitz](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/tailwind)     |
+| [bootstrap](./bootstrap/)         | Bootstrap 5  | SCSS integration with light/dark mode      | [StackBlitz](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/bootstrap)    |
+| [jekyll](./jekyll/)               | Jekyll       | Ruby gem with Bulma components             | -                                                                                                |
+| [swift-swiftui](./swift-swiftui/) | SwiftUI      | iOS/macOS native app                       | -                                                                                                |
 
 ## Quick Start
 

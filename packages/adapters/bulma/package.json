@@ -1,5 +1,5 @@
 {
-  "name": "@turbocoder13/turbo-themes-adapter-bulma",
+  "name": "@lgtm-hq/turbo-themes-adapter-bulma",
   "version": "0.11.0",
   "description": "Bulma CSS adapter for Turbo Themes",
   "license": "MIT",
@@ -26,7 +26,7 @@
     }
   },
   "dependencies": {
-    "@turbocoder13/turbo-themes-core": "workspace:*"
+    "@lgtm-hq/turbo-themes-core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.9.3"

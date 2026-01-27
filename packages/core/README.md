@@ -1,4 +1,4 @@
-# @turbocoder13/turbo-themes-core
+# @lgtm-hq/turbo-themes-core
 
 Core design tokens and theme definitions for Turbo Themes.
 
@@ -10,26 +10,26 @@ desktop).
 
 ## Installation
 
-This package is included with `@turbocoder13/turbo-themes`. For internal use only.
+This package is included with `@lgtm-hq/turbo-themes`. For internal use only.
 
 ## Exports
 
 ### Main Export
 
 ```typescript
-import { flavors, getTheme, getTokens } from '@turbocoder13/turbo-themes-core';
+import { flavors, getTheme, getTokens } from '@lgtm-hq/turbo-themes-core';
 ```
 
 ### Tokens Export
 
 ```typescript
-import { flavors, themesById, getTheme } from '@turbocoder13/turbo-themes-core/tokens';
+import { flavors, themesById, getTheme } from '@lgtm-hq/turbo-themes-core/tokens';
 ```
 
 ### Themes Export
 
 ```typescript
-import { flavors } from '@turbocoder13/turbo-themes-core/themes';
+import { flavors } from '@lgtm-hq/turbo-themes-core/themes';
 ```
 
 ## API

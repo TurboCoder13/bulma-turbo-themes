@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { mapFlavorToUI } from '../src/theme-mapper.js';
-import type { ThemeFlavor as CanonicalThemeFlavor } from '@turbocoder13/turbo-themes-core';
+import type { ThemeFlavor as CanonicalThemeFlavor } from '@lgtm-hq/turbo-themes-core';
 
 describe('theme-mapper', () => {
   const createMockFlavor = (overrides: Partial<CanonicalThemeFlavor>): CanonicalThemeFlavor => {

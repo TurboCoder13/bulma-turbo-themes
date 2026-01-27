@@ -3,7 +3,7 @@
  * Maps core theme flavors to UI-specific format
  */
 
-import type { ThemeFlavor as CanonicalThemeFlavor } from '@turbocoder13/turbo-themes-core';
+import type { ThemeFlavor as CanonicalThemeFlavor } from '@lgtm-hq/turbo-themes-core';
 import type { ThemeFamily } from './types.js';
 
 export interface ThemeColors {

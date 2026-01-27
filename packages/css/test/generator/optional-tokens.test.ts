@@ -4,7 +4,7 @@
  * Tests for optional token handling (spacing, elevation, components, etc.)
  */
 import { describe, it, expect } from 'vitest';
-import type { ThemeTokens } from '@turbocoder13/turbo-themes-core';
+import type { ThemeTokens } from '@lgtm-hq/turbo-themes-core';
 import { generateCssVarsFromTokens } from '../../src/generator.js';
 import { CSS_GENERATOR_MOCK_TOKENS } from '../../../../test/fixtures/tokens.js';
 

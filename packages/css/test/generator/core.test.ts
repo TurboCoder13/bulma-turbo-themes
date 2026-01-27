@@ -4,7 +4,7 @@
  * Tests for basic CSS variable generation functionality.
  */
 import { describe, it, expect } from 'vitest';
-import type { ThemeFlavor, ThemeTokens } from '@turbocoder13/turbo-themes-core';
+import type { ThemeFlavor, ThemeTokens } from '@lgtm-hq/turbo-themes-core';
 import {
   CSS_VAR_PREFIX,
   generateCssVarsFromTokens,

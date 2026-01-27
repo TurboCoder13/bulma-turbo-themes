@@ -13,9 +13,9 @@ minimal footprint.
 ## Installation
 
 ```bash
-npm install @turbocoder13/turbo-themes-css
+npm install @lgtm-hq/turbo-themes-css
 # or
-bun add @turbocoder13/turbo-themes-css
+bun add @lgtm-hq/turbo-themes-css
 ```
 
 ## Quick Start
@@ -25,10 +25,7 @@ bun add @turbocoder13/turbo-themes-css
 Include the combined CSS file that contains core variables and all themes:
 
 ```html
-<link
-  rel="stylesheet"
-  href="node_modules/@turbocoder13/turbo-themes-css/dist/turbo.css"
-/>
+<link rel="stylesheet" href="node_modules/@lgtm-hq/turbo-themes-css/dist/turbo.css" />
 ```
 
 Then set the theme:
@@ -45,19 +42,19 @@ For better performance, load only what you need:
 <!-- Core variables (required) -->
 <link
   rel="stylesheet"
-  href="node_modules/@turbocoder13/turbo-themes-css/dist/turbo-core.css"
+  href="node_modules/@lgtm-hq/turbo-themes-css/dist/turbo-core.css"
 />
 
 <!-- Optional base semantic styles -->
 <link
   rel="stylesheet"
-  href="node_modules/@turbocoder13/turbo-themes-css/dist/turbo-base.css"
+  href="node_modules/@lgtm-hq/turbo-themes-css/dist/turbo-base.css"
 />
 
 <!-- Load theme on demand -->
 <link
   rel="stylesheet"
-  href="node_modules/@turbocoder13/turbo-themes-css/dist/themes/catppuccin-mocha.css"
+  href="node_modules/@lgtm-hq/turbo-themes-css/dist/themes/catppuccin-mocha.css"
 />
 ```
 
@@ -65,13 +62,13 @@ For better performance, load only what you need:
 
 ```js
 // Import core variables
-import '@turbocoder13/turbo-themes-css/turbo-core.css';
+import '@lgtm-hq/turbo-themes-css/turbo-core.css';
 
 // Import optional base styles
-import '@turbocoder13/turbo-themes-css/turbo-base.css';
+import '@lgtm-hq/turbo-themes-css/turbo-base.css';
 
 // Import specific theme(s)
-import '@turbocoder13/turbo-themes-css/themes/catppuccin-mocha.css';
+import '@lgtm-hq/turbo-themes-css/themes/catppuccin-mocha.css';
 ```
 
 ## Available Files
@@ -232,7 +229,7 @@ Use the `@turbo-themes/adapter-tailwind` package for seamless integration:
 ```js
 // tailwind.config.js
 module.exports = {
-  presets: [require('@turbocoder13/turbo-themes/adapters/tailwind/preset')],
+  presets: [require('@lgtm-hq/turbo-themes/adapters/tailwind/preset')],
 };
 ```
 
@@ -241,8 +238,8 @@ module.exports = {
 Use the `@turbo-themes/adapter-bulma` package:
 
 ```css
-@import '@turbocoder13/turbo-themes-css/turbo-core.css';
-@import '@turbocoder13/turbo-themes/adapters/bulma.css';
+@import '@lgtm-hq/turbo-themes-css/turbo-core.css';
+@import '@lgtm-hq/turbo-themes/adapters/bulma.css';
 @import 'bulma/css/bulma.css';
 ```
 
@@ -251,8 +248,8 @@ Use the `@turbo-themes/adapter-bulma` package:
 Generate CSS programmatically in Node.js/Bun:
 
 ```ts
-import { generateThemeCss, generateCoreCss } from '@turbocoder13/turbo-themes-css';
-import { getTheme } from '@turbocoder13/turbo-themes-core';
+import { generateThemeCss, generateCoreCss } from '@lgtm-hq/turbo-themes-css';
+import { getTheme } from '@lgtm-hq/turbo-themes-core';
 
 const theme = getTheme('catppuccin-mocha');
 const css = generateThemeCss(theme);

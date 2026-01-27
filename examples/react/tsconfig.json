@@ -18,7 +18,7 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      "@turbocoder13/turbo-themes-core/*": ["../../packages/core/dist/*"]
+      "@lgtm-hq/turbo-themes-core/*": ["../../packages/core/dist/*"]
     }
   },
   "include": ["src"]

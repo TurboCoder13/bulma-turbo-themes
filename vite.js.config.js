@@ -32,11 +32,11 @@ export default defineConfig(({ mode }) => {
     },
     resolve: {
       alias: {
-        '@turbocoder13/turbo-themes-core': resolve(
+        '@lgtm-hq/turbo-themes-core': resolve(
           import.meta.dirname,
           'packages/core/dist/index.js'
         ),
-        '@turbocoder13/turbo-theme-selector': resolve(
+        '@lgtm-hq/turbo-theme-selector': resolve(
           import.meta.dirname,
           'packages/theme-selector/dist/index.js'
         ),

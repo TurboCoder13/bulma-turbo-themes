@@ -12,7 +12,7 @@ fi
 : "${GITHUB_STEP_SUMMARY:?GITHUB_STEP_SUMMARY must be set by GitHub Actions}"
 
 TAG="$1"
-PACKAGE_NAME="@turbocoder13/turbo-themes"
+PACKAGE_NAME="@lgtm-hq/turbo-themes"
 
 echo "## 📦 Test Publish Complete" >> "$GITHUB_STEP_SUMMARY"
 echo "" >> "$GITHUB_STEP_SUMMARY"

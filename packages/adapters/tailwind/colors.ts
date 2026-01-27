@@ -5,7 +5,7 @@
  * Generates semantic color classes for each theme variant.
  */
 
-import { getTheme, themeIds } from '@turbocoder13/turbo-themes-core';
+import { getTheme, themeIds } from '@lgtm-hq/turbo-themes-core';
 
 type ThemeColors = {
   primary: string;

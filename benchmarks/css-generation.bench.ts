@@ -9,7 +9,7 @@
  */
 
 import { bench, describe } from 'vitest';
-import { flavors } from '@turbocoder13/turbo-themes-core';
+import { flavors } from '@lgtm-hq/turbo-themes-core';
 import { generateBaseCss, generateResetCss } from '../packages/css/src/base.js';
 import { CORE_MAPPINGS, CSS_VAR_PREFIX, OPTIONAL_GROUPS } from '../packages/core/src/themes/css/mappings.js';
 

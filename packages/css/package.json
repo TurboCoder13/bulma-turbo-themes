@@ -1,5 +1,5 @@
 {
-  "name": "@turbocoder13/turbo-themes-css",
+  "name": "@lgtm-hq/turbo-themes-css",
   "version": "0.11.0",
   "description": "Pure CSS Custom Properties output for Turbo Themes - framework agnostic",
   "license": "MIT",
@@ -27,7 +27,7 @@
     "test": "vitest run --config vitest.config.ts"
   },
   "dependencies": {
-    "@turbocoder13/turbo-themes-core": "workspace:*"
+    "@lgtm-hq/turbo-themes-core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.9.3",

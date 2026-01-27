@@ -8,7 +8,7 @@
  * @packageDocumentation
  */
 
-import type { ThemeFlavor, ThemeTokens } from '@turbocoder13/turbo-themes-core';
+import type { ThemeFlavor, ThemeTokens } from '@lgtm-hq/turbo-themes-core';
 import { CSS_VAR_PREFIX } from './generator.js';
 
 /**

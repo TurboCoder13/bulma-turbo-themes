@@ -12,15 +12,15 @@ next: getting-started/concepts
 Get Turbo Themes running in your project in under 5 minutes.
 
 > **Try it now**: Open an interactive example in StackBlitz:
-> [HTML](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/html-vanilla)
+> [HTML](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/stackblitz/html-vanilla)
 > |
-> [React](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/react)
+> [React](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/stackblitz/react)
 > |
-> [Vue](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/vue)
+> [Vue](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/stackblitz/vue)
 > |
-> [Tailwind](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/tailwind)
+> [Tailwind](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/stackblitz/tailwind)
 > |
-> [Bootstrap](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/bootstrap)
+> [Bootstrap](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/stackblitz/bootstrap)
 
 ## Step 1: Install
 

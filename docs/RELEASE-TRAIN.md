@@ -112,7 +112,7 @@ trigger (workflow_dispatch)
 **Requirements:**
 
 - `NPM_TOKEN` secret must be valid
-- npm account must have publish permissions for `@turbocoder13/turbo-themes`
+- npm account must have publish permissions for `@lgtm-hq/turbo-themes`
 - 2FA must be set to "Authorization only" level
 
 ### 4.5 Auto Tag Creation
@@ -229,7 +229,7 @@ After version PR is merged:
 
 ### `.github/workflows/quality-semantic-pr-title.yml`
 
-PR title validation using `TurboCoder13/py-lintro` action
+PR title validation using `lgtm-hq/py-lintro` action
 
 ### `.github/workflows/quality-ci-main.yml`
 

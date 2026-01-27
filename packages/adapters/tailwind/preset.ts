@@ -9,14 +9,14 @@
  * ```js
  * // tailwind.config.js
  * module.exports = {
- *   presets: [require('@turbocoder13/turbo-themes/adapters/tailwind/preset')],
+ *   presets: [require('@lgtm-hq/turbo-themes/adapters/tailwind/preset')],
  *   theme: { extend: {} },
  *   plugins: [],
  * };
  * ```
  */
 
-import { themeIds } from '@turbocoder13/turbo-themes-core';
+import { themeIds } from '@lgtm-hq/turbo-themes-core';
 import { createColorMappings } from './colors.js';
 
 export interface TurboThemePresetOptions {
@@ -158,4 +158,4 @@ export default function preset(userOptions: TurboThemePresetOptions = {}) {
 
 // Export utilities for advanced usage
 export { createColorMappings } from './colors.js';
-export { getTheme, themesById, themeIds } from '@turbocoder13/turbo-themes-core';
+export { getTheme, themesById, themeIds } from '@lgtm-hq/turbo-themes-core';

@@ -5,11 +5,11 @@
    Import individual files for specific components, or this file for all.
 
    Usage:
-     @import '@turbocoder13/turbo-themes/css/components';
+     @import '@lgtm-hq/turbo-themes/css/components';
 
    Or individual components:
-     @import '@turbocoder13/turbo-themes/css/components/buttons';
-     @import '@turbocoder13/turbo-themes/css/components/cards';
+     @import '@lgtm-hq/turbo-themes/css/components/buttons';
+     @import '@lgtm-hq/turbo-themes/css/components/cards';
    ========================================================================== */
 
 @import './buttons.css';

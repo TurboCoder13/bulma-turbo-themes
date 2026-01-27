@@ -4,18 +4,18 @@ Universal, accessible theme packs and a drop-in theme selector.
 
 [![Bun](https://img.shields.io/badge/bun-1.3+-black?logo=bun)](https://bun.sh/)
 [![Node.js](https://img.shields.io/badge/node.js-22-green)](https://nodejs.org/)
-[![Coverage](https://codecov.io/gh/TurboCoder13/turbo-themes/branch/main/graph/badge.svg)](https://codecov.io/gh/TurboCoder13/turbo-themes)
+[![Coverage](https://codecov.io/gh/lgtm-hq/turbo-themes/branch/main/graph/badge.svg)](https://codecov.io/gh/lgtm-hq/turbo-themes)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-[![Tests](https://img.shields.io/github/actions/workflow/status/TurboCoder13/turbo-themes/quality-ci-main.yml?label=tests&branch=main&logo=githubactions&logoColor=white)](https://github.com/TurboCoder13/turbo-themes/actions/workflows/quality-ci-main.yml?query=branch%3Amain)
-[![CI](https://img.shields.io/github/actions/workflow/status/TurboCoder13/turbo-themes/quality-ci-main.yml?label=ci&branch=main&logo=githubactions&logoColor=white)](https://github.com/TurboCoder13/turbo-themes/actions/workflows/quality-ci-main.yml?query=branch%3Amain)
-[![Lighthouse](https://img.shields.io/github/actions/workflow/status/TurboCoder13/turbo-themes/reporting-lighthouse-ci.yml?label=lighthouse&branch=main)](https://github.com/TurboCoder13/turbo-themes/actions/workflows/reporting-lighthouse-ci.yml?query=branch%3Amain)
+[![Tests](https://img.shields.io/github/actions/workflow/status/lgtm-hq/turbo-themes/quality-ci-main.yml?label=tests&branch=main&logo=githubactions&logoColor=white)](https://github.com/lgtm-hq/turbo-themes/actions/workflows/quality-ci-main.yml?query=branch%3Amain)
+[![CI](https://img.shields.io/github/actions/workflow/status/lgtm-hq/turbo-themes/quality-ci-main.yml?label=ci&branch=main&logo=githubactions&logoColor=white)](https://github.com/lgtm-hq/turbo-themes/actions/workflows/quality-ci-main.yml?query=branch%3Amain)
+[![Lighthouse](https://img.shields.io/github/actions/workflow/status/lgtm-hq/turbo-themes/reporting-lighthouse-ci.yml?label=lighthouse&branch=main)](https://github.com/lgtm-hq/turbo-themes/actions/workflows/reporting-lighthouse-ci.yml?query=branch%3Amain)
 
-[![CodeQL](https://github.com/TurboCoder13/turbo-themes/actions/workflows/security-codeql.yml/badge.svg?branch=main)](https://github.com/TurboCoder13/turbo-themes/actions/workflows/security-codeql.yml?query=branch%3Amain)
+[![CodeQL](https://github.com/lgtm-hq/turbo-themes/actions/workflows/security-codeql.yml/badge.svg?branch=main)](https://github.com/lgtm-hq/turbo-themes/actions/workflows/security-codeql.yml?query=branch%3Amain)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/11471/badge)](https://www.bestpractices.dev/projects/11471)
 [![SBOM](https://img.shields.io/badge/SBOM-enabled-brightgreen)](SECURITY.md)
-[![Download SBOM](https://img.shields.io/badge/SBOM-download_latest-blue?logo=github)](https://github.com/TurboCoder13/turbo-themes/actions/workflows/security-sbom.yml)
+[![Download SBOM](https://img.shields.io/badge/SBOM-download_latest-blue?logo=github)](https://github.com/lgtm-hq/turbo-themes/actions/workflows/security-sbom.yml)
 
-[![npm](https://img.shields.io/npm/v/%40turbocoder13%2Fturbo-themes)](https://www.npmjs.com/package/@turbocoder13/turbo-themes)
+[![npm](https://img.shields.io/npm/v/%40lgtm-hq%2Fturbo-themes)](https://www.npmjs.com/package/@lgtm-hq/turbo-themes)
 [![PyPI](https://img.shields.io/pypi/v/turbo-themes)](https://pypi.org/project/turbo-themes/)
 [![RubyGems](https://img.shields.io/gem/v/turbo-themes.svg)](https://rubygems.org/gems/turbo-themes)
 
@@ -48,21 +48,21 @@ projects:
 
 ## Installation
 
-| Platform                  | Package Manager | Install Command                                        |
-| ------------------------- | --------------- | ------------------------------------------------------ |
-| **JavaScript/TypeScript** | npm / bun       | `npm install @turbocoder13/turbo-themes`               |
-| **Python**                | pip / uv        | `pip install turbo-themes`                             |
-| **Ruby**                  | bundler         | `gem "turbo-themes", "~> 0.12"`                        |
-| **Swift**                 | SPM             | Add `https://github.com/TurboCoder13/turbo-themes.git` |
+| Platform                  | Package Manager | Install Command                                   |
+| ------------------------- | --------------- | ------------------------------------------------- |
+| **JavaScript/TypeScript** | npm / bun       | `npm install @lgtm-hq/turbo-themes`               |
+| **Python**                | pip / uv        | `pip install turbo-themes`                        |
+| **Ruby**                  | bundler         | `gem "turbo-themes", "~> 0.12"`                   |
+| **Swift**                 | SPM             | Add `https://github.com/lgtm-hq/turbo-themes.git` |
 
 ### JavaScript/TypeScript
 
 ```bash
 # Using Bun (recommended)
-bun add @turbocoder13/turbo-themes
+bun add @lgtm-hq/turbo-themes
 
 # Using npm
-npm install @turbocoder13/turbo-themes
+npm install @lgtm-hq/turbo-themes
 ```
 
 ### Python
@@ -82,7 +82,7 @@ gem "turbo-themes", "~> 0.12"
 
 ### Swift
 
-Add via Xcode: `https://github.com/TurboCoder13/turbo-themes.git` (version `0.12.0`+)
+Add via Xcode: `https://github.com/lgtm-hq/turbo-themes.git` (version `0.12.0`+)
 
 ## Quick Start
 
@@ -91,7 +91,7 @@ Add via Xcode: `https://github.com/TurboCoder13/turbo-themes.git` (version `0.12
 Access theme colors as platform-agnostic JSON tokens:
 
 ```ts
-import tokens from '@turbocoder13/turbo-themes/tokens.json';
+import tokens from '@lgtm-hq/turbo-themes/tokens.json';
 
 const mocha = tokens.themes['catppuccin-mocha'];
 console.log(mocha.tokens.brand.primary); // "#89b4fa"
@@ -100,7 +100,7 @@ console.log(mocha.tokens.brand.primary); // "#89b4fa"
 ### JavaScript/TypeScript
 
 ```ts
-import { initTheme, wireFlavorSelector } from '@turbocoder13/turbo-themes';
+import { initTheme, wireFlavorSelector } from '@lgtm-hq/turbo-themes';
 
 // Initialize theme system
 initTheme(document, window);
@@ -128,26 +128,26 @@ let mocha = ThemeRegistry.themes[.catppuccinMocha]
 
 ### Available Exports
 
-| Import Path                              | Use Case                      |
-| ---------------------------------------- | ----------------------------- |
-| `@turbocoder13/turbo-themes/tokens.json` | Platform-agnostic JSON tokens |
-| `@turbocoder13/turbo-themes/tokens`      | TypeScript tokens with types  |
-| `@turbocoder13/turbo-themes/css/*`       | Pre-built CSS files           |
+| Import Path                         | Use Case                      |
+| ----------------------------------- | ----------------------------- |
+| `@lgtm-hq/turbo-themes/tokens.json` | Platform-agnostic JSON tokens |
+| `@lgtm-hq/turbo-themes/tokens`      | TypeScript tokens with types  |
+| `@lgtm-hq/turbo-themes/css/*`       | Pre-built CSS files           |
 
 ## Examples
 
 Complete, working examples demonstrating Turbo Themes integration with various
 frameworks:
 
-| Example                               | Framework    | Description                                | Try It                                                                                                |
-| ------------------------------------- | ------------ | ------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
-| [HTML Vanilla](examples/html-vanilla) | HTML/JS      | Zero-dependency vanilla JavaScript         | [StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/html-vanilla) |
-| [React](examples/react)               | React 18     | TypeScript with custom `useTheme` hook     | [StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/react)        |
-| [Vue](examples/vue)                   | Vue 3        | Composition API with `useTheme` composable | [StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/vue)          |
-| [Tailwind](examples/tailwind)         | Tailwind CSS | Preset integration with utility classes    | [StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/tailwind)     |
-| [Bootstrap](examples/bootstrap)       | Bootstrap 5  | SCSS integration with light/dark mode      | [StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/bootstrap)    |
-| [Jekyll](examples/jekyll)             | Jekyll       | Ruby gem integration                       | -                                                                                                     |
-| [SwiftUI](examples/swift-swiftui)     | SwiftUI      | iOS/macOS native app                       | -                                                                                                     |
+| Example                               | Framework    | Description                                | Try It                                                                                           |
+| ------------------------------------- | ------------ | ------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| [HTML Vanilla](examples/html-vanilla) | HTML/JS      | Zero-dependency vanilla JavaScript         | [StackBlitz](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/html-vanilla) |
+| [React](examples/react)               | React 18     | TypeScript with custom `useTheme` hook     | [StackBlitz](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/react)        |
+| [Vue](examples/vue)                   | Vue 3        | Composition API with `useTheme` composable | [StackBlitz](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/vue)          |
+| [Tailwind](examples/tailwind)         | Tailwind CSS | Preset integration with utility classes    | [StackBlitz](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/tailwind)     |
+| [Bootstrap](examples/bootstrap)       | Bootstrap 5  | SCSS integration with light/dark mode      | [StackBlitz](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/bootstrap)    |
+| [Jekyll](examples/jekyll)             | Jekyll       | Ruby gem integration                       | -                                                                                                |
+| [SwiftUI](examples/swift-swiftui)     | SwiftUI      | iOS/macOS native app                       | -                                                                                                |
 
 Each example includes theme switching, localStorage persistence, and FOUC prevention.
 See the [examples directory](examples/) for full documentation.
@@ -192,7 +192,7 @@ For detailed E2E testing documentation, see `docs/E2E-TESTING.md`.
 
 ```bash
 # Clone and install
-git clone https://github.com/TurboCoder13/turbo-themes.git
+git clone https://github.com/lgtm-hq/turbo-themes.git
 cd turbo-themes
 bun install
 bundle install

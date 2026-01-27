@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://turbocoder13.github.io/turbo-themes/schema/output/v1",
+  "$id": "https://lgtm-hq.github.io/turbo-themes/schema/output/v1",
   "title": "Turbo Themes Output Format",
   "description": "Schema for the merged tokens.json output file (flattened format)",
   "type": "object",

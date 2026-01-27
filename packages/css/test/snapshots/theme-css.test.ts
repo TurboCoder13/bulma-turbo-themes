@@ -7,7 +7,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { flavors } from '@turbocoder13/turbo-themes-core';
+import { flavors } from '@lgtm-hq/turbo-themes-core';
 import { generateBaseCss, generateResetCss } from '../../src/base.js';
 import {
   CORE_MAPPINGS,
