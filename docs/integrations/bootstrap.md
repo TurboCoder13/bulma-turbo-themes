@@ -17,7 +17,7 @@
 
    ```html
    <link rel="stylesheet" href="/assets/css/themes/global.css" />
-   <link rel="stylesheet" href="/assets/css/adapters/bulma.css" />
+   <link rel="stylesheet" href="/assets/css/adapters/bootstrap.css" />
    ```
 
 3. Optional helpers:
