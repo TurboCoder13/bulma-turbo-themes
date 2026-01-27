@@ -1,4 +1,4 @@
-# @turbocoder13/turbo-themes-adapter-tailwind
+# @lgtm-hq/turbo-themes-adapter-tailwind
 
 Tailwind CSS adapter for Turbo Themes. Maps Turbo theme tokens to Tailwind's theming
 system via a preset.
@@ -12,9 +12,9 @@ maintaining full Tailwind utility class compatibility.
 ## Installation
 
 ```bash
-npm install @turbocoder13/turbo-themes tailwindcss
+npm install @lgtm-hq/turbo-themes tailwindcss
 # or
-bun add @turbocoder13/turbo-themes tailwindcss
+bun add @lgtm-hq/turbo-themes tailwindcss
 ```
 
 ## Usage
@@ -26,7 +26,7 @@ Add the preset to your Tailwind configuration:
 ```typescript
 // tailwind.config.ts
 import type { Config } from 'tailwindcss';
-import turboPreset from '@turbocoder13/turbo-themes/adapters/tailwind/preset';
+import turboPreset from '@lgtm-hq/turbo-themes/adapters/tailwind/preset';
 
 export default {
   presets: [turboPreset()],
@@ -38,7 +38,7 @@ export default {
 ### With Specific Themes
 
 ```typescript
-import turboPreset from '@turbocoder13/turbo-themes/adapters/tailwind/preset';
+import turboPreset from '@lgtm-hq/turbo-themes/adapters/tailwind/preset';
 
 export default {
   presets: [
@@ -189,7 +189,7 @@ automatically when you change themes.
 ### Color Utilities
 
 ```typescript
-import { colors } from '@turbocoder13/turbo-themes/adapters/tailwind';
+import { colors } from '@lgtm-hq/turbo-themes/adapters/tailwind';
 
 // Access color mappings
 console.log(colors.bg.base); // 'var(--turbo-bg-base)'
@@ -199,7 +199,7 @@ console.log(colors.text.primary); // 'var(--turbo-text-primary)'
 ### Custom Preset Configuration
 
 ```typescript
-import { createPreset } from '@turbocoder13/turbo-themes/adapters/tailwind';
+import { createPreset } from '@lgtm-hq/turbo-themes/adapters/tailwind';
 
 const customPreset = createPreset({
   themes: ['catppuccin-mocha'],
@@ -218,7 +218,7 @@ const customPreset = createPreset({
 ```typescript
 // tailwind.config.ts
 import type { Config } from 'tailwindcss';
-import turboPreset from '@turbocoder13/turbo-themes/adapters/tailwind/preset';
+import turboPreset from '@lgtm-hq/turbo-themes/adapters/tailwind/preset';
 
 const config: Config = {
   presets: [turboPreset()],
@@ -236,7 +236,7 @@ export default config;
 
 ```typescript
 // tailwind.config.ts
-import turboPreset from '@turbocoder13/turbo-themes/adapters/tailwind/preset';
+import turboPreset from '@lgtm-hq/turbo-themes/adapters/tailwind/preset';
 
 export default {
   presets: [turboPreset()],
@@ -248,7 +248,7 @@ export default {
 
 ```javascript
 // tailwind.config.mjs
-import turboPreset from '@turbocoder13/turbo-themes/adapters/tailwind/preset';
+import turboPreset from '@lgtm-hq/turbo-themes/adapters/tailwind/preset';
 
 export default {
   presets: [turboPreset()],
@@ -261,7 +261,7 @@ export default {
 The adapter includes full TypeScript support:
 
 ```typescript
-import type { TurboTailwindPresetOptions } from '@turbocoder13/turbo-themes/adapters/tailwind';
+import type { TurboTailwindPresetOptions } from '@lgtm-hq/turbo-themes/adapters/tailwind';
 
 const options: TurboTailwindPresetOptions = {
   themes: ['catppuccin-mocha', 'catppuccin-latte'],

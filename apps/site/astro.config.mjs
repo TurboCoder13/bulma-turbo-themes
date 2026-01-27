@@ -10,7 +10,7 @@ const base = process.env.ASTRO_BASE || '/';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://turbocoder13.github.io',
+  site: 'https://lgtm-hq.github.io',
   base,
   output: 'static',
   integrations: [sitemap()],

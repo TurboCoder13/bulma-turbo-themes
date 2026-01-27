@@ -3,7 +3,7 @@
 ## Install via Swift Package Manager (GitHub)
 
 1. In Xcode, add a package dependency:  
-   URL: `https://github.com/TurboCoder13/turbo-themes.git`  
+   URL: `https://github.com/lgtm-hq/turbo-themes.git`  
    Version: `from 0.10.8`
 2. Add the library product to your target: **TurboThemes**
 

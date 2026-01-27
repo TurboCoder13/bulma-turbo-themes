@@ -1,5 +1,5 @@
 {
-  "name": "@turbocoder13/turbo-themes",
+  "name": "@lgtm-hq/turbo-themes",
   "version": "0.12.15",
   "description": "Universal theme packs and an accessible theme selector.",
   "license": "MIT",
@@ -14,12 +14,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TurboCoder13/turbo-themes.git"
+    "url": "git+https://github.com/lgtm-hq/turbo-themes.git"
   },
   "bugs": {
-    "url": "https://github.com/TurboCoder13/turbo-themes/issues"
+    "url": "https://github.com/lgtm-hq/turbo-themes/issues"
   },
-  "homepage": "https://turbocoder13.github.io/turbo-themes/",
+  "homepage": "https://lgtm-hq.github.io/turbo-themes/",
   "author": "Turbo Coder",
   "keywords": [
     "bulma",

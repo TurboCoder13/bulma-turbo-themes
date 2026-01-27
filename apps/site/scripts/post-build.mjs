@@ -5,9 +5,10 @@
  * Uses centralized configuration from config/reports.json.
  */
 
-import { existsSync, cpSync, mkdirSync, writeFileSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, cpSync, mkdirSync, writeFileSync, readFileSync, readdirSync } from 'node:fs';
 import { resolve, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const siteDir = resolve(__dirname, '..');
@@ -60,21 +61,6 @@ function createPlaceholder(destPath, title, message) {
 }
 
 /**
- * Create an index page listing report files
- */
-function createReportIndex(destDir, title) {
-  const files = readdirSync(destDir)
-    .filter((f) => f.endsWith('.html') && (f.endsWith('.report.html') || f.startsWith('lhr-')))
-    .sort()
-    .reverse();
-
-  if (files.length === 0) return;
-
-  const links = files.map((f) => `    <li><a href="${encodeURIComponent(f)}">${f}</a></li>`).join('\n');
-  writeFileSync(resolve(destDir, 'index.html'), generateHtml(title, `<ul>\n${links}\n  </ul>`));
-}
-
-/**
  * Check if a directory has meaningful content (not just empty or only subdirs)
  */
 function hasContent(dirPath) {
@@ -102,6 +88,23 @@ function findSourcePath(sources) {
 }
 
 /**
+ * Generate Lighthouse index using the dedicated script
+ */
+function generateLighthouseIndex(destPath) {
+  const generatorScript = resolve(projectRoot, 'scripts/ci/generate-lighthouse-index.mjs');
+  if (existsSync(generatorScript)) {
+    try {
+      execSync(`node "${generatorScript}" "${destPath}"`, { stdio: 'inherit' });
+      return true;
+    } catch (error) {
+      console.warn(`  Warning: Lighthouse index generation failed: ${error.message}`);
+      return false;
+    }
+  }
+  return false;
+}
+
+/**
  * Process a single report based on configuration
  */
 function processReport(key, config) {
@@ -114,9 +117,9 @@ function processReport(key, config) {
     cpSync(srcPath, destPath, { recursive: true });
     console.log(`  Copied: ${basename(srcPath)} -> ${basename(destPath)}/`);
 
-    // Generate index page for reports that need it (like Lighthouse)
-    if (config.generateIndex) {
-      createReportIndex(destPath, config.title);
+    // Generate styled index page for Lighthouse reports
+    if (config.generateIndex && key === 'lighthouse') {
+      generateLighthouseIndex(destPath);
     }
     return true;
   } else {

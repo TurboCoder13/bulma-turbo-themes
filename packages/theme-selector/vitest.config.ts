@@ -4,7 +4,7 @@ import { resolve } from 'path';
 export default defineConfig({
   resolve: {
     alias: {
-      '@turbocoder13/turbo-themes-core': resolve(__dirname, '../core/src/index.ts'),
+      '@lgtm-hq/turbo-themes-core': resolve(__dirname, '../core/src/index.ts'),
     },
   },
   test: {

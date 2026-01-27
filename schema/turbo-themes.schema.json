@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://turbocoder13.github.io/turbo-themes/schema/v1",
+  "$id": "https://lgtm-hq.github.io/turbo-themes/schema/v1",
   "title": "Turbo Themes Design Tokens",
   "description": "W3C Design Tokens Community Group format schema for turbo-themes",
   "type": "object",

@@ -3,7 +3,7 @@
  * Provides helpers for generating StackBlitz URLs and embedding projects.
  */
 
-const GITHUB_OWNER = 'TurboCoder13';
+const GITHUB_OWNER = 'lgtm-hq';
 const GITHUB_REPO = 'turbo-themes';
 const GITHUB_BRANCH = 'main';
 

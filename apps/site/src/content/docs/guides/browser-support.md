@@ -212,8 +212,8 @@ based on device and complexity.
 
 If you encounter browser-specific issues:
 
-1. Check the [GitHub Issues](https://github.com/TurboCoder13/turbo-themes/issues) for
-   known problems
+1. Check the [GitHub Issues](https://github.com/lgtm-hq/turbo-themes/issues) for known
+   problems
 2. Include browser name and version in bug reports
 3. Provide a minimal reproduction if possible
 

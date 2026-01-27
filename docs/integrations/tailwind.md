@@ -3,7 +3,7 @@
 1. Install the package:
 
    ```bash
-   bun add @turbocoder13/turbo-themes
+   bun add @lgtm-hq/turbo-themes
    ```
 
 2. Use the preset in `tailwind.config.js`:
@@ -12,7 +12,7 @@
    /** @type {import('tailwindcss').Config} */
    module.exports = {
      content: ['./src/**/*.{ts,tsx,html}'],
-     presets: [require('@turbocoder13/turbo-themes/adapters/tailwind/preset')],
+     presets: [require('@lgtm-hq/turbo-themes/adapters/tailwind/preset')],
    };
    ```
 

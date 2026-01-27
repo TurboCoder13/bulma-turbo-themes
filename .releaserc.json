@@ -1,6 +1,6 @@
 {
   "branches": ["main"],
-  "repositoryUrl": "https://github.com/TurboCoder13/turbo-themes",
+  "repositoryUrl": "https://github.com/lgtm-hq/turbo-themes",
   "plugins": [
     [
       "@semantic-release/commit-analyzer",
@@ -65,7 +65,7 @@
           { "path": "sbom/*.json", "label": "SBOM (JSON)" },
           { "path": "sbom/*.xml", "label": "SBOM (XML)" }
         ],
-        "successComment": "🎉 This ${issue.pull_request ? 'PR is included' : 'issue has been resolved'} in version ${nextRelease.version} 🎉\n\nThe release is available on:\n- [npm package (@latest dist-tag)](https://www.npmjs.com/package/@turbocoder13/turbo-themes/v/${nextRelease.version})\n- [GitHub release](${releases.find(r => r.name === 'GitHub release').url})\n\n✨ Your contribution is greatly appreciated!",
+        "successComment": "🎉 This ${issue.pull_request ? 'PR is included' : 'issue has been resolved'} in version ${nextRelease.version} 🎉\n\nThe release is available on:\n- [npm package (@latest dist-tag)](https://www.npmjs.com/package/@lgtm-hq/turbo-themes/v/${nextRelease.version})\n- [GitHub release](${releases.find(r => r.name === 'GitHub release').url})\n\n✨ Your contribution is greatly appreciated!",
         "failComment": false,
         "releasedLabels": ["released"]
       }

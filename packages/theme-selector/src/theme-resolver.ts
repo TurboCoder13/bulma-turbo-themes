@@ -6,7 +6,7 @@
  * repeated mapping and set creation across the codebase.
  */
 
-import { flavors } from '@turbocoder13/turbo-themes-core';
+import { flavors } from '@lgtm-hq/turbo-themes-core';
 import { mapFlavorToUI, type ThemeFlavor } from './theme-mapper.js';
 import { DEFAULT_THEME } from './constants.js';
 

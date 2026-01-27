@@ -1,4 +1,4 @@
-# @turbocoder13/turbo-themes-adapter-bulma
+# @lgtm-hq/turbo-themes-adapter-bulma
 
 Bulma CSS adapter for Turbo Themes. Maps Turbo theme tokens to Bulma's CSS custom
 properties.
@@ -12,9 +12,9 @@ properties.
 ## Installation
 
 ```bash
-npm install @turbocoder13/turbo-themes bulma
+npm install @lgtm-hq/turbo-themes bulma
 # or
-bun add @turbocoder13/turbo-themes bulma
+bun add @lgtm-hq/turbo-themes bulma
 ```
 
 ## Usage
@@ -41,9 +41,9 @@ Load the CSS files in this order:
 
 ```js
 // Import in order
-import '@turbocoder13/turbo-themes/css/core';
-import '@turbocoder13/turbo-themes/css/themes/catppuccin-mocha.css';
-import '@turbocoder13/turbo-themes/adapters/bulma.css';
+import '@lgtm-hq/turbo-themes/css/core';
+import '@lgtm-hq/turbo-themes/css/themes/catppuccin-mocha.css';
+import '@lgtm-hq/turbo-themes/adapters/bulma.css';
 import 'bulma/css/bulma.min.css';
 ```
 
@@ -110,9 +110,9 @@ export default defineConfig({
 
 ```typescript
 // main.ts
-import '@turbocoder13/turbo-themes/css/core';
-import '@turbocoder13/turbo-themes/css/themes/catppuccin-mocha.css';
-import '@turbocoder13/turbo-themes/adapters/bulma.css';
+import '@lgtm-hq/turbo-themes/css/core';
+import '@lgtm-hq/turbo-themes/css/themes/catppuccin-mocha.css';
+import '@lgtm-hq/turbo-themes/adapters/bulma.css';
 import 'bulma/css/bulma.min.css';
 ```
 
@@ -120,8 +120,8 @@ import 'bulma/css/bulma.min.css';
 
 ```typescript
 // app/layout.tsx
-import '@turbocoder13/turbo-themes/css/core';
-import '@turbocoder13/turbo-themes/adapters/bulma.css';
+import '@lgtm-hq/turbo-themes/css/core';
+import '@lgtm-hq/turbo-themes/adapters/bulma.css';
 import 'bulma/css/bulma.min.css';
 
 export default function RootLayout({ children }) {
@@ -161,7 +161,7 @@ If you need to generate the CSS programmatically:
 import {
   generateBulmaAdapterCss,
   BULMA_ADAPTER_CSS,
-} from '@turbocoder13/turbo-themes/adapters/bulma';
+} from '@lgtm-hq/turbo-themes/adapters/bulma';
 
 // Get the CSS content
 const css = generateBulmaAdapterCss();
@@ -172,7 +172,7 @@ const css = generateBulmaAdapterCss();
 For advanced Bulma customization using Sass, use the configuration utilities:
 
 ```ts
-import { generateBulmaUse, hexToHsl } from '@turbocoder13/turbo-themes/adapters/bulma';
+import { generateBulmaUse, hexToHsl } from '@lgtm-hq/turbo-themes/adapters/bulma';
 
 const colors = {
   primary: '#89b4fa',
@@ -200,7 +200,7 @@ const sassConfig = generateBulmaUse(colors);
 The adapter includes full TypeScript support:
 
 ```typescript
-import type { BulmaAdapterConfig } from '@turbocoder13/turbo-themes/adapters/bulma';
+import type { BulmaAdapterConfig } from '@lgtm-hq/turbo-themes/adapters/bulma';
 
 const config: BulmaAdapterConfig = {
   colors: {
@@ -233,7 +233,7 @@ Some Bulma components use hardcoded colors. For full theming support, use the Sa
 configuration approach:
 
 ```typescript
-import { generateBulmaUse } from '@turbocoder13/turbo-themes/adapters/bulma';
+import { generateBulmaUse } from '@lgtm-hq/turbo-themes/adapters/bulma';
 
 // Generate Sass config with your theme colors
 const sassConfig = generateBulmaUse({

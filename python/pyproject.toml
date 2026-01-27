@@ -22,9 +22,9 @@ classifiers = [
 optional-dependencies = { dev = ["pytest>=9.0", "pytest-cov>=7.0", "assertpy>=1.1", "mypy>=1.8"] }
 
 [project.urls]
-Homepage = "https://github.com/turbocoder13/turbo-themes"
-Repository = "https://github.com/turbocoder13/turbo-themes"
-Documentation = "https://github.com/turbocoder13/turbo-themes#readme"
+Homepage = "https://github.com/lgtm-hq/turbo-themes"
+Repository = "https://github.com/lgtm-hq/turbo-themes"
+Documentation = "https://github.com/lgtm-hq/turbo-themes#readme"
 
 [build-system]
 requires = ["hatchling"]

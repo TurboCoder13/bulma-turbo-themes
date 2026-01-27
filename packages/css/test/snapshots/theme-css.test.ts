@@ -7,12 +7,12 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { flavors } from '@turbocoder13/turbo-themes-core';
-import { generateBaseCss, generateResetCss } from '../../src/base.js';
+import { flavors } from '@lgtm-hq/turbo-themes-core';
 import {
   CORE_MAPPINGS,
   CSS_VAR_PREFIX,
-} from '../../../../packages/core/src/themes/css/mappings.js';
+} from '@lgtm-hq/turbo-themes-core/css/mappings';
+import { generateBaseCss, generateResetCss } from '../../src/base.js';
 
 /**
  * Helper to generate CSS variables from tokens (subset for snapshot)

@@ -8,7 +8,7 @@
  * @packageDocumentation
  */
 
-import type { ThemeFlavor, ThemeTokens } from '@turbocoder13/turbo-themes-core';
+import type { ThemeFlavor, ThemeTokens } from '@lgtm-hq/turbo-themes-core';
 import { generateSyntaxVarsFromTokens } from './syntax.js';
 
 // Import centralized mappings from config
@@ -16,7 +16,7 @@ import {
   CORE_MAPPINGS,
   CSS_VAR_PREFIX,
   OPTIONAL_GROUPS,
-} from '@turbocoder13/turbo-themes-core/css/mappings';
+} from '@lgtm-hq/turbo-themes-core/css/mappings';
 
 /**
  * Resolves a dot-separated path to a value in the tokens object.

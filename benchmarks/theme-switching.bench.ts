@@ -6,7 +6,7 @@
  */
 
 import { bench, describe, beforeAll } from 'vitest';
-import { flavors } from '@turbocoder13/turbo-themes-core';
+import { flavors } from '@lgtm-hq/turbo-themes-core';
 
 // Mock DOM for benchmarking
 let mockDocument: Document;

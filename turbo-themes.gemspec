@@ -10,14 +10,14 @@ Gem::Specification.new do |spec|
 
   spec.summary = "Universal, accessible theme packs and a drop-in theme selector"
   spec.description = "Turbo Themes provides framework-agnostic color schemes and an accessible theme selector component for Jekyll sites and beyond."
-  spec.homepage = "https://github.com/TurboCoder13/turbo-themes"
+  spec.homepage = "https://github.com/lgtm-hq/turbo-themes"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.1.0"
 
   spec.metadata = {
-    "bug_tracker_uri" => "https://github.com/TurboCoder13/turbo-themes/issues",
-    "changelog_uri" => "https://github.com/TurboCoder13/turbo-themes/blob/main/CHANGELOG.md",
-    "documentation_uri" => "https://turbocoder13.github.io/turbo-themes/",
+    "bug_tracker_uri" => "https://github.com/lgtm-hq/turbo-themes/issues",
+    "changelog_uri" => "https://github.com/lgtm-hq/turbo-themes/blob/main/CHANGELOG.md",
+    "documentation_uri" => "https://lgtm-hq.github.io/turbo-themes/",
     "homepage_uri" => spec.homepage,
     "source_code_uri" => spec.homepage,
   }

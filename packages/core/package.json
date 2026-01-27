@@ -1,5 +1,5 @@
 {
-  "name": "@turbocoder13/turbo-themes-core",
+  "name": "@lgtm-hq/turbo-themes-core",
   "version": "0.11.0",
   "description": "Core design tokens and theme definitions for Turbo Themes",
   "license": "MIT",

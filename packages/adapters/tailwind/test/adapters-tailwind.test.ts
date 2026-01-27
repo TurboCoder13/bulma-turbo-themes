@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createColorMappings, createThemeCssVariables } from '../colors.js';
 import preset from '../preset.js';
-import { getTheme } from '@turbocoder13/turbo-themes-core';
+import { getTheme } from '@lgtm-hq/turbo-themes-core';
 
 const SAMPLE_THEME_ID = 'catppuccin-mocha';
 

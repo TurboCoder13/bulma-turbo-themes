@@ -5,10 +5,10 @@ export default defineConfig({
   resolve: {
     alias: {
       // More specific paths must come before less specific ones
-      '@turbocoder13/turbo-themes-core/css/mappings': resolve(__dirname, 'packages/core/src/themes/css/mappings.ts'),
-      '@turbocoder13/turbo-themes-core/themes/types': resolve(__dirname, 'packages/core/src/themes/types.ts'),
-      '@turbocoder13/turbo-themes-core/tokens': resolve(__dirname, 'packages/core/src/tokens/index.ts'),
-      '@turbocoder13/turbo-themes-core': resolve(__dirname, 'packages/core/src/index.ts'),
+      '@lgtm-hq/turbo-themes-core/css/mappings': resolve(__dirname, 'packages/core/src/themes/css/mappings.ts'),
+      '@lgtm-hq/turbo-themes-core/themes/types': resolve(__dirname, 'packages/core/src/themes/types.ts'),
+      '@lgtm-hq/turbo-themes-core/tokens': resolve(__dirname, 'packages/core/src/tokens/index.ts'),
+      '@lgtm-hq/turbo-themes-core': resolve(__dirname, 'packages/core/src/index.ts'),
     },
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
   },

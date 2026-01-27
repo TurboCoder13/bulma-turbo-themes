@@ -10,7 +10,7 @@ export default defineConfig({
   base: './',
   resolve: {
     alias: {
-      '@turbocoder13/turbo-themes-core': corePackagePath,
+      '@lgtm-hq/turbo-themes-core': corePackagePath,
     },
   },
   css: {
