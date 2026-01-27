@@ -1,5 +1,5 @@
 {
-  "name": "@turbocoder13/turbo-themes-adapter-bootstrap",
+  "name": "@lgtm-hq/turbo-themes-adapter-bootstrap",
   "version": "0.11.0",
   "description": "Bootstrap SCSS adapter for Turbo Themes",
   "license": "MIT",

@@ -13,7 +13,7 @@
  *        Default reports-dir: lighthouse-reports
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, basename } from 'node:path';
 
 const reportsDir = process.argv[2] || 'lighthouse-reports';
@@ -21,6 +21,48 @@ const reportsDir = process.argv[2] || 'lighthouse-reports';
 if (!existsSync(reportsDir)) {
   console.log(`Directory ${reportsDir} does not exist, skipping index generation`);
   process.exit(0);
+}
+
+/**
+ * Find HTML report files in the directory
+ * @param {string} dir - Directory to scan
+ * @returns {string[]} Array of HTML file names
+ */
+function findReportFiles(dir) {
+  try {
+    return readdirSync(dir)
+      .filter((f) => f.endsWith('.html') && (f.endsWith('.report.html') || f.startsWith('lhr-')))
+      .sort()
+      .reverse();
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Extract page name from filename
+ * @param {string} filename - Report filename like "localhost-demo_-2026_01_27.report.html" or "lhr-xxx.html"
+ * @returns {string} Friendly name
+ */
+function filenameToFriendlyName(filename) {
+  // Handle lhr-xxx.html format (Lighthouse CI format)
+  if (filename.startsWith('lhr-')) {
+    const match = filename.match(/lhr-.*?-(\w+)\.html/);
+    if (match) {
+      return match[1].charAt(0).toUpperCase() + match[1].slice(1);
+    }
+    return 'Report';
+  }
+
+  // Handle localhost-page-timestamp.report.html format
+  const match = filename.match(/localhost-?([^-_]*)?[_-]/);
+  if (match) {
+    const pageName = match[1] || '';
+    if (!pageName || pageName === '') return 'Homepage';
+    return pageName.charAt(0).toUpperCase() + pageName.slice(1).replace(/-/g, ' ');
+  }
+
+  return 'Report';
 }
 
 /**
@@ -110,22 +152,55 @@ function generateReportCard(entry) {
       </article>`;
 }
 
-// Read manifest.json
+/**
+ * Generate a simple report card for files without manifest data
+ * @param {string} filename - HTML report filename
+ * @returns {string} HTML for report card
+ */
+function generateSimpleReportCard(filename) {
+  const friendlyName = filenameToFriendlyName(filename);
+
+  return `
+      <article class="report-card report-card-simple">
+        <div class="report-card-header">
+          <h2>${friendlyName}</h2>
+          <a href="${encodeURIComponent(filename)}" class="report-card-badge">View Report →</a>
+        </div>
+        <p class="url-hint"><code>${filename}</code></p>
+      </article>`;
+}
+
+// Try to read manifest.json first
 const manifestPath = resolve(reportsDir, 'manifest.json');
-if (!existsSync(manifestPath)) {
-  console.log('No manifest.json found, cannot generate index');
-  process.exit(1);
+let manifest = [];
+let useManifest = false;
+
+if (existsSync(manifestPath)) {
+  try {
+    manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
+    useManifest = manifest.length > 0;
+  } catch {
+    console.log('Failed to parse manifest.json, falling back to file scan');
+  }
 }
 
-const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
+// Fall back to scanning for HTML files if no manifest
+let reportCards = '';
+let reportCount = 0;
 
-if (manifest.length === 0) {
-  console.log('No reports found in manifest.json');
-  process.exit(0);
+if (useManifest) {
+  reportCards = manifest.map(generateReportCard).join('\n');
+  reportCount = manifest.length;
+} else {
+  const htmlFiles = findReportFiles(reportsDir);
+  if (htmlFiles.length === 0) {
+    console.log('No report files found in directory');
+    process.exit(0);
+  }
+  reportCards = htmlFiles.map(generateSimpleReportCard).join('\n');
+  reportCount = htmlFiles.length;
+  console.log(`No manifest.json found, generating index from ${htmlFiles.length} HTML files`);
 }
-
-// Generate report cards
-const reportCards = manifest.map(generateReportCard).join('\n');
 
 // Base path for assets (from /lighthouse/ go up to site root)
 const basePath = '..';
@@ -321,6 +396,15 @@ const html = `<!DOCTYPE html>
       font-size: 0.875rem;
       color: var(--turbo-text-secondary);
     }
+
+    /* Simple report cards (no scores) */
+    html:root .report-card-simple .report-card-header {
+      margin-bottom: var(--space-md);
+    }
+
+    html:root .report-card-simple .url-hint {
+      margin: 0;
+    }
   </style>
 </head>
 <body>
@@ -333,7 +417,7 @@ const html = `<!DOCTYPE html>
           <span>🔦</span>
           Lighthouse Reports
         </h1>
-        <p class="lighthouse-subtitle">${manifest.length} page${manifest.length !== 1 ? 's' : ''} audited</p>
+        <p class="lighthouse-subtitle">${reportCount} report${reportCount !== 1 ? 's' : ''} available</p>
       </header>
 
       <div class="reports-grid">
@@ -358,4 +442,4 @@ ${reportCards}
 </html>`;
 
 writeFileSync(resolve(reportsDir, 'index.html'), html);
-console.log(`Generated index.html with ${manifest.length} reports`);
+console.log(`Generated index.html with ${reportCount} reports`);

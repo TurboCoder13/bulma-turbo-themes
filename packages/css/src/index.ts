@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /**
- * @turbocoder13/turbo-themes-css
+ * @lgtm-hq/turbo-themes-css
  *
  * Pure CSS Custom Properties output for Turbo Themes.
  * Framework-agnostic theming with minimal footprint.
@@ -34,4 +34,4 @@ export {
 } from './syntax.js';
 
 // Re-export types for convenience
-export type { ThemeFlavor, ThemeTokens } from '@turbocoder13/turbo-themes-core';
+export type { ThemeFlavor, ThemeTokens } from '@lgtm-hq/turbo-themes-core';

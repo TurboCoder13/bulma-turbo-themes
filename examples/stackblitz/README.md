@@ -4,13 +4,13 @@ Optimized, minimal examples designed for fast loading in StackBlitz.
 
 ## Available Templates
 
-| Template                        | Description                  | Try It                                                                                                                   |
-| ------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| [html-vanilla](./html-vanilla/) | Zero-dependency vanilla JS   | [Open in StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/html-vanilla) |
-| [react](./react/)               | React 18 + TypeScript + Vite | [Open in StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/react)        |
-| [vue](./vue/)                   | Vue 3 + TypeScript + Vite    | [Open in StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/vue)          |
-| [tailwind](./tailwind/)         | Tailwind CSS + Vite          | [Open in StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/tailwind)     |
-| [bootstrap](./bootstrap/)       | Bootstrap 5 + SCSS + Vite    | [Open in StackBlitz](https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz/bootstrap)    |
+| Template                        | Description                  | Try It                                                                                                              |
+| ------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| [html-vanilla](./html-vanilla/) | Zero-dependency vanilla JS   | [Open in StackBlitz](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/stackblitz/html-vanilla) |
+| [react](./react/)               | React 18 + TypeScript + Vite | [Open in StackBlitz](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/stackblitz/react)        |
+| [vue](./vue/)                   | Vue 3 + TypeScript + Vite    | [Open in StackBlitz](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/stackblitz/vue)          |
+| [tailwind](./tailwind/)         | Tailwind CSS + Vite          | [Open in StackBlitz](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/stackblitz/tailwind)     |
+| [bootstrap](./bootstrap/)       | Bootstrap 5 + SCSS + Vite    | [Open in StackBlitz](https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/stackblitz/bootstrap)    |
 
 ## Purpose
 

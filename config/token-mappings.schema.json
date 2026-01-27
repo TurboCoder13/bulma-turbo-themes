@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://turbocoder13.github.io/turbo-themes/schema/token-mappings/v1",
+  "$id": "https://lgtm-hq.github.io/turbo-themes/schema/token-mappings/v1",
   "title": "Token Mappings Configuration",
   "description": "Single source of truth for CSS variable to token path mappings",
   "type": "object",

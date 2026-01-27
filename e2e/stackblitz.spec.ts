@@ -14,7 +14,7 @@ import { expect, test } from '@playwright/test';
 test.skip(!process.env.RUN_EXTERNAL, 'StackBlitz tests require RUN_EXTERNAL=1 (external network access)');
 
 // StackBlitz base URL for GitHub projects
-const STACKBLITZ_BASE = 'https://stackblitz.com/github/TurboCoder13/turbo-themes/tree/main/examples/stackblitz';
+const STACKBLITZ_BASE = 'https://stackblitz.com/github/lgtm-hq/turbo-themes/tree/main/examples/stackblitz';
 
 // Available StackBlitz templates
 const templates = [

@@ -35,7 +35,7 @@ Add to your `_config.yml`:
 theme: turbo-themes
 
 # Or if using remote_theme:
-# remote_theme: turbocoder13/turbo-themes
+# remote_theme: lgtm-hq/turbo-themes
 ```
 
 ## Manual Setup

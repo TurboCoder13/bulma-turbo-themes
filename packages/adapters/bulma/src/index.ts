@@ -8,7 +8,7 @@
  * @packageDocumentation
  */
 
-import type { BulmaConfig } from '@turbocoder13/turbo-themes-core/themes/types';
+import type { BulmaConfig } from '@lgtm-hq/turbo-themes-core/themes/types';
 
 /**
  * Convert hex color to HSL values

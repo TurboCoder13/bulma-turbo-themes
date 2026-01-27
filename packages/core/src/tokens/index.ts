@@ -11,7 +11,7 @@
  * - Any platform that needs theme colors
  *
  * For web apps, you can also import the CSS files directly:
- * import '@turbocoder13/turbo-themes/css/catppuccin-mocha.css'
+ * import '@lgtm-hq/turbo-themes/css/catppuccin-mocha.css'
  */
 
 // Re-export types for consumers

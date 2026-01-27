@@ -19,14 +19,14 @@ Add Turbo Themes to your project via Xcode:
 
 1. Open your project in Xcode
 2. Go to **File → Add Package Dependencies**
-3. Enter the repository URL: `https://github.com/turbocoder13/turbo-themes`
+3. Enter the repository URL: `https://github.com/lgtm-hq/turbo-themes`
 4. Select the version and click **Add Package**
 
 Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/turbocoder13/turbo-themes", from: "1.0.0")
+    .package(url: "https://github.com/lgtm-hq/turbo-themes", from: "1.0.0")
 ]
 ```
 

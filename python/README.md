@@ -2,7 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/turbo-themes)](https://pypi.org/project/turbo-themes/)
 [![Python](https://img.shields.io/badge/python-3.10+-blue)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-green)](https://github.com/TurboCoder13/turbo-themes/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-green)](https://github.com/lgtm-hq/turbo-themes/blob/main/LICENSE)
 
 Universal design tokens and theme management for Python applications.
 
@@ -141,7 +141,7 @@ def get_theme_context(theme_name: str) -> dict:
 
 This package is part of the turbo-themes ecosystem:
 
-- **npm**: `@turbocoder13/turbo-themes` - TypeScript/JavaScript
+- **npm**: `@lgtm-hq/turbo-themes` - TypeScript/JavaScript
 - **PyPI**: `turbo-themes` - Python (this package)
 - **RubyGems**: `turbo-themes` - Ruby/Jekyll
 - **Swift**: Via Swift Package Manager
@@ -150,9 +150,9 @@ All packages share the same design tokens and color values.
 
 ## Links
 
-- [GitHub Repository](https://github.com/TurboCoder13/turbo-themes)
-- [Documentation](https://turbocoder13.github.io/turbo-themes/)
-- [npm Package](https://www.npmjs.com/package/@turbocoder13/turbo-themes)
+- [GitHub Repository](https://github.com/lgtm-hq/turbo-themes)
+- [Documentation](https://lgtm-hq.github.io/turbo-themes/)
+- [npm Package](https://www.npmjs.com/package/@lgtm-hq/turbo-themes)
 - [RubyGems Package](https://rubygems.org/gems/turbo-themes)
 
 ## License

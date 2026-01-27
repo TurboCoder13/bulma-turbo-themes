@@ -1,4 +1,4 @@
-# @turbocoder13/turbo-theme-selector
+# @lgtm-hq/turbo-theme-selector
 
 Theme selector UI component for Turbo Themes.
 
@@ -10,7 +10,7 @@ and navbar integration.
 
 ## Installation
 
-This package is included with `@turbocoder13/turbo-themes`. For internal use only.
+This package is included with `@lgtm-hq/turbo-themes`. For internal use only.
 
 ## Usage
 
@@ -20,7 +20,7 @@ import {
   wireFlavorSelector,
   initNavbar,
   enhanceAccessibility,
-} from '@turbocoder13/turbo-theme-selector';
+} from '@lgtm-hq/turbo-theme-selector';
 
 // Initialize theme system
 await initTheme(document, window);

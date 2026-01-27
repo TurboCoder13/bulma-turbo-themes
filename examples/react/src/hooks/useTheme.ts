@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { themeIds, flavors } from '@turbocoder13/turbo-themes-core/tokens';
+import { themeIds, flavors } from '@lgtm-hq/turbo-themes-core/tokens';
 
 const STORAGE_KEY = 'turbo-theme';
 const DEFAULT_THEME = 'catppuccin-mocha';

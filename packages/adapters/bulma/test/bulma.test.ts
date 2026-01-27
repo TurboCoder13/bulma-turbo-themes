@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { generateBulmaConfig, generateBulmaUse } from '../src/index.js';
-import type { BulmaConfig } from '@turbocoder13/turbo-themes-core/themes/types';
+import type { BulmaConfig } from '@lgtm-hq/turbo-themes-core/themes/types';
 
 // Test data for config categories - data-driven parametrization
 const configCategories = [

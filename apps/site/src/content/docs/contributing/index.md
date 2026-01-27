@@ -16,7 +16,7 @@ Thank you for your interest in contributing! This guide will help you get starte
 ### Report Issues
 
 Found a bug or have a feature request?
-[Open an issue](https://github.com/turbocoder13/turbo-themes/issues/new) on GitHub.
+[Open an issue](https://github.com/lgtm-hq/turbo-themes/issues/new) on GitHub.
 
 When reporting bugs, please include:
 
