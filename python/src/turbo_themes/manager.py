@@ -44,17 +44,16 @@ class ThemeInfo:
 
 
 class ThemeManager:
-    """Manages theme switching and application."""
+    """Manages theme switching and application.
+
+    Args:
+        default_theme: Theme ID to load initially.
+
+    Raises:
+        ValueError: If the requested default theme is missing.
+    """
 
     def __init__(self, default_theme: str = "catppuccin-mocha"):
-        """Initialize theme manager with default theme.
-
-        Args:
-            default_theme: Theme ID to load initially.
-
-        Raises:
-            ValueError: If the requested default theme is missing.
-        """
         self._current_theme_id = default_theme
         self._themes: dict[str, ThemeInfo] = {}
 
