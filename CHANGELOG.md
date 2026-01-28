@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.22] - 2026-01-28
+
+### 🐛 Fixed
+
+- update turbocoder13/py-lintro digest to c2a95e1 (#210)
+
 ## [0.12.21] - 2026-01-28
 
 ### 🐛 Fixed
