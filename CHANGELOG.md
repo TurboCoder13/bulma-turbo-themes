@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.21] - 2026-01-28
+
+### 🐛 Fixed
+
+- use GitHub-hosted runner for npm publish provenance (#289)
+
 ## [0.12.20] - 2026-01-28
 
 ### 🐛 Fixed
