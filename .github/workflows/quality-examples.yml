@@ -23,7 +23,7 @@ concurrency:
 jobs:
   build-examples:
     name: 🔨 Build Examples
-    runs-on: ubuntu-24.04
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -88,7 +88,7 @@ jobs:
 
   build-jekyll:
     name: 🔨 Build Jekyll Example
-    runs-on: ubuntu-24.04
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 15
     steps:
       - name: Harden Runner
@@ -126,7 +126,7 @@ jobs:
 
   test-examples:
     name: 🧪 Test Examples
-    runs-on: ubuntu-24.04
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 30
     needs: [build-examples, build-jekyll]
     steps:
