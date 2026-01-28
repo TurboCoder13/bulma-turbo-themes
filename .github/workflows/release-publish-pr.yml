@@ -37,7 +37,7 @@ jobs:
   github-release:
     name: 🚀 Create GitHub Release
     needs: [sbom]
-    runs-on: ubuntu-24.04
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 10
     permissions:
       contents: write
