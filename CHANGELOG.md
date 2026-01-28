@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.18] - 2026-01-28
+
+### 🐛 Fixed
+
+- update dependency @playwright/test to v1.58.0 (#257)
+
 ## [0.12.17] - 2026-01-27
 
 ### 🐛 Fixed
