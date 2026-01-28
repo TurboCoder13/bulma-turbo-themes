@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.20] - 2026-01-28
+
+### 🐛 Fixed
+
+- migrate workflows to Blacksmith runners (#286)
+
 ## [0.12.19] - 2026-01-28
 
 ### 🐛 Fixed
