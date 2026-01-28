@@ -127,7 +127,8 @@ jobs:
   publish:
     name: 📦 Publish to npm
     needs: [build]
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    # Must use GitHub-hosted runner for npm provenance attestation (sigstore)
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read
