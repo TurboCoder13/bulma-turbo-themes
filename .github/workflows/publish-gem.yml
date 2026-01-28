@@ -35,7 +35,7 @@ jobs:
   build:
     name: 🔨 Build Gem Package
     needs: [sbom]
-    runs-on: ubuntu-24.04
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 20
     permissions:
       contents: read
@@ -128,7 +128,7 @@ jobs:
   publish:
     name: 📦 Publish to RubyGems
     needs: [build]
-    runs-on: ubuntu-24.04
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 10
     permissions:
       contents: read
