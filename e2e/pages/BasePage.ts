@@ -187,7 +187,7 @@ export class BasePage {
     const escapedThemeId = escapeRegex(themeId);
     await expect(this.page.locator('html')).toHaveAttribute(
       'data-theme',
-      new RegExp(`^${escapedThemeId}$`)
+      new RegExp(`^${escapedThemeId}$`), // nosemgrep: detect-non-literal-regexp
     );
 
     // Check localStorage with polling to handle race conditions
@@ -202,7 +202,7 @@ export class BasePage {
 
     // Check that theme CSS is loaded
     const themeCss = this.page.locator('#turbo-theme-css');
-    await expect(themeCss).toHaveAttribute('href', new RegExp(`${escapedThemeId}\\.css`));
+    await expect(themeCss).toHaveAttribute('href', new RegExp(`${escapedThemeId}\\.css`)); // nosemgrep: detect-non-literal-regexp
   }
 
   /**

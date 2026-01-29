@@ -4,13 +4,15 @@
 
 set -euo pipefail
 
-echo "## 🚀 Semantic Release Complete" >> $GITHUB_STEP_SUMMARY
-echo "" >> $GITHUB_STEP_SUMMARY
-echo "The release process has completed." >> $GITHUB_STEP_SUMMARY
-echo "" >> $GITHUB_STEP_SUMMARY
-echo "If a new version was released:" >> $GITHUB_STEP_SUMMARY
-echo "- 📝 CHANGELOG.md has been updated" >> $GITHUB_STEP_SUMMARY
-echo "- 📦 package.json version has been bumped" >> $GITHUB_STEP_SUMMARY
-echo "- 🏷️ Git tag has been created" >> $GITHUB_STEP_SUMMARY
-echo "- 🎉 GitHub release has been published" >> $GITHUB_STEP_SUMMARY
-echo "- 📮 npm package has been published" >> $GITHUB_STEP_SUMMARY
+{
+  echo "## 🚀 Semantic Release Complete"
+  echo ""
+  echo "The release process has completed."
+  echo ""
+  echo "If a new version was released:"
+  echo "- 📝 CHANGELOG.md has been updated"
+  echo "- 📦 package.json version has been bumped"
+  echo "- 🏷️ Git tag has been created"
+  echo "- 🎉 GitHub release has been published"
+  echo "- 📮 npm package has been published"
+} >>"$GITHUB_STEP_SUMMARY"

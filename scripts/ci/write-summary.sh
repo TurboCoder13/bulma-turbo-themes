@@ -6,5 +6,4 @@ set -euo pipefail
 
 CONTENT="${1:?Content is required}"
 
-echo -e "$CONTENT" >> "$GITHUB_STEP_SUMMARY"
-
+echo -e "$CONTENT" >>"$GITHUB_STEP_SUMMARY"

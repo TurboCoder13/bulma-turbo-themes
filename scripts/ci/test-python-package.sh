@@ -17,35 +17,35 @@ source "${SCRIPT_DIR}/../utils/utils.sh"
 WORKING_DIR="python"
 
 parse_args() {
-    while [[ $# -gt 0 ]]; do
-        case $1 in
-            --working-dir)
-                WORKING_DIR="$2"
-                shift 2
-                ;;
-            *)
-                log_error "Unknown option: $1"
-                exit 2
-                ;;
-        esac
-    done
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+    --working-dir)
+      WORKING_DIR="$2"
+      shift 2
+      ;;
+    *)
+      log_error "Unknown option: $1"
+      exit 2
+      ;;
+    esac
+  done
 }
 
 main() {
-    parse_args "$@"
+  parse_args "$@"
 
-    log_info "Testing Python package..."
+  log_info "Testing Python package..."
 
-    # Validate working directory
-    if [[ ! -d "$WORKING_DIR" ]]; then
-        log_error "Working directory not found: $WORKING_DIR"
-        exit 1
-    fi
+  # Validate working directory
+  if [[ ! -d "$WORKING_DIR" ]]; then
+    log_error "Working directory not found: $WORKING_DIR"
+    exit 1
+  fi
 
-    cd "$WORKING_DIR"
+  cd "$WORKING_DIR"
 
-    # Run Python tests
-    python3 -c "
+  # Run Python tests
+  python3 -c "
 import sys
 sys.path.insert(0, 'src')
 
@@ -73,7 +73,7 @@ except Exception as e:
     sys.exit(1)
 "
 
-    log_success "Python package tests passed"
+  log_success "Python package tests passed"
 }
 
 main "$@"

@@ -17,47 +17,47 @@ source "${SCRIPT_DIR}/../utils/utils.sh"
 WORKING_DIR="python"
 
 parse_args() {
-    while [[ $# -gt 0 ]]; do
-        case $1 in
-            --working-dir)
-                WORKING_DIR="$2"
-                shift 2
-                ;;
-            *)
-                log_error "Unknown option: $1"
-                exit 2
-                ;;
-        esac
-    done
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+    --working-dir)
+      WORKING_DIR="$2"
+      shift 2
+      ;;
+    *)
+      log_error "Unknown option: $1"
+      exit 2
+      ;;
+    esac
+  done
 }
 
 main() {
-    parse_args "$@"
+  parse_args "$@"
 
-    log_info "Building Python package..."
+  log_info "Building Python package..."
 
-    # Check for uv
-    require_command uv
+  # Check for uv
+  require_command uv
 
-    # Validate working directory
-    if [[ ! -d "$WORKING_DIR" ]]; then
-        log_error "Working directory not found: $WORKING_DIR"
-        exit 1
-    fi
+  # Validate working directory
+  if [[ ! -d "$WORKING_DIR" ]]; then
+    log_error "Working directory not found: $WORKING_DIR"
+    exit 1
+  fi
 
-    cd "$WORKING_DIR"
+  cd "$WORKING_DIR"
 
-    # Build package
-    log_info "Running uv build..."
-    uv build
+  # Build package
+  log_info "Running uv build..."
+  uv build
 
-    # Show build artifacts
-    if [[ -d "dist" ]]; then
-        log_info "Build artifacts:"
-        ls -la dist/
-    fi
+  # Show build artifacts
+  if [[ -d "dist" ]]; then
+    log_info "Build artifacts:"
+    ls -la dist/
+  fi
 
-    log_success "Python package build completed"
+  log_success "Python package build completed"
 }
 
 main "$@"

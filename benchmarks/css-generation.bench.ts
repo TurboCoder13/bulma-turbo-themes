@@ -24,7 +24,7 @@ function resolveTokenPath(tokens: Record<string, unknown>, path: string): string
   let current: unknown = tokens;
   for (const part of parts) {
     if (current == null || typeof current !== 'object') return undefined;
-    current = (current as Record<string, unknown>)[part];
+    current = (current as Record<string, unknown>)[part]; // nosemgrep: prototype-pollution-loop
   }
   return typeof current === 'string' ? current : undefined;
 }

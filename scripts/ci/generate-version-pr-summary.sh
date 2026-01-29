@@ -8,13 +8,13 @@ set -euo pipefail
 
 {
   echo "## Release Version PR Status"
-  
+
   if [ "${PR_EXISTS:-false}" = "true" ]; then
     echo "ℹ️ Version PR already exists: #${PR_NUMBER:-unknown}"
   else
     echo "✅ Version PR creation attempted"
     echo "📋 Check the logs above for details"
   fi
-} >> "$GITHUB_STEP_SUMMARY"
+} >>"$GITHUB_STEP_SUMMARY"
 
 echo "✅ Version PR summary generated"

@@ -1,0 +1,27 @@
+# Shellcheck configuration
+# https://github.com/koalaman/shellcheck/wiki/Directive
+
+# SC1091: Not following sourced file
+# Reason: Scripts source ../utils/utils.sh which exists at runtime but
+# shellcheck can't follow relative paths from arbitrary contexts
+disable=SC1091
+
+# SC2034: Variable appears unused
+# Reason: Variables may be used in sourced scripts or exported for subshells
+disable=SC2034
+
+# SC2329: Function is never invoked
+# Reason: Functions may be utility/library functions sourced by other scripts
+disable=SC2329
+
+# SC2129: Consider using { cmd1; cmd2; } >> file
+# Reason: Style preference, individual redirects are also correct
+disable=SC2129
+
+# SC2016: Expressions don't expand in single quotes
+# Reason: Often intentional to pass literal strings (e.g., to awk/sed)
+disable=SC2016
+
+# SC2012: Use find instead of ls
+# Reason: Style preference, ls is fine for simple directory listings
+disable=SC2012

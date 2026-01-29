@@ -32,7 +32,7 @@ function traversePath(obj: unknown, path: string): unknown {
     if (current === null || current === undefined || typeof current !== 'object') {
       return undefined;
     }
-    current = (current as Record<string, unknown>)[part];
+    current = (current as Record<string, unknown>)[part]; // nosemgrep: prototype-pollution-loop
   }
 
   return current;

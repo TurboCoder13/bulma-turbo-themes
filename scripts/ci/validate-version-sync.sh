@@ -17,7 +17,7 @@ if [[ ! -f "$VERSION_FILE" ]]; then
   echo "❌ Error: VERSION file not found at $VERSION_FILE"
   exit 1
 fi
-EXPECTED_VERSION=$(tr -d '[:space:]' < "$VERSION_FILE")
+EXPECTED_VERSION=$(tr -d '[:space:]' <"$VERSION_FILE")
 
 echo "🔍 Validating version sync (expected: $EXPECTED_VERSION)"
 echo ""

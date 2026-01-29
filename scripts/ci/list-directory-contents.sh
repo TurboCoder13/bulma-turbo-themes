@@ -14,4 +14,3 @@ if [ -d "$DIRECTORY" ]; then
   echo "Finding all files in $DIRECTORY:"
   find "$DIRECTORY" -type f || true
 fi
-

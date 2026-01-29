@@ -23,5 +23,4 @@ GEM_NAME="$2"
   echo "| **Package** | \`$GEM_NAME\` |"
   echo ""
   echo "🎉 Release complete!"
-} >> "$GITHUB_STEP_SUMMARY"
-
+} >>"$GITHUB_STEP_SUMMARY"

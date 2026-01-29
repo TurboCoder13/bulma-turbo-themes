@@ -45,9 +45,9 @@ echo "Starting report servers..."
 echo ""
 
 # Detect package executor (prefer bunx, fall back to npx)
-if command -v bunx &> /dev/null; then
+if command -v bunx &>/dev/null; then
   PKG_EXEC="bunx --bun"
-elif command -v npx &> /dev/null; then
+elif command -v npx &>/dev/null; then
   PKG_EXEC="npx --yes"
 else
   echo "❌ Error: No package executor found"
@@ -61,12 +61,12 @@ fi
 #   Returns 1 when no listener is found (port is free)
 check_port() {
   local port=$1
-  if command -v lsof &> /dev/null; then
-    lsof -i ":$port" &> /dev/null
-  elif command -v nc &> /dev/null; then
-    nc -z localhost "$port" &> /dev/null
-  elif command -v ss &> /dev/null; then
-    ss -lntu | grep -q ":$port " &> /dev/null
+  if command -v lsof &>/dev/null; then
+    lsof -i ":$port" &>/dev/null
+  elif command -v nc &>/dev/null; then
+    nc -z localhost "$port" &>/dev/null
+  elif command -v ss &>/dev/null; then
+    ss -lntu | grep -q ":$port " &>/dev/null
   else
     # No port checking tools available; assume port is free (return 1) to proceed on minimal systems without port checking tools.
     return 1
@@ -80,20 +80,20 @@ check_port() {
 validate_and_resolve_path() {
   local path=$1
   local resolved_path=""
-  
+
   # Check if path exists (directory or symlink)
   if [ ! -d "$path" ] && [ ! -L "$path" ]; then
     return 1
   fi
-  
+
   # If it's a symlink, resolve it
   if [ -L "$path" ]; then
-    if command -v realpath &> /dev/null; then
+    if command -v realpath &>/dev/null; then
       resolved_path=$(realpath "$path" 2>/dev/null || echo "")
     else
       resolved_path=$(readlink "$path" 2>/dev/null || echo "")
     fi
-    
+
     # Validate resolved path is a directory and non-empty
     if [ -n "$resolved_path" ] && [ -d "$resolved_path" ] && [ -n "$(ls -A "$resolved_path" 2>/dev/null)" ]; then
       echo "$resolved_path"
@@ -106,7 +106,7 @@ validate_and_resolve_path() {
       return 0
     fi
   fi
-  
+
   return 1
 }
 
@@ -118,19 +118,19 @@ resolve_report_path() {
   local secondary=$2
   local fallback=$3
   local resolved_path=""
-  
+
   # Try primary path first
   if resolved_path=$(validate_and_resolve_path "$primary"); then
     echo "$resolved_path"
     return 0
   fi
-  
+
   # Try secondary path if primary didn't work
   if resolved_path=$(validate_and_resolve_path "$secondary"); then
     echo "$resolved_path"
     return 0
   fi
-  
+
   # Return fallback if resolution failed
   echo "$fallback"
   return 0
@@ -142,40 +142,40 @@ start_server() {
   local port=$2
   local path=$3
   local log_file="$REPO_ROOT/.${name}-server.log"
-  
+
   # Validate path before attempting to start server
   if [ ! -d "$path" ]; then
     echo "❌ Error: $name path is invalid or empty: $path"
     return 1
   fi
-  
+
   # Ensure path is readable and not empty
   if ! ls -A "$path" >/dev/null 2>&1; then
     echo "❌ Error: $name path is invalid or empty: $path"
     return 1
   fi
-  
+
   # Check if port is already in use
   if check_port "$port"; then
     echo "❌ Error: Port $port is already in use"
     echo "   Please stop the service using port $port or choose a different port"
     return 1
   fi
-  
+
   # Start server and redirect output to log file
-  $PKG_EXEC http-server "$path" -p "$port" -a 127.0.0.1 -c-1 > "$log_file" 2>&1 &
+  $PKG_EXEC http-server "$path" -p "$port" -a 127.0.0.1 -c-1 >"$log_file" 2>&1 &
   local server_pid=$!
-  
+
   # Wait briefly for server to start
   sleep 2
-  
+
   # Verify server is running and listening on the port
   if ! kill -0 "$server_pid" 2>/dev/null; then
     echo "❌ Error: $name server failed to start (PID: $server_pid)"
     echo "   Check log file: $log_file"
     return 1
   fi
-  
+
   # Verify port is now in use (server is listening)
   if ! check_port "$port"; then
     echo "❌ Error: $name server started but is not listening on port $port"
@@ -184,7 +184,7 @@ start_server() {
     echo "$server_pid"
     return 1
   fi
-  
+
   echo "$server_pid"
   return 0
 }
@@ -192,7 +192,7 @@ start_server() {
 # Start Playwright report server
 if [ -d "playwright-report" ] || [ -L "playwright-report" ] || [ -d "playwright" ] || [ -L "playwright" ]; then
   SERVER_PATH=$(resolve_report_path "playwright-report" "playwright" "playwright-report")
-  
+
   PW_PID=$(start_server "playwright" 9323 "$SERVER_PATH")
   start_exit_code=$?
   if [ $start_exit_code -eq 0 ] && [ -n "$PW_PID" ]; then
@@ -206,7 +206,7 @@ fi
 # Start Lighthouse report server
 if [ -d "lighthouse-reports" ] || [ -L "lighthouse-reports" ] || [ -d "lighthouse" ] || [ -L "lighthouse" ]; then
   SERVER_PATH=$(resolve_report_path "lighthouse-reports" "lighthouse" "lighthouse-reports")
-  
+
   LH_PID=$(start_server "lighthouse" 3001 "$SERVER_PATH")
   start_exit_code=$?
   if [ $start_exit_code -eq 0 ] && [ -n "$LH_PID" ]; then
@@ -218,8 +218,8 @@ if [ -d "lighthouse-reports" ] || [ -L "lighthouse-reports" ] || [ -d "lighthous
 fi
 
 # Validate that at least one server started successfully
-if { [ -z "${PW_PID:-}" ] || [ "$PW_PID" = "" ] || [ "$PW_PID" = "0" ]; } && \
-   { [ -z "${LH_PID:-}" ] || [ "$LH_PID" = "" ] || [ "$LH_PID" = "0" ]; }; then
+if { [ -z "${PW_PID:-}" ] || [ "$PW_PID" = "" ] || [ "$PW_PID" = "0" ]; } &&
+  { [ -z "${LH_PID:-}" ] || [ "$LH_PID" = "" ] || [ "$LH_PID" = "0" ]; }; then
   echo ""
   echo "❌ Error: No servers started successfully"
   echo "   Please ensure at least one report directory exists and is accessible"
@@ -230,7 +230,7 @@ fi
 cleanup() {
   echo ""
   echo "🛑 Stopping servers..."
-  
+
   if [ -n "${PW_PID:-}" ] && [ "$PW_PID" != "" ]; then
     if kill -0 "$PW_PID" 2>/dev/null; then
       echo "   Stopping Playwright server (PID: $PW_PID)..."
@@ -242,7 +242,7 @@ cleanup() {
       wait "$PW_PID" 2>/dev/null || true
     fi
   fi
-  
+
   if [ -n "${LH_PID:-}" ] && [ "$LH_PID" != "" ]; then
     if kill -0 "$LH_PID" 2>/dev/null; then
       echo "   Stopping Lighthouse server (PID: $LH_PID)..."
@@ -254,7 +254,7 @@ cleanup() {
       wait "$LH_PID" 2>/dev/null || true
     fi
   fi
-  
+
   echo "✅ All servers stopped"
   exit 0
 }

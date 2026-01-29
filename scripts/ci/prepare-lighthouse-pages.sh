@@ -10,4 +10,3 @@ if [ -d lighthouse-reports ] && find lighthouse-reports -mindepth 1 -print -quit
 fi
 echo "✅ Lighthouse reports prepared for deployment"
 ls -la apps/site/dist/lighthouse-reports/
-

@@ -16,7 +16,6 @@ fi
   echo "$OUTPUT_NAME<<EOF"
   cat "$FILE_PATH"
   echo "EOF"
-} >> "$GITHUB_OUTPUT"
+} >>"$GITHUB_OUTPUT"
 
 echo "✅ File content output to $OUTPUT_NAME"
-

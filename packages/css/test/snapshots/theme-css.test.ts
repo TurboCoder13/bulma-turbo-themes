@@ -28,7 +28,7 @@ function generateCssVarsSnapshot(tokens: Record<string, unknown>): string {
     let current: unknown = tokens;
     for (const part of parts) {
       if (current == null || typeof current !== 'object') break;
-      current = (current as Record<string, unknown>)[part];
+      current = (current as Record<string, unknown>)[part]; // nosemgrep: prototype-pollution-loop
     }
     if (typeof current === 'string') {
       lines.push(`--${CSS_VAR_PREFIX}-${mapping.cssVar}: ${current};`);

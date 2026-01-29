@@ -6,12 +6,12 @@ set -euo pipefail
 
 # Detect package manager (prefer bun, fall back to npm)
 if command -v bun >/dev/null 2>&1; then
-    PKG_RUN="bun run"
+  PKG_RUN="bun run"
 elif command -v npm >/dev/null 2>&1; then
-    PKG_RUN="npm run"
+  PKG_RUN="npm run"
 else
-    echo "❌ No package manager found!"
-    exit 1
+  echo "❌ No package manager found!"
+  exit 1
 fi
 
 $PKG_RUN theme:sync

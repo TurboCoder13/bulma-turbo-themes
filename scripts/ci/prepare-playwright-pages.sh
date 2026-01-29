@@ -33,4 +33,3 @@ cp -r "$ARTIFACT_PATH"/* apps/site/dist/playwright/ || {
 
 echo "✅ Playwright reports prepared for deployment"
 ls -la apps/site/dist/playwright/
-

@@ -23,8 +23,7 @@ fi
   echo "name=$GEM_NAME"
   echo "version=$VERSION"
   echo "path=$GEM_FILE"
-} >> "$GITHUB_OUTPUT"
+} >>"$GITHUB_OUTPUT"
 
 echo "📦 Gem: $GEM_NAME"
 echo "🏷️  Version: $VERSION"
-

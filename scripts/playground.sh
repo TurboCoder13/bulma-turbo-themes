@@ -37,45 +37,44 @@ open_file() {
 }
 
 case "$target" in
-  html)
-    open_file "$root_dir/examples/html-vanilla/index.html"
-    ;;
-  jekyll)
-    if ! command -v bundle >/dev/null 2>&1; then
-      echo "Error: 'bundle' not found. Install with: gem install bundler"
-      exit 1
-    fi
-    cd "$root_dir/examples/jekyll"
-    # Install gems if needed
-    if [ ! -d "vendor/bundle" ]; then
-      bundle install --path vendor/bundle
-    fi
-    bundle exec jekyll serve --livereload
-    ;;
-  swift)
-    open_file "$root_dir/examples/swift-swiftui/Package.swift"
-    ;;
-  tailwind)
-    if ! command -v bun >/dev/null 2>&1; then
-      echo "Error: 'bun' not found. Install from: https://bun.sh"
-      exit 1
-    fi
-    cd "$root_dir/examples/tailwind"
-    # Only install if node_modules is missing or outdated
-    if [ ! -d "node_modules" ] || [ "package.json" -nt "node_modules" ]; then
-      bun install
-    fi
-    bun run dev
-    ;;
-  bootstrap)
-    echo "Bootstrap demo placeholder - add implementation in examples/bootstrap/"
-    ;;
-  python)
-    echo "Python report demo placeholder - add implementation in examples/python-report/"
-    ;;
-  *)
-    usage
+html)
+  open_file "$root_dir/examples/html-vanilla/index.html"
+  ;;
+jekyll)
+  if ! command -v bundle >/dev/null 2>&1; then
+    echo "Error: 'bundle' not found. Install with: gem install bundler"
     exit 1
-    ;;
+  fi
+  cd "$root_dir/examples/jekyll"
+  # Install gems if needed
+  if [ ! -d "vendor/bundle" ]; then
+    bundle install --path vendor/bundle
+  fi
+  bundle exec jekyll serve --livereload
+  ;;
+swift)
+  open_file "$root_dir/examples/swift-swiftui/Package.swift"
+  ;;
+tailwind)
+  if ! command -v bun >/dev/null 2>&1; then
+    echo "Error: 'bun' not found. Install from: https://bun.sh"
+    exit 1
+  fi
+  cd "$root_dir/examples/tailwind"
+  # Only install if node_modules is missing or outdated
+  if [ ! -d "node_modules" ] || [ "package.json" -nt "node_modules" ]; then
+    bun install
+  fi
+  bun run dev
+  ;;
+bootstrap)
+  echo "Bootstrap demo placeholder - add implementation in examples/bootstrap/"
+  ;;
+python)
+  echo "Python report demo placeholder - add implementation in examples/python-report/"
+  ;;
+*)
+  usage
+  exit 1
+  ;;
 esac
-

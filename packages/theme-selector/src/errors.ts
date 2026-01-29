@@ -122,13 +122,13 @@ export function logThemeError(themeError: ThemeError): void {
 
   if (themeError.level === ErrorLevel.ERROR) {
     if (themeError.context) {
-      console.error(prefixedMessage, themeError.context);
+      console.error(prefixedMessage, themeError.context); // nosemgrep: unsafe-formatstring
     } else {
       console.error(prefixedMessage);
     }
   } else {
     if (themeError.context) {
-      console.warn(prefixedMessage, themeError.context);
+      console.warn(prefixedMessage, themeError.context); // nosemgrep: unsafe-formatstring
     } else {
       console.warn(prefixedMessage);
     }

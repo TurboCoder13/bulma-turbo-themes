@@ -11,13 +11,13 @@ set -euo pipefail
 
 {
   echo "## Auto Tag Summary"
-  
+
   if [ -n "${VERSION_INPUT:-}" ]; then
     echo "🔧 **Manual Dispatch**"
     echo "- Version: ${CURRENT_VERSION:-unknown}"
     echo "- Prerelease: ${PRERELEASE:-false}"
   fi
-  
+
   if [ "${VERSION_CHANGED:-false}" = "false" ]; then
     echo "ℹ️ Version unchanged, no tag needed"
   elif [ "${TAG_EXISTS:-false}" = "true" ]; then
@@ -28,6 +28,6 @@ set -euo pipefail
     echo "✅ Created tag $TAG"
     echo "🚀 This will trigger the release-publish-pr workflow"
   fi
-} >> "$GITHUB_STEP_SUMMARY"
+} >>"$GITHUB_STEP_SUMMARY"
 
 echo "✅ Auto tag summary generated"

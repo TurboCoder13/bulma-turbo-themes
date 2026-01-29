@@ -151,7 +151,7 @@ export abstract class BaseExamplePage {
     // Check CSS link href
     await expect(this.getThemeCss()).toHaveAttribute(
       'href',
-      new RegExp(`${escapedThemeId}\\.css`)
+      new RegExp(`${escapedThemeId}\\.css`), // nosemgrep: detect-non-literal-regexp
     );
 
     // Wait for CSS to actually load by checking the CSS variable changes

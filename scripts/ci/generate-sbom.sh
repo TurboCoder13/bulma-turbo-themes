@@ -4,4 +4,4 @@
 
 set -euo pipefail
 
-syft dir:. -o cyclonedx-json > sbom.cyclonedx.json
+syft dir:. -o cyclonedx-json >sbom.cyclonedx.json
