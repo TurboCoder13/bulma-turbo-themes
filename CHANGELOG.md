@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.29] - 2026-01-30
+
+### 🐛 Fixed
+
+- update renovatebot/github-action action to v44.2.6 (#294)
+
 ## [0.12.28] - 2026-01-30
 
 ### 🐛 Fixed
