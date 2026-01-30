@@ -10,6 +10,13 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.31] - 2026-01-30
+
+### 🐛 Fixed
+
+- use bun instead of npm for pack tests
+- inline internal package dependencies with Vite
+
 ## [0.12.30] - 2026-01-30
 
 ### 🐛 Fixed
