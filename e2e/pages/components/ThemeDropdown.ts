@@ -73,7 +73,8 @@ export class ThemeDropdown {
     const escapedThemeId = escapeRegex(themeId);
     await expect(this.page.locator('html')).toHaveAttribute(
       'data-theme',
-      new RegExp(`^${escapedThemeId}$`)
+      // Safe: escapedThemeId is sanitized via escapeRegex()
+      new RegExp(`^${escapedThemeId}$`), // nosemgrep: detect-non-literal-regexp
     );
   }
 
@@ -98,7 +99,8 @@ export class ThemeDropdown {
     const escapedThemeId = escapeRegex(themeId);
     await expect(this.page.locator('html')).toHaveAttribute(
       'data-theme',
-      new RegExp(`^${escapedThemeId}$`)
+      // Safe: escapedThemeId is sanitized via escapeRegex()
+      new RegExp(`^${escapedThemeId}$`), // nosemgrep: detect-non-literal-regexp
     );
   }
 }

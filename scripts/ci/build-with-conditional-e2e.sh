@@ -15,12 +15,12 @@ RUN_E2E_TESTS="${2:-false}"
 
 # Detect package manager (prefer bun, fall back to npm)
 if command -v bun >/dev/null 2>&1; then
-    PKG_RUN="bun run"
+  PKG_RUN="bun run"
 elif command -v npm >/dev/null 2>&1; then
-    PKG_RUN="npm run"
+  PKG_RUN="npm run"
 else
-    echo "❌ No package manager found!"
-    exit 1
+  echo "❌ No package manager found!"
+  exit 1
 fi
 
 if [ "$EVENT_NAME" = "push" ]; then
@@ -35,4 +35,3 @@ else
 fi
 
 echo "✅ Site build completed successfully"
-

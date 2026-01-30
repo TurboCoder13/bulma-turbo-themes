@@ -17,6 +17,5 @@ if [ ! -f "$GEM_FILE" ]; then
 fi
 
 CHECKSUM=$(sha256sum "$GEM_FILE" | cut -d' ' -f1)
-echo "sha256=$CHECKSUM" >> "$GITHUB_OUTPUT"
+echo "sha256=$CHECKSUM" >>"$GITHUB_OUTPUT"
 echo "📋 SHA256: $CHECKSUM"
-

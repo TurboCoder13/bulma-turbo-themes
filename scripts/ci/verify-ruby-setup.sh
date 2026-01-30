@@ -13,7 +13,7 @@ echo "GEM_HOME: ${GEM_HOME:-not set}"
 echo "GEM_PATH: ${GEM_PATH:-not set}"
 
 # Check if bundle command is available
-if ! command -v bundle &> /dev/null; then
+if ! command -v bundle &>/dev/null; then
   echo "Bundle command not found, installing bundler..."
   gem install bundler -v 2.3.26
 fi

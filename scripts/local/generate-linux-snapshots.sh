@@ -34,7 +34,7 @@ if ! docker run --rm \
   -v "$REPO_ROOT:$CONTAINER_WORK_DIR" \
   -w "$CONTAINER_WORK_DIR" \
   "$IMAGE_NAME" \
-  /bin/bash -c "npx playwright test --grep @visual --update-snapshots" > "$LOG_FILE" 2>&1; then
+  /bin/bash -c "npx playwright test --grep @visual --update-snapshots" >"$LOG_FILE" 2>&1; then
   echo '❌ Playwright test failed. Output:'
   cat "$LOG_FILE"
   exit 1
@@ -46,4 +46,3 @@ echo "📋 Next steps:"
 echo "  1. Review the snapshot changes"
 echo "  2. Commit the updates with: git add e2e/homepage-theme-snapshots/ && git commit -m 'test: update linux e2e snapshots'"
 echo "  3. Push to your branch"
-

@@ -13,11 +13,10 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 FULL_MODE=false
 for arg in "$@"; do
   case "$arg" in
-    --full)
-      FULL_MODE=true
-      ;;
-    *)
-      ;;
+  --full)
+    FULL_MODE=true
+    ;;
+  *) ;;
   esac
 done
 
@@ -46,5 +45,3 @@ else
 fi
 
 echo "[✓] CI pipeline completed in Docker"
-
-

@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
-
-"""
-Debug script to list and verify artifact contents
-"""
+# Debug script to list and verify artifact contents
 
 set -e
 
@@ -20,4 +17,3 @@ if [ -d "$ARTIFACT_PATH" ]; then
 else
   echo "❌ $ARTIFACT_NAME directory not found"
 fi
-

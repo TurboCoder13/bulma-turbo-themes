@@ -19,14 +19,14 @@ STRICT_MODE=false
 # Parse arguments
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --strict)
-      STRICT_MODE=true
-      shift
-      ;;
-    *)
-      echo "Unknown option: $1"
-      exit 1
-      ;;
+  --strict)
+    STRICT_MODE=true
+    shift
+    ;;
+  *)
+    echo "Unknown option: $1"
+    exit 1
+    ;;
   esac
 done
 
@@ -43,7 +43,7 @@ EXIT_CODE=0
 # Check workflow files
 check_files() {
   local file_pattern="$1"
-  
+
   for file in $file_pattern; do
     if [[ -f "$file" ]]; then
       # Look for uses: not followed by @<40-char-sha> (ignore inline comments)
@@ -51,9 +51,9 @@ check_files() {
       # 1. Non-hex characters after @ (e.g., @v1, @main)
       # 2. Too few hex chars (< 40)
       # 3. Too many hex chars (> 40) - catches duplicated SHAs
-      if grep -E 'uses:.*@[^a-f0-9]' "$file" 2>/dev/null || \
-         grep -E 'uses:.*@[a-f0-9]{1,39}([[:space:]]|$)' "$file" 2>/dev/null || \
-         grep -E 'uses:.*@[a-f0-9]{41,}' "$file" 2>/dev/null; then
+      if grep -E 'uses:.*@[^a-f0-9]' "$file" 2>/dev/null ||
+        grep -E 'uses:.*@[a-f0-9]{1,39}([[:space:]]|$)' "$file" 2>/dev/null ||
+        grep -E 'uses:.*@[a-f0-9]{41,}' "$file" 2>/dev/null; then
         if [[ "$STRICT_MODE" == true ]]; then
           echo "❌ ERROR: Non-SHA pinned action found in $file"
           EXIT_CODE=1

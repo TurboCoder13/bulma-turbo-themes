@@ -14,7 +14,7 @@ fi
 
 # Find and sign each SBOM file
 signed_count=0
-shopt -s nullglob  # Don't treat unmatched globs as errors
+shopt -s nullglob # Don't treat unmatched globs as errors
 for sbom_file in sbom/*.json sbom/*.xml; do
   if [ -f "$sbom_file" ]; then
     echo "Signing: $sbom_file"
@@ -25,7 +25,7 @@ for sbom_file in sbom/*.json sbom/*.xml; do
     ((signed_count++)) || true
   fi
 done
-shopt -u nullglob  # Restore default behavior
+shopt -u nullglob # Restore default behavior
 
 if [ "$signed_count" -eq 0 ]; then
   echo "Error: No SBOM files found to sign"

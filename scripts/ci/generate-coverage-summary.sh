@@ -5,8 +5,8 @@
 set -euo pipefail
 
 COVERAGE_SUMMARY=$(cat coverage/coverage-summary.json | jq -r '.total | "**Coverage Report**\n\n| Metric | Coverage | \n|--------|----------|\n| Lines | \(.lines.pct)% |\n| Statements | \(.statements.pct)% |\n| Functions | \(.functions.pct)% |\n| Branches | \(.branches.pct)% |"')
-echo "$COVERAGE_SUMMARY" > coverage-comment.md
-echo "" >> coverage-comment.md
+echo "$COVERAGE_SUMMARY" >coverage-comment.md
+echo "" >>coverage-comment.md
 
 # Append Codecov link for PRs when context is available
 REPO="${GITHUB_REPOSITORY:-}"
@@ -16,5 +16,5 @@ if [ -n "${GITHUB_EVENT_PATH:-}" ] && command -v jq >/dev/null 2>&1; then
 fi
 
 if [ -n "$REPO" ] && [ -n "$PR_NUMBER" ]; then
-  echo "📊 [View full coverage report on Codecov](https://codecov.io/gh/${REPO}/pull/${PR_NUMBER})" >> coverage-comment.md
+  echo "📊 [View full coverage report on Codecov](https://codecov.io/gh/${REPO}/pull/${PR_NUMBER})" >>coverage-comment.md
 fi

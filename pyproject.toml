@@ -4,9 +4,7 @@ version = "0.1.0"
 requires-python = ">=3.11"
 
 [dependency-groups]
-dev = [
-    "lintro==0.38.0",
-]
+dev = ["lintro==0.38.0"]
 
 [tool.black]
 line-length = 88
@@ -19,14 +17,14 @@ extend-exclude = '''
 
 [tool.ruff]
 extend-exclude = [
-    "python/src/turbo_themes/themes.py",
-    "python/src/turbo_themes/generated/*",
-    # Exclude files where black is the authoritative formatter
-    "python/src/turbo_themes/mapping_config.py",
-    "python/tests/test_css_variables.py",
-    # Also exclude with relative paths for lintro python directory
-    "**/mapping_config.py",
-    "**/test_css_variables.py",
+  "python/src/turbo_themes/themes.py",
+  "python/src/turbo_themes/generated/*",
+  # Exclude files where black is the authoritative formatter
+  "python/src/turbo_themes/mapping_config.py",
+  "python/tests/test_css_variables.py",
+  # Also exclude with relative paths for lintro python directory
+  "**/mapping_config.py",
+  "**/test_css_variables.py",
 ]
 line-length = 88
 
@@ -35,34 +33,58 @@ quote-style = "double"
 
 [tool.lintro]
 exclude = [
-    "_site/",
-    "**/vendor/",
-    "vendor/",
-    ".pytest_cache/",
-    "node_modules/",
-    "coverage/",
-    "dist/",
-    "playwright-report/",
-    "test-results/",
-    ".lintro/",
-    "**/.build/",
-    "python/src/turbo_themes/generated/",
+  "_site/",
+  "**/vendor/",
+  "vendor/",
+  ".pytest_cache/",
+  "node_modules/",
+  "coverage/",
+  "dist/",
+  "playwright-report/",
+  "test-results/",
+  ".lintro/",
+  "**/.build/",
+  ".husky/**",
+  "python/src/turbo_themes/generated/",
+]
+
+[tool.lintro.tool.semgrep]
+# Exclude test/benchmark/e2e files where security audit rules produce false positives
+# These files use dynamic patterns for test assertions which trigger false positives
+exclude = [
+  "benchmarks/",
+  "e2e/",
+  "test/",
+  "examples/test-utils/",
+  "examples/bootstrap/test/",
+  "packages/css/test/",
 ]
 
 [tool.lintro.tool.black]
-exclude = ["python/src/turbo_themes/generated/*", "src/turbo_themes/generated/*"]
+exclude = [
+  "python/src/turbo_themes/generated/*",
+  "src/turbo_themes/generated/*",
+]
 
 [tool.lintro.tool.ruff]
 exclude = [
-    "python/src/turbo_themes/generated/*",
-    "src/turbo_themes/generated/*",
-    # Exclude files where black is the authoritative formatter (lintro runs from python/)
-    "src/turbo_themes/mapping_config.py",
-    "tests/test_css_variables.py",
+  "python/src/turbo_themes/generated/*",
+  "src/turbo_themes/generated/*",
+  # Exclude files where black is the authoritative formatter (lintro runs from python/)
+  "src/turbo_themes/mapping_config.py",
+  "tests/test_css_variables.py",
 ]
 
 [tool.lintro.tool.hadolint]
 exclude = ["_site/Dockerfile"]
+
+[tool.lintro.tool.shellcheck]
+# Exclude husky-generated files (they don't have shebangs by design)
+exclude = [".husky/**"]
+
+[tool.lintro.tool.shfmt]
+# Exclude husky-generated files
+exclude = [".husky/"]
 
 [tool.lintro.tool.actionlint]
 exclude = ["**/vendor/**"]
@@ -74,6 +96,7 @@ skips = ["B101", "B105", "B106"]
 
 [tool.lintro.tool.bandit]
 # Use native bandit config from [tool.bandit]
+
 
 [tool.lintro.tool.yamllint]
 exclude = [".github/workflows/**", ".github/actions/**", ".allstar/**"]

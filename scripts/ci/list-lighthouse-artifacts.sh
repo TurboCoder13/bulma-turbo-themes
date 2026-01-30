@@ -17,40 +17,40 @@ source "${SCRIPT_DIR}/../utils/utils.sh"
 CHECK_DIR="."
 
 parse_args() {
-    while [[ $# -gt 0 ]]; do
-        case $1 in
-            --dir)
-                CHECK_DIR="$2"
-                shift 2
-                ;;
-            *)
-                log_error "Unknown option: $1"
-                exit 2
-                ;;
-        esac
-    done
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+    --dir)
+      CHECK_DIR="$2"
+      shift 2
+      ;;
+    *)
+      log_error "Unknown option: $1"
+      exit 2
+      ;;
+    esac
+  done
 }
 
 main() {
-    parse_args "$@"
+  parse_args "$@"
 
-    log_info "Listing artifacts for debugging..."
+  log_info "Listing artifacts for debugging..."
 
-    echo ""
-    echo "Contents of ${CHECK_DIR}:"
-    ./scripts/ci/list-directory-contents.sh "$CHECK_DIR"
+  echo ""
+  echo "Contents of ${CHECK_DIR}:"
+  ./scripts/ci/list-directory-contents.sh "$CHECK_DIR"
 
-    echo ""
-    echo "Checking for lighthouse-reports directory:"
-    if [[ -d "lighthouse-reports" ]]; then
-        log_success "lighthouse-reports directory exists"
-        find lighthouse-reports -type f
-    else
-        log_warn "lighthouse-reports directory not found"
-    fi
+  echo ""
+  echo "Checking for lighthouse-reports directory:"
+  if [[ -d "lighthouse-reports" ]]; then
+    log_success "lighthouse-reports directory exists"
+    find lighthouse-reports -type f
+  else
+    log_warn "lighthouse-reports directory not found"
+  fi
 
-    echo ""
-    log_info "Artifact listing complete"
+  echo ""
+  log_info "Artifact listing complete"
 }
 
 main "$@"

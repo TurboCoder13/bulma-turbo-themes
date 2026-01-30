@@ -23,26 +23,26 @@ OS="$(uname -s)"
 ARCH="$(uname -m)"
 
 case "${OS}" in
-  Linux|Darwin)
-    os="$(echo "${OS}" | tr '[:upper:]' '[:lower:]')"
-    ;;
-  *)
-    echo "❌ Unsupported OS for hadolint: ${OS}"
-    exit 1
-    ;;
+Linux | Darwin)
+  os="$(echo "${OS}" | tr '[:upper:]' '[:lower:]')"
+  ;;
+*)
+  echo "❌ Unsupported OS for hadolint: ${OS}"
+  exit 1
+  ;;
 esac
 
 case "${ARCH}" in
-  x86_64|amd64)
-    arch="x86_64"
-    ;;
-  arm64|aarch64)
-    arch="arm64"
-    ;;
-  *)
-    echo "❌ Unsupported architecture for hadolint: ${ARCH}"
-    exit 1
-    ;;
+x86_64 | amd64)
+  arch="x86_64"
+  ;;
+arm64 | aarch64)
+  arch="arm64"
+  ;;
+*)
+  echo "❌ Unsupported architecture for hadolint: ${ARCH}"
+  exit 1
+  ;;
 esac
 
 BIN_NAME="hadolint-${os}-${arch}"
@@ -84,9 +84,6 @@ echo "✅ hadolint installed at '${HADOLINT_BIN}'"
 # When running in GitHub Actions, ensure the install directory is added to PATH
 if [ -n "${GITHUB_PATH:-}" ]; then
   REPO_BIN_PATH="$(pwd)/${INSTALL_DIR#./}"
-  echo "${REPO_BIN_PATH}" >> "${GITHUB_PATH}"
+  echo "${REPO_BIN_PATH}" >>"${GITHUB_PATH}"
   echo "🛣️  Added '${REPO_BIN_PATH}' to GITHUB_PATH"
 fi
-
-
-

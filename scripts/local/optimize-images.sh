@@ -15,12 +15,12 @@ cleanup() {
 }
 trap cleanup EXIT
 
-if ! command -v convert &> /dev/null; then
+if ! command -v convert &>/dev/null; then
   echo "Error: ImageMagick is required. Please install it with: brew install imagemagick"
   exit 1
 fi
 
-if ! command -v cwebp &> /dev/null; then
+if ! command -v cwebp &>/dev/null; then
   echo "Warning: cwebp (libwebp) not found. WebP conversion will be skipped."
   echo "Install with: brew install webp"
 fi
@@ -59,7 +59,7 @@ for img in "$IMAGES_DIR/github-logo-light.png" "$IMAGES_DIR/github-logo-dark.png
 done
 
 # Convert to WebP if cwebp is available
-if command -v cwebp &> /dev/null; then
+if command -v cwebp &>/dev/null; then
   echo "🔄 Converting PNG files to WebP format..."
   for png in "$IMAGES_DIR"/*.png; do
     if [ -f "$png" ]; then
@@ -75,7 +75,7 @@ echo "📊 Image optimization complete!"
 echo "File sizes before and after optimization:"
 ls -lh "$IMAGES_DIR"/*.png
 
-if command -v cwebp &> /dev/null; then
+if command -v cwebp &>/dev/null; then
   echo ""
   echo "WebP file sizes:"
   ls -lh "$IMAGES_DIR"/*.webp 2>/dev/null || echo "No WebP files generated"

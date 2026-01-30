@@ -10,4 +10,3 @@ if [ -d coverage ] && compgen -G "coverage/*" >/dev/null; then
 fi
 
 echo "✅ Coverage artifacts prepared for deployment"
-
