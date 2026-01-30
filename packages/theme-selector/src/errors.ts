@@ -122,12 +122,16 @@ export function logThemeError(themeError: ThemeError): void {
 
   if (themeError.level === ErrorLevel.ERROR) {
     if (themeError.context) {
+      // Safe: prefixedMessage is constructed from controlled internal strings
+      // nosemgrep: unsafe-formatstring
       console.error(prefixedMessage, themeError.context);
     } else {
       console.error(prefixedMessage);
     }
   } else {
     if (themeError.context) {
+      // Safe: prefixedMessage is constructed from controlled internal strings
+      // nosemgrep: unsafe-formatstring
       console.warn(prefixedMessage, themeError.context);
     } else {
       console.warn(prefixedMessage);

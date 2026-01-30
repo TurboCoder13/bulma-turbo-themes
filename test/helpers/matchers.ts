@@ -163,6 +163,8 @@ expect.extend({
   toContainCssVariable(received: string, varName: string) {
     // Escape special regex characters (backslash first, then others)
     const escaped = varName.replace(/\\/g, '\\\\').replace(/[-/{}()*+?.^$|[\]]/g, '\\$&');
+    // Safe: input is escaped via escapeRegex() or is a controlled test value
+    // nosemgrep: detect-non-literal-regexp
     const pattern = new RegExp(`${escaped}\\s*:`, 'g');
     const pass = pattern.test(received);
     return {

@@ -63,6 +63,8 @@ export async function expectThemeApplied(
   // Check CSS link href
   const themeCss = page.locator(`#${cssLinkId}`);
   const escapedThemeId = escapeRegex(themeId);
+  // Safe: input is escaped via escapeRegex() or is a controlled test value
+  // nosemgrep: detect-non-literal-regexp
   await expect(themeCss).toHaveAttribute('href', new RegExp(`${escapedThemeId}\\.css`));
 }
 

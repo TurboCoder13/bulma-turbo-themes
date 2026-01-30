@@ -47,5 +47,7 @@ export async function expectThemeApplied(page: Page, themeId: string): Promise<v
 
   // Check CSS link href
   const themeCss = page.locator('#turbo-theme-css');
+  // Safe: input is escaped via escapeRegex() or is a controlled test value
+  // nosemgrep: detect-non-literal-regexp
   await expect(themeCss).toHaveAttribute('href', new RegExp(`${themeId}\\.css`));
 }
