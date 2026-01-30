@@ -63,6 +63,7 @@
   "types": "./dist/index.d.ts",
   "files": [
     "dist/**",
+    "packages/core/dist/**",
     "packages/css/dist/**",
     "packages/css/dist/components/**",
     "packages/theme-selector/dist/**",
