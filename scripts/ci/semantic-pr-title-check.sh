@@ -16,7 +16,7 @@ set -euo pipefail
 # ok=true|false written to $GITHUB_OUTPUT (if set)
 
 if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
-cat <<'EOF'
+  cat <<'EOF'
 Validate PR title against Conventional Commits.
 
 Environment variables:
@@ -27,7 +27,7 @@ PR_NUMBER PR number (for commenting)
 GITHUB_TOKEN Token (only for commenting)
 GITHUB_REPOSITORY owner/repo (for commenting)
 EOF
-exit 0
+  exit 0
 fi
 
 TYPES_INPUT=${TYPES_INPUT:-$'chore\nci\ndocs\nfeat\nfix\nperf\nrefactor\nrevert\nstyle\ntest'}
@@ -40,7 +40,8 @@ if command -v gh >/dev/null 2>&1 && [[ -n "${PR_NUMBER:-}" ]]; then
   TITLE=$(gh pr view "$PR_NUMBER" --json title -q .title 2>/dev/null || echo "")
 fi
 if [[ -z "$TITLE" && -n "${GITHUB_EVENT_PATH:-}" && -f "$GITHUB_EVENT_PATH" ]]; then
-  TITLE=$(python3 - <<'PY'
+  TITLE=$(
+    python3 - <<'PY'
 import json, os
 path=os.environ.get('GITHUB_EVENT_PATH')
 try:
@@ -50,13 +51,13 @@ try:
 except Exception:
   print('')
 PY
-)
+  )
 fi
 
 # Build regex from types
 types_pipe=$(printf "%s" "$TYPES_INPUT" | tr ', ' '\n' | sed '/^$/d' | paste -sd'|' -)
 if [[ -z "$types_pipe" ]]; then
-  [[ -n "${GITHUB_OUTPUT:-}" ]] && echo "ok=false" >> "$GITHUB_OUTPUT"
+  [[ -n "${GITHUB_OUTPUT:-}" ]] && echo "ok=false" >>"$GITHUB_OUTPUT"
   exit 0
 fi
 if [[ "$REQUIRE_SCOPE" == "true" ]]; then
@@ -66,11 +67,11 @@ else
 fi
 
 if printf "%s" "$TITLE" | grep -Eq "$regex"; then
-  [[ -n "${GITHUB_OUTPUT:-}" ]] && echo "ok=true" >> "$GITHUB_OUTPUT"
+  [[ -n "${GITHUB_OUTPUT:-}" ]] && echo "ok=true" >>"$GITHUB_OUTPUT"
   exit 0
 fi
 
-[[ -n "${GITHUB_OUTPUT:-}" ]] && echo "ok=false" >> "$GITHUB_OUTPUT"
+[[ -n "${GITHUB_OUTPUT:-}" ]] && echo "ok=false" >>"$GITHUB_OUTPUT"
 
 # Optional comment
 if [[ "$COMMENT_ON_FAIL" == "true" && -n "${PR_NUMBER:-}" ]]; then
@@ -86,17 +87,18 @@ Once updated, this check will pass automatically.'
   if command -v gh >/dev/null 2>&1; then
     gh pr comment "$PR_NUMBER" --body "$body" >/dev/null 2>&1 || true
   elif [[ -n "${GITHUB_TOKEN:-}" && -n "${GITHUB_REPOSITORY:-}" ]]; then
-    JSON_BODY=$(python3 - <<'PY'
+    JSON_BODY=$(
+      BODY="$body" python3 - <<'PY'
 import json, os
 print(json.dumps({"body": os.environ.get("BODY","")}))
 PY
-)
+    )
     curl -sS -H "Authorization: Bearer $GITHUB_TOKEN" \
-     -H "Accept: application/vnd.github+json" \
-     -H "X-GitHub-Api-Version: 2022-11-28" \
-     -X POST \
-     -d "$JSON_BODY" \
-    "https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" >/dev/null 2>&1 || true
+      -H "Accept: application/vnd.github+json" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      -X POST \
+      -d "$JSON_BODY" \
+      "https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" >/dev/null 2>&1 || true
   fi
 fi
 

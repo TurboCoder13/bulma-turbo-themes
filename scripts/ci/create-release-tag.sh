@@ -8,8 +8,8 @@ VERSION="${1:-}"
 PRERELEASE="${2:-false}"
 
 if [ -z "$VERSION" ]; then
-    echo "❌ Error: Version is required"
-    exit 1
+  echo "❌ Error: Version is required"
+  exit 1
 fi
 
 echo "🏷️ Creating release tag for version: $VERSION"
@@ -24,13 +24,13 @@ git push origin "$TAG"
 echo "✅ Created and pushed tag $TAG"
 
 # Generate summary for GitHub Actions
-echo "## Auto Tag Summary" >> "$GITHUB_STEP_SUMMARY"
+echo "## Auto Tag Summary" >>"$GITHUB_STEP_SUMMARY"
 if [ -n "${GITHUB_EVENT_INPUTS_VERSION:-}" ]; then
-    echo "🔧 **Manual Dispatch**" >> "$GITHUB_STEP_SUMMARY"
-    echo "- Version: $VERSION" >> "$GITHUB_STEP_SUMMARY"
-    echo "- Prerelease: $PRERELEASE" >> "$GITHUB_STEP_SUMMARY"
+  echo "🔧 **Manual Dispatch**" >>"$GITHUB_STEP_SUMMARY"
+  echo "- Version: $VERSION" >>"$GITHUB_STEP_SUMMARY"
+  echo "- Prerelease: $PRERELEASE" >>"$GITHUB_STEP_SUMMARY"
 fi
-echo "✅ Created tag v$VERSION" >> "$GITHUB_STEP_SUMMARY"
-echo "🚀 Tag push will automatically trigger:" >> "$GITHUB_STEP_SUMMARY"
-echo "  - 📦 npm publish workflow (release-publish-pr.yml)" >> "$GITHUB_STEP_SUMMARY"
-echo "  - 💎 RubyGem publish workflow (publish-gem.yml)" >> "$GITHUB_STEP_SUMMARY"
+echo "✅ Created tag v$VERSION" >>"$GITHUB_STEP_SUMMARY"
+echo "🚀 Tag push will automatically trigger:" >>"$GITHUB_STEP_SUMMARY"
+echo "  - 📦 npm publish workflow (release-publish-pr.yml)" >>"$GITHUB_STEP_SUMMARY"
+echo "  - 💎 RubyGem publish workflow (publish-gem.yml)" >>"$GITHUB_STEP_SUMMARY"

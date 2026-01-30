@@ -30,11 +30,10 @@ else
 fi
 
 if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
-  echo "is_release=$is_release" >> "$GITHUB_OUTPUT"
+  echo "is_release=$is_release" >>"$GITHUB_OUTPUT"
 else
   echo "is_release=$is_release"
 fi
 
 # Always exit 0 - use output variable for conditional logic in workflow
 exit 0
-

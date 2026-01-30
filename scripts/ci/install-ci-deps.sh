@@ -21,5 +21,3 @@ echo "📦 Installing shared CI dependencies..."
 "${SCRIPT_DIR}/install-hadolint.sh"
 
 echo "✅ Shared CI dependencies installation completed"
-
-

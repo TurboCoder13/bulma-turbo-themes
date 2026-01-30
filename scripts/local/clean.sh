@@ -4,7 +4,7 @@
 # This script removes all build artifacts, temporary files, and cached content
 # to allow for a fresh rebuild from scratch.
 
-set -e  # Exit on any error
+set -e # Exit on any error
 
 echo "🧹 Starting cleanup of turbo-themes project..."
 
@@ -17,28 +17,28 @@ NC='\033[0m' # No Color
 
 # Function to safely remove directories/files
 safe_remove() {
-    local target="$1"
-    local description="$2"
-    
-    if [ -e "$target" ]; then
-        echo -e "${BLUE}🗑️  Removing $description: $target${NC}"
-        rm -rf "$target"
-    else
-        echo -e "${YELLOW}⚠️  $description not found: $target${NC}"
-    fi
+  local target="$1"
+  local description="$2"
+
+  if [ -e "$target" ]; then
+    echo -e "${BLUE}🗑️  Removing $description: $target${NC}"
+    rm -rf "$target"
+  else
+    echo -e "${YELLOW}⚠️  $description not found: $target${NC}"
+  fi
 }
 
 # Function to safely remove files
 safe_remove_file() {
-    local target="$1"
-    local description="$2"
-    
-    if [ -f "$target" ]; then
-        echo -e "${BLUE}🗑️  Removing $description: $target${NC}"
-        rm "$target"
-    else
-        echo -e "${YELLOW}⚠️  $description not found: $target${NC}"
-    fi
+  local target="$1"
+  local description="$2"
+
+  if [ -f "$target" ]; then
+    echo -e "${BLUE}🗑️  Removing $description: $target${NC}"
+    rm "$target"
+  else
+    echo -e "${YELLOW}⚠️  $description not found: $target${NC}"
+  fi
 }
 
 echo -e "${BLUE}📁 Cleaning build directories...${NC}"
@@ -67,9 +67,9 @@ echo -e "${BLUE}📦 Cleaning package manager files...${NC}"
 remove_locks=false
 for arg in "$@"; do
   case "$arg" in
-    --remove-locks)
-      remove_locks=true
-      ;;
+  --remove-locks)
+    remove_locks=true
+    ;;
   esac
 done
 

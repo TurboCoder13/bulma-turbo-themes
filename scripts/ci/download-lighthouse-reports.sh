@@ -32,8 +32,8 @@ log_warning() {
 # Query for recent successful Lighthouse CI workflow runs
 query_recent_runs() {
   gh api repos/"${GITHUB_REPOSITORY}"/actions/runs \
-    --jq ".workflow_runs[] | select(.name == \"Reporting - Lighthouse CI\" and .conclusion == \"success\") | .id" \
-    | head -"${MAX_RUNS}"
+    --jq ".workflow_runs[] | select(.name == \"Reporting - Lighthouse CI\" and .conclusion == \"success\") | .id" |
+    head -"${MAX_RUNS}"
 }
 
 # Check if artifacts exist for a given run
@@ -46,10 +46,10 @@ check_artifacts_for_run() {
 # Download artifacts from a specific artifact ID
 download_artifacts() {
   local artifact_id=$1
-  
+
   gh api repos/"${GITHUB_REPOSITORY}"/actions/artifacts/"${artifact_id}"/zip \
-    > "${TEMP_ZIP}"
-  
+    >"${TEMP_ZIP}"
+
   unzip -o -q "${TEMP_ZIP}" -d "${REPORTS_DIR}/" || true
   rm -f "${TEMP_ZIP}"
 }
@@ -57,36 +57,38 @@ download_artifacts() {
 # Main logic
 main() {
   log_info "Checking for Lighthouse reports..."
-  
+
   local recent_runs
   recent_runs=$(query_recent_runs)
-  
+
   if [ -z "${recent_runs}" ]; then
     log_warning "No recent Lighthouse CI runs found"
     return 0
   fi
-  
+
   while IFS= read -r run_id; do
     [ -z "${run_id}" ] && continue
-    
+
     log_info "Checking run ${run_id}..."
-    
+
     local artifact_id
     artifact_id=$(check_artifacts_for_run "${run_id}")
-    
+
     if [ -n "${artifact_id}" ]; then
       log_success "Found Lighthouse reports in run ${run_id} (artifact ${artifact_id})"
       download_artifacts "${artifact_id}"
       break
     fi
-  done <<< "${recent_runs}"
-  
+  done <<<"${recent_runs}"
+
   # Copy reports to site if they exist
   if [ -d "${REPORTS_DIR}" ] && [ -n "$(ls -A "${REPORTS_DIR}" 2>/dev/null)" ]; then
+    local repo_root
+    repo_root=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
     log_success "Including Lighthouse reports in site deployment"
-    mkdir -p apps/site/dist/lighthouse-reports/
-    cp -r "${REPORTS_DIR}"/* apps/site/dist/lighthouse-reports/
-    ls -la apps/site/dist/lighthouse-reports/
+    mkdir -p "${repo_root}/apps/site/dist/lighthouse-reports/"
+    cp -r "${REPORTS_DIR}"/* "${repo_root}/apps/site/dist/lighthouse-reports/"
+    ls -la "${repo_root}/apps/site/dist/lighthouse-reports/"
   else
     log_warning "No Lighthouse reports found, skipping"
   fi

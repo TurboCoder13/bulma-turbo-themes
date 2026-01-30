@@ -22,20 +22,19 @@ delay="${INITIAL_DELAY}"
 echo "📦 Installing Node.js dependencies with Bun..."
 
 while true; do
-    if bun install --frozen-lockfile; then
-        echo "✅ Dependencies installed successfully"
-        exit 0
-    fi
+  if bun install --frozen-lockfile; then
+    echo "✅ Dependencies installed successfully"
+    exit 0
+  fi
 
-    if [[ ${attempt} -ge ${MAX_RETRIES} ]]; then
-        echo "❌ Failed to install dependencies after ${MAX_RETRIES} attempts"
-        exit 1
-    fi
+  if [[ ${attempt} -ge ${MAX_RETRIES} ]]; then
+    echo "❌ Failed to install dependencies after ${MAX_RETRIES} attempts"
+    exit 1
+  fi
 
-    echo "⚠️  Attempt ${attempt}/${MAX_RETRIES} failed. Retrying in ${delay}s..."
-    sleep "${delay}"
+  echo "⚠️  Attempt ${attempt}/${MAX_RETRIES} failed. Retrying in ${delay}s..."
+  sleep "${delay}"
 
-    attempt=$((attempt + 1))
-    delay=$((delay * BACKOFF_MULTIPLIER))
+  attempt=$((attempt + 1))
+  delay=$((delay * BACKOFF_MULTIPLIER))
 done
-

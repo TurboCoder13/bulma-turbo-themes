@@ -13,11 +13,11 @@ if [ "${EVENT_NAME}" == "workflow_dispatch" ]; then
     echo "Error: INPUT_SHA is required for workflow_dispatch" >&2
     exit 1
   fi
-  echo "sha=${INPUT_SHA}" >> "$GITHUB_OUTPUT"
+  echo "sha=${INPUT_SHA}" >>"$GITHUB_OUTPUT"
 else
   if [ -z "${GITHUB_SHA:-}" ]; then
     echo "Error: GITHUB_SHA is not set" >&2
     exit 1
   fi
-  echo "sha=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+  echo "sha=${GITHUB_SHA}" >>"$GITHUB_OUTPUT"
 fi

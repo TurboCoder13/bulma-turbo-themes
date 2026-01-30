@@ -68,14 +68,14 @@ workflow_category() {
   local base
   base=$(basename "$file")
   case "$base" in
-    quality-*) echo "quality" ;;
-    security-*) echo "security" ;;
-    deploy-*) echo "deploy" ;;
-    publish-*) echo "publish" ;;
-    release-*) echo "release" ;;
-    reporting-*) echo "reporting" ;;
-    maintenance-*) echo "maintenance" ;;
-    *) echo "other" ;;
+  quality-*) echo "quality" ;;
+  security-*) echo "security" ;;
+  deploy-*) echo "deploy" ;;
+  publish-*) echo "publish" ;;
+  release-*) echo "release" ;;
+  reporting-*) echo "reporting" ;;
+  maintenance-*) echo "maintenance" ;;
+  *) echo "other" ;;
   esac
 }
 
@@ -84,25 +84,25 @@ workflow_support_level() {
   local base
   base=$(basename "$file")
   case "$base" in
-    security-codeql.yml|security-dependency-review.yml|security-scorecards.yml)
-      echo "unsupported"
-      ;;
-    reusable-build.yml|reusable-quality.yml|reusable-sbom.yml)
-      echo "unsupported"
-      ;;
-    *)
-      # Check if workflow uses setup-env or setup-node action (requires full-22.04 image with node+ruby)
-      # Note: setup-node is a JS action that needs Node.js to run, creating a chicken-and-egg problem
-      if grep -qE "(setup-env|setup-node)" "$file"; then
-        if docker images --format "{{.Repository}}:{{.Tag}}" | grep -q "catthehacker/ubuntu:full-22.04"; then
-          echo "supported"
-        else
-          echo "unsupported"
-        fi
-      else
+  security-codeql.yml | security-dependency-review.yml | security-scorecards.yml)
+    echo "unsupported"
+    ;;
+  reusable-build.yml | reusable-quality.yml | reusable-sbom.yml)
+    echo "unsupported"
+    ;;
+  *)
+    # Check if workflow uses setup-env or setup-node action (requires full-22.04 image with node+ruby)
+    # Note: setup-node is a JS action that needs Node.js to run, creating a chicken-and-egg problem
+    if grep -qE "(setup-env|setup-node)" "$file"; then
+      if docker images --format "{{.Repository}}:{{.Tag}}" | grep -q "catthehacker/ubuntu:full-22.04"; then
         echo "supported"
+      else
+        echo "unsupported"
       fi
-      ;;
+    else
+      echo "supported"
+    fi
+    ;;
   esac
 }
 
@@ -127,11 +127,11 @@ resolve_event_type() {
 event_payload_path() {
   local event="$1"
   case "$event" in
-    push) echo "$DEFAULT_EVENT_PUSH" ;;
-    pull_request) echo "$DEFAULT_EVENT_PR" ;;
-    tag) echo "$DEFAULT_EVENT_TAG" ;;
-    workflow_dispatch) echo "$DEFAULT_EVENT_DISPATCH" ;;
-    *) die "Unsupported event type: $event" ;;
+  push) echo "$DEFAULT_EVENT_PUSH" ;;
+  pull_request) echo "$DEFAULT_EVENT_PR" ;;
+  tag) echo "$DEFAULT_EVENT_TAG" ;;
+  workflow_dispatch) echo "$DEFAULT_EVENT_DISPATCH" ;;
+  *) die "Unsupported event type: $event" ;;
   esac
 }
 
@@ -144,9 +144,9 @@ is_supported_event() {
 }
 
 list_workflows() {
-  find .github/workflows -maxdepth 1 \( -name "*.yml" -o -name "*.yaml" \) \
-    | grep -vE "(README|TRIGGERS|EGRESS)" \
-    | sort
+  find .github/workflows -maxdepth 1 \( -name "*.yml" -o -name "*.yaml" \) |
+    grep -vE "(README|TRIGGERS|EGRESS)" |
+    sort
 }
 
 filter_workflows_by_category() {
@@ -220,34 +220,34 @@ run_workflow() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --category)
-        CATEGORY="$2"
-        shift 2
-        ;;
-      --event)
-        EVENT_OVERRIDE="$2"
-        shift 2
-        ;;
-      --list)
-        LIST_ONLY=true
-        shift
-        ;;
-      --dry-run)
-        DRY_RUN=true
-        shift
-        ;;
-      --verbose)
-        VERBOSE=true
-        shift
-        ;;
-      --help|-h)
-        print_help
-        exit 0
-        ;;
-      *)
-        WORKFLOW_ARGS+=("$1")
-        shift
-        ;;
+    --category)
+      CATEGORY="$2"
+      shift 2
+      ;;
+    --event)
+      EVENT_OVERRIDE="$2"
+      shift 2
+      ;;
+    --list)
+      LIST_ONLY=true
+      shift
+      ;;
+    --dry-run)
+      DRY_RUN=true
+      shift
+      ;;
+    --verbose)
+      VERBOSE=true
+      shift
+      ;;
+    --help | -h)
+      print_help
+      exit 0
+      ;;
+    *)
+      WORKFLOW_ARGS+=("$1")
+      shift
+      ;;
     esac
   done
 
@@ -325,9 +325,9 @@ main() {
     result=$?
     set -e
     case $result in
-      0) ((passed++)) ;;
-      1) ((failed++)) ;;
-      2) ((skipped++)) ;;
+    0) ((passed++)) ;;
+    1) ((failed++)) ;;
+    2) ((skipped++)) ;;
     esac
     echo ""
   done
@@ -346,4 +346,3 @@ main() {
 }
 
 main "$@"
-

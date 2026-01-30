@@ -9,17 +9,22 @@ requires-python = ">=3.10"
 dependencies = ["python-dateutil>=2.8.0"]
 keywords = ["themes", "design-tokens", "css", "theming", "color-schemes"]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Typing :: Typed",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+  "Development Status :: 4 - Beta",
+  "Typing :: Typed",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
 ]
-optional-dependencies = { dev = ["pytest>=9.0", "pytest-cov>=7.0", "assertpy>=1.1", "mypy>=1.8"] }
+optional-dependencies = { dev = [
+  "pytest>=9.0",
+  "pytest-cov>=7.0",
+  "assertpy>=1.1",
+  "mypy>=1.8",
+] }
 
 [project.urls]
 Homepage = "https://github.com/lgtm-hq/turbo-themes"
@@ -39,34 +44,30 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = [
-    "--verbose",
-    "--tb=short",
-    "--strict-markers",
-    "--cov=turbo_themes",
-    "--cov-branch",
-    "--cov-report=term-missing",
-    "--cov-report=xml",
-    "--cov-report=html",
-    "--cov-fail-under=78",
+  "--verbose",
+  "--tb=short",
+  "--strict-markers",
+  "--cov=turbo_themes",
+  "--cov-branch",
+  "--cov-report=term-missing",
+  "--cov-report=xml",
+  "--cov-report=html",
+  "--cov-fail-under=78",
 ]
 markers = [
-    "unit: Unit tests",
-    "integration: Integration tests",
-    "slow: Slow running tests",
+  "unit: Unit tests",
+  "integration: Integration tests",
+  "slow: Slow running tests",
 ]
 
 [tool.coverage.run]
-omit = [
-    "*/generated/*",
-    "**/generated/*",
-    "src/turbo_themes/generated/*",
-]
+omit = ["*/generated/*", "**/generated/*", "src/turbo_themes/generated/*"]
 
 [tool.coverage.report]
 exclude_lines = [
-    "pragma: no cover",
-    "if TYPE_CHECKING:",
-    "raise NotImplementedError",
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError",
 ]
 
 [tool.mypy]
@@ -77,15 +78,15 @@ warn_unused_ignores = true
 warn_unused_configs = true
 mypy_path = "src"
 exclude = [
-    "^test_samples/",
-    "^node_modules/",
-    "^dist/",
-    "^build/",
-    "^\\.venv/",
-    "^venv/",
-    "^env/",
-    "^__pycache__/",
-    "^\\.lintro/",
+  "^test_samples/",
+  "^node_modules/",
+  "^dist/",
+  "^build/",
+  "^\\.venv/",
+  "^venv/",
+  "^env/",
+  "^__pycache__/",
+  "^\\.lintro/",
 ]
 
 [[tool.mypy.overrides]]
@@ -106,18 +107,15 @@ skips = ["B101", "B105", "B106"]
 [tool.ruff]
 # Exclude files where black is the authoritative formatter
 extend-exclude = [
-    "src/turbo_themes/mapping_config.py",
-    "tests/test_css_variables.py",
-    "src/turbo_themes/generated/*",
-    "**/mapping_config.py",
-    "**/test_css_variables.py",
+  "src/turbo_themes/mapping_config.py",
+  "tests/test_css_variables.py",
+  "src/turbo_themes/generated/*",
+  "**/mapping_config.py",
+  "**/test_css_variables.py",
 ]
 line-length = 88
 
 [tool.ruff.format]
 quote-style = "double"
 # Exclude files where black is the authoritative formatter
-exclude = [
-    "src/turbo_themes/mapping_config.py",
-    "tests/test_css_variables.py",
-]
+exclude = ["src/turbo_themes/mapping_config.py", "tests/test_css_variables.py"]

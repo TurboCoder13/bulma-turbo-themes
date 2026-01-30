@@ -23,9 +23,9 @@ NC='\033[0m' # No Color
 
 # Function to print colored output
 print_status() {
-    local color="$1"
-    local message="$2"
-    echo -e "${color}${message}${NC}"
+  local color="$1"
+  local message="$2"
+  echo -e "${color}${message}${NC}"
 }
 
 # Change to project root
@@ -35,22 +35,22 @@ print_status "$BLUE" "🏗️  Starting CI Jekyll build..."
 
 # Detect package manager (prefer bun, fall back to npm)
 if command -v bun >/dev/null 2>&1; then
-    PKG_RUN="bun run"
+  PKG_RUN="bun run"
 elif command -v npm >/dev/null 2>&1; then
-    PKG_RUN="npm run"
+  PKG_RUN="npm run"
 else
-    print_status "$RED" "❌ No package manager found!"
-    exit 1
+  print_status "$RED" "❌ No package manager found!"
+  exit 1
 fi
 
 # Step 1: Theme synchronization (if needed)
 print_status "$BLUE" "🎨 Step 1: Theme synchronization..."
 if [ -f "package.json" ] && grep -q '"theme:sync"' package.json >/dev/null 2>&1; then
-    print_status "$YELLOW" "  Running theme sync..."
-    $PKG_RUN theme:sync
-    print_status "$GREEN" "  ✅ Theme sync completed"
+  print_status "$YELLOW" "  Running theme sync..."
+  $PKG_RUN theme:sync
+  print_status "$GREEN" "  ✅ Theme sync completed"
 else
-    print_status "$YELLOW" "  ⏭️  Skipping theme sync (not configured)"
+  print_status "$YELLOW" "  ⏭️  Skipping theme sync (not configured)"
 fi
 
 # Step 2: Jekyll build with production config
@@ -63,4 +63,3 @@ print_status "$GREEN" "✅ CI Jekyll build completed successfully!"
 print_status "$BLUE" "📋 Summary:"
 print_status "$GREEN" "  ✅ Theme synchronization completed"
 print_status "$GREEN" "  ✅ Jekyll build completed"
-

@@ -19,25 +19,25 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/../utils/utils.sh"
 
 main() {
-    local version="${1:-${GITHUB_REF_NAME:-unknown}}"
+  local version="${1:-${GITHUB_REF_NAME:-unknown}}"
 
-    log_info "Generating release summary for $version..."
+  log_info "Generating release summary for $version..."
 
-    # Check if we're in GitHub Actions
-    if [[ -z "${GITHUB_STEP_SUMMARY:-}" ]]; then
-        log_warn "GITHUB_STEP_SUMMARY not set, outputting to stdout"
-        echo "## GitHub Release Summary"
-        echo "✅ Release $version published and released"
-        return 0
-    fi
+  # Check if we're in GitHub Actions
+  if [[ -z "${GITHUB_STEP_SUMMARY:-}" ]]; then
+    log_warn "GITHUB_STEP_SUMMARY not set, outputting to stdout"
+    echo "## GitHub Release Summary"
+    echo "✅ Release $version published and released"
+    return 0
+  fi
 
-    # Write to GitHub step summary
-    {
-        echo "## GitHub Release Summary"
-        echo "✅ Release $version published and released"
-    } >> "$GITHUB_STEP_SUMMARY"
+  # Write to GitHub step summary
+  {
+    echo "## GitHub Release Summary"
+    echo "✅ Release $version published and released"
+  } >>"$GITHUB_STEP_SUMMARY"
 
-    log_success "Release summary generated"
+  log_success "Release summary generated"
 }
 
 main "$@"

@@ -87,7 +87,7 @@ print_git_state() {
   debug "  HEAD SHA: $(git rev-parse HEAD)"
   debug "  Shallow clone: $([ -f .git/shallow ] && echo 'yes' || echo 'no')"
   if [ -f .git/shallow ]; then
-    debug "  Shallow refs count: $(wc -l < .git/shallow || echo 'unknown')"
+    debug "  Shallow refs count: $(wc -l <.git/shallow || echo 'unknown')"
   fi
   debug "  Available refs: $(git rev-parse --all | wc -l)"
 }
@@ -97,7 +97,7 @@ print_git_state() {
 get_commit_log() {
   local from_ref="$1"
   local to_ref="$2"
-  
+
   if [ -n "$from_ref" ] && git rev-parse --verify "$from_ref" >/dev/null 2>&1; then
     if [ -n "$to_ref" ] && git rev-parse --verify "$to_ref" >/dev/null 2>&1; then
       if git merge-base --is-ancestor "$from_ref" "$to_ref" >/dev/null 2>&1; then
@@ -116,38 +116,38 @@ get_commit_log() {
 # Tries object verification first, then attempts log
 get_commits_safe() {
   local ref="$1"
-  
+
   debug "Attempting to get commits from: $ref"
-  
+
   # First, verify the ref exists as a valid git reference
   if ! git rev-parse --verify "$ref" >/dev/null 2>&1; then
     debug "  - ref-parse failed for $ref"
     return 1
   fi
-  
+
   # Try to get the SHA
   local sha
   sha=$(git rev-parse "$ref" 2>/dev/null) || {
     debug "  - Could not resolve $ref to SHA"
     return 1
   }
-  
+
   debug "  - Resolved $ref to SHA: $sha"
-  
+
   # Check if the commit object actually exists in the object database
   if ! object_exists "$sha"; then
     debug "  - Object $sha not found in ODB (shallow clone issue?)"
     return 1
   fi
-  
+
   debug "  - Object exists in ODB, attempting git log"
-  
+
   # Try to get the commit message
   if ! git log --pretty=format:"%s" -1 "$sha" 2>/dev/null; then
     debug "  - git log failed for $sha"
     return 1
   fi
-  
+
   return 0
 }
 
@@ -166,7 +166,7 @@ if [ -n "${GITHUB_EVENT_PATH:-}" ] && command -v jq >/dev/null 2>&1; then
   PR_BASE_SHA=$(jq -r '.pull_request.base.sha // empty' "${GITHUB_EVENT_PATH}" 2>/dev/null || echo "")
   PR_HEAD_SHA=$(jq -r '.pull_request.head.sha // empty' "${GITHUB_EVENT_PATH}" 2>/dev/null || echo "")
   PR_BASE_REFNAME=$(jq -r '.pull_request.base.ref // empty' "${GITHUB_EVENT_PATH}" 2>/dev/null || echo "")
-  
+
   if [ -n "$PR_BASE_SHA" ] && [ -n "$PR_HEAD_SHA" ]; then
     debug "Using SHAs from GitHub event payload"
     BASE_REF="$PR_BASE_SHA"
@@ -200,7 +200,7 @@ if [ -n "$BASE_REF" ] && git rev-parse --verify "$BASE_REF" >/dev/null 2>&1; the
     COMMITS=$(git log --pretty=format:"%s" "$BASE_REF..$HEAD_REF" 2>/dev/null || echo "")
   else
     warn "Base $BASE_REF is not an ancestor of $HEAD_REF; analyzing HEAD only"
-    
+
     # Try to get commits from HEAD_REF
     if COMMITS=$(get_commits_safe "$HEAD_REF" 2>/dev/null); then
       debug "Successfully retrieved commits from $HEAD_REF"
@@ -241,7 +241,7 @@ fi
 # Semantic release rules from .releaserc.json
 # Types that trigger releases:
 # - feat: minor
-# - fix: patch  
+# - fix: patch
 # - perf: patch
 # - refactor: patch
 # - revert: patch
@@ -257,13 +257,13 @@ COMMIT_COUNT=0
 
 while IFS= read -r commit_msg; do
   COMMIT_COUNT=$((COMMIT_COUNT + 1))
-  
+
   # Skip merge commits
   if [[ "$commit_msg" =~ ^Merge ]]; then
     echo "⏭️  Skipping merge commit: $commit_msg"
     continue
   fi
-  
+
   # Check for breaking changes
   if [[ "$commit_msg" =~ $BREAKING_PATTERN ]]; then
     echo "🚨 Breaking change detected: $commit_msg"
@@ -271,12 +271,12 @@ while IFS= read -r commit_msg; do
     RELEASE_TYPE="major"
     break
   fi
-  
+
   # Check for release-triggering types
   if [[ "$commit_msg" =~ ^($RELEASE_TYPES)(\(.+\))?: ]]; then
     echo "📦 Release-triggering commit: $commit_msg"
     WILL_RELEASE=true
-    
+
     # Determine release type
     if [[ "$commit_msg" =~ ^feat ]]; then
       RELEASE_TYPE="minor"
@@ -286,7 +286,7 @@ while IFS= read -r commit_msg; do
   else
     echo "⏭️  Non-release commit: $commit_msg"
   fi
-done <<< "$COMMITS"
+done <<<"$COMMITS"
 
 echo ""
 echo "📊 Semantic release analysis:"

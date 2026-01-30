@@ -1,0 +1,20 @@
+# Semgrep ignore file
+# Exclude test, benchmark, and e2e files where security audit rules produce false positives
+
+# Test directories
+test/
+**/test/
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# E2E test files
+e2e/
+
+# Benchmark files
+benchmarks/
+
+# Example test utilities
+examples/test-utils/
+examples/**/test/
