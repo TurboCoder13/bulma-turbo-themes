@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { execSync } from 'child_process';
+import { execSync, execFileSync } from 'child_process';
 import { mkdtempSync, rmSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
@@ -19,7 +19,8 @@ describe('External package consumption', () => {
 
     // Initialize package and install tarball
     execSync('bun init -y', { cwd: testDir, stdio: 'pipe' });
-    execSync(`bun add ${tarballPath}`, { cwd: testDir, stdio: 'pipe' });
+    // Use execFileSync with array args to avoid shell injection with path
+    execFileSync('bun', ['add', tarballPath], { cwd: testDir, stdio: 'pipe' });
   });
 
   afterAll(() => {
@@ -38,7 +39,7 @@ describe('External package consumption', () => {
     `,
     );
 
-    const output = execSync(`node ${testFile}`, { encoding: 'utf-8' });
+    const output = execFileSync('node', [testFile], { encoding: 'utf-8' });
     const result = JSON.parse(output.trim());
     expect(result.flavors).toBeGreaterThan(0);
     expect(result.themeIds).toBeGreaterThan(0);
@@ -57,7 +58,7 @@ describe('External package consumption', () => {
     `,
     );
 
-    const output = execSync(`node ${testFile}`, { encoding: 'utf-8' });
+    const output = execFileSync('node', [testFile], { encoding: 'utf-8' });
     const result = JSON.parse(output.trim());
     expect(result.hasInitTheme).toBe(true);
     expect(result.hasWireFlavorSelector).toBe(true);
@@ -73,7 +74,7 @@ describe('External package consumption', () => {
     `,
     );
 
-    const output = execSync(`node ${testFile}`, { encoding: 'utf-8' });
+    const output = execFileSync('node', [testFile], { encoding: 'utf-8' });
     const result = JSON.parse(output.trim());
     expect(result.flavors).toBeGreaterThan(0);
   });
