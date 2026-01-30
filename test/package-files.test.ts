@@ -6,25 +6,46 @@ import { execSync } from 'child_process';
 import { describe, expect, it } from 'vitest';
 
 describe('npm package files', () => {
-  it('includes all required directories in pack output', () => {
-    // npm pack --dry-run lists all files that would be included in the package
-    const output = execSync('npm pack --dry-run 2>&1', { encoding: 'utf-8' });
+  // Cache the pack output since it's slow (~1s)
+  const getPackOutput = (() => {
+    let cached: string | null = null;
+    return () => {
+      if (!cached) {
+        cached = execSync('npm pack --dry-run 2>&1', { encoding: 'utf-8' });
+      }
+      return cached;
+    };
+  })();
 
-    // Core package exports (required for main entry point imports)
-    expect(output).toContain('packages/core/dist/');
+  it('includes files imported by dist/index.js', () => {
+    const output = getPackOutput();
 
-    // CSS package exports
-    expect(output).toContain('packages/css/dist/');
+    // These are the exact files that dist/index.js imports
+    // If any are missing, the package will be broken for consumers
+    expect(output).toContain('packages/core/dist/index.js');
+    expect(output).toContain('packages/core/dist/tokens/index.js');
+    expect(output).toContain('packages/core/dist/themes/registry.js');
+    expect(output).toContain('packages/theme-selector/dist/index.js');
+  });
 
-    // Theme selector exports
-    expect(output).toContain('packages/theme-selector/dist/');
+  it('includes all required directories', () => {
+    const output = getPackOutput();
 
     // Root dist (main entry point)
-    expect(output).toContain('dist/');
+    expect(output).toContain('dist/index.js');
+
+    // Core package
+    expect(output).toContain('packages/core/dist/');
+
+    // CSS package
+    expect(output).toContain('packages/css/dist/');
+
+    // Theme selector
+    expect(output).toContain('packages/theme-selector/dist/');
   });
 
   it('includes adapter packages', () => {
-    const output = execSync('npm pack --dry-run 2>&1', { encoding: 'utf-8' });
+    const output = getPackOutput();
 
     // Bulma adapter
     expect(output).toContain('packages/adapters/bulma/dist/');
