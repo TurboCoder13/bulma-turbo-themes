@@ -1,17 +1,17 @@
 /**
- * Verifies npm package includes all required files.
+ * Verifies package includes all required files.
  * Prevents regression of missing dist directories in published package.
  */
 import { execSync } from 'child_process';
 import { describe, expect, it } from 'vitest';
 
-describe('npm package files', () => {
+describe('package files', () => {
   // Cache the pack output since it's slow (~1s)
   const getPackOutput = (() => {
     let cached: string | null = null;
     return () => {
       if (!cached) {
-        cached = execSync('npm pack --dry-run 2>&1', { encoding: 'utf-8' });
+        cached = execSync('bun pm pack --dry-run 2>&1', { encoding: 'utf-8' });
       }
       return cached;
     };
