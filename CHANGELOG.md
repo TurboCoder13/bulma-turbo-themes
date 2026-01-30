@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.23] - 2026-01-30
+
+### 🐛 Fixed
+
+- apply shfmt and shellcheck fixes across scripts (#300)
+
 ## [0.12.22] - 2026-01-28
 
 ### 🐛 Fixed
