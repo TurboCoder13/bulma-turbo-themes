@@ -36,10 +36,10 @@ main() {
   # Debug: show overall git status for CI logs (not used in logic)
   git status --porcelain
 
-  # Check only token-related paths
+  # Check only token-related paths (compare against HEAD to catch staged changes too)
   local has_changes=false
   for path in "${TOKEN_PATHS[@]}"; do
-    if ! git diff --quiet --exit-code -- "$path" 2>/dev/null; then
+    if ! git diff --quiet --exit-code HEAD -- "$path" 2>/dev/null; then
       has_changes=true
       break
     fi
@@ -53,9 +53,9 @@ main() {
     echo ""
     log_info "Changed files:"
     for path in "${TOKEN_PATHS[@]}"; do
-      if ! git diff --quiet --exit-code -- "$path" 2>/dev/null; then
+      if ! git diff --quiet --exit-code HEAD -- "$path" 2>/dev/null; then
         echo "--- $path ---"
-        git diff -- "$path"
+        git diff HEAD -- "$path"
       fi
     done
     echo ""

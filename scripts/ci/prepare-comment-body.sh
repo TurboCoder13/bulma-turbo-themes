@@ -91,10 +91,13 @@ main() {
 
   # Output in GitHub Actions format
   if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+    # Use unique delimiter to avoid collision with body content
+    local delimiter
+    delimiter="EOF_${$}_$(date +%s)"
     {
-      echo "${output_var}<<EOF"
+      echo "${output_var}<<${delimiter}"
       echo "$body"
-      echo "EOF"
+      echo "${delimiter}"
     } >>"$GITHUB_OUTPUT"
   else
     echo "${output_var}=$body"

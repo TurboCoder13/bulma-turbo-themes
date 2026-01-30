@@ -301,7 +301,7 @@ fi
 # Step 5.6: Ruby RSpec tests
 if [ "$SKIP_TESTS" = false ]; then
   print_status "$BLUE" "💎 Step 5.6: Ruby RSpec tests..."
-  if command -v bundle &>/dev/null && [ -f "spec/spec_helper.rb" ]; then
+  if command_exists bundle && [ -f "spec/spec_helper.rb" ]; then
     print_status "$YELLOW" "  Running RSpec tests with coverage..."
     # Ensure rspec-coverage directory exists
     mkdir -p rspec-coverage
@@ -489,6 +489,9 @@ if [ "$QUICK_MODE" = false ] && [ "$FULL_MODE" = false ]; then
   if [ "$SERVE_MODE" = true ]; then
     response="y"
     response_prompted=true
+    if [ "$CI_ENV" = true ]; then
+      print_status "$YELLOW" "⚠️  Warning: --serve flag used in CI environment. Server will run until killed."
+    fi
   elif [ "$NO_SERVE" = true ] || [ "$CI_ENV" = true ]; then
     response="n"
     response_prompted=true
