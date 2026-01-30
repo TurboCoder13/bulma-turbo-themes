@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.28] - 2026-01-30
+
+### 🐛 Fixed
+
+- update step-security/harden-runner action to v2.14.1 (#295)
+
 ## [0.12.27] - 2026-01-30
 
 ### 🐛 Fixed
