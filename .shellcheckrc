@@ -25,3 +25,7 @@ disable=SC2016
 # SC2012: Use find instead of ls
 # Reason: Style preference, ls is fine for simple directory listings
 disable=SC2012
+
+# SC2148: Tips depend on target shell and yours is unknown
+# Reason: Some generated files (e.g., husky) don't have shebangs by design
+disable=SC2148

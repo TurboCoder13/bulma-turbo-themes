@@ -44,7 +44,21 @@ exclude = [
   "test-results/",
   ".lintro/",
   "**/.build/",
+  ".husky/**",
+  ".husky/_/**",
   "python/src/turbo_themes/generated/",
+]
+
+[tool.lintro.tool.semgrep]
+# Exclude test/benchmark/e2e files where security audit rules produce false positives
+# These files use dynamic patterns for test assertions which trigger false positives
+exclude = [
+  "benchmarks/",
+  "e2e/",
+  "test/",
+  "examples/test-utils/",
+  "examples/bootstrap/test/",
+  "packages/css/test/",
 ]
 
 [tool.lintro.tool.black]
@@ -65,6 +79,14 @@ exclude = [
 [tool.lintro.tool.hadolint]
 exclude = ["_site/Dockerfile"]
 
+[tool.lintro.tool.shellcheck]
+# Exclude husky-generated files (they don't have shebangs by design)
+exclude = [".husky/**", ".husky/_/**"]
+
+[tool.lintro.tool.shfmt]
+# Exclude husky-generated files
+exclude = [".husky/"]
+
 [tool.lintro.tool.actionlint]
 exclude = ["**/vendor/**"]
 
@@ -76,16 +98,6 @@ skips = ["B101", "B105", "B106"]
 [tool.lintro.tool.bandit]
 # Use native bandit config from [tool.bandit]
 
-[tool.lintro.tool.semgrep]
-# Exclude test/benchmark/e2e files where security audit rules produce false positives
-exclude = [
-  "benchmarks/**",
-  "e2e/**",
-  "examples/**/test/**",
-  "examples/test-utils/**",
-  "**/test/**",
-  "test/**",
-]
 
 [tool.lintro.tool.yamllint]
 exclude = [".github/workflows/**", ".github/actions/**", ".allstar/**"]
