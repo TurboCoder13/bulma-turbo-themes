@@ -205,25 +205,36 @@ test.describe('Dark/Light Mode Contrast @visual', () => {
 
     await waitForThemeApplied(page, 'catppuccin-latte');
 
-    // Get background color from CSS variable (more reliable than computed backgroundColor)
-    const bgBase = await page.evaluate(() => {
-      return getComputedStyle(document.documentElement).getPropertyValue('--turbo-bg-base').trim();
-    });
+    // Wait for light theme CSS values to actually be applied (handles CSS file loading)
+    // This is more robust than just checking the data-theme attribute
+    const brightness = await page.waitForFunction(
+      () => {
+        const bgBase = getComputedStyle(document.documentElement)
+          .getPropertyValue('--turbo-bg-base')
+          .trim();
+        if (!bgBase) return null;
 
-    // Parse hex color to RGB
-    const hexMatch = bgBase.match(/^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/);
-    if (hexMatch) {
-      const r = parseInt(hexMatch[1], 16);
-      const g = parseInt(hexMatch[2], 16);
-      const b = parseInt(hexMatch[3], 16);
-      const brightness = (r + g + b) / 3;
-      // Light themes should have high RGB values
-      expect(brightness).toBeGreaterThan(128);
-    } else {
-      // If not hex, try RGB format
-      const rgb = bgBase.match(/\d+/g)?.map(Number) || [];
-      const brightness = (rgb[0] + rgb[1] + rgb[2]) / 3;
-      expect(brightness).toBeGreaterThan(128);
-    }
+        // Parse hex color to RGB
+        const hexMatch = bgBase.match(/^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/);
+        if (hexMatch) {
+          const r = parseInt(hexMatch[1], 16);
+          const g = parseInt(hexMatch[2], 16);
+          const b = parseInt(hexMatch[3], 16);
+          return (r + g + b) / 3;
+        }
+
+        // If not hex, try RGB format
+        const rgb = bgBase.match(/\d+/g)?.map(Number) || [];
+        if (rgb.length >= 3) {
+          return (rgb[0] + rgb[1] + rgb[2]) / 3;
+        }
+
+        return null;
+      },
+      { timeout: 10000 }
+    );
+
+    // Light themes should have high RGB values (brightness > 128)
+    expect(await brightness.jsonValue()).toBeGreaterThan(128);
   });
 });
