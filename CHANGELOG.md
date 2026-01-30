@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.30] - 2026-01-30
+
+### 🐛 Fixed
+
+- add missing endpoints to Scorecard workflow (#309)
+
 ## [0.12.29] - 2026-01-30
 
 ### 🐛 Fixed
