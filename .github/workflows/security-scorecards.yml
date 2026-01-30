@@ -27,8 +27,10 @@ jobs:
         with:
           egress-policy: block
           allowed-endpoints: >
+            api.deps.dev:443
             api.github.com:443
             api.osv.dev:443
+            api.scorecard.dev:443
             codeload.github.com:443
             fulcio.sigstore.dev:443
             github.com:443
