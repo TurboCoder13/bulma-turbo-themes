@@ -33,7 +33,6 @@ function traversePath(obj: unknown, path: string): unknown {
       return undefined;
     }
     // Safe: path is from hardcoded TOKEN_MAPPINGS, not user input
-    // nosemgrep: prototype-pollution-loop
     current = (current as Record<string, unknown>)[part];
   }
 
