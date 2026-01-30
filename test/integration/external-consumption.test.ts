@@ -10,7 +10,7 @@ describe('External package consumption', () => {
 
   beforeAll(() => {
     // Create tarball
-    execSync('npm pack', { stdio: 'pipe' });
+    execSync('bun pm pack', { stdio: 'pipe' });
     const files = execSync('ls -1 lgtm-hq-turbo-themes-*.tgz', { encoding: 'utf-8' });
     tarballPath = join(process.cwd(), files.trim().split('\n')[0]);
 
@@ -18,8 +18,8 @@ describe('External package consumption', () => {
     testDir = mkdtempSync(join(tmpdir(), 'turbo-themes-test-'));
 
     // Initialize package and install tarball
-    execSync('npm init -y', { cwd: testDir, stdio: 'pipe' });
-    execSync(`npm install ${tarballPath}`, { cwd: testDir, stdio: 'pipe' });
+    execSync('bun init -y', { cwd: testDir, stdio: 'pipe' });
+    execSync(`bun add ${tarballPath}`, { cwd: testDir, stdio: 'pipe' });
   });
 
   afterAll(() => {
