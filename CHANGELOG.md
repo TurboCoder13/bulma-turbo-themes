@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.26] - 2026-01-30
+
+### 🐛 Fixed
+
+- update peter-evans/create-pull-request action to v8.1.0 (#297)
+
 ## [0.12.25] - 2026-01-30
 
 ### 🐛 Fixed
