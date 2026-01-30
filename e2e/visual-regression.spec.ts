@@ -206,13 +206,13 @@ test.describe('Dark/Light Mode Contrast @visual', () => {
     await waitForThemeApplied(page, 'catppuccin-latte');
 
     // Wait for light theme CSS values to actually be applied (handles CSS file loading)
-    // This is more robust than just checking the data-theme attribute
-    const brightness = await page.waitForFunction(
+    // Returns true only when brightness > 128, indicating light theme is loaded
+    await page.waitForFunction(
       () => {
         const bgBase = getComputedStyle(document.documentElement)
           .getPropertyValue('--turbo-bg-base')
           .trim();
-        if (!bgBase) return null;
+        if (!bgBase) return false;
 
         // Parse hex color to RGB
         const hexMatch = bgBase.match(/^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/);
@@ -220,21 +220,23 @@ test.describe('Dark/Light Mode Contrast @visual', () => {
           const r = parseInt(hexMatch[1], 16);
           const g = parseInt(hexMatch[2], 16);
           const b = parseInt(hexMatch[3], 16);
-          return (r + g + b) / 3;
+          const brightness = (r + g + b) / 3;
+          // Only return true when brightness indicates light theme
+          return brightness > 128;
         }
 
         // If not hex, try RGB format
         const rgb = bgBase.match(/\d+/g)?.map(Number) || [];
         if (rgb.length >= 3) {
-          return (rgb[0] + rgb[1] + rgb[2]) / 3;
+          const brightness = (rgb[0] + rgb[1] + rgb[2]) / 3;
+          return brightness > 128;
         }
 
-        return null;
+        return false;
       },
       { timeout: 10000 }
     );
 
-    // Light themes should have high RGB values (brightness > 128)
-    expect(await brightness.jsonValue()).toBeGreaterThan(128);
+    // If we get here, the light theme CSS has been applied (brightness > 128)
   });
 });
