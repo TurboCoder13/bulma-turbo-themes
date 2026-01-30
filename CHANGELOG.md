@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.27] - 2026-01-30
+
+### 🐛 Fixed
+
+- update actions/setup-node action to v6.2.0 (#296)
+
 ## [0.12.26] - 2026-01-30
 
 ### 🐛 Fixed
