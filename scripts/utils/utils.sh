@@ -98,7 +98,7 @@ port_available() {
   elif command_exists ss; then
     ! ss -ltn 2>/dev/null | awk '{print $4}' | grep -qE "(:|])${port}$"
   else
-    return 0  # Assume available if no tools found
+    return 0 # Assume available if no tools found
   fi
 }
 

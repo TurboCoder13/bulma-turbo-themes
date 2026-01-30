@@ -20,21 +20,21 @@ OS="$(uname -s)"
 ARCH="$(uname -m)"
 
 case "${OS}" in
-  Linux) os="linux" ;;
-  Darwin) os="darwin" ;;
-  *)
-    echo "❌ Unsupported OS for actionlint: ${OS}"
-    exit 1
-    ;;
+Linux) os="linux" ;;
+Darwin) os="darwin" ;;
+*)
+  echo "❌ Unsupported OS for actionlint: ${OS}"
+  exit 1
+  ;;
 esac
 
 case "${ARCH}" in
-  x86_64|amd64) arch="amd64" ;;
-  arm64|aarch64) arch="arm64" ;;
-  *)
-    echo "❌ Unsupported architecture for actionlint: ${ARCH}"
-    exit 1
-    ;;
+x86_64 | amd64) arch="amd64" ;;
+arm64 | aarch64) arch="arm64" ;;
+*)
+  echo "❌ Unsupported architecture for actionlint: ${ARCH}"
+  exit 1
+  ;;
 esac
 
 TAR_NAME="actionlint_${ACTIONLINT_VERSION}_${os}_${arch}.tar.gz"
@@ -55,13 +55,13 @@ for attempt in $(seq 1 ${MAX_RETRIES}); do
     break
   else
     EXIT_CODE=$?
-    if [ ${attempt} -lt ${MAX_RETRIES} ]; then
+    if [ "${attempt}" -lt "${MAX_RETRIES}" ]; then
       echo "  ⚠️  Download failed (attempt ${attempt}/${MAX_RETRIES}), retrying in ${RETRY_DELAY}s..."
-      sleep ${RETRY_DELAY}
-      RETRY_DELAY=$((RETRY_DELAY * 2))  # Exponential backoff
+      sleep "${RETRY_DELAY}"
+      RETRY_DELAY=$((RETRY_DELAY * 2)) # Exponential backoff
     else
       echo "  ❌ Download failed after ${MAX_RETRIES} attempts"
-      exit ${EXIT_CODE}
+      exit "${EXIT_CODE}"
     fi
   fi
 done
@@ -80,8 +80,6 @@ echo "✅ actionlint installed at '${ACTIONLINT_BIN}'"
 # When running in GitHub Actions, ensure the install directory is added to PATH
 if [ -n "${GITHUB_PATH:-}" ]; then
   REPO_BIN_PATH="$(pwd)/${INSTALL_DIR#./}"
-  echo "${REPO_BIN_PATH}" >> "${GITHUB_PATH}"
+  echo "${REPO_BIN_PATH}" >>"${GITHUB_PATH}"
   echo "🛣️  Added '${REPO_BIN_PATH}' to GITHUB_PATH"
 fi
-
-

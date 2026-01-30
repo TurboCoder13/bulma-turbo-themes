@@ -24,5 +24,4 @@ SHA256="$3"
   echo "| **Tests** | ✅ Passed |"
   echo ""
   echo "Artifact uploaded for publishing step."
-} >> "$GITHUB_STEP_SUMMARY"
-
+} >>"$GITHUB_STEP_SUMMARY"

@@ -21,4 +21,3 @@ silent = false
 # Environment variables for scripts
 [run.env]
 NODE_ENV = "development"
-

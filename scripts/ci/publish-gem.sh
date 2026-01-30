@@ -14,4 +14,3 @@ fi
 echo "📦 Publishing: $GEM_FILE"
 gem push "$GEM_FILE"
 echo "✅ Published successfully"
-

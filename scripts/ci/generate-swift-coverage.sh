@@ -80,7 +80,7 @@ else
     "${TEST_BINARY}" \
     -instr-profile="${PROFDATA}" \
     -ignore-filename-regex='.*Tests.*' \
-    -ignore-filename-regex='.*/.build/.*' > htmlcov/coverage-report.txt 2>&1; then
+    -ignore-filename-regex='.*/.build/.*' >htmlcov/coverage-report.txt 2>&1; then
     cp "${TEMPLATES_DIR}/swift-coverage-text.html" htmlcov/index.html
     echo "✅ Swift coverage text report generated"
   else

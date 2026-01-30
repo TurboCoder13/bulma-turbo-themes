@@ -85,18 +85,18 @@ fi
     if [ -f "playwright-report/index.html" ]; then
       # Parse basic test statistics from the HTML report if possible
       # This is a simple approach - could be enhanced with JSON results
-      
+
       echo "### ✅ Test Execution Completed"
       echo ""
-      
+
       if [ "$HAS_TEST_RESULTS" -eq 1 ]; then
         echo "📸 **Test artifacts**: $TEST_ARTIFACT_COUNT screenshots/videos captured"
         echo ""
       fi
-      
+
       echo "### 📋 View Full Reports"
       echo ""
-      
+
       if [ -n "$REPO" ] && [ "$REPO" != "unknown" ]; then
         echo "**Public Report (after merge to main):**"
         echo "- 🔗 [📊 View Playwright HTML Report](${PAGES_URL})"
@@ -115,7 +115,7 @@ fi
         echo "**Note:** If Jekyll server is running, the report is already available."
       fi
       echo ""
-      
+
     else
       echo "⚠️ No Playwright HTML report found, but report directory exists."
       echo ""
@@ -143,5 +143,4 @@ fi
   fi
   echo ""
   echo "<!-- ${COMMENT_MARKER} -->"
-} > "$COMMENT_FILE"
-
+} >"$COMMENT_FILE"

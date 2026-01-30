@@ -23,4 +23,3 @@ cp -r "$SOURCE_DIR"/* "$DEST_PATH/" || {
 
 echo "✅ Artifacts prepared for deployment"
 ls -la "$DEST_PATH/"
-

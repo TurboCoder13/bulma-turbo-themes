@@ -18,4 +18,3 @@ fi
 
 gem specification "$GEM_FILE" --ruby
 echo "✅ Gem package is valid"
-

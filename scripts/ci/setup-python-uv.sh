@@ -8,7 +8,7 @@ PYTHON_VERSION="${1:-3.13}"
 
 echo "Setting up Python $PYTHON_VERSION via uv..."
 uv python install "$PYTHON_VERSION"
-echo "UV_PYTHON=$PYTHON_VERSION" >> "$GITHUB_ENV"
+echo "UV_PYTHON=$PYTHON_VERSION" >>"$GITHUB_ENV"
 
 echo "Syncing Python dependencies with uv..."
 uv sync

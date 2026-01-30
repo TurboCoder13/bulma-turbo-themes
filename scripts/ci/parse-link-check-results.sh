@@ -13,7 +13,7 @@ fi
 
 set_github_output() {
   if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
-    echo "$1" >> "$GITHUB_OUTPUT"
+    echo "$1" >>"$GITHUB_OUTPUT"
   fi
 }
 
@@ -24,4 +24,3 @@ else
   set_github_output "status=warning"
   echo "⚠️ Some external links may have issues (see full log)"
 fi
-

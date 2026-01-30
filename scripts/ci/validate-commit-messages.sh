@@ -85,13 +85,13 @@ INVALID_COUNT=0
 
 while IFS= read -r commit_msg; do
   COMMIT_COUNT=$((COMMIT_COUNT + 1))
-  
+
   # Skip merge commits
   if [[ "$commit_msg" =~ ^Merge ]]; then
     echo "⏭️  Skipping merge commit: $commit_msg"
     continue
   fi
-  
+
   # Check if commit message matches Conventional Commits pattern
   if [[ ! "$commit_msg" =~ $PATTERN ]]; then
     echo "❌ Invalid commit message: $commit_msg"
@@ -102,7 +102,7 @@ while IFS= read -r commit_msg; do
   else
     echo "✅ Valid commit: $commit_msg"
   fi
-done <<< "$COMMITS"
+done <<<"$COMMITS"
 
 echo ""
 echo "📊 Commit validation summary:"

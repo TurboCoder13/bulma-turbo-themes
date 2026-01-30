@@ -11,14 +11,14 @@ GITHUB_TOKEN="${GITHUB_TOKEN:-}"
 # Parse arguments
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --strict)
-      STRICT_MODE=true
-      shift
-      ;;
-    *)
-      echo "Unknown option: $1"
-      exit 1
-      ;;
+  --strict)
+    STRICT_MODE=true
+    shift
+    ;;
+  *)
+    echo "Unknown option: $1"
+    exit 1
+    ;;
   esac
 done
 
@@ -32,8 +32,8 @@ UNRESOLVABLE_SHAS=()
 # Extract all action SHAs from workflows
 # Excludes README.md files as they are documentation, not actual workflow files
 extract_action_shas() {
-  grep -rho 'uses:.*@[a-f0-9]\{40\}' .github/workflows/ .github/actions/ 2>/dev/null | \
-    grep -v 'README.md:' | \
+  grep -rho 'uses:.*@[a-f0-9]\{40\}' .github/workflows/ .github/actions/ 2>/dev/null |
+    grep -v 'README.md:' |
     sed 's/.*@//g' | sort -u
 }
 
@@ -45,14 +45,14 @@ test_sha_validity() {
   local repo="$1"
   local sha="$2"
   local label="$3"
-  
+
   # Only attempt API check if GITHUB_TOKEN is available
   if [[ -z "${GITHUB_TOKEN:-}" ]]; then
-    return 0  # Skip if no token
+    return 0 # Skip if no token
   fi
-  
+
   local api_url="https://api.github.com/repos/${repo}/commits/${sha}"
-  
+
   # Check if commit exists in action repo
   local http_code
   local error_msg
@@ -84,7 +84,7 @@ test_sha_validity() {
     INVALID_SHAS+=("${label}@${sha}")
     return 1
   fi
-  
+
   return 0
 }
 
@@ -95,9 +95,9 @@ echo "==============================="
 for file in .github/workflows/*.yml .github/workflows/*.yaml; do
   if [[ -f "$file" ]]; then
     # Look for invalid formats
-    if grep -E 'uses:.*@[^a-f0-9]' "$file" 2>/dev/null || \
-       grep -E 'uses:.*@[a-f0-9]{1,39}([[:space:]]|$)' "$file" 2>/dev/null || \
-       grep -E 'uses:.*@[a-f0-9]{41,}' "$file" 2>/dev/null; then
+    if grep -E 'uses:.*@[^a-f0-9]' "$file" 2>/dev/null ||
+      grep -E 'uses:.*@[a-f0-9]{1,39}([[:space:]]|$)' "$file" 2>/dev/null ||
+      grep -E 'uses:.*@[a-f0-9]{41,}' "$file" 2>/dev/null; then
       echo "❌ Format violation in $file"
       EXIT_CODE=1
     fi
@@ -107,9 +107,9 @@ done
 # Check composite action files
 for file in .github/actions/*/action.yml .github/actions/*/action.yaml; do
   if [[ -f "$file" ]]; then
-    if grep -E 'uses:.*@[^a-f0-9]' "$file" 2>/dev/null || \
-       grep -E 'uses:.*@[a-f0-9]{1,39}([[:space:]]|$)' "$file" 2>/dev/null || \
-       grep -E 'uses:.*@[a-f0-9]{41,}' "$file" 2>/dev/null; then
+    if grep -E 'uses:.*@[^a-f0-9]' "$file" 2>/dev/null ||
+      grep -E 'uses:.*@[a-f0-9]{1,39}([[:space:]]|$)' "$file" 2>/dev/null ||
+      grep -E 'uses:.*@[a-f0-9]{41,}' "$file" 2>/dev/null; then
       echo "❌ Format violation in $file"
       EXIT_CODE=1
     fi
@@ -205,12 +205,12 @@ if [[ $EXIT_CODE -eq 0 ]] && [[ "$STRICT_MODE" == true ]] && [[ -n "${GITHUB_TOK
   echo "📋 Step 3: GitHub API SHA Existence Check (--strict mode)..."
   echo "=========================================================="
   echo ""
-  
+
   SHAS=$(extract_action_shas)
   UNMATCHED_COUNT=0
   VALIDATED_COUNT=0
   FAILED_COUNT=0
-  
+
   for sha in $SHAS; do
     # Identify which action uses this SHA (search both workflows and composite actions)
     ACTION_LINE=$(grep -rho "uses:.*@$sha" .github/workflows/ .github/actions/ 2>/dev/null | grep -v 'README.md:' | head -1 || true)
@@ -219,7 +219,7 @@ if [[ $EXIT_CODE -eq 0 ]] && [[ "$STRICT_MODE" == true ]] && [[ -n "${GITHUB_TOK
     else
       ACTION_LABEL=""
     fi
-    
+
     if [[ -n "$ACTION_LABEL" ]]; then
       # Derive owner/repo for the GitHub API by taking the first two path segments
       ACTION_REPO=$(echo "$ACTION_LABEL" | cut -d'/' -f1-2)
@@ -237,7 +237,7 @@ if [[ $EXIT_CODE -eq 0 ]] && [[ "$STRICT_MODE" == true ]] && [[ -n "${GITHUB_TOK
       EXIT_CODE=1
     fi
   done
-  
+
   echo ""
   echo "📊 Validation Summary:"
   echo "  ✓ Validated: $VALIDATED_COUNT"
@@ -277,4 +277,3 @@ fi
 sync 2>/dev/null || true
 
 exit $EXIT_CODE
-

@@ -31,13 +31,13 @@ echo "🧹 Cleaning up Jekyll processes..."
 safe_kill_processes() {
   local pattern=$1
   local description=$2
-  
+
   # Use pgrep with timeout and basic error handling
   if command -v pgrep &>/dev/null; then
     local pids
     # Exclude this script's PID ($$) to avoid killing ourselves
     pids=$(pgrep -f "$pattern" 2>/dev/null | grep -v "^$$" 2>/dev/null || true)
-    
+
     if [ -n "$pids" ]; then
       echo "  Killing $description processes: $pids"
       echo "$pids" | xargs -r timeout 2 kill -9 2>/dev/null || true
@@ -56,14 +56,14 @@ sleep 1
 # Function to free port
 free_port() {
   local port=$1
-  
+
   # Try ss first (modern and preferred)
   if command -v ss &>/dev/null; then
     echo "  Using ss to check port $port..."
     # Use timeout to prevent hanging
     local pids
     pids=$(timeout 3 ss -tlnp 2>/dev/null | grep ":$port " 2>/dev/null | awk '{print $NF}' | cut -d'=' -f2 | sort -u || true)
-    
+
     if [ -n "$pids" ]; then
       echo "  Killing processes using port $port: $pids"
       echo "$pids" | xargs -r timeout 2 kill -9 2>/dev/null || true
@@ -72,8 +72,8 @@ free_port() {
   elif command -v lsof &>/dev/null; then
     echo "  Using lsof to check port $port..."
     local pids
-    pids=$(timeout 3 lsof -ti:$port 2>/dev/null || true)
-    
+    pids=$(timeout 3 lsof -ti:"$port" 2>/dev/null || true)
+
     if [ -n "$pids" ]; then
       echo "  Killing processes using port $port: $pids"
       echo "$pids" | xargs -r timeout 2 kill -9 2>/dev/null || true
@@ -104,10 +104,10 @@ verify_port_free() {
   local port=$1
   local max_attempts=2
   local attempt=0
-  
+
   while [ $attempt -lt $max_attempts ]; do
     if command -v lsof &>/dev/null; then
-      if ! timeout 2 lsof -ti:$port >/dev/null 2>&1; then
+      if ! timeout 2 lsof -ti:"$port" >/dev/null 2>&1; then
         # Port is free
         return 0
       fi
@@ -120,14 +120,14 @@ verify_port_free() {
       # Can't verify, assume it's fine
       return 0
     fi
-    
+
     attempt=$((attempt + 1))
     if [ $attempt -lt $max_attempts ]; then
       echo "  Port $port still in use, retrying cleanup..."
       sleep 1
     fi
   done
-  
+
   # If we get here, port might still be in use but we're not failing
   echo "⚠️ Port $port status could not be fully verified, but continuing anyway"
   return 0
