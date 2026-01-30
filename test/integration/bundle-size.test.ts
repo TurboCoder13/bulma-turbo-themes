@@ -12,11 +12,9 @@ const SIZE_BUDGETS: Record<string, number> = {
 
 describe('Bundle size budgets', () => {
   for (const [file, budget] of Object.entries(SIZE_BUDGETS)) {
-    it(`${file} should be under ${Math.round(budget / 1024)}KB`, () => {
-      if (!existsSync(file)) {
-        // Skip if file doesn't exist yet (e.g., during initial setup)
-        return;
-      }
+    it(`${file} should exist and be under ${Math.round(budget / 1024)}KB`, () => {
+      expect(existsSync(file), `Bundle file ${file} should exist after build`).toBe(true);
+
       const stats = statSync(file);
       expect(stats.size).toBeLessThan(budget);
     });

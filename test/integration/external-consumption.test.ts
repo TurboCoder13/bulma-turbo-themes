@@ -5,8 +5,8 @@ import { join } from 'path';
 import { tmpdir } from 'os';
 
 describe('External package consumption', () => {
-  let testDir: string;
-  let tarballPath: string;
+  let testDir: string | undefined;
+  let tarballPath: string | undefined;
 
   beforeAll(() => {
     // Create tarball
@@ -24,13 +24,18 @@ describe('External package consumption', () => {
   });
 
   afterAll(() => {
-    // Cleanup
-    rmSync(testDir, { recursive: true, force: true });
-    execSync('rm -f lgtm-hq-turbo-themes-*.tgz');
+    // Cleanup temp directory
+    if (testDir) {
+      rmSync(testDir, { recursive: true, force: true });
+    }
+    // Cleanup tarball using fs instead of shell glob
+    if (tarballPath) {
+      rmSync(tarballPath, { force: true });
+    }
   });
 
   it('can import main entry point without resolution errors', () => {
-    const testFile = join(testDir, 'test-main.mjs');
+    const testFile = join(testDir!, 'test-main.mjs');
     writeFileSync(
       testFile,
       `
@@ -46,7 +51,7 @@ describe('External package consumption', () => {
   });
 
   it('can import /selector subpath without resolution errors', () => {
-    const testFile = join(testDir, 'test-selector.mjs');
+    const testFile = join(testDir!, 'test-selector.mjs');
     writeFileSync(
       testFile,
       `
@@ -65,7 +70,7 @@ describe('External package consumption', () => {
   });
 
   it('can import /tokens subpath without resolution errors', () => {
-    const testFile = join(testDir, 'test-tokens.mjs');
+    const testFile = join(testDir!, 'test-tokens.mjs');
     writeFileSync(
       testFile,
       `
@@ -77,5 +82,6 @@ describe('External package consumption', () => {
     const output = execFileSync('node', [testFile], { encoding: 'utf-8' });
     const result = JSON.parse(output.trim());
     expect(result.flavors).toBeGreaterThan(0);
+    expect(result.themeIds).toBeGreaterThan(0);
   });
 });

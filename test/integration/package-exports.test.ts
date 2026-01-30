@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, existsSync } from 'fs';
+import { readFileSync, readdirSync, existsSync, statSync } from 'fs';
 import { join } from 'path';
 import { describe, it, expect } from 'vitest';
 
@@ -9,18 +9,46 @@ const DIST_DIRS = [
   'packages/css/dist',
 ];
 
+/**
+ * Recursively get all files with a given extension from a directory.
+ */
+function getFilesRecursively(dir: string, ext: string): string[] {
+  const files: string[] = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...getFilesRecursively(fullPath, ext));
+    } else if (entry.name.endsWith(ext)) {
+      files.push(fullPath);
+    }
+  }
+  return files;
+}
+
+// =============================================================================
+// Test 0: Verify dist directories exist after build
+// =============================================================================
+describe('Dist directories should exist after build', () => {
+  for (const distDir of DIST_DIRS) {
+    it(`${distDir} should exist`, () => {
+      expect(existsSync(distDir), `Expected ${distDir} to exist after build`).toBe(true);
+    });
+  }
+});
+
 // =============================================================================
 // Test 1: No private package imports in compiled JavaScript
 // =============================================================================
 describe('No @lgtm-hq/turbo-themes-core imports in dist JS files', () => {
   for (const distDir of DIST_DIRS) {
+    // Skip file tests if directory doesn't exist (for local dev before build)
     if (!existsSync(distDir)) continue;
 
-    const jsFiles = readdirSync(distDir).filter((f) => f.endsWith('.js'));
+    const jsFiles = getFilesRecursively(distDir, '.js');
 
     for (const file of jsFiles) {
-      it(`${distDir}/${file} should not import from private core package`, () => {
-        const content = readFileSync(join(distDir, file), 'utf-8');
+      it(`${file} should not import from private core package`, () => {
+        const content = readFileSync(file, 'utf-8');
         expect(content).not.toMatch(/from\s+['"]@lgtm-hq\/turbo-themes-core/);
         expect(content).not.toMatch(/import\s*\{[^}]*\}\s*from\s*['"]@lgtm-hq\/turbo-themes-core/);
       });
@@ -33,13 +61,14 @@ describe('No @lgtm-hq/turbo-themes-core imports in dist JS files', () => {
 // =============================================================================
 describe('No @lgtm-hq/turbo-themes-core references in .d.ts files', () => {
   for (const distDir of DIST_DIRS) {
+    // Skip file tests if directory doesn't exist (for local dev before build)
     if (!existsSync(distDir)) continue;
 
-    const dtsFiles = readdirSync(distDir).filter((f) => f.endsWith('.d.ts'));
+    const dtsFiles = getFilesRecursively(distDir, '.d.ts');
 
     for (const file of dtsFiles) {
-      it(`${distDir}/${file} should not reference private core package`, () => {
-        const content = readFileSync(join(distDir, file), 'utf-8');
+      it(`${file} should not reference private core package`, () => {
+        const content = readFileSync(file, 'utf-8');
         expect(content).not.toMatch(/@lgtm-hq\/turbo-themes-core/);
       });
     }
@@ -85,9 +114,9 @@ describe('Bundled packages contain inlined theme data', () => {
   it('tailwind adapter bundle contains theme IDs (in entry or chunks)', () => {
     // The theme IDs may be in the main entry or in a chunked file
     const distPath = 'packages/adapters/tailwind/dist';
-    const files = readdirSync(distPath).filter((f) => f.endsWith('.js'));
+    const files = getFilesRecursively(distPath, '.js');
     // Read files using full paths constructed from known directory listing (no user input)
-    const allContent = files.map((filename) => readFileSync(`${distPath}/${filename}`, 'utf-8')).join('\n');
+    const allContent = files.map((filePath) => readFileSync(filePath, 'utf-8')).join('\n');
     expect(allContent).toMatch(/catppuccin-mocha|bulma-dark|dracula/);
   });
 });
