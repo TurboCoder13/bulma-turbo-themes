@@ -30,18 +30,19 @@ describe('npm package files', () => {
 
   it('includes all required directories', () => {
     const output = getPackOutput();
+    const lines = output.split(/\r?\n/);
 
-    // Root dist (main entry point)
-    expect(output).toContain('dist/index.js');
+    // Root dist (main entry point) - use exact line match to avoid false positives
+    expect(lines.some((line) => line.endsWith('dist/index.js'))).toBe(true);
 
-    // Core package
-    expect(output).toContain('packages/core/dist/');
+    // Core package - check for directory presence
+    expect(lines.some((line) => line.includes('packages/core/dist/'))).toBe(true);
 
     // CSS package
-    expect(output).toContain('packages/css/dist/');
+    expect(lines.some((line) => line.includes('packages/css/dist/'))).toBe(true);
 
     // Theme selector
-    expect(output).toContain('packages/theme-selector/dist/');
+    expect(lines.some((line) => line.includes('packages/theme-selector/dist/'))).toBe(true);
   });
 
   it('includes adapter packages', () => {
