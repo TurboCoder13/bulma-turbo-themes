@@ -22,7 +22,7 @@
     "./components/*": "./dist/components/*"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json && node scripts/build.mjs",
+    "build": "vite build && node scripts/build.mjs",
     "build:css": "node scripts/build.mjs",
     "test": "vitest run --config vitest.config.ts"
   },

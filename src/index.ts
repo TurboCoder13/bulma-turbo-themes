@@ -20,4 +20,4 @@ export {
 } from '../packages/theme-selector/dist/index.js';
 
 // Re-export types for backwards compatibility
-export type { ThemeMode, ThemeAppearance, ThemeFamily } from '../packages/theme-selector/dist/types.js';
+export type { ThemeMode, ThemeAppearance, ThemeFamily } from '../packages/theme-selector/dist/index.js';

@@ -1,0 +1,80 @@
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { execSync } from 'child_process';
+import { mkdtempSync, rmSync, writeFileSync } from 'fs';
+import { join } from 'path';
+import { tmpdir } from 'os';
+
+describe('External package consumption', () => {
+  let testDir: string;
+  let tarballPath: string;
+
+  beforeAll(() => {
+    // Create tarball
+    execSync('npm pack', { stdio: 'pipe' });
+    const files = execSync('ls -1 lgtm-hq-turbo-themes-*.tgz', { encoding: 'utf-8' });
+    tarballPath = join(process.cwd(), files.trim().split('\n')[0]);
+
+    // Create temp directory
+    testDir = mkdtempSync(join(tmpdir(), 'turbo-themes-test-'));
+
+    // Initialize package and install tarball
+    execSync('npm init -y', { cwd: testDir, stdio: 'pipe' });
+    execSync(`npm install ${tarballPath}`, { cwd: testDir, stdio: 'pipe' });
+  });
+
+  afterAll(() => {
+    // Cleanup
+    rmSync(testDir, { recursive: true, force: true });
+    execSync('rm -f lgtm-hq-turbo-themes-*.tgz');
+  });
+
+  it('can import main entry point without resolution errors', () => {
+    const testFile = join(testDir, 'test-main.mjs');
+    writeFileSync(
+      testFile,
+      `
+      import { flavors, getTheme, themeIds } from '@lgtm-hq/turbo-themes';
+      console.log(JSON.stringify({ flavors: flavors.length, themeIds: themeIds.length }));
+    `,
+    );
+
+    const output = execSync(`node ${testFile}`, { encoding: 'utf-8' });
+    const result = JSON.parse(output.trim());
+    expect(result.flavors).toBeGreaterThan(0);
+    expect(result.themeIds).toBeGreaterThan(0);
+  });
+
+  it('can import /selector subpath without resolution errors', () => {
+    const testFile = join(testDir, 'test-selector.mjs');
+    writeFileSync(
+      testFile,
+      `
+      import { initTheme, wireFlavorSelector } from '@lgtm-hq/turbo-themes/selector';
+      console.log(JSON.stringify({
+        hasInitTheme: typeof initTheme === 'function',
+        hasWireFlavorSelector: typeof wireFlavorSelector === 'function'
+      }));
+    `,
+    );
+
+    const output = execSync(`node ${testFile}`, { encoding: 'utf-8' });
+    const result = JSON.parse(output.trim());
+    expect(result.hasInitTheme).toBe(true);
+    expect(result.hasWireFlavorSelector).toBe(true);
+  });
+
+  it('can import /tokens subpath without resolution errors', () => {
+    const testFile = join(testDir, 'test-tokens.mjs');
+    writeFileSync(
+      testFile,
+      `
+      import { flavors, themeIds } from '@lgtm-hq/turbo-themes/tokens';
+      console.log(JSON.stringify({ flavors: flavors.length, themeIds: themeIds.length }));
+    `,
+    );
+
+    const output = execSync(`node ${testFile}`, { encoding: 'utf-8' });
+    const result = JSON.parse(output.trim());
+    expect(result.flavors).toBeGreaterThan(0);
+  });
+});

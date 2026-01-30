@@ -26,22 +26,15 @@ function copyFile(src, dest) {
 
 function main() {
   try {
-    // Copy Tailwind preset (from built output)
-    const tailwindPresetSrc = path.join(projectRoot, 'packages/adapters/tailwind/dist/preset.js');
-    const tailwindColorsSrc = path.join(projectRoot, 'packages/adapters/tailwind/dist/colors.js');
-    
-    if (fs.existsSync(tailwindPresetSrc)) {
-      copyFile(
-        tailwindPresetSrc,
-        path.join(projectRoot, 'dist/adapters/tailwind/preset.js')
-      );
-    }
-    
-    if (fs.existsSync(tailwindColorsSrc)) {
-      copyFile(
-        tailwindColorsSrc,
-        path.join(projectRoot, 'dist/adapters/tailwind/colors.js')
-      );
+    // Copy all JS files from Tailwind adapter dist (including Vite chunk files)
+    const tailwindDistDir = path.join(projectRoot, 'packages/adapters/tailwind/dist');
+    const tailwindDestDir = path.join(projectRoot, 'dist/adapters/tailwind');
+    if (fs.existsSync(tailwindDistDir)) {
+      ensureDir(tailwindDestDir);
+      const jsFiles = fs.readdirSync(tailwindDistDir).filter((f) => f.endsWith('.js'));
+      for (const file of jsFiles) {
+        copyFile(path.join(tailwindDistDir, file), path.join(tailwindDestDir, file));
+      }
     }
 
     // Copy Bootstrap adapter (SCSS files, no build needed)

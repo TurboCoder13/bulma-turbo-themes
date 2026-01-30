@@ -14,7 +14,7 @@
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "vite build"
   },
   "dependencies": {
     "@lgtm-hq/turbo-themes-core": "workspace:*"
