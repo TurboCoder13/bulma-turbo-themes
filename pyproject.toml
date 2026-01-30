@@ -45,7 +45,6 @@ exclude = [
   ".lintro/",
   "**/.build/",
   ".husky/**",
-  ".husky/_/**",
   "python/src/turbo_themes/generated/",
 ]
 
@@ -81,7 +80,7 @@ exclude = ["_site/Dockerfile"]
 
 [tool.lintro.tool.shellcheck]
 # Exclude husky-generated files (they don't have shebangs by design)
-exclude = [".husky/**", ".husky/_/**"]
+exclude = [".husky/**"]
 
 [tool.lintro.tool.shfmt]
 # Exclude husky-generated files

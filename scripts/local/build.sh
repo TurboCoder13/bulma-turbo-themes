@@ -505,21 +505,21 @@ if [ "$QUICK_MODE" = false ] && [ "$FULL_MODE" = false ]; then
   if [[ "$response" =~ ^[Yy]$ ]]; then
     # Find an available port
     local_port=4000
-    while ! port_available $local_port; do
+    while ! port_available "$local_port"; do
       local_port=$((local_port + 1))
-      if [ $local_port -gt 4010 ]; then
+      if [ "$local_port" -gt 4010 ]; then
         print_status "$RED" "❌ No available ports found between 4000-4010"
         exit 1
       fi
     done
 
-    print_status "$GREEN" "🚀 Starting Jekyll server on port $local_port..."
-    print_status "$BLUE" "📱 Site will be available at: http://localhost:$local_port"
+    print_status "$GREEN" "🚀 Starting Jekyll server on port ${local_port}..."
+    print_status "$BLUE" "📱 Site will be available at: http://localhost:${local_port}"
     print_status "$YELLOW" "💡 Press Ctrl+C to stop the server"
     echo ""
 
     # Start Jekyll server with live reload
-    bundle exec jekyll serve --port $local_port --livereload --incremental
+    bundle exec jekyll serve --port "$local_port" --livereload --incremental
   else
     print_status "$BLUE" "📋 Build completed successfully!"
     print_status "$YELLOW" "To serve the site later, run:"

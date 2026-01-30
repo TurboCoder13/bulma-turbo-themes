@@ -1,5 +1,10 @@
 # Shellcheck configuration
 # https://github.com/koalaman/shellcheck/wiki/Directive
+#
+# NOTE: These suppressions are global because they apply consistently across
+# the codebase's shell scripting patterns. Using inline suppressions would
+# require adding them to 50+ locations. If a specific script doesn't follow
+# these patterns, add inline `# shellcheck enable=SCXXXX` to re-enable.
 
 # SC1091: Not following sourced file
 # Reason: Scripts source ../utils/utils.sh which exists at runtime but

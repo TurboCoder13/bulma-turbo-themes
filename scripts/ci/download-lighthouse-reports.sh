@@ -83,10 +83,12 @@ main() {
 
   # Copy reports to site if they exist
   if [ -d "${REPORTS_DIR}" ] && [ -n "$(ls -A "${REPORTS_DIR}" 2>/dev/null)" ]; then
+    local repo_root
+    repo_root=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
     log_success "Including Lighthouse reports in site deployment"
-    mkdir -p apps/site/dist/lighthouse-reports/
-    cp -r "${REPORTS_DIR}"/* apps/site/dist/lighthouse-reports/
-    ls -la apps/site/dist/lighthouse-reports/
+    mkdir -p "${repo_root}/apps/site/dist/lighthouse-reports/"
+    cp -r "${REPORTS_DIR}"/* "${repo_root}/apps/site/dist/lighthouse-reports/"
+    ls -la "${repo_root}/apps/site/dist/lighthouse-reports/"
   else
     log_warning "No Lighthouse reports found, skipping"
   fi

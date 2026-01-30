@@ -47,10 +47,21 @@ main() {
   while [[ $# -gt 0 ]]; do
     case $1 in
     --file)
+      if [[ $# -lt 2 ]] || [[ "$2" == -* ]] || [[ -z "$2" ]]; then
+        log_error "--file requires a non-empty file path argument"
+        show_usage
+        exit 2
+      fi
       source_file="$2"
       shift 2
       ;;
     --body)
+      # Note: Don't check for -* prefix since body text may start with - (e.g., markdown lists)
+      if [[ $# -lt 2 ]] || [[ -z "$2" ]]; then
+        log_error "--body requires a non-empty text argument"
+        show_usage
+        exit 2
+      fi
       body_text="$2"
       shift 2
       ;;

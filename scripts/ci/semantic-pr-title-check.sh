@@ -88,7 +88,7 @@ Once updated, this check will pass automatically.'
     gh pr comment "$PR_NUMBER" --body "$body" >/dev/null 2>&1 || true
   elif [[ -n "${GITHUB_TOKEN:-}" && -n "${GITHUB_REPOSITORY:-}" ]]; then
     JSON_BODY=$(
-      python3 - <<'PY'
+      BODY="$body" python3 - <<'PY'
 import json, os
 print(json.dumps({"body": os.environ.get("BODY","")}))
 PY

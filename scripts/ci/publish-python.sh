@@ -26,6 +26,10 @@ parse_args() {
   while [[ $# -gt 0 ]]; do
     case $1 in
     --working-dir)
+      if [[ $# -lt 2 ]] || [[ "$2" == -* ]] || [[ -z "$2" ]]; then
+        log_error "--working-dir requires a directory path argument"
+        exit 2
+      fi
       WORKING_DIR="$2"
       shift 2
       ;;

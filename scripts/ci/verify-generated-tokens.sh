@@ -24,7 +24,8 @@ TOKEN_PATHS=(
   'packages/core/src/themes/tokens.json'
   'python/src/turbo_themes/tokens.json'
   'swift/Sources/TurboThemes/Resources/tokens.json'
-  # Theme registry files (still manually maintained)
+  # Theme registry files (manually maintained but derived from tokens.json)
+  # These are checked to ensure consistency when tokens.json changes
   'python/src/turbo_themes/themes.py'
   'swift/Sources/TurboThemes/ThemeLoader.swift'
 )
@@ -32,7 +33,7 @@ TOKEN_PATHS=(
 main() {
   log_info "Verifying generated tokens are committed..."
 
-  # Show current git status
+  # Debug: show overall git status for CI logs (not used in logic)
   git status --porcelain
 
   # Check only token-related paths
@@ -52,7 +53,10 @@ main() {
     echo ""
     log_info "Changed files:"
     for path in "${TOKEN_PATHS[@]}"; do
-      git diff -- "$path" 2>/dev/null || true
+      if ! git diff --quiet --exit-code -- "$path" 2>/dev/null; then
+        echo "--- $path ---"
+        git diff -- "$path"
+      fi
     done
     echo ""
     log_error "Please run 'bun run build:tokens' and commit the changes"
