@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.12.32] - 2026-02-02
+
+### 🐛 Fixed
+
+- regenerate tokens.json for v0.12.31
+
 ## [0.12.31] - 2026-01-30
 
 ### 🐛 Fixed
