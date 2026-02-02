@@ -20,7 +20,7 @@ const version = validateVersion(fs.readFileSync(versionFile, 'utf8').trim());
 
 const log = (msg) => console.log(`✅ ${msg}`);
 
-const writeJsonVersion = (filePath, keyPath = ['version']) => {
+const writeJsonVersion = (filePath, keyPath = ['version'], { trailingNewline = true } = {}) => {
   const raw = fs.readFileSync(filePath, 'utf8');
   const data = JSON.parse(raw);
   let target = data;
@@ -29,7 +29,8 @@ const writeJsonVersion = (filePath, keyPath = ['version']) => {
   }
   const leaf = keyPath[keyPath.length - 1];
   target[leaf] = version;
-  fs.writeFileSync(filePath, `${JSON.stringify(data, null, 2)}\n`);
+  const content = JSON.stringify(data, null, 2);
+  fs.writeFileSync(filePath, trailingNewline ? `${content}\n` : content);
   log(`synced ${path.relative(root, filePath)}`);
 };
 
@@ -43,6 +44,20 @@ const replaceInFile = (filePath, regex, replacement, description) => {
 
 // npm package.json
 writeJsonVersion(path.join(root, 'package.json'));
+
+// tokens.json files (cross-platform design tokens)
+// These embed the version in $version field and are used by non-JS platforms
+// Note: no trailing newline to match build output from prepare-style-dictionary.mjs
+const tokenFiles = [
+  path.join(root, 'packages', 'core', 'src', 'themes', 'tokens.json'),
+  path.join(root, 'python', 'src', 'turbo_themes', 'tokens.json'),
+  path.join(root, 'swift', 'Sources', 'TurboThemes', 'Resources', 'tokens.json'),
+];
+for (const tokenFile of tokenFiles) {
+  if (fs.existsSync(tokenFile)) {
+    writeJsonVersion(tokenFile, ['$version'], { trailingNewline: false });
+  }
+}
 
 // Ruby gem version
 replaceInFile(
