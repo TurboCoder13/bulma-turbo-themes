@@ -906,15 +906,18 @@ describe('public API', () => {
                 // Return different theme IDs, but we'll find the catppuccin-latte one
                 const index = mockMenuItems.length;
                 const themes = [
-                  'bulma-light',
                   'bulma-dark',
-                  'catppuccin-latte',
+                  'bulma-light',
                   'catppuccin-frappe',
+                  'catppuccin-latte',
                   'catppuccin-macchiato',
                   'catppuccin-mocha',
-                  'dracula',
-                  'github-light',
                   'github-dark',
+                  'github-light',
+                  'dracula',
+                  'rose-pine-dawn',
+                  'rose-pine-moon',
+                  'rose-pine',
                 ];
                 return themes[index] || 'catppuccin-latte';
               }
@@ -952,15 +955,11 @@ describe('public API', () => {
 
     wireFlavorSelector(document, window);
 
-    // Find the catppuccin-latte menu item and its click handler
-    // The items are created in order, so catppuccin-latte should be at index 2
-    const catppuccinLatteItem =
-      mockMenuItems.length > 2
-        ? mockMenuItems[2]
-        : mockMenuItems.find((item) => {
-            const themeId = item.getAttribute('data-theme-id');
-            return themeId === 'catppuccin-latte';
-          });
+    // Find the catppuccin-latte menu item by data-theme-id (order-independent)
+    const catppuccinLatteItem = mockMenuItems.find((item) => {
+      const themeId = item.getAttribute('data-theme-id');
+      return themeId === 'catppuccin-latte';
+    });
 
     expect(catppuccinLatteItem).toBeDefined();
     if (catppuccinLatteItem) {
@@ -1028,9 +1027,12 @@ describe('public API', () => {
             'catppuccin-latte',
             'catppuccin-macchiato',
             'catppuccin-mocha',
-            'dracula',
             'github-dark',
             'github-light',
+            'dracula',
+            'rose-pine-dawn',
+            'rose-pine-moon',
+            'rose-pine',
           ];
           const item = {
             ...mockElement,
@@ -1896,7 +1898,7 @@ describe('public API', () => {
     expect(createdSpans.length).toBeGreaterThan(0);
   });
 
-  it('wireFlavorSelector sets correct span properties for themes without icons in dropdown', () => {
+  it('wireFlavorSelector sets correct span properties for themes without icons in dropdown', async () => {
     // Test fallback span creation with correct properties (coverage for lines 302-307)
     // To test the else branch, we need a theme without an icon
     // We'll mock createElement to track span creation and verify properties are set
@@ -1915,12 +1917,14 @@ describe('public API', () => {
         if (tag === 'span') {
           const span = {
             textContent: '',
+            className: '',
             style: {
               fontSize: '',
               fontWeight: '',
               color: '',
             } as any,
             appendChild: vi.fn(),
+            setAttribute: vi.fn(),
           };
           createdSpans.push(span);
           // The first span created in the dropdown item loop (not screen reader)
@@ -1945,7 +1949,7 @@ describe('public API', () => {
     // not currently possible with the THEMES array, we verify the span creation
     // and property setting mechanism works correctly.
 
-    wireFlavorSelector(document, window);
+    await wireFlavorSelector(document, window);
 
     // Verify spans were created
     const spanCalls = (document.createElement as any).mock.calls.filter(

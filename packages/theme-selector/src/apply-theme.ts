@@ -41,12 +41,21 @@ export async function applyTheme(doc: Document, themeId: string): Promise<void> 
     if (triggerIcon && theme.icon) {
       try {
         triggerIcon.src = resolveAssetPath(theme.icon, baseUrl);
-        const familyName = THEME_FAMILIES[theme.family].name;
+        const familyMeta = THEME_FAMILIES[theme.family];
+        const familyName = familyMeta?.name ?? theme.family;
         triggerIcon.alt = `${familyName} ${theme.name}`;
         triggerIcon.title = `${familyName} ${theme.name}`;
       } catch {
         logThemeError(ThemeErrors.INVALID_ICON_PATH(theme.id));
       }
+    }
+
+    // Update trigger button label
+    const triggerLabel = doc.getElementById(
+      DOM_IDS.THEME_FLAVOR_TRIGGER_LABEL
+    ) as HTMLElement | null;
+    if (triggerLabel) {
+      triggerLabel.textContent = theme.name;
     }
 
     // Update active state in dropdown

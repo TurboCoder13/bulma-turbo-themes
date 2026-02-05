@@ -632,15 +632,18 @@ describe('wireFlavorSelector events', () => {
                 // Return different theme IDs, but we'll find the catppuccin-latte one
                 const index = mockMenuItems.length;
                 const themes = [
-                  'bulma-light',
                   'bulma-dark',
-                  'catppuccin-latte',
+                  'bulma-light',
                   'catppuccin-frappe',
+                  'catppuccin-latte',
                   'catppuccin-macchiato',
                   'catppuccin-mocha',
-                  'dracula',
-                  'github-light',
                   'github-dark',
+                  'github-light',
+                  'dracula',
+                  'rose-pine-dawn',
+                  'rose-pine-moon',
+                  'rose-pine',
                 ];
                 return themes[index] || 'catppuccin-latte';
               }
@@ -678,15 +681,11 @@ describe('wireFlavorSelector events', () => {
 
     await wireFlavorSelector(document, window);
 
-    // Find the catppuccin-latte menu item and its click handler
-    // The items are created in order, so catppuccin-latte should be at index 2
-    const catppuccinLatteItem =
-      mockMenuItems.length > 2
-        ? mockMenuItems[2]
-        : mockMenuItems.find((item) => {
-            const themeId = item.getAttribute('data-theme-id');
-            return themeId === 'catppuccin-latte';
-          });
+    // Find the catppuccin-latte menu item by data-theme-id (order-independent)
+    const catppuccinLatteItem = mockMenuItems.find((item) => {
+      const themeId = item.getAttribute('data-theme-id');
+      return themeId === 'catppuccin-latte';
+    });
 
     expect(catppuccinLatteItem).toBeDefined();
     if (catppuccinLatteItem) {
@@ -753,9 +752,12 @@ describe('wireFlavorSelector events', () => {
             'catppuccin-latte',
             'catppuccin-macchiato',
             'catppuccin-mocha',
-            'dracula',
             'github-dark',
             'github-light',
+            'dracula',
+            'rose-pine-dawn',
+            'rose-pine-moon',
+            'rose-pine',
           ];
           const item = {
             ...mockElement,

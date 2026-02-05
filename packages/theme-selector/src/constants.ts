@@ -16,6 +16,7 @@ export const DEFAULT_THEME = 'catppuccin-mocha';
 export const DOM_IDS = {
   THEME_FLAVOR_TRIGGER: 'theme-flavor-trigger',
   THEME_FLAVOR_TRIGGER_ICON: 'theme-flavor-trigger-icon',
+  THEME_FLAVOR_TRIGGER_LABEL: 'theme-flavor-trigger-label',
   THEME_FLAVOR_MENU: 'theme-flavor-menu',
   THEME_FLAVOR_SELECT: 'theme-flavor-select',
 } as const;
@@ -39,4 +40,5 @@ export const THEME_FAMILIES: Record<ThemeFamily, ThemeFamilyMeta> = {
   catppuccin: { name: 'Catppuccin', description: 'Soothing pastel themes' },
   github: { name: 'GitHub', description: 'GitHub-inspired themes' },
   dracula: { name: 'Dracula', description: 'Dark vampire aesthetic' },
+  'rose-pine': { name: 'Rosé Pine', description: 'All natural pine, faux fur and a bit of soho vibes' },
 };

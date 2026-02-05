@@ -73,7 +73,7 @@
     "assets/css/adapters/*.css"
   ],
   "scripts": {
-    "build": "bun run build:tokens && bun run build:packages && bun run build:root && node scripts/copy-adapters.mjs && bun run generate:css",
+    "build": "bun run build:tokens && bun run build:packages && bun run theme:sync && bun run build:root && node scripts/copy-adapters.mjs && bun run generate:css",
     "build:tokens": "node scripts/codegen/validate-schema.mjs && node scripts/prepare-style-dictionary.mjs && node scripts/build-style-dictionary.mjs && bun run build:tokens:copy",
     "build:tokens:copy": "cp dist/tokens/style-dictionary/tokens.json packages/core/src/themes/tokens.json && cp dist/tokens/style-dictionary/tokens.json python/src/turbo_themes/tokens.json && cp dist/tokens/style-dictionary/tokens.json swift/Sources/TurboThemes/Resources/tokens.json",
     "build:sd": "node scripts/prepare-style-dictionary.mjs && node scripts/build-style-dictionary.mjs",
@@ -113,7 +113,7 @@
     "stylelint": "stylelint '**/*.css' --ignore-path .stylelintignore",
     "coverage:badges": "node scripts/ci/coverage-badges.mjs",
     "css:budget": "node scripts/ci/css-budget.mjs",
-    "theme:sync": "node scripts/sync-catppuccin.mjs",
+    "theme:sync": "node scripts/sync-catppuccin.mjs && node scripts/sync-rose-pine.mjs",
     "examples:prep": "node scripts/prepare-examples.mjs",
     "examples:build": "node scripts/build-examples.mjs",
     "examples:test": "node scripts/test-examples.mjs",
@@ -154,6 +154,7 @@
     "@lhci/cli": "0.15.1",
     "@playwright/test": "1.58.0",
     "@primer/primitives": "11.3.2",
+    "@rose-pine/palette": "4.0.1",
     "@testing-library/react": "16.3.2",
     "@types/react": "19.2.10",
     "@types/react-dom": "19.2.3",
