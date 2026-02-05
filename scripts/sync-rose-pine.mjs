@@ -105,6 +105,15 @@ function buildPackage() {
     id: 'rose-pine',
     name: 'Rosé Pine (synced)',
     homepage: 'https://rosepinetheme.com/',
+    license: {
+      spdx: 'MIT',
+      url: 'https://github.com/rose-pine/rose-pine-theme/blob/main/license',
+      copyright: 'Rosé Pine',
+    },
+    source: {
+      package: '@rose-pine/palette',
+      repository: 'https://github.com/rose-pine/palette',
+    },
     flavors,
   };
 }
@@ -157,6 +166,14 @@ function formatObject(obj, indent = 0) {
 
 const rawContent = `import type { ThemePackage } from '../types.js';
 
+/**
+ * Rosé Pine theme - All natural pine, faux fur and a bit of soho vibes
+ * Auto-synced from @rose-pine/palette
+ * @see https://rosepinetheme.com/
+ * @license MIT
+ *
+ * DO NOT EDIT MANUALLY - regenerate with: node scripts/sync-rose-pine.mjs
+ */
 export const rosePineSynced: ThemePackage = ${formatObject(pkg)} as const;
 `;
 

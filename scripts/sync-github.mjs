@@ -167,6 +167,15 @@ function buildPackage() {
     id: 'github',
     name: 'GitHub (synced)',
     homepage: 'https://primer.style/',
+    license: {
+      spdx: 'MIT',
+      url: 'https://github.com/primer/primitives/blob/main/LICENSE',
+      copyright: 'GitHub Inc.',
+    },
+    source: {
+      package: '@primer/primitives',
+      repository: 'https://github.com/primer/primitives',
+    },
     flavors,
   };
 }
@@ -211,6 +220,7 @@ const rawContent = `import type { ThemePackage } from '../types.js';
  * GitHub themes - auto-synced from @primer/primitives
  * Based on GitHub's Primer design system colors
  * @see https://primer.style/foundations/color
+ * @license MIT
  *
  * DO NOT EDIT MANUALLY - regenerate with: node scripts/sync-github.mjs
  */

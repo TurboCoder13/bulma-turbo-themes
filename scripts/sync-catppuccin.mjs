@@ -99,6 +99,15 @@ function buildPackage() {
     id: 'catppuccin',
     name: 'Catppuccin (synced)',
     homepage: 'https://catppuccin.com/palette/',
+    license: {
+      spdx: 'MIT',
+      url: 'https://github.com/catppuccin/catppuccin/blob/main/LICENSE',
+      copyright: 'Catppuccin',
+    },
+    source: {
+      package: '@catppuccin/palette',
+      repository: 'https://github.com/catppuccin/palette',
+    },
     flavors,
   };
 }
@@ -141,6 +150,14 @@ function formatObject(obj, indent = 0) {
 
 const rawContent = `import type { ThemePackage } from '../types.js';
 
+/**
+ * Catppuccin theme - Soothing pastel theme for the high-spirited
+ * Auto-synced from @catppuccin/palette
+ * @see https://catppuccin.com/palette/
+ * @license MIT
+ *
+ * DO NOT EDIT MANUALLY - regenerate with: node scripts/sync-catppuccin.mjs
+ */
 export const catppuccinSynced: ThemePackage = ${formatObject(pkg)} as const;
 `;
 

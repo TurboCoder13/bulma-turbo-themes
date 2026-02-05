@@ -4,11 +4,20 @@ import type { ThemePackage } from '../types.js';
  * Dracula theme
  * Based on the official Dracula color palette
  * @see https://draculatheme.com/contribute
+ * @license MIT
  */
 export const draculaThemes: ThemePackage = {
   id: 'dracula',
   name: 'Dracula',
   homepage: 'https://draculatheme.com/',
+  license: {
+    spdx: 'MIT',
+    url: 'https://github.com/dracula/dracula-theme/blob/master/LICENSE',
+    copyright: 'Zeno Rocha',
+  },
+  source: {
+    repository: 'https://github.com/dracula/dracula-theme',
+  },
   flavors: [
     {
       id: 'dracula',

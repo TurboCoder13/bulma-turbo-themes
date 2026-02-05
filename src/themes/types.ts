@@ -176,9 +176,31 @@ export interface ThemeFlavor {
   bulma?: BulmaConfig; // Optional Bulma customizations
 }
 
+export interface ThemeLicense {
+  /** SPDX license identifier(s), e.g., "MIT" or "Apache-2.0 AND CC-BY-SA-4.0" */
+  spdx: string;
+  /** URL to the license file or terms */
+  url?: string;
+  /** Copyright holder or author attribution */
+  copyright?: string;
+}
+
+export interface ThemeSource {
+  /** Package name on npm/pypi/etc */
+  package?: string;
+  /** Package version used */
+  version?: string;
+  /** Repository URL */
+  repository?: string;
+}
+
 export interface ThemePackage {
   id: string;
   name: string;
   homepage: string;
+  /** License information for the theme */
+  license?: ThemeLicense;
+  /** Source attribution for synced/derived themes */
+  source?: ThemeSource;
   flavors: ThemeFlavor[];
 }

@@ -1,9 +1,24 @@
 import type { ThemePackage } from '../types.js';
 
+/**
+ * Nord theme - Arctic, north-bluish color palette
+ * @see https://www.nordtheme.com/docs/colors-and-palettes
+ * @license Apache-2.0 AND CC-BY-SA-4.0
+ */
 export const nordThemes: ThemePackage = {
   id: 'nord',
   name: 'Nord',
   homepage: 'https://www.nordtheme.com/',
+  license: {
+    spdx: 'Apache-2.0 AND CC-BY-SA-4.0',
+    url: 'https://github.com/nordtheme/nord/blob/develop/LICENSE.md',
+    copyright: 'Arctic Ice Studio and Sven Greb',
+  },
+  source: {
+    package: 'nord',
+    version: '0.2.1',
+    repository: 'https://github.com/nordtheme/nord',
+  },
   flavors: [
     {
       id: 'nord',

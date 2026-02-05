@@ -1,9 +1,24 @@
 import type { ThemePackage } from '../types.js';
 
+/**
+ * Catppuccin theme - Soothing pastel theme for the high-spirited
+ * Auto-synced from @catppuccin/palette
+ * @see https://catppuccin.com/palette/
+ * @license MIT
+ */
 export const catppuccinSynced: ThemePackage = {
   id: 'catppuccin',
   name: 'Catppuccin (synced)',
   homepage: 'https://catppuccin.com/palette/',
+  license: {
+    spdx: 'MIT',
+    url: 'https://github.com/catppuccin/catppuccin/blob/main/LICENSE',
+    copyright: 'Catppuccin',
+  },
+  source: {
+    package: '@catppuccin/palette',
+    repository: 'https://github.com/catppuccin/palette',
+  },
   flavors: [
     {
       id: 'catppuccin-latte',
