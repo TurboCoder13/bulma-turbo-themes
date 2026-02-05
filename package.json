@@ -73,7 +73,7 @@
     "assets/css/adapters/*.css"
   ],
   "scripts": {
-    "build": "bun run build:tokens && bun run build:packages && bun run build:root && node scripts/copy-adapters.mjs && bun run generate:css",
+    "build": "bun run build:tokens && bun run build:packages && bun run theme:sync && bun run build:root && node scripts/copy-adapters.mjs && bun run generate:css",
     "build:tokens": "node scripts/codegen/validate-schema.mjs && node scripts/prepare-style-dictionary.mjs && node scripts/build-style-dictionary.mjs && bun run build:tokens:copy",
     "build:tokens:copy": "cp dist/tokens/style-dictionary/tokens.json packages/core/src/themes/tokens.json && cp dist/tokens/style-dictionary/tokens.json python/src/turbo_themes/tokens.json && cp dist/tokens/style-dictionary/tokens.json swift/Sources/TurboThemes/Resources/tokens.json",
     "build:sd": "node scripts/prepare-style-dictionary.mjs && node scripts/build-style-dictionary.mjs",
