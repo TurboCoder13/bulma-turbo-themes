@@ -18,7 +18,7 @@ concurrency:
 jobs:
   check-pinning:
     name: 🔒 Validate SHA Pinning Compliance
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - name: Harden Runner

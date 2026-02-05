@@ -17,7 +17,7 @@ concurrency:
 jobs:
   version-pr:
     name: 📝 Create Version PR
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
       contents: write
