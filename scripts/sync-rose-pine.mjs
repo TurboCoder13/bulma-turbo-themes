@@ -139,6 +139,7 @@ const pkg = buildPackage();
 function formatObject(obj, indent = 0) {
   const spaces = '  '.repeat(indent);
   if (Array.isArray(obj)) {
+    if (obj.length === 0) return '[]';
     const items = obj.map((item) => `${spaces}  ${formatObject(item, indent + 1)}`).join(',\n');
     return `[\n${items},\n${spaces}]`;
   } else if (obj && typeof obj === 'object') {
