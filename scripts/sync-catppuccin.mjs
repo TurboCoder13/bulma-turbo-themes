@@ -125,6 +125,22 @@ const outPath = path.join(projectRoot, 'src', 'themes', 'packs', 'catppuccin.syn
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 
 const pkg = buildPackage();
+
+// Check if a key is a valid unquoted JavaScript identifier
+function isValidIdentifier(key) {
+  return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key);
+}
+
+// Escape a string for use as a quoted key or value
+function escapeString(str) {
+  return str
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/\t/g, '\\t');
+}
+
 // Generate properly formatted TypeScript content
 function formatObject(obj, indent = 0) {
   const spaces = '  '.repeat(indent);
@@ -137,19 +153,14 @@ function formatObject(obj, indent = 0) {
     const items = entries
       .map(([key, value]) => {
         const formattedValue = formatObject(value, indent + 1);
-        return `${spaces}  ${key}: ${formattedValue}`;
+        // Quote keys that aren't valid identifiers (e.g., contain hyphens)
+        const formattedKey = isValidIdentifier(key) ? key : `'${escapeString(key)}'`;
+        return `${spaces}  ${formattedKey}: ${formattedValue}`;
       })
       .join(',\n');
     return `{\n${items},\n${spaces}}`;
   } else if (typeof obj === 'string') {
-    // Escape backslashes first, then quotes and control characters
-    const escaped = obj
-      .replace(/\\/g, '\\\\')
-      .replace(/'/g, "\\'")
-      .replace(/\n/g, '\\n')
-      .replace(/\r/g, '\\r')
-      .replace(/\t/g, '\\t');
-    return `'${escaped}'`;
+    return `'${escapeString(obj)}'`;
   } else {
     return String(obj);
   }
