@@ -1,0 +1,90 @@
+{
+  "$schema": "../../turbo-themes.schema.json#/$defs/ThemeFile",
+  "id": "nord",
+  "label": "Nord",
+  "vendor": "nord",
+  "appearance": "dark",
+  "iconUrl": "/assets/img/nord.png",
+  "tokens": {
+    "background": {
+      "base": { "$value": "#2e3440", "$type": "color" },
+      "surface": { "$value": "#3b4252", "$type": "color" },
+      "overlay": { "$value": "#434c5e", "$type": "color" }
+    },
+    "text": {
+      "primary": { "$value": "#eceff4", "$type": "color" },
+      "secondary": { "$value": "#d8dee9", "$type": "color" },
+      "inverse": { "$value": "#2e3440", "$type": "color" }
+    },
+    "brand": {
+      "primary": { "$value": "#88c0d0", "$type": "color" }
+    },
+    "state": {
+      "info": { "$value": "#5e81ac", "$type": "color" },
+      "success": { "$value": "#a3be8c", "$type": "color" },
+      "warning": { "$value": "#ebcb8b", "$type": "color" },
+      "danger": { "$value": "#bf616a", "$type": "color" }
+    },
+    "border": {
+      "default": { "$value": "#4c566a", "$type": "color" }
+    },
+    "accent": {
+      "link": { "$value": "#88c0d0", "$type": "color" }
+    },
+    "typography": {
+      "fonts": {
+        "sans": {
+          "$value": "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, \"Apple Color Emoji\", \"Segoe UI Emoji\"",
+          "$type": "fontFamily"
+        },
+        "mono": {
+          "$value": "JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace",
+          "$type": "fontFamily"
+        }
+      },
+      "webFonts": [
+        "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap",
+        "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap"
+      ]
+    },
+    "content": {
+      "heading": {
+        "h1": { "$value": "#8fbcbb", "$type": "color" },
+        "h2": { "$value": "#88c0d0", "$type": "color" },
+        "h3": { "$value": "#81a1c1", "$type": "color" },
+        "h4": { "$value": "#ebcb8b", "$type": "color" },
+        "h5": { "$value": "#d08770", "$type": "color" },
+        "h6": { "$value": "#b48ead", "$type": "color" }
+      },
+      "body": {
+        "primary": { "$value": "#eceff4", "$type": "color" },
+        "secondary": { "$value": "#d8dee9", "$type": "color" }
+      },
+      "link": {
+        "default": { "$value": "#88c0d0", "$type": "color" }
+      },
+      "selection": {
+        "fg": { "$value": "#eceff4", "$type": "color" },
+        "bg": { "$value": "#4c566a", "$type": "color" }
+      },
+      "blockquote": {
+        "border": { "$value": "#4c566a", "$type": "color" },
+        "fg": { "$value": "#d8dee9", "$type": "color" },
+        "bg": { "$value": "#3b4252", "$type": "color" }
+      },
+      "codeInline": {
+        "fg": { "$value": "#eceff4", "$type": "color" },
+        "bg": { "$value": "#434c5e", "$type": "color" }
+      },
+      "codeBlock": {
+        "fg": { "$value": "#eceff4", "$type": "color" },
+        "bg": { "$value": "#434c5e", "$type": "color" }
+      },
+      "table": {
+        "border": { "$value": "#4c566a", "$type": "color" },
+        "stripe": { "$value": "#434c5e", "$type": "color" },
+        "theadBg": { "$value": "#3b4252", "$type": "color" }
+      }
+    }
+  }
+}

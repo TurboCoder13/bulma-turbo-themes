@@ -4,11 +4,20 @@ import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
 import { variants } from '@rose-pine/palette';
+
+import { escapeString, isValidIdentifier } from './format-utils.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
+
+// Read package version for source metadata
+const rosePinePackageJson = JSON.parse(
+  fs.readFileSync(path.join(projectRoot, 'node_modules', '@rose-pine', 'palette', 'package.json'), 'utf8')
+);
+const rosePineVersion = rosePinePackageJson.version;
 
 function rpColor(name, variant) {
   const color = variant.colors[name];
@@ -105,6 +114,16 @@ function buildPackage() {
     id: 'rose-pine',
     name: 'Rosé Pine (synced)',
     homepage: 'https://rosepinetheme.com/',
+    license: {
+      spdx: 'MIT',
+      url: 'https://github.com/rose-pine/rose-pine-theme/blob/main/license',
+      copyright: 'Rosé Pine',
+    },
+    source: {
+      package: '@rose-pine/palette',
+      version: rosePineVersion,
+      repository: 'https://github.com/rose-pine/palette',
+    },
     flavors,
   };
 }
@@ -115,25 +134,12 @@ const outPath = path.join(projectRoot, 'src', 'themes', 'packs', 'rose-pine.sync
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 
 const pkg = buildPackage();
-// Check if a key is a valid unquoted JavaScript identifier
-function isValidIdentifier(key) {
-  return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key);
-}
-
-// Escape a string for use as a quoted key or value
-function escapeString(str) {
-  return str
-    .replace(/\\/g, '\\\\')
-    .replace(/'/g, "\\'")
-    .replace(/\n/g, '\\n')
-    .replace(/\r/g, '\\r')
-    .replace(/\t/g, '\\t');
-}
 
 // Generate properly formatted TypeScript content
 function formatObject(obj, indent = 0) {
   const spaces = '  '.repeat(indent);
   if (Array.isArray(obj)) {
+    if (obj.length === 0) return '[]';
     const items = obj.map((item) => `${spaces}  ${formatObject(item, indent + 1)}`).join(',\n');
     return `[\n${items},\n${spaces}]`;
   } else if (obj && typeof obj === 'object') {
@@ -157,6 +163,14 @@ function formatObject(obj, indent = 0) {
 
 const rawContent = `import type { ThemePackage } from '../types.js';
 
+/**
+ * Rosé Pine theme - All natural pine, faux fur and a bit of soho vibes
+ * Auto-synced from @rose-pine/palette
+ * @see https://rosepinetheme.com/
+ * @license MIT
+ *
+ * DO NOT EDIT MANUALLY - regenerate with: node scripts/sync-rose-pine.mjs
+ */
 export const rosePineSynced: ThemePackage = ${formatObject(pkg)} as const;
 `;
 

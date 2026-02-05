@@ -40,5 +40,6 @@ export const THEME_FAMILIES: Record<ThemeFamily, ThemeFamilyMeta> = {
   catppuccin: { name: 'Catppuccin', description: 'Soothing pastel themes' },
   github: { name: 'GitHub', description: 'GitHub-inspired themes' },
   dracula: { name: 'Dracula', description: 'Dark vampire aesthetic' },
+  nord: { name: 'Nord', description: 'Arctic, north-bluish color palette' },
   'rose-pine': { name: 'Rosé Pine', description: 'All natural pine, faux fur and a bit of soho vibes' },
 };

@@ -121,3 +121,7 @@ tools:
   # Pytest - Test runner (config in pyproject.toml [tool.pytest.ini_options])
   pytest:
     enabled: true
+
+  # Semgrep - Security scanner (uses .semgrepignore for exclusions)
+  semgrep:
+    enabled: true
