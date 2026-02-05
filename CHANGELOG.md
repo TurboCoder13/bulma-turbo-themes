@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.14.0] - 2026-02-05
+
+### ✨ Added
+
+- add Nord arctic color palette theme (#330)
+
 ## [0.13.0] - 2026-02-05
 
 ### ✨ Added
