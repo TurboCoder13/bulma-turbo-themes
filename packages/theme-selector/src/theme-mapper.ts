@@ -35,6 +35,7 @@ const VENDOR_FAMILY_MAP: Record<string, ThemeFamily> = {
   dracula: 'dracula',
   nord: 'nord',
   'rose-pine': 'rose-pine',
+  solarized: 'solarized',
 };
 
 const DEFAULT_FAMILY: ThemeFamily = 'bulma';
@@ -61,6 +62,10 @@ const VENDOR_ICON_MAP: Record<string, string | AppearanceIcons> = {
     light: 'assets/img/rose-pine-dawn.png',
     dark: 'assets/img/rose-pine.png',
   },
+  solarized: {
+    light: 'assets/img/solarized-light.png',
+    dark: 'assets/img/solarized-dark.png',
+  },
 };
 
 /** Predefined flavor descriptions */
@@ -78,6 +83,8 @@ const FLAVOR_DESCRIPTIONS: Record<string, string> = {
   'rose-pine': 'Elegant dark theme with natural pine and soho vibes.',
   'rose-pine-moon': 'Deeper variant of Rosé Pine with enhanced contrast.',
   'rose-pine-dawn': 'Light Rosé Pine variant for daytime use.',
+  'solarized-dark': 'Solarized Dark with a balanced, low-contrast palette.',
+  'solarized-light': 'Solarized Light tuned for bright, daylight-friendly UIs.',
 };
 
 // ============================================================================

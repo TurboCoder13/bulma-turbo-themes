@@ -42,4 +42,5 @@ export const THEME_FAMILIES: Record<ThemeFamily, ThemeFamilyMeta> = {
   dracula: { name: 'Dracula', description: 'Dark vampire aesthetic' },
   nord: { name: 'Nord', description: 'Arctic, north-bluish color palette' },
   'rose-pine': { name: 'Rosé Pine', description: 'All natural pine, faux fur and a bit of soho vibes' },
+  solarized: { name: 'Solarized', description: 'Precision-balanced light and dark modes' },
 };
