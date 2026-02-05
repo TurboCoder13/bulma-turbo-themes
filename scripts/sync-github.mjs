@@ -5,6 +5,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { escapeString, isValidIdentifier } from './format-utils.mjs';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
@@ -177,21 +179,6 @@ function buildPackage() {
     },
     flavors,
   };
-}
-
-// Check if a key is a valid unquoted JavaScript identifier
-function isValidIdentifier(key) {
-  return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key);
-}
-
-// Escape a string for use as a quoted key or value
-function escapeString(str) {
-  return str
-    .replace(/\\/g, '\\\\')
-    .replace(/'/g, "\\'")
-    .replace(/\n/g, '\\n')
-    .replace(/\r/g, '\\r')
-    .replace(/\t/g, '\\t');
 }
 
 // Generate properly formatted TypeScript content

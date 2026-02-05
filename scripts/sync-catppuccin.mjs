@@ -4,7 +4,10 @@ import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
 import { flavors as catFlavors } from '@catppuccin/palette';
+
+import { escapeString, isValidIdentifier } from './format-utils.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -125,21 +128,6 @@ const outPath = path.join(projectRoot, 'src', 'themes', 'packs', 'catppuccin.syn
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 
 const pkg = buildPackage();
-
-// Check if a key is a valid unquoted JavaScript identifier
-function isValidIdentifier(key) {
-  return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key);
-}
-
-// Escape a string for use as a quoted key or value
-function escapeString(str) {
-  return str
-    .replace(/\\/g, '\\\\')
-    .replace(/'/g, "\\'")
-    .replace(/\n/g, '\\n')
-    .replace(/\r/g, '\\r')
-    .replace(/\t/g, '\\t');
-}
 
 // Generate properly formatted TypeScript content
 function formatObject(obj, indent = 0) {
