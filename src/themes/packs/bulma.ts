@@ -4,6 +4,7 @@ import type { ThemePackage } from '../types.js';
  * Bulma default themes - Light and Dark variants
  * Based on Bulma's default color scheme with enhanced typography
  * @see https://bulma.io/documentation/customize/with-sass/
+ * @license MIT
  *
  * Typography: Nunito Sans - A modern, friendly sans-serif that
  * complements Bulma's clean, European design aesthetic.
@@ -13,6 +14,15 @@ export const bulmaThemes: ThemePackage = {
   id: 'bulma',
   name: 'Bulma',
   homepage: 'https://bulma.io/',
+  license: {
+    spdx: 'MIT',
+    url: 'https://github.com/jgthms/bulma/blob/master/LICENSE',
+    copyright: 'Jeremy Thomas',
+  },
+  source: {
+    package: 'bulma',
+    repository: 'https://github.com/jgthms/bulma',
+  },
   flavors: [
     {
       id: 'bulma-light',

@@ -4,11 +4,20 @@ import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
 import { flavors as catFlavors } from '@catppuccin/palette';
+
+import { escapeString, isValidIdentifier } from './format-utils.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
+
+// Read package version for source metadata
+const catppuccinPackageJson = JSON.parse(
+  fs.readFileSync(path.join(projectRoot, 'node_modules', '@catppuccin', 'palette', 'package.json'), 'utf8')
+);
+const catppuccinVersion = catppuccinPackageJson.version;
 
 function catColor(name, flavor) {
   const entry = flavor.colorEntries.find(([n]) => n === name);
@@ -99,20 +108,32 @@ function buildPackage() {
     id: 'catppuccin',
     name: 'Catppuccin (synced)',
     homepage: 'https://catppuccin.com/palette/',
+    license: {
+      spdx: 'MIT',
+      url: 'https://github.com/catppuccin/catppuccin/blob/main/LICENSE',
+      copyright: 'Catppuccin',
+    },
+    source: {
+      package: '@catppuccin/palette',
+      version: catppuccinVersion,
+      repository: 'https://github.com/catppuccin/palette',
+    },
     flavors,
   };
 }
 
-const outPath = path.join(projectRoot, 'packages', 'core', 'src', 'themes', 'packs', 'catppuccin.synced.ts');
+const outPath = path.join(projectRoot, 'src', 'themes', 'packs', 'catppuccin.synced.ts');
 
 // Ensure output directory exists
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 
 const pkg = buildPackage();
+
 // Generate properly formatted TypeScript content
 function formatObject(obj, indent = 0) {
   const spaces = '  '.repeat(indent);
   if (Array.isArray(obj)) {
+    if (obj.length === 0) return '[]';
     const items = obj.map((item) => `${spaces}  ${formatObject(item, indent + 1)}`).join(',\n');
     return `[\n${items},\n${spaces}]`;
   } else if (obj && typeof obj === 'object') {
@@ -121,19 +142,14 @@ function formatObject(obj, indent = 0) {
     const items = entries
       .map(([key, value]) => {
         const formattedValue = formatObject(value, indent + 1);
-        return `${spaces}  ${key}: ${formattedValue}`;
+        // Quote keys that aren't valid identifiers (e.g., contain hyphens)
+        const formattedKey = isValidIdentifier(key) ? key : `'${escapeString(key)}'`;
+        return `${spaces}  ${formattedKey}: ${formattedValue}`;
       })
       .join(',\n');
     return `{\n${items},\n${spaces}}`;
   } else if (typeof obj === 'string') {
-    // Escape backslashes first, then quotes and control characters
-    const escaped = obj
-      .replace(/\\/g, '\\\\')
-      .replace(/'/g, "\\'")
-      .replace(/\n/g, '\\n')
-      .replace(/\r/g, '\\r')
-      .replace(/\t/g, '\\t');
-    return `'${escaped}'`;
+    return `'${escapeString(obj)}'`;
   } else {
     return String(obj);
   }
@@ -141,6 +157,14 @@ function formatObject(obj, indent = 0) {
 
 const rawContent = `import type { ThemePackage } from '../types.js';
 
+/**
+ * Catppuccin theme - Soothing pastel theme for the high-spirited
+ * Auto-synced from @catppuccin/palette
+ * @see https://catppuccin.com/palette/
+ * @license MIT
+ *
+ * DO NOT EDIT MANUALLY - regenerate with: node scripts/sync-catppuccin.mjs
+ */
 export const catppuccinSynced: ThemePackage = ${formatObject(pkg)} as const;
 `;
 

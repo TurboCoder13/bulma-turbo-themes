@@ -5,21 +5,21 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { escapeString, isValidIdentifier } from './format-utils.mjs';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 
-// Path to @primer/primitives theme JSON files
-const primitivesPath = path.join(
-  projectRoot,
-  'node_modules',
-  '@primer',
-  'primitives',
-  'dist',
-  'docs',
-  'functional',
-  'themes'
+// Path to @primer/primitives
+const primitivesRoot = path.join(projectRoot, 'node_modules', '@primer', 'primitives');
+const primitivesPath = path.join(primitivesRoot, 'dist', 'docs', 'functional', 'themes');
+
+// Read package version for source metadata
+const primitivesPackageJson = JSON.parse(
+  fs.readFileSync(path.join(primitivesRoot, 'package.json'), 'utf8')
 );
+const primitivesVersion = primitivesPackageJson.version;
 
 /**
  * Load a Primer theme JSON file
@@ -167,6 +167,16 @@ function buildPackage() {
     id: 'github',
     name: 'GitHub (synced)',
     homepage: 'https://primer.style/',
+    license: {
+      spdx: 'MIT',
+      url: 'https://github.com/primer/primitives/blob/main/LICENSE',
+      copyright: 'GitHub Inc.',
+    },
+    source: {
+      package: '@primer/primitives',
+      version: primitivesVersion,
+      repository: 'https://github.com/primer/primitives',
+    },
     flavors,
   };
 }
@@ -184,25 +194,20 @@ function formatObject(obj, indent = 0) {
     const items = entries
       .map(([key, value]) => {
         const formattedValue = formatObject(value, indent + 1);
-        return `${spaces}  ${key}: ${formattedValue}`;
+        // Quote keys that aren't valid identifiers (e.g., contain hyphens)
+        const formattedKey = isValidIdentifier(key) ? key : `'${escapeString(key)}'`;
+        return `${spaces}  ${formattedKey}: ${formattedValue}`;
       })
       .join(',\n');
     return `{\n${items},\n${spaces}}`;
   } else if (typeof obj === 'string') {
-    // Escape backslashes first, then quotes and control characters
-    const escaped = obj
-      .replace(/\\/g, '\\\\')
-      .replace(/'/g, "\\'")
-      .replace(/\n/g, '\\n')
-      .replace(/\r/g, '\\r')
-      .replace(/\t/g, '\\t');
-    return `'${escaped}'`;
+    return `'${escapeString(obj)}'`;
   } else {
     return String(obj);
   }
 }
 
-const outPath = path.join(projectRoot, 'packages', 'core', 'src', 'themes', 'packs', 'github.synced.ts');
+const outPath = path.join(projectRoot, 'src', 'themes', 'packs', 'github.synced.ts');
 const pkg = buildPackage();
 
 const rawContent = `import type { ThemePackage } from '../types.js';
@@ -211,6 +216,7 @@ const rawContent = `import type { ThemePackage } from '../types.js';
  * GitHub themes - auto-synced from @primer/primitives
  * Based on GitHub's Primer design system colors
  * @see https://primer.style/foundations/color
+ * @license MIT
  *
  * DO NOT EDIT MANUALLY - regenerate with: node scripts/sync-github.mjs
  */
