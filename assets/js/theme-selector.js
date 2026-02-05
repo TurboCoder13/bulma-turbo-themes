@@ -1,14 +1,889 @@
-// SPDX-License-Identifier: MIT
-/**
- * Main entry point - re-exports from internal packages
- *
- * This file maintains the public API while delegating to internal packages.
- * At build time, packages are built first, then this file imports from their dist/ directories.
- */
-// Re-export from core package (built to packages/core/dist)
-export * from '../packages/core/dist/index.js';
-export * from '../packages/core/dist/tokens/index.js';
-export * from '../packages/core/dist/themes/registry.js';
-// Re-export from theme-selector package (built to packages/theme-selector/dist)
-export { initTheme, wireFlavorSelector, initNavbar, enhanceAccessibility, } from '../packages/theme-selector/dist/index.js';
-//# sourceMappingURL=index.js.map
+var TurboThemeSelector = (function(exports) {
+  "use strict";
+  const STORAGE_KEY = "turbo-theme";
+  const LEGACY_STORAGE_KEYS = ["bulma-theme-flavor"];
+  const DEFAULT_THEME = "catppuccin-mocha";
+  const DOM_IDS = {
+    THEME_FLAVOR_TRIGGER: "theme-flavor-trigger",
+    THEME_FLAVOR_TRIGGER_ICON: "theme-flavor-trigger-icon",
+    THEME_FLAVOR_TRIGGER_LABEL: "theme-flavor-trigger-label",
+    THEME_FLAVOR_MENU: "theme-flavor-menu",
+    THEME_FLAVOR_SELECT: "theme-flavor-select"
+  };
+  const DOM_SELECTORS = {
+    DROPDOWN_ITEMS: `#${DOM_IDS.THEME_FLAVOR_MENU} .dropdown-item.theme-item`,
+    NAVBAR_DROPDOWN: ".navbar-item.has-dropdown",
+    NAV_REPORTS: '[data-testid="nav-reports"]',
+    NAVBAR_ITEM: ".navbar-item",
+    HIGHLIGHT_PRE: ".highlight > pre",
+    THEME_CSS_LINKS: 'link[id^="theme-"][id$="-css"]'
+  };
+  const THEME_FAMILIES = {
+    bulma: { name: "Bulma", description: "Classic Bulma themes" },
+    catppuccin: { name: "Catppuccin", description: "Soothing pastel themes" },
+    github: { name: "GitHub", description: "GitHub-inspired themes" },
+    dracula: { name: "Dracula", description: "Dark vampire aesthetic" },
+    "rose-pine": { name: "Rosé Pine", description: "All natural pine, faux fur and a bit of soho vibes" }
+  };
+  const LOG_PREFIX = "[turbo-themes]";
+  const ThemeErrors = {
+    /** Invalid theme ID provided */
+    INVALID_THEME_ID: (themeId) => ({
+      code: "INVALID_THEME_ID",
+      message: `Invalid theme ID "${themeId}" not saved to storage`,
+      level: "warn",
+      context: { themeId }
+    }),
+    /** No themes available in registry */
+    NO_THEMES_AVAILABLE: () => ({
+      code: "NO_THEMES_AVAILABLE",
+      message: "No themes available",
+      level: "error"
+      /* ERROR */
+    }),
+    /** Invalid theme icon path */
+    INVALID_ICON_PATH: (themeId) => ({
+      code: "INVALID_ICON_PATH",
+      message: `Invalid theme icon path for ${themeId}`,
+      level: "warn",
+      context: { themeId }
+    }),
+    /** Theme initialization failed */
+    INIT_FAILED: (error) => ({
+      code: "INIT_FAILED",
+      message: "Theme switcher initialization failed",
+      level: "error",
+      context: { error: error instanceof Error ? error.message : String(error) }
+    }),
+    /** Protocol-relative URL rejected for security */
+    PROTOCOL_REJECTED: () => ({
+      code: "PROTOCOL_REJECTED",
+      message: "Protocol-relative base URL rejected for security",
+      level: "warn"
+      /* WARN */
+    }),
+    /** Insecure HTTP URL rejected */
+    INSECURE_HTTP_REJECTED: () => ({
+      code: "INSECURE_HTTP_REJECTED",
+      message: "Insecure HTTP base URL rejected",
+      level: "warn"
+      /* WARN */
+    }),
+    /** Cross-origin URL rejected */
+    CROSS_ORIGIN_REJECTED: (origin) => ({
+      code: "CROSS_ORIGIN_REJECTED",
+      message: `Cross-origin base URL rejected: ${origin}`,
+      level: "warn",
+      context: { origin }
+    }),
+    /** Invalid CSS path for theme */
+    INVALID_CSS_PATH: (themeId) => ({
+      code: "INVALID_CSS_PATH",
+      message: `Invalid theme CSS path for ${themeId}`,
+      level: "warn",
+      context: { themeId }
+    }),
+    /** CSS failed to load */
+    CSS_LOAD_FAILED: (themeId, error) => ({
+      code: "CSS_LOAD_FAILED",
+      message: `Theme CSS failed to load for ${themeId}`,
+      level: "warn",
+      context: {
+        themeId,
+        error: error instanceof Error ? error.message : String(error)
+      }
+    }),
+    /** Storage unavailable (private browsing or disabled) */
+    STORAGE_UNAVAILABLE: (operation, error) => ({
+      code: "STORAGE_UNAVAILABLE",
+      message: `localStorage ${operation} failed - storage may be unavailable`,
+      level: "warn",
+      context: {
+        operation,
+        error: error instanceof Error ? error.message : String(error)
+      }
+    })
+  };
+  function logThemeError(themeError) {
+    const prefixedMessage = `${LOG_PREFIX} ${themeError.message}`;
+    if (themeError.level === "error") {
+      if (themeError.context) {
+        console.error(prefixedMessage, themeError.context);
+      } else {
+        console.error(prefixedMessage);
+      }
+    } else {
+      if (themeError.context) {
+        console.warn(prefixedMessage, themeError.context);
+      } else {
+        console.warn(prefixedMessage);
+      }
+    }
+  }
+  function safeGetItem(windowObj, key) {
+    try {
+      return windowObj.localStorage.getItem(key);
+    } catch (error) {
+      logThemeError(ThemeErrors.STORAGE_UNAVAILABLE("getItem", error));
+      return null;
+    }
+  }
+  function safeSetItem(windowObj, key, value) {
+    try {
+      windowObj.localStorage.setItem(key, value);
+      return true;
+    } catch (error) {
+      logThemeError(ThemeErrors.STORAGE_UNAVAILABLE("setItem", error));
+      return false;
+    }
+  }
+  function safeRemoveItem(windowObj, key) {
+    try {
+      windowObj.localStorage.removeItem(key);
+    } catch (error) {
+      logThemeError(ThemeErrors.STORAGE_UNAVAILABLE("removeItem", error));
+    }
+  }
+  function validateThemeId(themeId, validIds) {
+    if (themeId && validIds.has(themeId)) {
+      return themeId;
+    }
+    return DEFAULT_THEME;
+  }
+  function migrateLegacyStorage(windowObj) {
+    for (const legacyKey of LEGACY_STORAGE_KEYS) {
+      const legacy = safeGetItem(windowObj, legacyKey);
+      if (legacy && !safeGetItem(windowObj, STORAGE_KEY)) {
+        safeSetItem(windowObj, STORAGE_KEY, legacy);
+        safeRemoveItem(windowObj, legacyKey);
+      }
+    }
+  }
+  function getSavedTheme(windowObj, validIds) {
+    const stored = safeGetItem(windowObj, STORAGE_KEY);
+    if (validIds) {
+      return validateThemeId(stored, validIds);
+    }
+    return stored || DEFAULT_THEME;
+  }
+  function saveTheme(windowObj, themeId, validIds) {
+    if (validIds && !validIds.has(themeId)) {
+      logThemeError(ThemeErrors.INVALID_THEME_ID(themeId));
+      return false;
+    }
+    return safeSetItem(windowObj, STORAGE_KEY, themeId);
+  }
+  function resolveAssetPath(assetPath, baseUrl) {
+    const normalizedBase = baseUrl.replace(/\/$/, "");
+    const base = normalizedBase ? `${window.location.origin}${normalizedBase}/` : `${window.location.origin}/`;
+    return new URL(assetPath, base).pathname;
+  }
+  function getBaseUrl(doc) {
+    const baseElement = doc.documentElement;
+    const raw = baseElement?.getAttribute("data-baseurl") || "";
+    if (!raw) return "";
+    if (raw.startsWith("//")) {
+      logThemeError(ThemeErrors.PROTOCOL_REJECTED());
+      return "";
+    }
+    if (raw.startsWith("http://") && !raw.startsWith("http://localhost")) {
+      logThemeError(ThemeErrors.INSECURE_HTTP_REJECTED());
+      return "";
+    }
+    try {
+      const currentOrigin = typeof window !== "undefined" ? window.location.origin : "http://localhost";
+      const u = new URL(raw, currentOrigin);
+      if (u.origin !== currentOrigin) {
+        logThemeError(ThemeErrors.CROSS_ORIGIN_REJECTED(u.origin));
+        return "";
+      }
+      return u.pathname.replace(/\/$/, "");
+    } catch {
+      return "";
+    }
+  }
+  function clearLinkHandlers(link) {
+    link.onload = null;
+    link.onerror = null;
+  }
+  function loadCSSWithTimeout(link, themeId, timeoutMs = 1e4) {
+    return new Promise((resolve, reject) => {
+      const timeoutId = setTimeout(() => {
+        clearLinkHandlers(link);
+        reject(new Error(`Theme ${themeId} load timeout`));
+      }, timeoutMs);
+      link.onload = () => {
+        clearTimeout(timeoutId);
+        clearLinkHandlers(link);
+        resolve();
+      };
+      link.onerror = () => {
+        clearTimeout(timeoutId);
+        clearLinkHandlers(link);
+        reject(new Error(`Failed to load theme ${themeId}`));
+      };
+    });
+  }
+  function getCurrentThemeFromClasses(element) {
+    const classList = Array.from(element.classList);
+    for (const className of classList) {
+      if (className.startsWith("theme-")) {
+        return className.substring(6);
+      }
+    }
+    return null;
+  }
+  function applyThemeClass(doc, themeId) {
+    const themeClasses = Array.from(doc.documentElement.classList).filter(
+      (className) => className.startsWith("theme-")
+    );
+    if (themeClasses.length > 0) {
+      doc.documentElement.classList.remove(...themeClasses);
+    }
+    doc.documentElement.classList.add(`theme-${themeId}`);
+  }
+  async function loadThemeCSS(doc, theme, baseUrl) {
+    const themeLinkId = `theme-${theme.id}-css`;
+    let themeLink = doc.getElementById(themeLinkId);
+    if (!themeLink) {
+      themeLink = doc.createElement("link");
+      themeLink.id = themeLinkId;
+      themeLink.rel = "stylesheet";
+      themeLink.type = "text/css";
+      themeLink.setAttribute("data-theme-id", theme.id);
+      try {
+        themeLink.href = resolveAssetPath(theme.cssFile, baseUrl);
+      } catch {
+        logThemeError(ThemeErrors.INVALID_CSS_PATH(theme.id));
+        return;
+      }
+      doc.head.appendChild(themeLink);
+      try {
+        await loadCSSWithTimeout(themeLink, theme.id);
+      } catch (error) {
+        logThemeError(ThemeErrors.CSS_LOAD_FAILED(theme.id, error));
+      }
+    }
+    doc.querySelectorAll(DOM_SELECTORS.THEME_CSS_LINKS).forEach((link) => {
+      const linkThemeId = link.id.replace("theme-", "").replace("-css", "");
+      if (linkThemeId !== theme.id && linkThemeId !== "base") {
+        link.remove();
+      }
+    });
+  }
+  function setItemActiveState(item, isActive) {
+    if (isActive) {
+      item.classList.add("is-active");
+    } else {
+      item.classList.remove("is-active");
+    }
+    item.setAttribute("aria-checked", String(isActive));
+  }
+  function setTabindexBatch(items, value) {
+    for (const item of items) {
+      item.setAttribute("tabindex", value);
+    }
+  }
+  const themes = /* @__PURE__ */ JSON.parse('{"bulma-dark":{"id":"bulma-dark","label":"Bulma Dark","vendor":"bulma","appearance":"dark","tokens":{"background":{"base":"#141414","surface":"#1f1f1f","overlay":"#2b2b2b"},"text":{"primary":"#f5f5f5","secondary":"#dbdbdb","inverse":"#141414"},"brand":{"primary":"#00d1b2"},"state":{"info":"#3e8ed0","success":"#48c78e","warning":"#ffe08a","danger":"#f14668"},"border":{"default":"#363636"},"accent":{"link":"#485fc7"},"typography":{"fonts":{"sans":"\\"Nunito Sans\\", BlinkMacSystemFont, -apple-system, \\"Segoe UI\\", Roboto, Oxygen, Ubuntu, Cantarell, \\"Fira Sans\\", \\"Droid Sans\\", \\"Helvetica Neue\\", Helvetica, Arial, sans-serif","mono":"\\"JetBrains Mono\\", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \\"Liberation Mono\\", \\"Courier New\\", monospace"},"webFonts":["https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&display=swap","https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap"]},"content":{"heading":{"h1":"#00d1b2","h2":"#7289da","h3":"#5dade2","h4":"#58d68d","h5":"#f7dc6f","h6":"#f1948a"},"body":{"primary":"#dbdbdb","secondary":"#b5b5b5"},"link":{"default":"#485fc7"},"selection":{"fg":"#f5f5f5","bg":"#3273dc"},"blockquote":{"border":"#363636","fg":"#dbdbdb","bg":"#1f1f1f"},"codeInline":{"fg":"#f14668","bg":"#2b2b2b"},"codeBlock":{"fg":"#f5f5f5","bg":"#2b2b2b"},"table":{"border":"#404040","stripe":"#1c1c1c","theadBg":"#2d2d2d","cellBg":"#1a1a1a","headerFg":"#f5f5f5"}},"spacing":{"xs":"0.25rem","sm":"0.5rem","md":"1rem","lg":"1.5rem","xl":"2rem"},"elevation":{"none":"none","sm":"0 1px 2px 0 rgba(0, 0, 0, 0.05)","md":"0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)","lg":"0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)","xl":"0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"},"animation":{"durationFast":"150ms","durationNormal":"300ms","durationSlow":"500ms","easingDefault":"cubic-bezier(0.4, 0, 0.2, 1)","easingEmphasized":"cubic-bezier(0.05, 0.7, 0.1, 1)"},"opacity":{"disabled":0.5,"hover":0.8,"pressed":0.6},"components":{"card":{"bg":"#1c1c1c","border":"#3a3a3a","headerBg":"#252525","footerBg":"#1f1f1f"},"message":{"bg":"#1f1f1f","headerBg":"#2a2a2a","border":"#404040","bodyFg":"#e0e0e0"},"panel":{"bg":"#1c1c1c","headerBg":"#2a2a2a","headerFg":"#f5f5f5","border":"#3a3a3a","blockBg":"#1f1f1f","blockHoverBg":"#262626","blockActiveBg":"#2d3748"},"box":{"bg":"#1c1c1c","border":"#3a3a3a"},"notification":{"bg":"#252525","border":"#404040"},"modal":{"bg":"rgba(0, 0, 0, 0.86)","cardBg":"#1c1c1c","headerBg":"#252525","footerBg":"#1f1f1f"},"dropdown":{"bg":"#1c1c1c","itemHoverBg":"#2a2a2a","border":"#404040"},"tabs":{"border":"#404040","linkBg":"#252525","linkActiveBg":"#1c1c1c","linkHoverBg":"#2a2a2a"}}}},"bulma-light":{"id":"bulma-light","label":"Bulma Light","vendor":"bulma","appearance":"light","tokens":{"background":{"base":"#ffffff","surface":"#f5f5f5","overlay":"#eeeeee"},"text":{"primary":"#363636","secondary":"#4a4a4a","inverse":"#ffffff"},"brand":{"primary":"#00d1b2"},"state":{"info":"#3e8ed0","success":"#48c78e","warning":"#ffe08a","danger":"#f14668"},"border":{"default":"#dbdbdb"},"accent":{"link":"#485fc7"},"typography":{"fonts":{"sans":"\\"Nunito Sans\\", BlinkMacSystemFont, -apple-system, \\"Segoe UI\\", Roboto, Oxygen, Ubuntu, Cantarell, \\"Fira Sans\\", \\"Droid Sans\\", \\"Helvetica Neue\\", Helvetica, Arial, sans-serif","mono":"\\"JetBrains Mono\\", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \\"Liberation Mono\\", \\"Courier New\\", monospace"},"webFonts":["https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&display=swap","https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap"]},"content":{"heading":{"h1":"#00d1b2","h2":"#485fc7","h3":"#3e8ed0","h4":"#48c78e","h5":"#ffe08a","h6":"#f14668"},"body":{"primary":"#4a4a4a","secondary":"#6b6b6b"},"link":{"default":"#485fc7"},"selection":{"fg":"#363636","bg":"#b5d5ff"},"blockquote":{"border":"#dbdbdb","fg":"#4a4a4a","bg":"#f5f5f5"},"codeInline":{"fg":"#f14668","bg":"#f5f5f5"},"codeBlock":{"fg":"#363636","bg":"#f5f5f5"},"table":{"border":"#dbdbdb","stripe":"#fafafa","theadBg":"#f0f0f0","cellBg":"#ffffff","headerFg":"#363636"}},"spacing":{"xs":"0.25rem","sm":"0.5rem","md":"1rem","lg":"1.5rem","xl":"2rem"},"elevation":{"none":"none","sm":"0 1px 2px 0 rgba(0, 0, 0, 0.05)","md":"0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)","lg":"0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)","xl":"0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"},"animation":{"durationFast":"150ms","durationNormal":"300ms","durationSlow":"500ms","easingDefault":"cubic-bezier(0.4, 0, 0.2, 1)","easingEmphasized":"cubic-bezier(0.05, 0.7, 0.1, 1)"},"opacity":{"disabled":0.5,"hover":0.8,"pressed":0.6},"components":{"card":{"bg":"#ffffff","border":"#d5d5d5","headerBg":"#f5f5f5","footerBg":"#fafafa"},"message":{"bg":"#f8f9fa","headerBg":"#eef1f4","border":"#d5dbe1","bodyFg":"#4a4a4a"},"panel":{"bg":"#ffffff","headerBg":"#f0f0f0","headerFg":"#363636","border":"#d5d5d5","blockBg":"#fafafa","blockHoverBg":"#f5f5f5","blockActiveBg":"#eef6fc"},"box":{"bg":"#ffffff","border":"#e0e0e0"},"notification":{"bg":"#f5f5f5","border":"#e0e0e0"},"modal":{"bg":"rgba(10, 10, 10, 0.86)","cardBg":"#ffffff","headerBg":"#f5f5f5","footerBg":"#fafafa"},"dropdown":{"bg":"#ffffff","itemHoverBg":"#f5f5f5","border":"#dbdbdb"},"tabs":{"border":"#dbdbdb","linkBg":"#f5f5f5","linkActiveBg":"#ffffff","linkHoverBg":"#eeeeee"}}}},"catppuccin-frappe":{"id":"catppuccin-frappe","label":"Catppuccin Frappé","vendor":"catppuccin","appearance":"dark","tokens":{"background":{"base":"#303446","surface":"#292c3c","overlay":"#232634"},"text":{"primary":"#c6d0f5","secondary":"#a5adce","inverse":"#303446"},"brand":{"primary":"#8caaee"},"state":{"info":"#99d1db","success":"#a6d189","warning":"#e5c890","danger":"#e78284"},"border":{"default":"#737994"},"accent":{"link":"#8caaee"},"typography":{"fonts":{"sans":"Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\"","mono":"JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \\"Liberation Mono\\", \\"Courier New\\", monospace"},"webFonts":["https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap","https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap"]},"content":{"heading":{"h1":"#a6d189","h2":"#8caaee","h3":"#85c1dc","h4":"#e5c890","h5":"#ca9ee6","h6":"#e78284"},"body":{"primary":"#c6d0f5","secondary":"#a5adce"},"link":{"default":"#8caaee"},"selection":{"fg":"#c6d0f5","bg":"#838ba7"},"blockquote":{"border":"#838ba7","fg":"#c6d0f5","bg":"#292c3c"},"codeInline":{"fg":"#c6d0f5","bg":"#414559"},"codeBlock":{"fg":"#c6d0f5","bg":"#414559"},"table":{"border":"#838ba7","stripe":"#414559","theadBg":"#51576d"}}}},"catppuccin-latte":{"id":"catppuccin-latte","label":"Catppuccin Latte","vendor":"catppuccin","appearance":"light","tokens":{"background":{"base":"#eff1f5","surface":"#e6e9ef","overlay":"#dce0e8"},"text":{"primary":"#4c4f69","secondary":"#6c6f85","inverse":"#eff1f5"},"brand":{"primary":"#1e66f5"},"state":{"info":"#04a5e5","success":"#40a02b","warning":"#df8e1d","danger":"#d20f39"},"border":{"default":"#9ca0b0"},"accent":{"link":"#1e66f5"},"typography":{"fonts":{"sans":"Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\"","mono":"JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \\"Liberation Mono\\", \\"Courier New\\", monospace"},"webFonts":["https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap","https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap"]},"content":{"heading":{"h1":"#40a02b","h2":"#1e66f5","h3":"#209fb5","h4":"#df8e1d","h5":"#8839ef","h6":"#d20f39"},"body":{"primary":"#4c4f69","secondary":"#6c6f85"},"link":{"default":"#1e66f5"},"selection":{"fg":"#4c4f69","bg":"#8c8fa1"},"blockquote":{"border":"#8c8fa1","fg":"#4c4f69","bg":"#e6e9ef"},"codeInline":{"fg":"#4c4f69","bg":"#ccd0da"},"codeBlock":{"fg":"#4c4f69","bg":"#ccd0da"},"table":{"border":"#8c8fa1","stripe":"#ccd0da","theadBg":"#bcc0cc"}}}},"catppuccin-macchiato":{"id":"catppuccin-macchiato","label":"Catppuccin Macchiato","vendor":"catppuccin","appearance":"dark","tokens":{"background":{"base":"#24273a","surface":"#1e2030","overlay":"#181926"},"text":{"primary":"#cad3f5","secondary":"#a5adcb","inverse":"#24273a"},"brand":{"primary":"#8aadf4"},"state":{"info":"#91d7e3","success":"#a6da95","warning":"#eed49f","danger":"#ed8796"},"border":{"default":"#6e738d"},"accent":{"link":"#8aadf4"},"typography":{"fonts":{"sans":"Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\"","mono":"JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \\"Liberation Mono\\", \\"Courier New\\", monospace"},"webFonts":["https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap","https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap"]},"content":{"heading":{"h1":"#a6da95","h2":"#8aadf4","h3":"#7dc4e4","h4":"#eed49f","h5":"#c6a0f6","h6":"#ed8796"},"body":{"primary":"#cad3f5","secondary":"#a5adcb"},"link":{"default":"#8aadf4"},"selection":{"fg":"#cad3f5","bg":"#8087a2"},"blockquote":{"border":"#8087a2","fg":"#cad3f5","bg":"#1e2030"},"codeInline":{"fg":"#cad3f5","bg":"#363a4f"},"codeBlock":{"fg":"#cad3f5","bg":"#363a4f"},"table":{"border":"#8087a2","stripe":"#363a4f","theadBg":"#494d64"}}}},"catppuccin-mocha":{"id":"catppuccin-mocha","label":"Catppuccin Mocha","vendor":"catppuccin","appearance":"dark","tokens":{"background":{"base":"#1e1e2e","surface":"#181825","overlay":"#11111b"},"text":{"primary":"#cdd6f4","secondary":"#a6adc8","inverse":"#1e1e2e"},"brand":{"primary":"#89b4fa"},"state":{"info":"#89dceb","success":"#a6e3a1","warning":"#f9e2af","danger":"#f38ba8"},"border":{"default":"#6c7086"},"accent":{"link":"#89b4fa"},"typography":{"fonts":{"sans":"Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\"","mono":"JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \\"Liberation Mono\\", \\"Courier New\\", monospace"},"webFonts":["https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap","https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap"]},"content":{"heading":{"h1":"#a6e3a1","h2":"#89b4fa","h3":"#74c7ec","h4":"#f9e2af","h5":"#cba6f7","h6":"#f38ba8"},"body":{"primary":"#cdd6f4","secondary":"#a6adc8"},"link":{"default":"#89b4fa"},"selection":{"fg":"#cdd6f4","bg":"#7f849c"},"blockquote":{"border":"#7f849c","fg":"#cdd6f4","bg":"#181825"},"codeInline":{"fg":"#cdd6f4","bg":"#313244"},"codeBlock":{"fg":"#cdd6f4","bg":"#313244"},"table":{"border":"#7f849c","stripe":"#313244","theadBg":"#45475a"}}}},"dracula":{"id":"dracula","label":"Dracula","vendor":"dracula","appearance":"dark","tokens":{"background":{"base":"#282a36","surface":"#21222c","overlay":"#44475a"},"text":{"primary":"#f8f8f2","secondary":"#6272a4","inverse":"#282a36"},"brand":{"primary":"#bd93f9"},"state":{"info":"#8be9fd","success":"#50fa7b","warning":"#f1fa8c","danger":"#ff5555"},"border":{"default":"#44475a"},"accent":{"link":"#8be9fd"},"typography":{"fonts":{"sans":"ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, \\"Helvetica Neue\\", Arial, sans-serif","mono":"\\"Fira Code\\", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \\"Liberation Mono\\", \\"Courier New\\", monospace"},"webFonts":["https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap"]},"content":{"heading":{"h1":"#ff79c6","h2":"#bd93f9","h3":"#8be9fd","h4":"#50fa7b","h5":"#ffb86c","h6":"#f1fa8c"},"body":{"primary":"#f8f8f2","secondary":"#6272a4"},"link":{"default":"#8be9fd"},"selection":{"fg":"#f8f8f2","bg":"#44475a"},"blockquote":{"border":"#bd93f9","fg":"#6272a4","bg":"#21222c"},"codeInline":{"fg":"#50fa7b","bg":"#21222c"},"codeBlock":{"fg":"#f8f8f2","bg":"#21222c"},"table":{"border":"#44475a","stripe":"#21222c","theadBg":"#44475a","cellBg":"#282a36","headerFg":"#f8f8f2"}},"spacing":{"xs":"0.25rem","sm":"0.5rem","md":"1rem","lg":"1.5rem","xl":"2rem"},"elevation":{"none":"none","sm":"0 1px 2px 0 rgba(0, 0, 0, 0.05)","md":"0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)","lg":"0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)","xl":"0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"},"animation":{"durationFast":"150ms","durationNormal":"300ms","durationSlow":"500ms","easingDefault":"cubic-bezier(0.4, 0, 0.2, 1)","easingEmphasized":"cubic-bezier(0.05, 0.7, 0.1, 1)"},"opacity":{"disabled":0.5,"hover":0.8,"pressed":0.6},"components":{"card":{"bg":"#21222c","border":"#6272a4","headerBg":"#282a36","footerBg":"#21222c"},"message":{"bg":"#282a36","headerBg":"#44475a","border":"#6272a4","bodyFg":"#f8f8f2"},"panel":{"bg":"#21222c","headerBg":"#44475a","headerFg":"#f8f8f2","border":"#6272a4","blockBg":"#282a36","blockHoverBg":"#2e303e","blockActiveBg":"#44475a"},"box":{"bg":"#21222c","border":"#6272a4"},"notification":{"bg":"#282a36","border":"#6272a4"},"modal":{"bg":"rgba(40, 42, 54, 0.9)","cardBg":"#21222c","headerBg":"#282a36","footerBg":"#21222c"},"dropdown":{"bg":"#21222c","itemHoverBg":"#2e303e","border":"#6272a4"},"tabs":{"border":"#6272a4","linkBg":"#2e303e","linkActiveBg":"#21222c","linkHoverBg":"#44475a"}}}},"github-dark":{"id":"github-dark","label":"GitHub Dark","vendor":"github","appearance":"dark","tokens":{"background":{"base":"#0d1117","surface":"#151b23","overlay":"#010409"},"text":{"primary":"#f0f6fc","secondary":"#9198a1","inverse":"#ffffff"},"brand":{"primary":"#1f6feb"},"state":{"info":"#4493f8","success":"#3fb950","warning":"#d29922","danger":"#f85149"},"border":{"default":"#3d444d"},"accent":{"link":"#4493f8"},"typography":{"fonts":{"sans":"\\"Mona Sans\\", -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", \\"Noto Sans\\", Helvetica, Arial, sans-serif, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\"","mono":"\\"Hubot Sans\\", ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, \\"Liberation Mono\\", monospace"},"webFonts":["https://github.githubassets.com/assets/mona-sans-webfont.woff2","https://github.githubassets.com/assets/hubot-sans-webfont.woff2"]},"content":{"heading":{"h1":"#3fb950","h2":"#4493f8","h3":"#1f6feb","h4":"#d29922","h5":"#3fb950","h6":"#f85149"},"body":{"primary":"#f0f6fc","secondary":"#9198a1"},"link":{"default":"#4493f8"},"selection":{"fg":"#f0f6fc","bg":"#264f78"},"blockquote":{"border":"#3d444d","fg":"#9198a1","bg":"#151b23"},"codeInline":{"fg":"#f0f6fc","bg":"#151b23"},"codeBlock":{"fg":"#f0f6fc","bg":"#151b23"},"table":{"border":"#3d444d","stripe":"#151b23","theadBg":"#151b23"}}}},"github-light":{"id":"github-light","label":"GitHub Light","vendor":"github","appearance":"light","tokens":{"background":{"base":"#ffffff","surface":"#f6f8fa","overlay":"#f6f8fa"},"text":{"primary":"#1f2328","secondary":"#59636e","inverse":"#ffffff"},"brand":{"primary":"#0969da"},"state":{"info":"#0969da","success":"#1a7f37","warning":"#9a6700","danger":"#d1242f"},"border":{"default":"#d1d9e0"},"accent":{"link":"#0969da"},"typography":{"fonts":{"sans":"\\"Mona Sans\\", -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", \\"Noto Sans\\", Helvetica, Arial, sans-serif, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\"","mono":"\\"Hubot Sans\\", ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, \\"Liberation Mono\\", monospace"},"webFonts":["https://github.githubassets.com/assets/mona-sans-webfont.woff2","https://github.githubassets.com/assets/hubot-sans-webfont.woff2"]},"content":{"heading":{"h1":"#1a7f37","h2":"#0969da","h3":"#0969da","h4":"#9a6700","h5":"#1a7f37","h6":"#d1242f"},"body":{"primary":"#1f2328","secondary":"#59636e"},"link":{"default":"#0969da"},"selection":{"fg":"#1f2328","bg":"#b6e3ff"},"blockquote":{"border":"#d1d9e0","fg":"#59636e","bg":"#f6f8fa"},"codeInline":{"fg":"#1f2328","bg":"#f6f8fa"},"codeBlock":{"fg":"#1f2328","bg":"#f6f8fa"},"table":{"border":"#d1d9e0","stripe":"#f6f8fa","theadBg":"#f6f8fa"}}}},"rose-pine-dawn":{"id":"rose-pine-dawn","label":"Rosé Pine Dawn","vendor":"rose-pine","appearance":"light","iconUrl":"/assets/img/rose-pine-dawn.png","tokens":{"background":{"base":"#faf4ed","surface":"#fffaf3","overlay":"#f2e9e1"},"text":{"primary":"#575279","secondary":"#797593","inverse":"#faf4ed"},"brand":{"primary":"#907aa9"},"state":{"info":"#56949f","success":"#286983","warning":"#ea9d34","danger":"#b4637a"},"border":{"default":"#dfdad9"},"accent":{"link":"#907aa9"},"typography":{"fonts":{"sans":"Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\"","mono":"JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \\"Liberation Mono\\", \\"Courier New\\", monospace"},"webFonts":["https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap","https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap"]},"content":{"heading":{"h1":"#286983","h2":"#907aa9","h3":"#56949f","h4":"#ea9d34","h5":"#d7827e","h6":"#b4637a"},"body":{"primary":"#575279","secondary":"#797593"},"link":{"default":"#907aa9"},"selection":{"fg":"#575279","bg":"#cecacd"},"blockquote":{"border":"#cecacd","fg":"#575279","bg":"#fffaf3"},"codeInline":{"fg":"#575279","bg":"#f2e9e1"},"codeBlock":{"fg":"#575279","bg":"#f2e9e1"},"table":{"border":"#cecacd","stripe":"#f2e9e1","theadBg":"#dfdad9"}}}},"rose-pine-moon":{"id":"rose-pine-moon","label":"Rosé Pine Moon","vendor":"rose-pine","appearance":"dark","iconUrl":"/assets/img/rose-pine-moon.png","tokens":{"background":{"base":"#232136","surface":"#2a273f","overlay":"#393552"},"text":{"primary":"#e0def4","secondary":"#908caa","inverse":"#232136"},"brand":{"primary":"#c4a7e7"},"state":{"info":"#9ccfd8","success":"#3e8fb0","warning":"#f6c177","danger":"#eb6f92"},"border":{"default":"#44415a"},"accent":{"link":"#c4a7e7"},"typography":{"fonts":{"sans":"Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\"","mono":"JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \\"Liberation Mono\\", \\"Courier New\\", monospace"},"webFonts":["https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap","https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap"]},"content":{"heading":{"h1":"#3e8fb0","h2":"#c4a7e7","h3":"#9ccfd8","h4":"#f6c177","h5":"#ea9a97","h6":"#eb6f92"},"body":{"primary":"#e0def4","secondary":"#908caa"},"link":{"default":"#c4a7e7"},"selection":{"fg":"#e0def4","bg":"#56526e"},"blockquote":{"border":"#56526e","fg":"#e0def4","bg":"#2a273f"},"codeInline":{"fg":"#e0def4","bg":"#393552"},"codeBlock":{"fg":"#e0def4","bg":"#393552"},"table":{"border":"#56526e","stripe":"#393552","theadBg":"#44415a"}}}},"rose-pine":{"id":"rose-pine","label":"Rosé Pine","vendor":"rose-pine","appearance":"dark","iconUrl":"/assets/img/rose-pine.png","tokens":{"background":{"base":"#191724","surface":"#1f1d2e","overlay":"#26233a"},"text":{"primary":"#e0def4","secondary":"#908caa","inverse":"#191724"},"brand":{"primary":"#c4a7e7"},"state":{"info":"#9ccfd8","success":"#31748f","warning":"#f6c177","danger":"#eb6f92"},"border":{"default":"#403d52"},"accent":{"link":"#c4a7e7"},"typography":{"fonts":{"sans":"Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, \\"Apple Color Emoji\\", \\"Segoe UI Emoji\\"","mono":"JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \\"Liberation Mono\\", \\"Courier New\\", monospace"},"webFonts":["https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap","https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap"]},"content":{"heading":{"h1":"#31748f","h2":"#c4a7e7","h3":"#9ccfd8","h4":"#f6c177","h5":"#ebbcba","h6":"#eb6f92"},"body":{"primary":"#e0def4","secondary":"#908caa"},"link":{"default":"#c4a7e7"},"selection":{"fg":"#e0def4","bg":"#524f67"},"blockquote":{"border":"#524f67","fg":"#e0def4","bg":"#1f1d2e"},"codeInline":{"fg":"#e0def4","bg":"#26233a"},"codeBlock":{"fg":"#e0def4","bg":"#26233a"},"table":{"border":"#524f67","stripe":"#26233a","theadBg":"#403d52"}}}}}');
+  const byVendor = { "bulma": { "name": "Bulma", "homepage": "https://bulma.io/", "themes": ["bulma-dark", "bulma-light"] }, "catppuccin": { "name": "Catppuccin (synced)", "homepage": "https://catppuccin.com/palette/", "themes": ["catppuccin-frappe", "catppuccin-latte", "catppuccin-macchiato", "catppuccin-mocha"] }, "dracula": { "name": "Dracula", "homepage": "https://draculatheme.com/", "themes": ["dracula"] }, "github": { "name": "GitHub (synced)", "homepage": "https://primer.style/", "themes": ["github-dark", "github-light"] }, "rose-pine": { "name": "Rosé Pine", "homepage": "https://rosepinetheme.com/", "themes": ["rose-pine-dawn", "rose-pine-moon", "rose-pine"] } };
+  const tokensData = {
+    themes,
+    byVendor
+  };
+  const tokens = tokensData;
+  const flavors = Object.values(tokens.themes).map((theme) => ({
+    id: theme.id,
+    label: theme.label,
+    vendor: theme.vendor,
+    appearance: theme.appearance,
+    ...theme.iconUrl !== void 0 && { iconUrl: theme.iconUrl },
+    tokens: theme.tokens
+  }));
+  const themesById = Object.fromEntries(flavors.map((flavor) => [flavor.id, flavor]));
+  Object.fromEntries(Object.entries(tokens.byVendor).map(([vendorId, vendor]) => [
+    vendorId,
+    {
+      id: vendorId,
+      name: vendor.name,
+      homepage: vendor.homepage,
+      flavors: vendor.themes.map((themeId) => themesById[themeId]).filter(Boolean)
+    }
+  ]));
+  flavors.map((f) => f.id);
+  [...new Set(flavors.map((f) => f.vendor))];
+  const VENDOR_FAMILY_MAP = {
+    bulma: "bulma",
+    catppuccin: "catppuccin",
+    github: "github",
+    dracula: "dracula",
+    "rose-pine": "rose-pine"
+  };
+  const DEFAULT_FAMILY = "bulma";
+  const VENDOR_ICON_MAP = {
+    bulma: "assets/img/turbo-themes-logo.png",
+    catppuccin: {
+      light: "assets/img/catppuccin-logo-latte.png",
+      dark: "assets/img/catppuccin-logo-macchiato.png"
+    },
+    github: {
+      light: "assets/img/github-logo-light.png",
+      dark: "assets/img/github-logo-dark.png"
+    },
+    dracula: "assets/img/dracula-logo.png",
+    "rose-pine": {
+      light: "assets/img/rose-pine-dawn.png",
+      dark: "assets/img/rose-pine.png"
+    }
+  };
+  const FLAVOR_DESCRIPTIONS = {
+    "bulma-light": "Classic Bulma look with a bright, neutral palette.",
+    "bulma-dark": "Dark Bulma theme tuned for low-light reading.",
+    "catppuccin-latte": "Light, soft Catppuccin palette for daytime use.",
+    "catppuccin-frappe": "Balanced dark Catppuccin theme for focused work.",
+    "catppuccin-macchiato": "Deep, atmospheric Catppuccin variant with rich contrast.",
+    "catppuccin-mocha": "Cozy, high-contrast Catppuccin theme for late-night sessions.",
+    dracula: "Iconic Dracula dark theme with vibrant accents.",
+    "github-light": "GitHub-inspired light theme suited for documentation and UI heavy pages.",
+    "github-dark": "GitHub dark theme optimized for code-heavy views.",
+    "rose-pine": "Elegant dark theme with natural pine and soho vibes.",
+    "rose-pine-moon": "Deeper variant of Rosé Pine with enhanced contrast.",
+    "rose-pine-dawn": "Light Rosé Pine variant for daytime use."
+  };
+  function getFamily(vendor) {
+    return VENDOR_FAMILY_MAP[vendor] ?? DEFAULT_FAMILY;
+  }
+  function getIconForVendor(vendor, appearance) {
+    const iconConfig = VENDOR_ICON_MAP[vendor];
+    if (!iconConfig) {
+      return void 0;
+    }
+    if (typeof iconConfig === "string") {
+      return iconConfig;
+    }
+    return iconConfig[appearance];
+  }
+  function getDescriptionForFlavor(id, label) {
+    return FLAVOR_DESCRIPTIONS[id] ?? `${label} theme`;
+  }
+  function extractPreviewColors(tokens2) {
+    return {
+      bg: tokens2.background.base,
+      surface: tokens2.background.surface,
+      accent: tokens2.brand.primary,
+      text: tokens2.text.primary
+    };
+  }
+  function mapFlavorToUI(flavor) {
+    const family = getFamily(flavor.vendor);
+    return {
+      id: flavor.id,
+      name: flavor.label,
+      description: getDescriptionForFlavor(flavor.id, flavor.label),
+      cssFile: `packages/css/dist/themes/${flavor.id}.css`,
+      icon: getIconForVendor(flavor.vendor, flavor.appearance),
+      family,
+      vendor: flavor.vendor,
+      appearance: flavor.appearance,
+      colors: extractPreviewColors(flavor.tokens)
+    };
+  }
+  let mappedThemes = null;
+  let validThemeIds = null;
+  function getThemes() {
+    if (!mappedThemes) {
+      mappedThemes = flavors.map(mapFlavorToUI);
+    }
+    return mappedThemes || [];
+  }
+  function getValidThemeIds() {
+    if (!validThemeIds) {
+      validThemeIds = new Set(flavors.map((f) => f.id));
+    }
+    return validThemeIds;
+  }
+  function resolveTheme(themeId) {
+    const themes2 = getThemes();
+    return themes2.find((t) => t.id === themeId) || themes2.find((t) => t.id === DEFAULT_THEME) || themes2[0];
+  }
+  async function applyTheme(doc, themeId) {
+    const theme = resolveTheme(themeId);
+    if (!theme) {
+      logThemeError(ThemeErrors.NO_THEMES_AVAILABLE());
+      return;
+    }
+    const baseUrl = getBaseUrl(doc);
+    const trigger = doc.getElementById(DOM_IDS.THEME_FLAVOR_TRIGGER);
+    if (trigger) {
+      trigger.classList.add("is-loading");
+    }
+    try {
+      applyThemeClass(doc, theme.id);
+      await loadThemeCSS(doc, theme, baseUrl);
+      const triggerIcon = doc.getElementById(
+        DOM_IDS.THEME_FLAVOR_TRIGGER_ICON
+      );
+      if (triggerIcon && theme.icon) {
+        try {
+          triggerIcon.src = resolveAssetPath(theme.icon, baseUrl);
+          const familyName = THEME_FAMILIES[theme.family].name;
+          triggerIcon.alt = `${familyName} ${theme.name}`;
+          triggerIcon.title = `${familyName} ${theme.name}`;
+        } catch {
+          logThemeError(ThemeErrors.INVALID_ICON_PATH(theme.id));
+        }
+      }
+      const triggerLabel = doc.getElementById(
+        DOM_IDS.THEME_FLAVOR_TRIGGER_LABEL
+      );
+      if (triggerLabel) {
+        triggerLabel.textContent = theme.name;
+      }
+      doc.querySelectorAll(DOM_SELECTORS.DROPDOWN_ITEMS).forEach((item) => {
+        setItemActiveState(item, item.getAttribute("data-theme-id") === theme.id);
+      });
+    } finally {
+      if (trigger) {
+        trigger.classList.remove("is-loading");
+      }
+    }
+  }
+  function getCurrentTheme(doc, defaultTheme) {
+    return getCurrentThemeFromClasses(doc.documentElement) || defaultTheme;
+  }
+  function createDropdownStateManager(elements, state) {
+    const { trigger, dropdown } = elements;
+    const updateAriaExpanded = (expanded) => {
+      trigger.setAttribute("aria-expanded", String(expanded));
+    };
+    const focusMenuItem = (index) => {
+      if (index < 0 || index >= state.menuItems.length) return;
+      const item = state.menuItems[index];
+      setTabindexBatch(state.menuItems, "-1");
+      item.setAttribute("tabindex", "0");
+      item.focus();
+      state.currentIndex = index;
+    };
+    const closeDropdown = (options = {}) => {
+      const { restoreFocus = true } = options;
+      dropdown.classList.remove("is-active");
+      updateAriaExpanded(false);
+      setTabindexBatch(state.menuItems, "-1");
+      state.currentIndex = -1;
+      if (restoreFocus) {
+        trigger.focus();
+      }
+    };
+    const toggleDropdown = (focusFirst = false) => {
+      const isActive = dropdown.classList.toggle("is-active");
+      updateAriaExpanded(isActive);
+      if (!isActive) {
+        state.currentIndex = -1;
+        setTabindexBatch(state.menuItems, "-1");
+        for (const menuItem of state.menuItems) {
+          const isActiveItem = menuItem.classList.contains("is-active");
+          setItemActiveState(menuItem, isActiveItem);
+        }
+      } else if (focusFirst && state.menuItems.length > 0) {
+        focusMenuItem(0);
+      }
+    };
+    return { updateAriaExpanded, focusMenuItem, closeDropdown, toggleDropdown };
+  }
+  function getNextIndex(currentIndex, totalItems) {
+    return currentIndex < totalItems - 1 ? currentIndex + 1 : 0;
+  }
+  function getPrevIndex(currentIndex, totalItems) {
+    return currentIndex > 0 ? currentIndex - 1 : totalItems - 1;
+  }
+  function handleTriggerKeydown(e, dropdown, state, stateManager) {
+    const { focusMenuItem, toggleDropdown, updateAriaExpanded } = stateManager;
+    const totalItems = state.menuItems.length;
+    switch (e.key) {
+      case "Enter":
+      case " ":
+        e.preventDefault();
+        toggleDropdown(!dropdown.classList.contains("is-active"));
+        break;
+      case "ArrowDown":
+        e.preventDefault();
+        if (!dropdown.classList.contains("is-active")) {
+          dropdown.classList.add("is-active");
+          updateAriaExpanded(true);
+          focusMenuItem(0);
+        } else {
+          const nextIndex = state.currentIndex < 0 ? 0 : getNextIndex(state.currentIndex, totalItems);
+          focusMenuItem(nextIndex);
+        }
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        if (!dropdown.classList.contains("is-active")) {
+          dropdown.classList.add("is-active");
+          updateAriaExpanded(true);
+          focusMenuItem(totalItems - 1);
+        } else {
+          const startIndex = state.currentIndex < 0 ? totalItems - 1 : state.currentIndex;
+          focusMenuItem(getPrevIndex(startIndex, totalItems));
+        }
+        break;
+    }
+  }
+  function handleMenuItemKeydown(e, index, item, state, stateManager) {
+    const { focusMenuItem, closeDropdown } = stateManager;
+    const totalItems = state.menuItems.length;
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        focusMenuItem(getNextIndex(index, totalItems));
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        focusMenuItem(getPrevIndex(index, totalItems));
+        break;
+      case "Escape":
+        e.preventDefault();
+        closeDropdown();
+        break;
+      case "Enter":
+      case " ":
+        e.preventDefault();
+        item.click();
+        break;
+      case "Home":
+        e.preventDefault();
+        focusMenuItem(0);
+        break;
+      case "End":
+        e.preventDefault();
+        focusMenuItem(totalItems - 1);
+        break;
+    }
+  }
+  function wireDropdownEventHandlers(documentObj, elements, state, stateManager, abortController) {
+    const { trigger, dropdown } = elements;
+    const { closeDropdown, toggleDropdown } = stateManager;
+    const signal = abortController.signal;
+    trigger.addEventListener(
+      "click",
+      (e) => {
+        e.preventDefault();
+        toggleDropdown();
+      },
+      { signal }
+    );
+    documentObj.addEventListener(
+      "click",
+      (e) => {
+        if (!dropdown.contains(e.target)) {
+          closeDropdown({ restoreFocus: false });
+        }
+      },
+      { signal }
+    );
+    documentObj.addEventListener(
+      "keydown",
+      (e) => {
+        if (e.key === "Escape" && dropdown.classList.contains("is-active")) {
+          closeDropdown({ restoreFocus: true });
+        }
+      },
+      { signal }
+    );
+    trigger.addEventListener(
+      "keydown",
+      (e) => handleTriggerKeydown(e, dropdown, state, stateManager),
+      { signal }
+    );
+    for (const [index, item] of state.menuItems.entries()) {
+      item.addEventListener(
+        "keydown",
+        (e) => handleMenuItemKeydown(e, index, item, state, stateManager),
+        { signal }
+      );
+    }
+  }
+  function createCheckmarkIcon(doc) {
+    const svg = doc.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", "16");
+    svg.setAttribute("height", "16");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("stroke", "currentColor");
+    svg.setAttribute("stroke-width", "3");
+    svg.setAttribute("stroke-linecap", "round");
+    svg.setAttribute("stroke-linejoin", "round");
+    const polyline = doc.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    polyline.setAttribute("points", "20 6 9 17 4 12");
+    svg.appendChild(polyline);
+    return svg;
+  }
+  function createThemeItemElement(ctx, theme, familyMeta) {
+    const { documentObj, baseUrl, currentThemeId, selectEl, closeDropdown, onThemeSelect } = ctx;
+    const item = documentObj.createElement("button");
+    item.type = "button";
+    item.className = "dropdown-item theme-item";
+    item.setAttribute("data-theme-id", theme.id);
+    item.setAttribute("data-appearance", theme.appearance);
+    item.setAttribute("role", "menuitemradio");
+    item.setAttribute(
+      "aria-label",
+      `${familyMeta.name} ${theme.name} (${theme.appearance}). ${theme.description}`
+    );
+    item.setAttribute("tabindex", "-1");
+    const isActive = theme.id === currentThemeId;
+    setItemActiveState(item, isActive);
+    if (theme.icon) {
+      const icon = documentObj.createElement("img");
+      icon.className = "theme-icon";
+      icon.src = baseUrl ? `${baseUrl}/${theme.icon}` : theme.icon;
+      icon.alt = `${familyMeta.name} ${theme.name}`;
+      icon.width = 24;
+      icon.height = 24;
+      item.appendChild(icon);
+    } else {
+      const placeholder = documentObj.createElement("span");
+      placeholder.className = "theme-icon theme-icon-placeholder";
+      placeholder.setAttribute("aria-hidden", "true");
+      item.appendChild(placeholder);
+    }
+    const copy = documentObj.createElement("div");
+    copy.className = "theme-copy";
+    const titleEl = documentObj.createElement("span");
+    titleEl.className = "theme-title";
+    titleEl.textContent = `${familyMeta.name} · ${theme.name}`;
+    copy.appendChild(titleEl);
+    const descriptionEl = documentObj.createElement("span");
+    descriptionEl.className = "theme-description";
+    descriptionEl.textContent = theme.description;
+    copy.appendChild(descriptionEl);
+    item.appendChild(copy);
+    const check = documentObj.createElement("span");
+    check.className = "theme-check";
+    check.appendChild(createCheckmarkIcon(documentObj));
+    item.appendChild(check);
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+      onThemeSelect(theme.id);
+      if (selectEl) {
+        selectEl.value = theme.id;
+        selectEl.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      closeDropdown({ restoreFocus: true });
+    });
+    return item;
+  }
+  function createFamilyGroup(ctx, familyKey, themes2, familyMeta, animationDelay) {
+    const { documentObj } = ctx;
+    if (themes2.length === 0) return null;
+    const items = [];
+    const group = documentObj.createElement("div");
+    group.className = "theme-family-group";
+    group.setAttribute("role", "group");
+    group.setAttribute("aria-labelledby", `theme-family-${familyKey}`);
+    if (group.style && typeof group.style.setProperty === "function") {
+      group.style.setProperty("--animation-delay", `${animationDelay}ms`);
+    }
+    const header = documentObj.createElement("div");
+    header.className = "theme-family-header";
+    header.id = `theme-family-${familyKey}`;
+    const headerTitle = documentObj.createElement("span");
+    headerTitle.className = "theme-family-name";
+    headerTitle.textContent = familyMeta.name;
+    header.appendChild(headerTitle);
+    group.appendChild(header);
+    const themesContainer = documentObj.createElement("div");
+    themesContainer.className = "theme-family-items";
+    themes2.forEach((theme) => {
+      const item = createThemeItemElement(ctx, theme, familyMeta);
+      items.push(item);
+      themesContainer.appendChild(item);
+    });
+    group.appendChild(themesContainer);
+    return { group, items };
+  }
+  function populateDropdownMenu(ctx, dropdownMenu, themes2, themeFamilies) {
+    const families = Object.keys(themeFamilies);
+    let animationDelay = 0;
+    families.forEach((familyKey) => {
+      const familyThemes = themes2.filter((t) => t.family === familyKey);
+      const familyMeta = themeFamilies[familyKey];
+      if (!familyMeta) return;
+      const result = createFamilyGroup(ctx, familyKey, familyThemes, familyMeta, animationDelay);
+      if (result) {
+        ctx.menuItems.push(...result.items);
+        dropdownMenu.appendChild(result.group);
+        animationDelay += 30;
+      }
+    });
+  }
+  function wireNativeSelect(ctx, selectEl, themes2, defaultTheme) {
+    const { documentObj, onThemeSelect } = ctx;
+    while (selectEl.firstChild) {
+      selectEl.removeChild(selectEl.firstChild);
+    }
+    themes2.forEach((theme) => {
+      const option = documentObj.createElement("option");
+      option.value = theme.id;
+      option.textContent = theme.name;
+      option.selected = theme.id === ctx.currentThemeId;
+      selectEl.appendChild(option);
+    });
+    selectEl.disabled = false;
+    selectEl.addEventListener("change", (event) => {
+      const target = event.target;
+      const selectedThemeId = target?.value || defaultTheme;
+      onThemeSelect(selectedThemeId);
+    });
+  }
+  function getDropdownElements(documentObj) {
+    const dropdownMenu = documentObj.getElementById(DOM_IDS.THEME_FLAVOR_MENU);
+    const trigger = documentObj.getElementById(
+      DOM_IDS.THEME_FLAVOR_TRIGGER
+    );
+    const dropdown = trigger?.closest(DOM_SELECTORS.NAVBAR_DROPDOWN);
+    const selectEl = documentObj.getElementById(
+      DOM_IDS.THEME_FLAVOR_SELECT
+    );
+    if (!dropdownMenu || !trigger || !dropdown) {
+      return null;
+    }
+    return { dropdownMenu, trigger, dropdown, selectEl };
+  }
+  function normalizePath(path) {
+    return path.replace(/\/$/, "") || "/";
+  }
+  function initNavbar(documentObj) {
+    const currentPath = documentObj.location.pathname;
+    const normalizedCurrentPath = normalizePath(currentPath);
+    const navbarItems = documentObj.querySelectorAll(DOM_SELECTORS.NAVBAR_ITEM);
+    let matchingItem = null;
+    const itemsToDeactivate = [];
+    navbarItems.forEach((item) => {
+      const link = item;
+      if (!link.href) return;
+      try {
+        const normalizedLinkPath = normalizePath(new URL(link.href).pathname);
+        if (normalizedCurrentPath === normalizedLinkPath) {
+          matchingItem = item;
+        } else {
+          itemsToDeactivate.push(item);
+        }
+      } catch {
+      }
+    });
+    for (const item of itemsToDeactivate) {
+      item.classList.remove("is-active");
+      item.removeAttribute("aria-current");
+    }
+    if (matchingItem) {
+      matchingItem.classList.add("is-active");
+      matchingItem.setAttribute("aria-current", "page");
+    }
+    const reportsLink = documentObj.querySelector(DOM_SELECTORS.NAV_REPORTS);
+    if (reportsLink) {
+      const reportPaths = [
+        "/coverage",
+        "/coverage-python",
+        "/coverage-swift",
+        "/coverage-ruby",
+        "/playwright",
+        "/playwright-examples",
+        "/lighthouse"
+      ];
+      const isOnReportsPage = reportPaths.some(
+        (path) => normalizedCurrentPath === path || normalizedCurrentPath.startsWith(path + "/")
+      );
+      if (isOnReportsPage) {
+        reportsLink.classList.add("is-active");
+      } else {
+        reportsLink.classList.remove("is-active");
+      }
+    }
+  }
+  if (typeof window !== "undefined") {
+    window.initNavbar = initNavbar;
+  }
+  function enhanceAccessibility(documentObj) {
+    documentObj.querySelectorAll(DOM_SELECTORS.HIGHLIGHT_PRE).forEach((pre) => {
+      if (!pre.hasAttribute("tabindex")) pre.setAttribute("tabindex", "0");
+      if (!pre.hasAttribute("role")) pre.setAttribute("role", "region");
+      if (!pre.hasAttribute("aria-label")) pre.setAttribute("aria-label", "Code block");
+    });
+  }
+  async function initTheme(documentObj, windowObj) {
+    migrateLegacyStorage(windowObj);
+    const initialTheme = windowObj.__INITIAL_THEME__;
+    const savedTheme = getSavedTheme(windowObj, getValidThemeIds());
+    if (initialTheme && initialTheme === savedTheme) {
+      const currentTheme = getCurrentThemeFromClasses(documentObj.documentElement);
+      if (currentTheme === savedTheme) {
+        const themeLinkId = `theme-${savedTheme}-css`;
+        const themeLink = documentObj.getElementById(themeLinkId);
+        if (!themeLink) {
+          await applyTheme(documentObj, savedTheme);
+        }
+        return;
+      }
+    }
+    await applyTheme(documentObj, savedTheme);
+  }
+  async function wireFlavorSelector(documentObj, windowObj) {
+    const abortController = new AbortController();
+    const elements = getDropdownElements(documentObj);
+    if (!elements) {
+      return { cleanup: () => abortController.abort() };
+    }
+    const { dropdownMenu, selectEl } = elements;
+    const baseUrl = getBaseUrl(documentObj);
+    const themes2 = getThemes();
+    const state = {
+      currentIndex: -1,
+      menuItems: []
+    };
+    const currentThemeId = getSavedTheme(windowObj, getValidThemeIds()) || getCurrentTheme(documentObj, DEFAULT_THEME);
+    const stateManager = createDropdownStateManager(elements, state);
+    const ctx = {
+      documentObj,
+      baseUrl,
+      currentThemeId,
+      selectEl,
+      menuItems: state.menuItems,
+      closeDropdown: stateManager.closeDropdown,
+      onThemeSelect: async (themeId) => {
+        saveTheme(windowObj, themeId, getValidThemeIds());
+        await applyTheme(documentObj, themeId);
+      }
+    };
+    if (selectEl) {
+      wireNativeSelect(ctx, selectEl, themes2, DEFAULT_THEME);
+    }
+    populateDropdownMenu(ctx, dropdownMenu, themes2, THEME_FAMILIES);
+    wireDropdownEventHandlers(documentObj, elements, state, stateManager, abortController);
+    stateManager.updateAriaExpanded(false);
+    elements.dropdown.classList.remove("is-active");
+    return { cleanup: () => abortController.abort() };
+  }
+  if (typeof document !== "undefined" && typeof window !== "undefined") {
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        await initTheme(document, window);
+        const { cleanup } = await wireFlavorSelector(document, window);
+        enhanceAccessibility(document);
+        const pagehideHandler = () => {
+          cleanup();
+          window.removeEventListener("pagehide", pagehideHandler);
+        };
+        window.addEventListener("pagehide", pagehideHandler);
+      } catch (error) {
+        logThemeError(ThemeErrors.INIT_FAILED(error));
+      }
+    });
+  }
+  exports.enhanceAccessibility = enhanceAccessibility;
+  exports.initNavbar = initNavbar;
+  exports.initTheme = initTheme;
+  exports.wireFlavorSelector = wireFlavorSelector;
+  Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+  return exports;
+})({});
+//# sourceMappingURL=theme-selector.js.map
