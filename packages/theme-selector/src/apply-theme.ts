@@ -49,6 +49,14 @@ export async function applyTheme(doc: Document, themeId: string): Promise<void> 
       }
     }
 
+    // Update trigger button label
+    const triggerLabel = doc.getElementById(
+      DOM_IDS.THEME_FLAVOR_TRIGGER_LABEL
+    ) as HTMLElement | null;
+    if (triggerLabel) {
+      triggerLabel.textContent = theme.name;
+    }
+
     // Update active state in dropdown
     doc.querySelectorAll(DOM_SELECTORS.DROPDOWN_ITEMS).forEach((item) => {
       setItemActiveState(item, item.getAttribute('data-theme-id') === theme.id);
