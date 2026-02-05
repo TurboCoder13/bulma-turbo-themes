@@ -55,7 +55,10 @@ const VENDOR_ICON_MAP: Record<string, string | AppearanceIcons> = {
     dark: 'assets/img/github-logo-dark.png',
   },
   dracula: 'assets/img/dracula-logo.png',
-  'rose-pine': 'assets/img/rose-pine.png',
+  'rose-pine': {
+    light: 'assets/img/rose-pine-dawn.png',
+    dark: 'assets/img/rose-pine.png',
+  },
 };
 
 /** Predefined flavor descriptions */
@@ -69,6 +72,9 @@ const FLAVOR_DESCRIPTIONS: Record<string, string> = {
   dracula: 'Iconic Dracula dark theme with vibrant accents.',
   'github-light': 'GitHub-inspired light theme suited for documentation and UI heavy pages.',
   'github-dark': 'GitHub dark theme optimized for code-heavy views.',
+  'rose-pine': 'Elegant dark theme with natural pine and soho vibes.',
+  'rose-pine-moon': 'Deeper variant of Rosé Pine with enhanced contrast.',
+  'rose-pine-dawn': 'Light Rosé Pine variant for daytime use.',
 };
 
 // ============================================================================

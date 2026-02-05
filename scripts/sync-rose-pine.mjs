@@ -12,7 +12,10 @@ const projectRoot = path.resolve(__dirname, '..');
 
 function rpColor(name, variant) {
   const color = variant.colors[name];
-  return color ? `#${color.hex}` : undefined;
+  if (!color) return undefined;
+  // Normalize hex string - strip leading '#' if present before adding one
+  const hex = color.hex.replace(/^#/, '');
+  return `#${hex}`;
 }
 
 function buildTokens(variant) {
@@ -77,15 +80,18 @@ function buildTokens(variant) {
 
 function buildPackage() {
   const flavors = [];
-  for (const [key, variant] of Object.entries(variants)) {
+  const iconMap = {
+    main: '/assets/img/rose-pine.png',
+    moon: '/assets/img/rose-pine-moon.png',
+    dawn: '/assets/img/rose-pine-dawn.png',
+  };
+  // Sort variant keys for deterministic output
+  const sortedKeys = Object.keys(variants).sort();
+  for (const key of sortedKeys) {
+    const variant = variants[key];
     // dawn is light, main and moon are dark
     const isDark = key !== 'dawn';
     const id = variant.id; // e.g., 'rose-pine', 'rose-pine-moon', 'rose-pine-dawn'
-    const iconMap = {
-      main: '/assets/img/rose-pine.png',
-      moon: '/assets/img/rose-pine-moon.png',
-      dawn: '/assets/img/rose-pine-dawn.png',
-    };
     flavors.push({
       id,
       label: variant.name,

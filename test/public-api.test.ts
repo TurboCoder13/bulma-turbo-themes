@@ -955,15 +955,11 @@ describe('public API', () => {
 
     wireFlavorSelector(document, window);
 
-    // Find the catppuccin-latte menu item and its click handler
-    // The items are created in order, so catppuccin-latte should be at index 2
-    const catppuccinLatteItem =
-      mockMenuItems.length > 2
-        ? mockMenuItems[2]
-        : mockMenuItems.find((item) => {
-            const themeId = item.getAttribute('data-theme-id');
-            return themeId === 'catppuccin-latte';
-          });
+    // Find the catppuccin-latte menu item by data-theme-id (order-independent)
+    const catppuccinLatteItem = mockMenuItems.find((item) => {
+      const themeId = item.getAttribute('data-theme-id');
+      return themeId === 'catppuccin-latte';
+    });
 
     expect(catppuccinLatteItem).toBeDefined();
     if (catppuccinLatteItem) {
