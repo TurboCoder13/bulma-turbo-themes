@@ -76,6 +76,7 @@ const vendorMeta = {
   catppuccin: { name: 'Catppuccin (synced)', homepage: 'https://catppuccin.com/palette/' },
   dracula: { name: 'Dracula', homepage: 'https://draculatheme.com/' },
   github: { name: 'GitHub (synced)', homepage: 'https://primer.style/' },
+  'rose-pine': { name: 'Rosé Pine (synced)', homepage: 'https://rosepinetheme.com/' },
 };
 
 /**

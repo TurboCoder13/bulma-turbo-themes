@@ -56,14 +56,14 @@ export const flavors: readonly ThemeFlavor[] = Object.values(tokens.themes).map(
 /**
  * Theme flavors indexed by ID for quick lookup
  */
-export const themesById: Record<string, ThemeFlavor> = Object.fromEntries(
+export const themesById: Record<string, ThemeFlavor> = /*#__PURE__*/ Object.fromEntries(
   flavors.map((flavor) => [flavor.id, flavor])
 );
 
 /**
  * All available theme packages (grouped by vendor)
  */
-export const packages = Object.fromEntries(
+export const packages = /*#__PURE__*/ Object.fromEntries(
   Object.entries(tokens.byVendor).map(([vendorId, vendor]) => [
     vendorId,
     {
@@ -114,9 +114,9 @@ export function getThemesByVendor(vendor: string): readonly ThemeFlavor[] {
 /**
  * List of all available theme IDs
  */
-export const themeIds: readonly string[] = flavors.map((f) => f.id);
+export const themeIds: readonly string[] = /*#__PURE__*/ flavors.map((f) => f.id);
 
 /**
  * List of all available vendors
  */
-export const vendors: readonly string[] = [...new Set(flavors.map((f) => f.vendor))];
+export const vendors: readonly string[] = /*#__PURE__*/ [...new Set(flavors.map((f) => f.vendor))];

@@ -64,3 +64,6 @@ assets/js/*.min.js
 # GitHub metadata and policies handled externally
 .github/**
 .allstar/**
+
+# Husky internal files (auto-generated)
+.husky/_/**
