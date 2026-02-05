@@ -10,6 +10,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 
+// Read package version for source metadata
+const catppuccinPackageJson = JSON.parse(
+  fs.readFileSync(path.join(projectRoot, 'node_modules', '@catppuccin', 'palette', 'package.json'), 'utf8')
+);
+const catppuccinVersion = catppuccinPackageJson.version;
+
 function catColor(name, flavor) {
   const entry = flavor.colorEntries.find(([n]) => n === name);
   return entry ? entry[1].hex : undefined;
@@ -106,13 +112,14 @@ function buildPackage() {
     },
     source: {
       package: '@catppuccin/palette',
+      version: catppuccinVersion,
       repository: 'https://github.com/catppuccin/palette',
     },
     flavors,
   };
 }
 
-const outPath = path.join(projectRoot, 'packages', 'core', 'src', 'themes', 'packs', 'catppuccin.synced.ts');
+const outPath = path.join(projectRoot, 'src', 'themes', 'packs', 'catppuccin.synced.ts');
 
 // Ensure output directory exists
 fs.mkdirSync(path.dirname(outPath), { recursive: true });

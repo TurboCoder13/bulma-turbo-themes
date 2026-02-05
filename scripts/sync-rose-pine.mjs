@@ -10,6 +10,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 
+// Read package version for source metadata
+const rosePinePackageJson = JSON.parse(
+  fs.readFileSync(path.join(projectRoot, 'node_modules', '@rose-pine', 'palette', 'package.json'), 'utf8')
+);
+const rosePineVersion = rosePinePackageJson.version;
+
 function rpColor(name, variant) {
   const color = variant.colors[name];
   if (!color) return undefined;
@@ -112,6 +118,7 @@ function buildPackage() {
     },
     source: {
       package: '@rose-pine/palette',
+      version: rosePineVersion,
       repository: 'https://github.com/rose-pine/palette',
     },
     flavors,

@@ -5,6 +5,8 @@ import type { ThemePackage } from '../types.js';
  * Auto-synced from @catppuccin/palette
  * @see https://catppuccin.com/palette/
  * @license MIT
+ *
+ * DO NOT EDIT MANUALLY - regenerate with: node scripts/sync-catppuccin.mjs
  */
 export const catppuccinSynced: ThemePackage = {
   id: 'catppuccin',
@@ -17,6 +19,7 @@ export const catppuccinSynced: ThemePackage = {
   },
   source: {
     package: '@catppuccin/palette',
+    version: '1.7.1',
     repository: 'https://github.com/catppuccin/palette',
   },
   flavors: [

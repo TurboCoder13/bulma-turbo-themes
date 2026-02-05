@@ -113,7 +113,7 @@
     "stylelint": "stylelint '**/*.css' --ignore-path .stylelintignore",
     "coverage:badges": "node scripts/ci/coverage-badges.mjs",
     "css:budget": "node scripts/ci/css-budget.mjs",
-    "theme:sync": "node scripts/sync-catppuccin.mjs && node scripts/sync-rose-pine.mjs",
+    "theme:sync": "node scripts/sync-catppuccin.mjs && node scripts/sync-github.mjs && node scripts/sync-rose-pine.mjs",
     "examples:prep": "node scripts/prepare-examples.mjs",
     "examples:build": "node scripts/build-examples.mjs",
     "examples:test": "node scripts/test-examples.mjs",

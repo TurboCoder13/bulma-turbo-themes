@@ -19,6 +19,7 @@ export const githubSynced: ThemePackage = {
   },
   source: {
     package: '@primer/primitives',
+    version: '11.3.2',
     repository: 'https://github.com/primer/primitives',
   },
   flavors: [
@@ -100,57 +101,7 @@ export const githubSynced: ThemePackage = {
           table: {
             border: '#d1d9e0',
             stripe: '#f6f8fa',
-            theadBg: '#eaeef2',
-            cellBg: '#ffffff',
-            headerFg: '#1f2328',
-          },
-        },
-        components: {
-          card: {
-            bg: '#ffffff',
-            border: '#d1d9e0',
-            headerBg: '#f6f8fa',
-            footerBg: '#f6f8fa',
-          },
-          message: {
-            bg: '#f6f8fa',
-            headerBg: '#eaeef2',
-            border: '#d1d9e0',
-            bodyFg: '#1f2328',
-          },
-          panel: {
-            bg: '#ffffff',
-            headerBg: '#f6f8fa',
-            headerFg: '#1f2328',
-            border: '#d1d9e0',
-            blockBg: '#f6f8fa',
-            blockHoverBg: '#eaeef2',
-            blockActiveBg: '#ddf4ff',
-          },
-          box: {
-            bg: '#ffffff',
-            border: '#d1d9e0',
-          },
-          notification: {
-            bg: '#f6f8fa',
-            border: '#d1d9e0',
-          },
-          modal: {
-            bg: 'rgba(31, 35, 40, 0.5)',
-            cardBg: '#ffffff',
-            headerBg: '#f6f8fa',
-            footerBg: '#f6f8fa',
-          },
-          dropdown: {
-            bg: '#ffffff',
-            itemHoverBg: '#f6f8fa',
-            border: '#d1d9e0',
-          },
-          tabs: {
-            border: '#d1d9e0',
-            linkBg: '#f6f8fa',
-            linkActiveBg: '#ffffff',
-            linkHoverBg: '#eaeef2',
+            theadBg: '#f6f8fa',
           },
         },
       },
@@ -232,58 +183,8 @@ export const githubSynced: ThemePackage = {
           },
           table: {
             border: '#3d444d',
-            stripe: '#161b22',
-            theadBg: '#21262d',
-            cellBg: '#0d1117',
-            headerFg: '#f0f6fc',
-          },
-        },
-        components: {
-          card: {
-            bg: '#161b22',
-            border: '#3d444d',
-            headerBg: '#21262d',
-            footerBg: '#161b22',
-          },
-          message: {
-            bg: '#161b22',
-            headerBg: '#21262d',
-            border: '#3d444d',
-            bodyFg: '#e6edf3',
-          },
-          panel: {
-            bg: '#161b22',
-            headerBg: '#21262d',
-            headerFg: '#f0f6fc',
-            border: '#3d444d',
-            blockBg: '#0d1117',
-            blockHoverBg: '#1c2128',
-            blockActiveBg: '#264f78',
-          },
-          box: {
-            bg: '#161b22',
-            border: '#3d444d',
-          },
-          notification: {
-            bg: '#161b22',
-            border: '#3d444d',
-          },
-          modal: {
-            bg: 'rgba(1, 4, 9, 0.8)',
-            cardBg: '#161b22',
-            headerBg: '#21262d',
-            footerBg: '#161b22',
-          },
-          dropdown: {
-            bg: '#161b22',
-            itemHoverBg: '#1c2128',
-            border: '#3d444d',
-          },
-          tabs: {
-            border: '#3d444d',
-            linkBg: '#1c2128',
-            linkActiveBg: '#161b22',
-            linkHoverBg: '#21262d',
+            stripe: '#151b23',
+            theadBg: '#151b23',
           },
         },
       },

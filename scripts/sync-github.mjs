@@ -9,17 +9,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 
-// Path to @primer/primitives theme JSON files
-const primitivesPath = path.join(
-  projectRoot,
-  'node_modules',
-  '@primer',
-  'primitives',
-  'dist',
-  'docs',
-  'functional',
-  'themes'
+// Path to @primer/primitives
+const primitivesRoot = path.join(projectRoot, 'node_modules', '@primer', 'primitives');
+const primitivesPath = path.join(primitivesRoot, 'dist', 'docs', 'functional', 'themes');
+
+// Read package version for source metadata
+const primitivesPackageJson = JSON.parse(
+  fs.readFileSync(path.join(primitivesRoot, 'package.json'), 'utf8')
 );
+const primitivesVersion = primitivesPackageJson.version;
 
 /**
  * Load a Primer theme JSON file
@@ -174,6 +172,7 @@ function buildPackage() {
     },
     source: {
       package: '@primer/primitives',
+      version: primitivesVersion,
       repository: 'https://github.com/primer/primitives',
     },
     flavors,
@@ -211,7 +210,7 @@ function formatObject(obj, indent = 0) {
   }
 }
 
-const outPath = path.join(projectRoot, 'packages', 'core', 'src', 'themes', 'packs', 'github.synced.ts');
+const outPath = path.join(projectRoot, 'src', 'themes', 'packs', 'github.synced.ts');
 const pkg = buildPackage();
 
 const rawContent = `import type { ThemePackage } from '../types.js';
