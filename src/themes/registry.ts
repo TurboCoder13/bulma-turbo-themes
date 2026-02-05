@@ -6,6 +6,7 @@ import { bulmaThemes } from './packs/bulma.js';
 import { catppuccinSynced } from './packs/catppuccin.synced.js';
 import { draculaThemes } from './packs/dracula.js';
 import { githubSynced } from './packs/github.synced.js';
+import { nordThemes } from './packs/nord.js';
 import { rosePineSynced } from './packs/rose-pine.synced.js';
 
 // Collect all flavors from all theme packages
@@ -14,6 +15,7 @@ const allFlavors: ThemeFlavor[] = [
   ...catppuccinSynced.flavors,
   ...draculaThemes.flavors,
   ...githubSynced.flavors,
+  ...nordThemes.flavors,
   ...rosePineSynced.flavors,
 ];
 
