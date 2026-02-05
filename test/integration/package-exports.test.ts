@@ -15,6 +15,7 @@ const DIST_DIRS = [
 function getFilesRecursively(dir: string, ext: string): string[] {
   const files: string[] = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    // nosemgrep: path-join-resolve-traversal - Safe: entry.name comes from readdirSync, not user input
     const fullPath = join(dir, entry.name);
     if (entry.isDirectory()) {
       files.push(...getFilesRecursively(fullPath, ext));
