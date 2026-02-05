@@ -632,15 +632,18 @@ describe('wireFlavorSelector events', () => {
                 // Return different theme IDs, but we'll find the catppuccin-latte one
                 const index = mockMenuItems.length;
                 const themes = [
-                  'bulma-light',
                   'bulma-dark',
-                  'catppuccin-latte',
+                  'bulma-light',
                   'catppuccin-frappe',
+                  'catppuccin-latte',
                   'catppuccin-macchiato',
                   'catppuccin-mocha',
-                  'dracula',
-                  'github-light',
                   'github-dark',
+                  'github-light',
+                  'dracula',
+                  'rose-pine-dawn',
+                  'rose-pine-moon',
+                  'rose-pine',
                 ];
                 return themes[index] || 'catppuccin-latte';
               }
@@ -753,9 +756,12 @@ describe('wireFlavorSelector events', () => {
             'catppuccin-latte',
             'catppuccin-macchiato',
             'catppuccin-mocha',
-            'dracula',
             'github-dark',
             'github-light',
+            'dracula',
+            'rose-pine-dawn',
+            'rose-pine-moon',
+            'rose-pine',
           ];
           const item = {
             ...mockElement,

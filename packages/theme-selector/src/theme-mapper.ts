@@ -33,6 +33,7 @@ const VENDOR_FAMILY_MAP: Record<string, ThemeFamily> = {
   catppuccin: 'catppuccin',
   github: 'github',
   dracula: 'dracula',
+  'rose-pine': 'rose-pine',
 };
 
 const DEFAULT_FAMILY: ThemeFamily = 'bulma';
@@ -54,6 +55,7 @@ const VENDOR_ICON_MAP: Record<string, string | AppearanceIcons> = {
     dark: 'assets/img/github-logo-dark.png',
   },
   dracula: 'assets/img/dracula-logo.png',
+  'rose-pine': 'assets/img/rose-pine.png',
 };
 
 /** Predefined flavor descriptions */
