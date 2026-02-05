@@ -41,7 +41,8 @@ export async function applyTheme(doc: Document, themeId: string): Promise<void> 
     if (triggerIcon && theme.icon) {
       try {
         triggerIcon.src = resolveAssetPath(theme.icon, baseUrl);
-        const familyName = THEME_FAMILIES[theme.family].name;
+        const familyMeta = THEME_FAMILIES[theme.family];
+        const familyName = familyMeta?.name ?? theme.family;
         triggerIcon.alt = `${familyName} ${theme.name}`;
         triggerIcon.title = `${familyName} ${theme.name}`;
       } catch {
