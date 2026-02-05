@@ -10,6 +10,16 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.13.0] - 2026-02-05
+
+### ✨ Added
+
+- add Rosé Pine theme pack with auto-sync (#328)
+
+### 🔧 Changed
+
+- switch from Blacksmith to GitHub runners (#317)
+
 ## [0.12.33] - 2026-02-02
 
 ### 🐛 Fixed
