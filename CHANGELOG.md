@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.17.0] - 2026-02-06
+
+### ✨ Added
+
+- add Tokyo Night theme pack (#343)
+
 ## [0.16.0] - 2026-02-06
 
 ### ✨ Added
