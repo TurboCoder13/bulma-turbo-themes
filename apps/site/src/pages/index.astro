@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Code } from 'astro:components';
+import { flavors } from '../../../../src/themes/registry.js';
+
+const themeCount = flavors.length;
 
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const installNpm = `npm install turbo-themes`;
@@ -28,7 +31,7 @@ const previewCode = `const theme = {
         <br />for any project
       </h1>
       <p class="hero-subtitle">
-        A design token system with 15 curated color themes. Switch themes instantly with CSS custom properties.
+        A design token system with {themeCount} curated color themes. Switch themes instantly with CSS custom properties.
       </p>
       <div class="hero-actions">
         <a href={`${baseUrl}/docs/`} class="btn btn-primary btn-lg">
@@ -91,7 +94,7 @@ const previewCode = `const theme = {
                 <path d="M12 6v6l4 2"></path>
               </svg>
             </div>
-            <h3 class="card-title">15 Beautiful Themes</h3>
+            <h3 class="card-title">{themeCount} Beautiful Themes</h3>
             <p>Catppuccin, Dracula, GitHub, Solarized, Nord, Rosé Pine and more - carefully crafted dark and light modes.</p>
           </div>
         </div>
