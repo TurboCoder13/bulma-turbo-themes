@@ -46,6 +46,7 @@ export class ThemeSelector {
   /** Selects a theme by tapping (for mobile). */
   async tapTheme(themeId: string): Promise<void> {
     const option = this.page.locator(`.theme-option[data-theme="${themeId}"]`);
+    // Scroll within the theme menu container so the option is visible
     await option.scrollIntoViewIfNeeded();
     await option.tap({ force: true });
     // Wait for theme to be applied

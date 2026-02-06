@@ -1,7 +1,10 @@
 ---
 /**
  * Theme dropdown component for selecting themes.
+ * Renders groups and options from the shared theme metadata.
  */
+import { themeGroups, themeNames, themeIcons } from '../data/theme-meta';
+
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
@@ -30,86 +33,22 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     role="listbox"
     aria-label="Theme options"
   >
-    <div class="theme-group">
-      <div class="theme-group-label">Catppuccin</div>
-      <button class="theme-option" data-theme="catppuccin-mocha" role="option">
-        <img class="theme-icon" src={`${baseUrl}/assets/img/catppuccin-logo-macchiato.png`} alt="Catppuccin" width="20" height="20" />
-        Mocha
-      </button>
-      <button class="theme-option" data-theme="catppuccin-macchiato" role="option">
-        <img class="theme-icon" src={`${baseUrl}/assets/img/catppuccin-logo-macchiato.png`} alt="Catppuccin" width="20" height="20" />
-        Macchiato
-      </button>
-      <button class="theme-option" data-theme="catppuccin-frappe" role="option">
-        <img class="theme-icon" src={`${baseUrl}/assets/img/catppuccin-logo-macchiato.png`} alt="Catppuccin" width="20" height="20" />
-        Frappe
-      </button>
-      <button class="theme-option" data-theme="catppuccin-latte" role="option">
-        <img class="theme-icon" src={`${baseUrl}/assets/img/catppuccin-logo-latte.png`} alt="Catppuccin" width="20" height="20" />
-        Latte
-      </button>
-    </div>
-    <div class="theme-group">
-      <div class="theme-group-label">Dracula</div>
-      <button class="theme-option" data-theme="dracula" role="option">
-        <img class="theme-icon" src={`${baseUrl}/assets/img/dracula-logo.png`} alt="Dracula" width="20" height="20" />
-        Dracula
-      </button>
-    </div>
-    <div class="theme-group">
-      <div class="theme-group-label">GitHub</div>
-      <button class="theme-option" data-theme="github-dark" role="option">
-        <img class="theme-icon" src={`${baseUrl}/assets/img/github-logo-dark.png`} alt="GitHub" width="20" height="20" />
-        Dark
-      </button>
-      <button class="theme-option" data-theme="github-light" role="option">
-        <img class="theme-icon" src={`${baseUrl}/assets/img/github-logo-light.png`} alt="GitHub" width="20" height="20" />
-        Light
-      </button>
-    </div>
-    <div class="theme-group">
-      <div class="theme-group-label">Bulma</div>
-      <button class="theme-option" data-theme="bulma-dark" role="option">
-        <img class="theme-icon" src={`${baseUrl}/assets/img/turbo-themes-logo-dark.png`} alt="Bulma" width="20" height="20" />
-        Dark
-      </button>
-      <button class="theme-option" data-theme="bulma-light" role="option">
-        <img class="theme-icon" src={`${baseUrl}/assets/img/turbo-themes-logo.png`} alt="Bulma" width="20" height="20" />
-        Light
-      </button>
-    </div>
-    <div class="theme-group">
-      <div class="theme-group-label">Nord</div>
-      <button class="theme-option" data-theme="nord" role="option">
-        <img class="theme-icon" src={`${baseUrl}/assets/img/nord.png`} alt="Nord" width="20" height="20" />
-        Nord
-      </button>
-    </div>
-    <div class="theme-group">
-      <div class="theme-group-label">Solarized</div>
-      <button class="theme-option" data-theme="solarized-dark" role="option">
-        <img class="theme-icon" src={`${baseUrl}/assets/img/solarized-dark.png`} alt="Solarized" width="20" height="20" />
-        Dark
-      </button>
-      <button class="theme-option" data-theme="solarized-light" role="option">
-        <img class="theme-icon" src={`${baseUrl}/assets/img/solarized-light.png`} alt="Solarized" width="20" height="20" />
-        Light
-      </button>
-    </div>
-    <div class="theme-group">
-      <div class="theme-group-label">Rosé Pine</div>
-      <button class="theme-option" data-theme="rose-pine" role="option">
-        <img class="theme-icon" src={`${baseUrl}/assets/img/rose-pine.png`} alt="Rosé Pine" width="20" height="20" />
-        Rosé Pine
-      </button>
-      <button class="theme-option" data-theme="rose-pine-moon" role="option">
-        <img class="theme-icon" src={`${baseUrl}/assets/img/rose-pine-moon.png`} alt="Rosé Pine" width="20" height="20" />
-        Moon
-      </button>
-      <button class="theme-option" data-theme="rose-pine-dawn" role="option">
-        <img class="theme-icon" src={`${baseUrl}/assets/img/rose-pine-dawn.png`} alt="Rosé Pine" width="20" height="20" />
-        Dawn
-      </button>
-    </div>
+    {themeGroups.map((group) => (
+      <div class="theme-group">
+        <div class="theme-group-label">{group.displayName}</div>
+        {group.flavors.map((themeId) => (
+          <button class="theme-option" data-theme={themeId} role="option">
+            <img
+              class="theme-icon"
+              src={`${baseUrl}/assets/img/${themeIcons[themeId]}`}
+              alt={group.displayName}
+              width="20"
+              height="20"
+            />
+            {themeNames[themeId]}
+          </button>
+        ))}
+      </div>
+    ))}
   </div>
 </div>

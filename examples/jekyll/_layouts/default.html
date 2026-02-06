@@ -14,21 +14,39 @@
       href="{{ '/assets/css/themes/catppuccin-mocha.css' | relative_url }}"
     />
 
+    <!-- Shared theme whitelist (used by FOUC prevention, select, and main script) -->
+    <script>
+      var THEMES = [
+        { id: 'bulma-dark', name: 'Bulma Dark' },
+        { id: 'bulma-light', name: 'Bulma Light' },
+        { id: 'catppuccin-mocha', name: 'Catppuccin Mocha' },
+        { id: 'catppuccin-macchiato', name: 'Catppuccin Macchiato' },
+        { id: 'catppuccin-frappe', name: 'Catppuccin Frappe' },
+        { id: 'catppuccin-latte', name: 'Catppuccin Latte' },
+        { id: 'dracula', name: 'Dracula' },
+        { id: 'github-dark', name: 'GitHub Dark' },
+        { id: 'github-light', name: 'GitHub Light' },
+        { id: 'gruvbox-dark-hard', name: 'Gruvbox Dark Hard' },
+        { id: 'gruvbox-dark', name: 'Gruvbox Dark' },
+        { id: 'gruvbox-dark-soft', name: 'Gruvbox Dark Soft' },
+        { id: 'gruvbox-light-hard', name: 'Gruvbox Light Hard' },
+        { id: 'gruvbox-light', name: 'Gruvbox Light' },
+        { id: 'gruvbox-light-soft', name: 'Gruvbox Light Soft' },
+        { id: 'nord', name: 'Nord' },
+        { id: 'rose-pine', name: 'Rosé Pine' },
+        { id: 'rose-pine-moon', name: 'Rosé Pine Moon' },
+        { id: 'rose-pine-dawn', name: 'Rosé Pine Dawn' },
+        { id: 'solarized-dark', name: 'Solarized Dark' },
+        { id: 'solarized-light', name: 'Solarized Light' },
+      ];
+      var VALID_THEMES = THEMES.map(function (t) {
+        return t.id;
+      });
+    </script>
     <!-- FOUC Prevention -->
     <script>
       (function () {
         var DEFAULT_THEME = 'catppuccin-mocha';
-        var VALID_THEMES = [
-          'catppuccin-mocha',
-          'catppuccin-macchiato',
-          'catppuccin-frappe',
-          'catppuccin-latte',
-          'dracula',
-          'github-dark',
-          'github-light',
-          'bulma-dark',
-          'bulma-light',
-        ];
         var saved = localStorage.getItem('turbo-theme');
         var theme = saved && VALID_THEMES.indexOf(saved) !== -1 ? saved : DEFAULT_THEME;
 
@@ -241,15 +259,7 @@
         </h1>
         <div class="theme-selector-wrapper">
           <label class="theme-selector-label" for="theme-selector">Theme</label>
-          <select id="theme-selector" aria-label="Select theme">
-            <option value="catppuccin-mocha">Catppuccin Mocha</option>
-            <option value="catppuccin-latte">Catppuccin Latte</option>
-            <option value="dracula">Dracula</option>
-            <option value="github-dark">GitHub Dark</option>
-            <option value="github-light">GitHub Light</option>
-            <option value="bulma-dark">Bulma Dark</option>
-            <option value="bulma-light">Bulma Light</option>
-          </select>
+          <select id="theme-selector" aria-label="Select theme"></select>
         </div>
       </header>
 
@@ -264,15 +274,6 @@
       (function () {
         var STORAGE_KEY = 'turbo-theme';
         var DEFAULT_THEME = 'catppuccin-mocha';
-        var VALID_THEMES = [
-          'catppuccin-mocha',
-          'catppuccin-latte',
-          'dracula',
-          'github-dark',
-          'github-light',
-          'bulma-dark',
-          'bulma-light',
-        ];
 
         var selector = document.getElementById('theme-selector');
         var themeLink = document.getElementById('theme-css');
@@ -306,6 +307,12 @@
         } catch (e) {}
 
         if (selector) {
+          THEMES.forEach(function (t) {
+            var opt = document.createElement('option');
+            opt.value = t.id;
+            opt.textContent = t.name;
+            selector.appendChild(opt);
+          });
           selector.value = initial;
           selector.addEventListener('change', function (e) {
             applyTheme(e.target.value);

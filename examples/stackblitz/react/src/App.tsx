@@ -1,19 +1,5 @@
 import { useState, useEffect } from 'react';
-
-const THEMES = [
-  { id: 'catppuccin-mocha', name: 'Catppuccin Mocha' },
-  { id: 'catppuccin-latte', name: 'Catppuccin Latte' },
-  { id: 'dracula', name: 'Dracula' },
-  { id: 'github-dark', name: 'GitHub Dark' },
-  { id: 'github-light', name: 'GitHub Light' },
-] as const;
-
-const VALID_THEME_IDS = THEMES.map(t => t.id);
-const DEFAULT_THEME = 'catppuccin-mocha';
-
-function isValidTheme(themeId: string): themeId is typeof THEMES[number]['id'] {
-  return VALID_THEME_IDS.includes(themeId as typeof THEMES[number]['id']);
-}
+import { THEMES, DEFAULT_THEME, isValidTheme } from './themes';
 
 function useTheme() {
   const [theme, setThemeState] = useState(() => {

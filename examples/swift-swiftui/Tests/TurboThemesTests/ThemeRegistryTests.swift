@@ -20,9 +20,9 @@ final class ThemeRegistryTests: XCTestCase {
     }
 
     func testExpectedThemeCount() {
-        // We expect 9 themes based on the ThemeId enum
-        XCTAssertEqual(ThemeId.allCases.count, 9)
-        XCTAssertEqual(ThemeRegistry.allThemes.count, 9)
+        // We expect 21 themes based on the ThemeId enum
+        XCTAssertEqual(ThemeId.allCases.count, 21)
+        XCTAssertEqual(ThemeRegistry.allThemes.count, 21)
     }
 
     // MARK: - Theme Lookup Tests
@@ -61,6 +61,18 @@ final class ThemeRegistryTests: XCTestCase {
             .githubLight: "GitHub Light",
             .bulmaLight: "Bulma Light",
             .bulmaDark: "Bulma Dark",
+            .gruvboxDarkHard: "Gruvbox Dark Hard",
+            .gruvboxDark: "Gruvbox Dark",
+            .gruvboxDarkSoft: "Gruvbox Dark Soft",
+            .gruvboxLightHard: "Gruvbox Light Hard",
+            .gruvboxLight: "Gruvbox Light",
+            .gruvboxLightSoft: "Gruvbox Light Soft",
+            .nord: "Nord",
+            .solarizedDark: "Solarized Dark",
+            .solarizedLight: "Solarized Light",
+            .rosePine: "Rosé Pine",
+            .rosePineMoon: "Rosé Pine Moon",
+            .rosePineDawn: "Rosé Pine Dawn",
         ]
 
         for (themeId, expectedLabel) in expectedLabels {
@@ -79,6 +91,18 @@ final class ThemeRegistryTests: XCTestCase {
         XCTAssertEqual(ThemeId.githubLight.rawValue, "github-light")
         XCTAssertEqual(ThemeId.bulmaLight.rawValue, "bulma-light")
         XCTAssertEqual(ThemeId.bulmaDark.rawValue, "bulma-dark")
+        XCTAssertEqual(ThemeId.gruvboxDarkHard.rawValue, "gruvbox-dark-hard")
+        XCTAssertEqual(ThemeId.gruvboxDark.rawValue, "gruvbox-dark")
+        XCTAssertEqual(ThemeId.gruvboxDarkSoft.rawValue, "gruvbox-dark-soft")
+        XCTAssertEqual(ThemeId.gruvboxLightHard.rawValue, "gruvbox-light-hard")
+        XCTAssertEqual(ThemeId.gruvboxLight.rawValue, "gruvbox-light")
+        XCTAssertEqual(ThemeId.gruvboxLightSoft.rawValue, "gruvbox-light-soft")
+        XCTAssertEqual(ThemeId.nord.rawValue, "nord")
+        XCTAssertEqual(ThemeId.solarizedDark.rawValue, "solarized-dark")
+        XCTAssertEqual(ThemeId.solarizedLight.rawValue, "solarized-light")
+        XCTAssertEqual(ThemeId.rosePine.rawValue, "rose-pine")
+        XCTAssertEqual(ThemeId.rosePineMoon.rawValue, "rose-pine-moon")
+        XCTAssertEqual(ThemeId.rosePineDawn.rawValue, "rose-pine-dawn")
     }
 
     // MARK: - Default Palette Tests

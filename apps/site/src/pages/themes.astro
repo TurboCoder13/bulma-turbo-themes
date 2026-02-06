@@ -1,6 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { themeGroups, themeNames as shortLabels, themeAppearances } from '../data/theme-meta';
+
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Build full theme names + mode for the explorer script (derived from theme-meta.ts)
+const themeExplorerMeta: Record<string, { name: string; mode: string }> = {};
+for (const group of themeGroups) {
+  for (const flavor of group.flavors) {
+    const short = shortLabels[flavor] || flavor;
+    const fullName = short === group.displayName ? group.displayName : `${group.displayName} ${short}`;
+    const mode = themeAppearances[flavor] === 'light' ? 'Light' : 'Dark';
+    themeExplorerMeta[flavor] = { name: fullName, mode };
+  }
+}
+const themeExplorerMetaJson = JSON.stringify(themeExplorerMeta);
 ---
 
 <BaseLayout title="Themes" wide={true}>
@@ -48,6 +62,42 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
           <button class="theme-option" data-theme="dracula">
             <span class="theme-dot" style="background: #282a36"></span>
             Dracula
+          </button>
+        </div>
+      </div>
+
+      <div class="theme-family">
+        <button class="family-header" aria-expanded="true">
+          <span class="family-label">
+            <img class="family-icon" src={`${baseUrl}/assets/img/gruvbox-dark.png`} alt="" width="24" height="24" />
+            <span class="family-name">Gruvbox</span>
+          </span>
+          <span class="family-count">6</span>
+        </button>
+        <div class="family-themes">
+          <button class="theme-option" data-theme="gruvbox-dark-hard">
+            <span class="theme-dot" style="background: #1d2021"></span>
+            Dark Hard
+          </button>
+          <button class="theme-option" data-theme="gruvbox-dark">
+            <span class="theme-dot" style="background: #282828"></span>
+            Dark
+          </button>
+          <button class="theme-option" data-theme="gruvbox-dark-soft">
+            <span class="theme-dot" style="background: #32302f"></span>
+            Dark Soft
+          </button>
+          <button class="theme-option" data-theme="gruvbox-light-hard">
+            <span class="theme-dot" style="background: #f9f5d7"></span>
+            Light Hard
+          </button>
+          <button class="theme-option" data-theme="gruvbox-light">
+            <span class="theme-dot" style="background: #fbf1c7"></span>
+            Light
+          </button>
+          <button class="theme-option" data-theme="gruvbox-light-soft">
+            <span class="theme-dot" style="background: #f2e5bc"></span>
+            Light Soft
           </button>
         </div>
       </div>
@@ -313,25 +363,10 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     </main>
   </div>
 
-  <script is:inline>
+  <script is:inline define:vars={{ themeExplorerMetaJson }}>
   (function() {
-    var themeNames = {
-      'catppuccin-mocha': { name: 'Catppuccin Mocha', mode: 'Dark' },
-      'catppuccin-macchiato': { name: 'Catppuccin Macchiato', mode: 'Dark' },
-      'catppuccin-frappe': { name: 'Catppuccin Frappé', mode: 'Dark' },
-      'catppuccin-latte': { name: 'Catppuccin Latte', mode: 'Light' },
-      'dracula': { name: 'Dracula', mode: 'Dark' },
-      'github-dark': { name: 'GitHub Dark', mode: 'Dark' },
-      'github-light': { name: 'GitHub Light', mode: 'Light' },
-      'bulma-dark': { name: 'Bulma Dark', mode: 'Dark' },
-      'bulma-light': { name: 'Bulma Light', mode: 'Light' },
-      'nord': { name: 'Nord', mode: 'Dark' },
-      'solarized-dark': { name: 'Solarized Dark', mode: 'Dark' },
-      'solarized-light': { name: 'Solarized Light', mode: 'Light' },
-      'rose-pine': { name: 'Rosé Pine', mode: 'Dark' },
-      'rose-pine-moon': { name: 'Rosé Pine Moon', mode: 'Dark' },
-      'rose-pine-dawn': { name: 'Rosé Pine Dawn', mode: 'Light' }
-    };
+    // Theme metadata derived from theme-meta.ts at build time
+    var themeNames = JSON.parse(themeExplorerMetaJson);
 
     function updatePalette() {
       var styles = getComputedStyle(document.documentElement);
@@ -404,6 +439,8 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         navigator.clipboard.writeText(text).then(function() {
           el.classList.add('copied');
           setTimeout(function() { el.classList.remove('copied'); }, 1500);
+        }).catch(function() {
+          console.warn('Failed to copy to clipboard');
         });
       });
     });

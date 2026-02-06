@@ -12,6 +12,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 ## [0.15.2] - 2026-02-06
 
+### ✨ Added
+
+- Gruvbox theme pack with 6 flavors (dark hard, dark, dark soft, light hard, light,
+  light soft) (#344)
+- UI and token updates for Gruvbox theme integration
+
 ### 🐛 Fixed
 
 - use correct GitHub username in CODEOWNERS and docs

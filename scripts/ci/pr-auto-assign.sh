@@ -8,6 +8,16 @@
 
 set -euo pipefail
 
+# Fail early with clear messages instead of cryptic set -u errors
+if [[ -z "${GH_TOKEN:-}" ]]; then
+  echo "Error: GH_TOKEN is not set" >&2
+  exit 1
+fi
+if [[ -z "${PR_NUMBER:-}" ]]; then
+  echo "Error: PR_NUMBER is not set" >&2
+  exit 1
+fi
+
 CODEOWNERS_FILE=".github/CODEOWNERS"
 
 if [[ ! -f "$CODEOWNERS_FILE" ]]; then

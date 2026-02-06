@@ -5,4 +5,12 @@
 
 export type ThemeMode = 'theme';
 export type ThemeAppearance = 'light' | 'dark';
-export type ThemeFamily = 'bulma' | 'catppuccin' | 'github' | 'dracula' | 'nord' | 'rose-pine' | 'solarized';
+export type ThemeFamily =
+  | 'bulma'
+  | 'catppuccin'
+  | 'github'
+  | 'dracula'
+  | 'gruvbox'
+  | 'nord'
+  | 'rose-pine'
+  | 'solarized';

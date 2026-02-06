@@ -63,6 +63,15 @@ print_status "$YELLOW" "  Copying JavaScript bundle to assets/js..."
 mkdir -p assets/js
 if [ -f "dist/index.js" ]; then
   cp -f dist/index.js assets/js/theme-selector.js
+  # Fix sourceMappingURL to match the renamed file (portable sed for macOS/Linux)
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' 's|//# sourceMappingURL=index.js.map|//# sourceMappingURL=theme-selector.js.map|' assets/js/theme-selector.js
+  else
+    sed -i 's|//# sourceMappingURL=index.js.map|//# sourceMappingURL=theme-selector.js.map|' assets/js/theme-selector.js
+  fi
+  if [ -f "dist/index.js.map" ]; then
+    cp -f dist/index.js.map assets/js/theme-selector.js.map
+  fi
   print_status "$GREEN" "  ✅ JavaScript bundle copied to assets/js/theme-selector.js"
 else
   print_status "$RED" "  ❌ JavaScript bundle not found: dist/index.js"
