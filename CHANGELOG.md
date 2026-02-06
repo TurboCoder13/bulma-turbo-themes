@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.16.0] - 2026-02-06
+
+### ✨ Added
+
+- add Gruvbox theme pack with 6 flavors (#344)
+
 ## [0.15.2] - 2026-02-06
 
 ### ✨ Added
