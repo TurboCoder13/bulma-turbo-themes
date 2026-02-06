@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Code } from 'astro:components';
 import { flavors } from '../../../../src/themes/registry.js';
+import { themeNames, themeIcons } from '../data/theme-meta';
 
 const themeCount = flavors.length;
 
@@ -54,6 +55,9 @@ const previewCode = `const theme = {
           <button class="hero-theme-btn" data-theme-preview="dracula" title="Dracula">
             <img class="hero-theme-icon" src={`${baseUrl}/assets/img/dracula-logo.png`} alt="Dracula" width="28" height="28" />
           </button>
+          <button class="hero-theme-btn" data-theme-preview="gruvbox-dark" title="Gruvbox Dark">
+            <img class="hero-theme-icon" src={`${baseUrl}/assets/img/gruvbox-dark.png`} alt="Gruvbox Dark" width="28" height="28" />
+          </button>
           <button class="hero-theme-btn" data-theme-preview="github-dark" title="GitHub Dark">
             <img class="hero-theme-icon" src={`${baseUrl}/assets/img/github-logo-dark.png`} alt="GitHub Dark" width="28" height="28" />
           </button>
@@ -95,7 +99,7 @@ const previewCode = `const theme = {
               </svg>
             </div>
             <h3 class="card-title">{themeCount} Beautiful Themes</h3>
-            <p>Catppuccin, Dracula, GitHub, Solarized, Nord, Rosé Pine and more - carefully crafted dark and light modes.</p>
+            <p>Catppuccin, Gruvbox, Dracula, GitHub, Solarized, Nord, Rosé Pine and more - carefully crafted dark and light modes.</p>
           </div>
         </div>
 
@@ -328,43 +332,7 @@ const previewCode = `const theme = {
     </div>
   </section>
 
-  <script is:inline>
-    // Theme metadata constants (allocated once, reused by click handler)
-    var themeNames = {
-      'catppuccin-mocha': 'Mocha',
-      'catppuccin-macchiato': 'Macchiato',
-      'catppuccin-frappe': 'Frappé',
-      'catppuccin-latte': 'Latte',
-      'dracula': 'Dracula',
-      'github-dark': 'Dark',
-      'github-light': 'Light',
-      'bulma-dark': 'Dark',
-      'bulma-light': 'Light',
-      'nord': 'Nord',
-      'solarized-dark': 'Dark',
-      'solarized-light': 'Light',
-      'rose-pine': 'Rosé Pine',
-      'rose-pine-moon': 'Moon',
-      'rose-pine-dawn': 'Dawn'
-    };
-    var themeIcons = {
-      'catppuccin-mocha': 'catppuccin-logo-macchiato.png',
-      'catppuccin-macchiato': 'catppuccin-logo-macchiato.png',
-      'catppuccin-frappe': 'catppuccin-logo-macchiato.png',
-      'catppuccin-latte': 'catppuccin-logo-latte.png',
-      'dracula': 'dracula-logo.png',
-      'github-dark': 'github-logo-dark.png',
-      'github-light': 'github-logo-light.png',
-      'bulma-dark': 'turbo-themes-logo-dark.png',
-      'bulma-light': 'turbo-themes-logo.png',
-      'nord': 'nord.png',
-      'solarized-dark': 'solarized-dark.png',
-      'solarized-light': 'solarized-light.png',
-      'rose-pine': 'rose-pine.png',
-      'rose-pine-moon': 'rose-pine-moon.png',
-      'rose-pine-dawn': 'rose-pine-dawn.png'
-    };
-
+  <script is:inline define:vars={{ themeNames, themeIcons }}>
     // Hero theme button click handler
     document.querySelectorAll('.hero-theme-btn[data-theme-preview]').forEach(function(btn) {
       btn.addEventListener('click', function() {

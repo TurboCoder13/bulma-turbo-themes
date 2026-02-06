@@ -5,6 +5,7 @@ import type { ThemeFlavor } from './types.js';
 import { bulmaThemes } from './packs/bulma.js';
 import { catppuccinSynced } from './packs/catppuccin.synced.js';
 import { draculaThemes } from './packs/dracula.js';
+import { gruvboxThemes } from './packs/gruvbox.js';
 import { githubSynced } from './packs/github.synced.js';
 import { nordThemes } from './packs/nord.js';
 import { rosePineSynced } from './packs/rose-pine.synced.js';
@@ -15,6 +16,7 @@ const allFlavors: ThemeFlavor[] = [
   ...bulmaThemes.flavors,
   ...catppuccinSynced.flavors,
   ...draculaThemes.flavors,
+  ...gruvboxThemes.flavors,
   ...githubSynced.flavors,
   ...nordThemes.flavors,
   ...rosePineSynced.flavors,

@@ -24,10 +24,22 @@
           'catppuccin-frappe',
           'catppuccin-latte',
           'dracula',
+          'gruvbox-dark-hard',
+          'gruvbox-dark',
+          'gruvbox-dark-soft',
+          'gruvbox-light-hard',
+          'gruvbox-light',
+          'gruvbox-light-soft',
           'github-dark',
           'github-light',
           'bulma-dark',
           'bulma-light',
+          'nord',
+          'solarized-dark',
+          'solarized-light',
+          'rose-pine',
+          'rose-pine-moon',
+          'rose-pine-dawn',
         ];
         var saved = localStorage.getItem('turbo-theme');
         var theme = saved && VALID_THEMES.indexOf(saved) !== -1 ? saved : DEFAULT_THEME;
@@ -243,12 +255,26 @@
           <label class="theme-selector-label" for="theme-selector">Theme</label>
           <select id="theme-selector" aria-label="Select theme">
             <option value="catppuccin-mocha">Catppuccin Mocha</option>
+            <option value="catppuccin-macchiato">Catppuccin Macchiato</option>
+            <option value="catppuccin-frappe">Catppuccin Frappe</option>
             <option value="catppuccin-latte">Catppuccin Latte</option>
             <option value="dracula">Dracula</option>
+            <option value="gruvbox-dark-hard">Gruvbox Dark Hard</option>
+            <option value="gruvbox-dark">Gruvbox Dark</option>
+            <option value="gruvbox-dark-soft">Gruvbox Dark Soft</option>
+            <option value="gruvbox-light-hard">Gruvbox Light Hard</option>
+            <option value="gruvbox-light">Gruvbox Light</option>
+            <option value="gruvbox-light-soft">Gruvbox Light Soft</option>
             <option value="github-dark">GitHub Dark</option>
             <option value="github-light">GitHub Light</option>
             <option value="bulma-dark">Bulma Dark</option>
             <option value="bulma-light">Bulma Light</option>
+            <option value="nord">Nord</option>
+            <option value="solarized-dark">Solarized Dark</option>
+            <option value="solarized-light">Solarized Light</option>
+            <option value="rose-pine">Rosé Pine</option>
+            <option value="rose-pine-moon">Rosé Pine Moon</option>
+            <option value="rose-pine-dawn">Rosé Pine Dawn</option>
           </select>
         </div>
       </header>
@@ -266,12 +292,26 @@
         var DEFAULT_THEME = 'catppuccin-mocha';
         var VALID_THEMES = [
           'catppuccin-mocha',
+          'catppuccin-macchiato',
+          'catppuccin-frappe',
           'catppuccin-latte',
           'dracula',
+          'gruvbox-dark-hard',
+          'gruvbox-dark',
+          'gruvbox-dark-soft',
+          'gruvbox-light-hard',
+          'gruvbox-light',
+          'gruvbox-light-soft',
           'github-dark',
           'github-light',
           'bulma-dark',
           'bulma-light',
+          'nord',
+          'solarized-dark',
+          'solarized-light',
+          'rose-pine',
+          'rose-pine-moon',
+          'rose-pine-dawn',
         ];
 
         var selector = document.getElementById('theme-selector');

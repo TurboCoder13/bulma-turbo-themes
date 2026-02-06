@@ -162,6 +162,198 @@ public enum ThemeRegistry {
                 stateInfo: Color(hex: "#3b82f6")
             )
         ),
+        .gruvboxDarkHard: ThemeDefinition(
+            id: .gruvboxDarkHard,
+            label: "Gruvbox Dark Hard",
+            palette: ThemePalette(
+                backgroundBase: Color(hex: "#1d2021"),
+                backgroundSurface: Color(hex: "#282828"),
+                heading: Color(hex: "#b8bb26"),
+                bodyPrimary: Color(hex: "#ebdbb2"),
+                bodySecondary: Color(hex: "#d5c4a1"),
+                brandPrimary: Color(hex: "#d79921"),
+                stateSuccess: Color(hex: "#b8bb26"),
+                stateDanger: Color(hex: "#fb4934"),
+                stateWarning: Color(hex: "#fabd2f"),
+                stateInfo: Color(hex: "#83a598")
+            )
+        ),
+        .gruvboxDark: ThemeDefinition(
+            id: .gruvboxDark,
+            label: "Gruvbox Dark",
+            palette: ThemePalette(
+                backgroundBase: Color(hex: "#282828"),
+                backgroundSurface: Color(hex: "#3c3836"),
+                heading: Color(hex: "#b8bb26"),
+                bodyPrimary: Color(hex: "#ebdbb2"),
+                bodySecondary: Color(hex: "#d5c4a1"),
+                brandPrimary: Color(hex: "#d79921"),
+                stateSuccess: Color(hex: "#b8bb26"),
+                stateDanger: Color(hex: "#fb4934"),
+                stateWarning: Color(hex: "#fabd2f"),
+                stateInfo: Color(hex: "#83a598")
+            )
+        ),
+        .gruvboxDarkSoft: ThemeDefinition(
+            id: .gruvboxDarkSoft,
+            label: "Gruvbox Dark Soft",
+            palette: ThemePalette(
+                backgroundBase: Color(hex: "#32302f"),
+                backgroundSurface: Color(hex: "#3c3836"),
+                heading: Color(hex: "#b8bb26"),
+                bodyPrimary: Color(hex: "#ebdbb2"),
+                bodySecondary: Color(hex: "#d5c4a1"),
+                brandPrimary: Color(hex: "#d79921"),
+                stateSuccess: Color(hex: "#b8bb26"),
+                stateDanger: Color(hex: "#fb4934"),
+                stateWarning: Color(hex: "#fabd2f"),
+                stateInfo: Color(hex: "#83a598")
+            )
+        ),
+        .gruvboxLightHard: ThemeDefinition(
+            id: .gruvboxLightHard,
+            label: "Gruvbox Light Hard",
+            palette: ThemePalette(
+                backgroundBase: Color(hex: "#f9f5d7"),
+                backgroundSurface: Color(hex: "#fbf1c7"),
+                heading: Color(hex: "#79740e"),
+                bodyPrimary: Color(hex: "#3c3836"),
+                bodySecondary: Color(hex: "#504945"),
+                brandPrimary: Color(hex: "#b57614"),
+                stateSuccess: Color(hex: "#79740e"),
+                stateDanger: Color(hex: "#9d0006"),
+                stateWarning: Color(hex: "#b57614"),
+                stateInfo: Color(hex: "#076678")
+            )
+        ),
+        .gruvboxLight: ThemeDefinition(
+            id: .gruvboxLight,
+            label: "Gruvbox Light",
+            palette: ThemePalette(
+                backgroundBase: Color(hex: "#fbf1c7"),
+                backgroundSurface: Color(hex: "#ebdbb2"),
+                heading: Color(hex: "#79740e"),
+                bodyPrimary: Color(hex: "#3c3836"),
+                bodySecondary: Color(hex: "#504945"),
+                brandPrimary: Color(hex: "#b57614"),
+                stateSuccess: Color(hex: "#79740e"),
+                stateDanger: Color(hex: "#9d0006"),
+                stateWarning: Color(hex: "#b57614"),
+                stateInfo: Color(hex: "#076678")
+            )
+        ),
+        .gruvboxLightSoft: ThemeDefinition(
+            id: .gruvboxLightSoft,
+            label: "Gruvbox Light Soft",
+            palette: ThemePalette(
+                backgroundBase: Color(hex: "#f2e5bc"),
+                backgroundSurface: Color(hex: "#ebdbb2"),
+                heading: Color(hex: "#79740e"),
+                bodyPrimary: Color(hex: "#3c3836"),
+                bodySecondary: Color(hex: "#504945"),
+                brandPrimary: Color(hex: "#b57614"),
+                stateSuccess: Color(hex: "#79740e"),
+                stateDanger: Color(hex: "#9d0006"),
+                stateWarning: Color(hex: "#b57614"),
+                stateInfo: Color(hex: "#076678")
+            )
+        ),
+        .nord: ThemeDefinition(
+            id: .nord,
+            label: "Nord",
+            palette: ThemePalette(
+                backgroundBase: Color(hex: "#2e3440"),
+                backgroundSurface: Color(hex: "#3b4252"),
+                heading: Color(hex: "#88c0d0"),
+                bodyPrimary: Color(hex: "#eceff4"),
+                bodySecondary: Color(hex: "#d8dee9"),
+                brandPrimary: Color(hex: "#88c0d0"),
+                stateSuccess: Color(hex: "#a3be8c"),
+                stateDanger: Color(hex: "#bf616a"),
+                stateWarning: Color(hex: "#ebcb8b"),
+                stateInfo: Color(hex: "#81a1c1")
+            )
+        ),
+        .solarizedDark: ThemeDefinition(
+            id: .solarizedDark,
+            label: "Solarized Dark",
+            palette: ThemePalette(
+                backgroundBase: Color(hex: "#002b36"),
+                backgroundSurface: Color(hex: "#073642"),
+                heading: Color(hex: "#268bd2"),
+                bodyPrimary: Color(hex: "#839496"),
+                bodySecondary: Color(hex: "#657b83"),
+                brandPrimary: Color(hex: "#268bd2"),
+                stateSuccess: Color(hex: "#859900"),
+                stateDanger: Color(hex: "#dc322f"),
+                stateWarning: Color(hex: "#b58900"),
+                stateInfo: Color(hex: "#2aa198")
+            )
+        ),
+        .solarizedLight: ThemeDefinition(
+            id: .solarizedLight,
+            label: "Solarized Light",
+            palette: ThemePalette(
+                backgroundBase: Color(hex: "#fdf6e3"),
+                backgroundSurface: Color(hex: "#eee8d5"),
+                heading: Color(hex: "#268bd2"),
+                bodyPrimary: Color(hex: "#657b83"),
+                bodySecondary: Color(hex: "#839496"),
+                brandPrimary: Color(hex: "#268bd2"),
+                stateSuccess: Color(hex: "#859900"),
+                stateDanger: Color(hex: "#dc322f"),
+                stateWarning: Color(hex: "#b58900"),
+                stateInfo: Color(hex: "#2aa198")
+            )
+        ),
+        .rosePine: ThemeDefinition(
+            id: .rosePine,
+            label: "Rosé Pine",
+            palette: ThemePalette(
+                backgroundBase: Color(hex: "#191724"),
+                backgroundSurface: Color(hex: "#1f1d2e"),
+                heading: Color(hex: "#e0def4"),
+                bodyPrimary: Color(hex: "#e0def4"),
+                bodySecondary: Color(hex: "#908caa"),
+                brandPrimary: Color(hex: "#c4a7e7"),
+                stateSuccess: Color(hex: "#31748f"),
+                stateDanger: Color(hex: "#eb6f92"),
+                stateWarning: Color(hex: "#f6c177"),
+                stateInfo: Color(hex: "#9ccfd8")
+            )
+        ),
+        .rosePineMoon: ThemeDefinition(
+            id: .rosePineMoon,
+            label: "Rosé Pine Moon",
+            palette: ThemePalette(
+                backgroundBase: Color(hex: "#232136"),
+                backgroundSurface: Color(hex: "#2a273f"),
+                heading: Color(hex: "#e0def4"),
+                bodyPrimary: Color(hex: "#e0def4"),
+                bodySecondary: Color(hex: "#908caa"),
+                brandPrimary: Color(hex: "#c4a7e7"),
+                stateSuccess: Color(hex: "#3e8fb0"),
+                stateDanger: Color(hex: "#eb6f92"),
+                stateWarning: Color(hex: "#f6c177"),
+                stateInfo: Color(hex: "#9ccfd8")
+            )
+        ),
+        .rosePineDawn: ThemeDefinition(
+            id: .rosePineDawn,
+            label: "Rosé Pine Dawn",
+            palette: ThemePalette(
+                backgroundBase: Color(hex: "#faf4ed"),
+                backgroundSurface: Color(hex: "#fffaf3"),
+                heading: Color(hex: "#575279"),
+                bodyPrimary: Color(hex: "#575279"),
+                bodySecondary: Color(hex: "#797593"),
+                brandPrimary: Color(hex: "#907aa9"),
+                stateSuccess: Color(hex: "#56949f"),
+                stateDanger: Color(hex: "#b4637a"),
+                stateWarning: Color(hex: "#ea9d34"),
+                stateInfo: Color(hex: "#d7827e")
+            )
+        ),
     ]
 
     /// Get a theme by its ID.

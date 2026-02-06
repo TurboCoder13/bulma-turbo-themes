@@ -4,10 +4,22 @@ const VALID_THEMES = [
   'catppuccin-frappe',
   'catppuccin-latte',
   'dracula',
+  'gruvbox-dark-hard',
+  'gruvbox-dark',
+  'gruvbox-dark-soft',
+  'gruvbox-light-hard',
+  'gruvbox-light',
+  'gruvbox-light-soft',
   'github-dark',
   'github-light',
   'bulma-dark',
   'bulma-light',
+  'nord',
+  'solarized-dark',
+  'solarized-light',
+  'rose-pine',
+  'rose-pine-moon',
+  'rose-pine-dawn',
 ];
 const DEFAULT_THEME = 'catppuccin-mocha';
 

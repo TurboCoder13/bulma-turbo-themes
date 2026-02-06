@@ -165,6 +165,18 @@ final class ThemeAccessibilityTests: XCTestCase {
         case .githubLight: return "#ffffff"
         case .bulmaLight: return "#ffffff"
         case .bulmaDark: return "#1a1a2e"
+        case .gruvboxDarkHard: return "#1d2021"
+        case .gruvboxDark: return "#282828"
+        case .gruvboxDarkSoft: return "#32302f"
+        case .gruvboxLightHard: return "#f9f5d7"
+        case .gruvboxLight: return "#fbf1c7"
+        case .gruvboxLightSoft: return "#f2e5bc"
+        case .nord: return "#2e3440"
+        case .solarizedDark: return "#002b36"
+        case .solarizedLight: return "#fdf6e3"
+        case .rosePine: return "#191724"
+        case .rosePineMoon: return "#232136"
+        case .rosePineDawn: return "#faf4ed"
         }
     }
 
@@ -179,6 +191,18 @@ final class ThemeAccessibilityTests: XCTestCase {
         case .githubLight: return "#24292f"
         case .bulmaLight: return "#363636"
         case .bulmaDark: return "#e5e7eb"
+        case .gruvboxDarkHard: return "#ebdbb2"
+        case .gruvboxDark: return "#ebdbb2"
+        case .gruvboxDarkSoft: return "#ebdbb2"
+        case .gruvboxLightHard: return "#3c3836"
+        case .gruvboxLight: return "#3c3836"
+        case .gruvboxLightSoft: return "#3c3836"
+        case .nord: return "#eceff4"
+        case .solarizedDark: return "#839496"
+        case .solarizedLight: return "#657b83"
+        case .rosePine: return "#e0def4"
+        case .rosePineMoon: return "#e0def4"
+        case .rosePineDawn: return "#575279"
         }
     }
 
@@ -193,6 +217,18 @@ final class ThemeAccessibilityTests: XCTestCase {
         case .githubLight: return "#57606a"
         case .bulmaLight: return "#4a4a4a"
         case .bulmaDark: return "#cbd5e1"
+        case .gruvboxDarkHard: return "#d5c4a1"
+        case .gruvboxDark: return "#d5c4a1"
+        case .gruvboxDarkSoft: return "#d5c4a1"
+        case .gruvboxLightHard: return "#504945"
+        case .gruvboxLight: return "#504945"
+        case .gruvboxLightSoft: return "#504945"
+        case .nord: return "#d8dee9"
+        case .solarizedDark: return "#657b83"
+        case .solarizedLight: return "#839496"
+        case .rosePine: return "#908caa"
+        case .rosePineMoon: return "#908caa"
+        case .rosePineDawn: return "#797593"
         }
     }
 
@@ -207,6 +243,18 @@ final class ThemeAccessibilityTests: XCTestCase {
         case .githubLight: return "#1f2328"
         case .bulmaLight: return "#242424"
         case .bulmaDark: return "#f5f5f5"
+        case .gruvboxDarkHard: return "#b8bb26"
+        case .gruvboxDark: return "#b8bb26"
+        case .gruvboxDarkSoft: return "#b8bb26"
+        case .gruvboxLightHard: return "#79740e"
+        case .gruvboxLight: return "#79740e"
+        case .gruvboxLightSoft: return "#79740e"
+        case .nord: return "#88c0d0"
+        case .solarizedDark: return "#268bd2"
+        case .solarizedLight: return "#268bd2"
+        case .rosePine: return "#e0def4"
+        case .rosePineMoon: return "#e0def4"
+        case .rosePineDawn: return "#575279"
         }
     }
 
@@ -230,6 +278,20 @@ final class ThemeAccessibilityTests: XCTestCase {
             return ["#22c55e", "#ef4444", "#f59e0b", "#3b82f6"]
         case .bulmaDark:
             return ["#22c55e", "#ef4444", "#f59e0b", "#3b82f6"]
+        case .gruvboxDarkHard, .gruvboxDark, .gruvboxDarkSoft:
+            return ["#b8bb26", "#fb4934", "#fabd2f", "#83a598"]
+        case .gruvboxLightHard, .gruvboxLight, .gruvboxLightSoft:
+            return ["#79740e", "#9d0006", "#b57614", "#076678"]
+        case .nord:
+            return ["#a3be8c", "#bf616a", "#ebcb8b", "#81a1c1"]
+        case .solarizedDark, .solarizedLight:
+            return ["#859900", "#dc322f", "#b58900", "#2aa198"]
+        case .rosePine:
+            return ["#31748f", "#eb6f92", "#f6c177", "#9ccfd8"]
+        case .rosePineMoon:
+            return ["#3e8fb0", "#eb6f92", "#f6c177", "#9ccfd8"]
+        case .rosePineDawn:
+            return ["#56949f", "#b4637a", "#ea9d34", "#d7827e"]
         }
     }
 

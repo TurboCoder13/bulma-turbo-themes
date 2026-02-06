@@ -6,6 +6,7 @@
 import SEOHead from '../components/SEOHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { themeNames, themeIcons, validThemeIds } from '../data/theme-meta';
 
 interface Props {
   title?: string;
@@ -81,28 +82,12 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     />
 
     <!-- Theme blocking script (prevents FOUC) -->
-    <script is:inline>
+    <script is:inline define:vars={{ validThemeIds }}>
       (function () {
         try {
           var STORAGE_KEY = 'turbo-theme';
           var DEFAULT_THEME = 'catppuccin-mocha';
-          var VALID_THEMES = [
-            'catppuccin-latte',
-            'catppuccin-frappe',
-            'catppuccin-macchiato',
-            'catppuccin-mocha',
-            'dracula',
-            'github-light',
-            'github-dark',
-            'bulma-light',
-            'bulma-dark',
-            'nord',
-            'solarized-dark',
-            'solarized-light',
-            'rose-pine',
-            'rose-pine-moon',
-            'rose-pine-dawn',
-          ];
+          var VALID_THEMES = validThemeIds;
 
           // Migrate from legacy storage key
           var LEGACY_KEY = 'bulma-theme-flavor';
@@ -152,7 +137,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     <Footer siteTitle={siteTitle} />
 
-    <script is:inline>
+    <script is:inline define:vars={{ themeNames, themeIcons }}>
       (function () {
         // Theme dropdown
         var themeDropdown = document.getElementById('theme-dropdown');
@@ -165,44 +150,6 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
         var baseUrl = document.documentElement.getAttribute('data-baseurl') || '';
 
         var themeTriggerIcon = document.getElementById('theme-trigger-icon');
-
-        // Theme name mapping for display
-        var themeNames = {
-          'catppuccin-mocha': 'Mocha',
-          'catppuccin-macchiato': 'Macchiato',
-          'catppuccin-frappe': 'Frappe',
-          'catppuccin-latte': 'Latte',
-          dracula: 'Dracula',
-          'github-dark': 'Dark',
-          'github-light': 'Light',
-          'bulma-dark': 'Dark',
-          'bulma-light': 'Light',
-          nord: 'Nord',
-          'solarized-dark': 'Dark',
-          'solarized-light': 'Light',
-          'rose-pine': 'Rosé Pine',
-          'rose-pine-moon': 'Moon',
-          'rose-pine-dawn': 'Dawn',
-        };
-
-        // Theme icon mapping
-        var themeIcons = {
-          'catppuccin-mocha': 'catppuccin-logo-macchiato.png',
-          'catppuccin-macchiato': 'catppuccin-logo-macchiato.png',
-          'catppuccin-frappe': 'catppuccin-logo-macchiato.png',
-          'catppuccin-latte': 'catppuccin-logo-latte.png',
-          dracula: 'dracula-logo.png',
-          'github-dark': 'github-logo-dark.png',
-          'github-light': 'github-logo-light.png',
-          'bulma-dark': 'turbo-themes-logo-dark.png',
-          'bulma-light': 'turbo-themes-logo.png',
-          nord: 'nord.png',
-          'solarized-dark': 'solarized-dark.png',
-          'solarized-light': 'solarized-light.png',
-          'rose-pine': 'rose-pine.png',
-          'rose-pine-moon': 'rose-pine-moon.png',
-          'rose-pine-dawn': 'rose-pine-dawn.png',
-        };
 
         // Set initial state from saved theme
         var savedTheme = window.__INITIAL_THEME__ || 'catppuccin-mocha';

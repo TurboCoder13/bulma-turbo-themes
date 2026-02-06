@@ -4,13 +4,25 @@ const VALID_THEMES = [
   'catppuccin-frappe',
   'catppuccin-latte',
   'dracula',
+  'gruvbox-dark-hard',
+  'gruvbox-dark',
+  'gruvbox-dark-soft',
+  'gruvbox-light-hard',
+  'gruvbox-light',
+  'gruvbox-light-soft',
   'github-dark',
   'github-light',
   'bulma-dark',
   'bulma-light',
+  'nord',
+  'solarized-dark',
+  'solarized-light',
+  'rose-pine',
+  'rose-pine-moon',
+  'rose-pine-dawn',
 ];
 const DEFAULT_THEME = 'catppuccin-mocha';
-const LIGHT_THEMES = ['catppuccin-latte', 'github-light', 'bulma-light'];
+const LIGHT_THEMES = ['catppuccin-latte', 'gruvbox-light-hard', 'gruvbox-light', 'gruvbox-light-soft', 'github-light', 'bulma-light', 'solarized-light', 'rose-pine-dawn'];
 
 const selector = document.getElementById('theme-selector');
 const themeLink = document.getElementById('theme-css');

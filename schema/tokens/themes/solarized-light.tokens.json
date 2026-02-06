@@ -4,32 +4,70 @@
   "label": "Solarized Light",
   "vendor": "solarized",
   "appearance": "light",
-  "iconUrl": "/assets/img/solarized-light.png",
   "tokens": {
     "background": {
-      "base": { "$value": "#fdf6e3", "$type": "color" },
-      "surface": { "$value": "#eee8d5", "$type": "color" },
-      "overlay": { "$value": "#93a1a1", "$type": "color" }
+      "base": {
+        "$value": "#fdf6e3",
+        "$type": "color"
+      },
+      "surface": {
+        "$value": "#eee8d5",
+        "$type": "color"
+      },
+      "overlay": {
+        "$value": "#93a1a1",
+        "$type": "color"
+      }
     },
     "text": {
-      "primary": { "$value": "#586e75", "$type": "color" },
-      "secondary": { "$value": "#657b83", "$type": "color" },
-      "inverse": { "$value": "#fdf6e3", "$type": "color" }
+      "primary": {
+        "$value": "#586e75",
+        "$type": "color"
+      },
+      "secondary": {
+        "$value": "#657b83",
+        "$type": "color"
+      },
+      "inverse": {
+        "$value": "#fdf6e3",
+        "$type": "color"
+      }
     },
     "brand": {
-      "primary": { "$value": "#268bd2", "$type": "color" }
+      "primary": {
+        "$value": "#268bd2",
+        "$type": "color"
+      }
     },
     "state": {
-      "info": { "$value": "#2aa198", "$type": "color" },
-      "success": { "$value": "#859900", "$type": "color" },
-      "warning": { "$value": "#b58900", "$type": "color" },
-      "danger": { "$value": "#dc322f", "$type": "color" }
+      "info": {
+        "$value": "#2aa198",
+        "$type": "color"
+      },
+      "success": {
+        "$value": "#859900",
+        "$type": "color"
+      },
+      "warning": {
+        "$value": "#b58900",
+        "$type": "color"
+      },
+      "danger": {
+        "$value": "#dc322f",
+        "$type": "color"
+      }
     },
     "border": {
-      "default": { "$value": "#93a1a1", "$type": "color" }
+      "default": {
+        "$value": "#93a1a1",
+        "$type": "color"
+      }
     },
     "accent": {
-      "link": { "$value": "#268bd2", "$type": "color" }
+      "link": {
+        "$value": "#268bd2",
+        "$type": "color"
+      }
     },
     "typography": {
       "fonts": {
@@ -49,89 +87,242 @@
     },
     "content": {
       "heading": {
-        "h1": { "$value": "#268bd2", "$type": "color" },
-        "h2": { "$value": "#2aa198", "$type": "color" },
-        "h3": { "$value": "#859900", "$type": "color" },
-        "h4": { "$value": "#b58900", "$type": "color" },
-        "h5": { "$value": "#cb4b16", "$type": "color" },
-        "h6": { "$value": "#d33682", "$type": "color" }
+        "h1": {
+          "$value": "#268bd2",
+          "$type": "color"
+        },
+        "h2": {
+          "$value": "#2aa198",
+          "$type": "color"
+        },
+        "h3": {
+          "$value": "#859900",
+          "$type": "color"
+        },
+        "h4": {
+          "$value": "#b58900",
+          "$type": "color"
+        },
+        "h5": {
+          "$value": "#cb4b16",
+          "$type": "color"
+        },
+        "h6": {
+          "$value": "#d33682",
+          "$type": "color"
+        }
       },
       "body": {
-        "primary": { "$value": "#586e75", "$type": "color" },
-        "secondary": { "$value": "#657b83", "$type": "color" }
+        "primary": {
+          "$value": "#586e75",
+          "$type": "color"
+        },
+        "secondary": {
+          "$value": "#657b83",
+          "$type": "color"
+        }
       },
       "link": {
-        "default": { "$value": "#268bd2", "$type": "color" }
+        "default": {
+          "$value": "#268bd2",
+          "$type": "color"
+        }
       },
       "selection": {
-        "fg": { "$value": "#002b36", "$type": "color" },
-        "bg": { "$value": "#93a1a1", "$type": "color" }
+        "fg": {
+          "$value": "#002b36",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#93a1a1",
+          "$type": "color"
+        }
       },
       "blockquote": {
-        "border": { "$value": "#93a1a1", "$type": "color" },
-        "fg": { "$value": "#657b83", "$type": "color" },
-        "bg": { "$value": "#eee8d5", "$type": "color" }
+        "border": {
+          "$value": "#93a1a1",
+          "$type": "color"
+        },
+        "fg": {
+          "$value": "#657b83",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#eee8d5",
+          "$type": "color"
+        }
       },
       "codeInline": {
-        "fg": { "$value": "#6c71c4", "$type": "color" },
-        "bg": { "$value": "#eee8d5", "$type": "color" }
+        "fg": {
+          "$value": "#6c71c4",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#eee8d5",
+          "$type": "color"
+        }
       },
       "codeBlock": {
-        "fg": { "$value": "#073642", "$type": "color" },
-        "bg": { "$value": "#eee8d5", "$type": "color" }
+        "fg": {
+          "$value": "#073642",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#eee8d5",
+          "$type": "color"
+        }
       },
       "table": {
-        "border": { "$value": "#93a1a1", "$type": "color" },
-        "stripe": { "$value": "#eee8d5", "$type": "color" },
-        "theadBg": { "$value": "#eee8d5", "$type": "color" }
+        "border": {
+          "$value": "#93a1a1",
+          "$type": "color"
+        },
+        "stripe": {
+          "$value": "#eee8d5",
+          "$type": "color"
+        },
+        "theadBg": {
+          "$value": "#eee8d5",
+          "$type": "color"
+        }
       }
     },
     "components": {
       "card": {
-        "bg": { "$value": "#fdf6e3", "$type": "color" },
-        "border": { "$value": "#93a1a1", "$type": "color" },
-        "headerBg": { "$value": "#eee8d5", "$type": "color" },
-        "footerBg": { "$value": "#eee8d5", "$type": "color" }
+        "bg": {
+          "$value": "#fdf6e3",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#93a1a1",
+          "$type": "color"
+        },
+        "headerBg": {
+          "$value": "#eee8d5",
+          "$type": "color"
+        },
+        "footerBg": {
+          "$value": "#eee8d5",
+          "$type": "color"
+        }
       },
       "message": {
-        "bg": { "$value": "#eee8d5", "$type": "color" },
-        "headerBg": { "$value": "#fdf6e3", "$type": "color" },
-        "border": { "$value": "#93a1a1", "$type": "color" },
-        "bodyFg": { "$value": "#586e75", "$type": "color" }
+        "bg": {
+          "$value": "#eee8d5",
+          "$type": "color"
+        },
+        "headerBg": {
+          "$value": "#fdf6e3",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#93a1a1",
+          "$type": "color"
+        },
+        "bodyFg": {
+          "$value": "#586e75",
+          "$type": "color"
+        }
       },
       "panel": {
-        "bg": { "$value": "#fdf6e3", "$type": "color" },
-        "headerBg": { "$value": "#eee8d5", "$type": "color" },
-        "headerFg": { "$value": "#073642", "$type": "color" },
-        "border": { "$value": "#93a1a1", "$type": "color" },
-        "blockBg": { "$value": "#eee8d5", "$type": "color" },
-        "blockHoverBg": { "$value": "#fdf6e3", "$type": "color" },
-        "blockActiveBg": { "$value": "#93a1a1", "$type": "color" }
+        "bg": {
+          "$value": "#fdf6e3",
+          "$type": "color"
+        },
+        "headerBg": {
+          "$value": "#eee8d5",
+          "$type": "color"
+        },
+        "headerFg": {
+          "$value": "#073642",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#93a1a1",
+          "$type": "color"
+        },
+        "blockBg": {
+          "$value": "#eee8d5",
+          "$type": "color"
+        },
+        "blockHoverBg": {
+          "$value": "#fdf6e3",
+          "$type": "color"
+        },
+        "blockActiveBg": {
+          "$value": "#93a1a1",
+          "$type": "color"
+        }
       },
       "box": {
-        "bg": { "$value": "#fdf6e3", "$type": "color" },
-        "border": { "$value": "#93a1a1", "$type": "color" }
+        "bg": {
+          "$value": "#fdf6e3",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#93a1a1",
+          "$type": "color"
+        }
       },
       "notification": {
-        "bg": { "$value": "#eee8d5", "$type": "color" },
-        "border": { "$value": "#93a1a1", "$type": "color" }
+        "bg": {
+          "$value": "#eee8d5",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#93a1a1",
+          "$type": "color"
+        }
       },
       "modal": {
-        "bg": { "$value": "rgba(0, 43, 54, 0.86)", "$type": "color" },
-        "cardBg": { "$value": "#fdf6e3", "$type": "color" },
-        "headerBg": { "$value": "#eee8d5", "$type": "color" },
-        "footerBg": { "$value": "#eee8d5", "$type": "color" }
+        "bg": {
+          "$value": "rgba(0, 43, 54, 0.86)",
+          "$type": "color"
+        },
+        "cardBg": {
+          "$value": "#fdf6e3",
+          "$type": "color"
+        },
+        "headerBg": {
+          "$value": "#eee8d5",
+          "$type": "color"
+        },
+        "footerBg": {
+          "$value": "#eee8d5",
+          "$type": "color"
+        }
       },
       "dropdown": {
-        "bg": { "$value": "#fdf6e3", "$type": "color" },
-        "itemHoverBg": { "$value": "#eee8d5", "$type": "color" },
-        "border": { "$value": "#93a1a1", "$type": "color" }
+        "bg": {
+          "$value": "#fdf6e3",
+          "$type": "color"
+        },
+        "itemHoverBg": {
+          "$value": "#eee8d5",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#93a1a1",
+          "$type": "color"
+        }
       },
       "tabs": {
-        "border": { "$value": "#93a1a1", "$type": "color" },
-        "linkBg": { "$value": "#eee8d5", "$type": "color" },
-        "linkActiveBg": { "$value": "#fdf6e3", "$type": "color" },
-        "linkHoverBg": { "$value": "#93a1a1", "$type": "color" }
+        "border": {
+          "$value": "#93a1a1",
+          "$type": "color"
+        },
+        "linkBg": {
+          "$value": "#eee8d5",
+          "$type": "color"
+        },
+        "linkActiveBg": {
+          "$value": "#fdf6e3",
+          "$type": "color"
+        },
+        "linkHoverBg": {
+          "$value": "#93a1a1",
+          "$type": "color"
+        }
       }
     }
   }
