@@ -30,6 +30,7 @@ describe('wireFlavorSelector - error handling', () => {
       type: '',
       href: '',
       setAttribute: vi.fn(),
+      remove: vi.fn(),
       set onload(_handler: () => void) {
         // Don't call - simulate load failure
       },

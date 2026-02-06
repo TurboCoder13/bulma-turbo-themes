@@ -180,7 +180,7 @@ export async function loadThemeCSS(
       });
     } catch (error) {
       // Loading failed — remove the new link and keep prior theme intact
-      themeLink.parentNode?.removeChild(themeLink);
+      themeLink.remove();
       logThemeError(ThemeErrors.CSS_LOAD_FAILED(theme.id, error));
     }
   } else {
