@@ -14,31 +14,34 @@
       href="{{ '/assets/css/themes/catppuccin-mocha.css' | relative_url }}"
     />
 
-    <!-- Shared theme whitelist (used by FOUC prevention and main script) -->
+    <!-- Shared theme whitelist (used by FOUC prevention, select, and main script) -->
     <script>
-      var VALID_THEMES = [
-        'catppuccin-mocha',
-        'catppuccin-macchiato',
-        'catppuccin-frappe',
-        'catppuccin-latte',
-        'dracula',
-        'gruvbox-dark-hard',
-        'gruvbox-dark',
-        'gruvbox-dark-soft',
-        'gruvbox-light-hard',
-        'gruvbox-light',
-        'gruvbox-light-soft',
-        'github-dark',
-        'github-light',
-        'bulma-dark',
-        'bulma-light',
-        'nord',
-        'solarized-dark',
-        'solarized-light',
-        'rose-pine',
-        'rose-pine-moon',
-        'rose-pine-dawn',
+      var THEMES = [
+        { id: 'bulma-dark', name: 'Bulma Dark' },
+        { id: 'bulma-light', name: 'Bulma Light' },
+        { id: 'catppuccin-mocha', name: 'Catppuccin Mocha' },
+        { id: 'catppuccin-macchiato', name: 'Catppuccin Macchiato' },
+        { id: 'catppuccin-frappe', name: 'Catppuccin Frappe' },
+        { id: 'catppuccin-latte', name: 'Catppuccin Latte' },
+        { id: 'dracula', name: 'Dracula' },
+        { id: 'github-dark', name: 'GitHub Dark' },
+        { id: 'github-light', name: 'GitHub Light' },
+        { id: 'gruvbox-dark-hard', name: 'Gruvbox Dark Hard' },
+        { id: 'gruvbox-dark', name: 'Gruvbox Dark' },
+        { id: 'gruvbox-dark-soft', name: 'Gruvbox Dark Soft' },
+        { id: 'gruvbox-light-hard', name: 'Gruvbox Light Hard' },
+        { id: 'gruvbox-light', name: 'Gruvbox Light' },
+        { id: 'gruvbox-light-soft', name: 'Gruvbox Light Soft' },
+        { id: 'nord', name: 'Nord' },
+        { id: 'rose-pine', name: 'Rosé Pine' },
+        { id: 'rose-pine-moon', name: 'Rosé Pine Moon' },
+        { id: 'rose-pine-dawn', name: 'Rosé Pine Dawn' },
+        { id: 'solarized-dark', name: 'Solarized Dark' },
+        { id: 'solarized-light', name: 'Solarized Light' },
       ];
+      var VALID_THEMES = THEMES.map(function (t) {
+        return t.id;
+      });
     </script>
     <!-- FOUC Prevention -->
     <script>
@@ -256,29 +259,7 @@
         </h1>
         <div class="theme-selector-wrapper">
           <label class="theme-selector-label" for="theme-selector">Theme</label>
-          <select id="theme-selector" aria-label="Select theme">
-            <option value="catppuccin-mocha">Catppuccin Mocha</option>
-            <option value="catppuccin-macchiato">Catppuccin Macchiato</option>
-            <option value="catppuccin-frappe">Catppuccin Frappe</option>
-            <option value="catppuccin-latte">Catppuccin Latte</option>
-            <option value="dracula">Dracula</option>
-            <option value="gruvbox-dark-hard">Gruvbox Dark Hard</option>
-            <option value="gruvbox-dark">Gruvbox Dark</option>
-            <option value="gruvbox-dark-soft">Gruvbox Dark Soft</option>
-            <option value="gruvbox-light-hard">Gruvbox Light Hard</option>
-            <option value="gruvbox-light">Gruvbox Light</option>
-            <option value="gruvbox-light-soft">Gruvbox Light Soft</option>
-            <option value="github-dark">GitHub Dark</option>
-            <option value="github-light">GitHub Light</option>
-            <option value="bulma-dark">Bulma Dark</option>
-            <option value="bulma-light">Bulma Light</option>
-            <option value="nord">Nord</option>
-            <option value="solarized-dark">Solarized Dark</option>
-            <option value="solarized-light">Solarized Light</option>
-            <option value="rose-pine">Rosé Pine</option>
-            <option value="rose-pine-moon">Rosé Pine Moon</option>
-            <option value="rose-pine-dawn">Rosé Pine Dawn</option>
-          </select>
+          <select id="theme-selector" aria-label="Select theme"></select>
         </div>
       </header>
 
@@ -326,6 +307,12 @@
         } catch (e) {}
 
         if (selector) {
+          THEMES.forEach(function (t) {
+            var opt = document.createElement('option');
+            opt.value = t.id;
+            opt.textContent = t.name;
+            selector.appendChild(opt);
+          });
           selector.value = initial;
           selector.addEventListener('change', function (e) {
             applyTheme(e.target.value);

@@ -31,7 +31,7 @@ if [ -z "$UV_CMD" ]; then
 fi
 
 # Run linting and formatting via lintro
-"$UV_CMD" run lintro check
+"$UV_CMD" run lintro check --tool-options gitleaks:timeout=120
 
 # Run theme sync to ensure deterministic generation
 bun run theme:sync
