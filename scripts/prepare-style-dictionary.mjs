@@ -78,6 +78,7 @@ const vendorMeta = {
   github: { name: 'GitHub (synced)', homepage: 'https://primer.style/' },
   nord: { name: 'Nord', homepage: 'https://www.nordtheme.com/' },
   'rose-pine': { name: 'Rosé Pine (synced)', homepage: 'https://rosepinetheme.com/' },
+  solarized: { name: 'Solarized', homepage: 'https://ethanschoonover.com/solarized/' },
 };
 
 /**
