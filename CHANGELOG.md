@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.15.2] - 2026-02-06
+
+### 🐛 Fixed
+
+- use correct GitHub username in CODEOWNERS and docs
+
 ## [0.15.1] - 2026-02-06
 
 ### 🐛 Fixed
