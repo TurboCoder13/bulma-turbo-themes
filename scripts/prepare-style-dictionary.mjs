@@ -75,6 +75,7 @@ const vendorMeta = {
   bulma: { name: 'Bulma', homepage: 'https://bulma.io/' },
   catppuccin: { name: 'Catppuccin (synced)', homepage: 'https://catppuccin.com/palette/' },
   dracula: { name: 'Dracula', homepage: 'https://draculatheme.com/' },
+  gruvbox: { name: 'Gruvbox', homepage: 'https://github.com/morhetz/gruvbox' },
   github: { name: 'GitHub (synced)', homepage: 'https://primer.style/' },
   nord: { name: 'Nord', homepage: 'https://www.nordtheme.com/' },
   'rose-pine': { name: 'Rosé Pine (synced)', homepage: 'https://rosepinetheme.com/' },
