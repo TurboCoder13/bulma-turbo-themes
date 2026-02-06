@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Code } from 'astro:components';
 import { flavors } from '../../../../src/themes/registry.js';
+import { themeNames, themeIcons } from '../data/theme-meta';
 
 const themeCount = flavors.length;
 
@@ -331,55 +332,7 @@ const previewCode = `const theme = {
     </div>
   </section>
 
-  <script is:inline>
-    // Theme metadata constants (allocated once, reused by click handler)
-    var themeNames = {
-      'catppuccin-mocha': 'Mocha',
-      'catppuccin-macchiato': 'Macchiato',
-      'catppuccin-frappe': 'Frappé',
-      'catppuccin-latte': 'Latte',
-      'dracula': 'Dracula',
-      'gruvbox-dark-hard': 'Dark Hard',
-      'gruvbox-dark': 'Dark',
-      'gruvbox-dark-soft': 'Dark Soft',
-      'gruvbox-light-hard': 'Light Hard',
-      'gruvbox-light': 'Light',
-      'gruvbox-light-soft': 'Light Soft',
-      'github-dark': 'Dark',
-      'github-light': 'Light',
-      'bulma-dark': 'Dark',
-      'bulma-light': 'Light',
-      'nord': 'Nord',
-      'solarized-dark': 'Dark',
-      'solarized-light': 'Light',
-      'rose-pine': 'Rosé Pine',
-      'rose-pine-moon': 'Moon',
-      'rose-pine-dawn': 'Dawn'
-    };
-    var themeIcons = {
-      'catppuccin-mocha': 'catppuccin-logo-macchiato.png',
-      'catppuccin-macchiato': 'catppuccin-logo-macchiato.png',
-      'catppuccin-frappe': 'catppuccin-logo-macchiato.png',
-      'catppuccin-latte': 'catppuccin-logo-latte.png',
-      'dracula': 'dracula-logo.png',
-      'gruvbox-dark-hard': 'gruvbox-dark-hard.png',
-      'gruvbox-dark': 'gruvbox-dark.png',
-      'gruvbox-dark-soft': 'gruvbox-dark-soft.png',
-      'gruvbox-light-hard': 'gruvbox-light-hard.png',
-      'gruvbox-light': 'gruvbox-light.png',
-      'gruvbox-light-soft': 'gruvbox-light-soft.png',
-      'github-dark': 'github-logo-dark.png',
-      'github-light': 'github-logo-light.png',
-      'bulma-dark': 'turbo-themes-logo-dark.png',
-      'bulma-light': 'turbo-themes-logo.png',
-      'nord': 'nord.png',
-      'solarized-dark': 'solarized-dark.png',
-      'solarized-light': 'solarized-light.png',
-      'rose-pine': 'rose-pine.png',
-      'rose-pine-moon': 'rose-pine-moon.png',
-      'rose-pine-dawn': 'rose-pine-dawn.png'
-    };
-
+  <script is:inline define:vars={{ themeNames, themeIcons }}>
     // Hero theme button click handler
     document.querySelectorAll('.hero-theme-btn[data-theme-preview]').forEach(function(btn) {
       btn.addEventListener('click', function() {
