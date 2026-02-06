@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { cssForFlavor } from '../../src/themes/css.js';
+import type { ThemeTokens } from '../../src/themes/types.js';
 import { createMockFlavor, createMockTokens } from '../../../../test/helpers/mocks.js';
 
 // Component test cases for parametrized testing
@@ -179,6 +180,30 @@ describe('cssForFlavor - component tokens', () => {
       const css = cssForFlavor(flavor);
       expect(css).toContain('--theme-card-border:');
       expect(css).toMatch(/--theme-card-border:\s*#dbdbdb/);
+    });
+
+    it('emits all component variables when components is undefined', () => {
+      const tokens = createMockTokens();
+      // Explicitly ensure no components section
+      delete (tokens as Partial<ThemeTokens>).components;
+      const flavor = createMockFlavor({ tokens });
+      const css = cssForFlavor(flavor);
+
+      // All component CSS variables should still be emitted with fallback values
+      expect(css).toContain('--theme-card-bg:');
+      expect(css).toContain('--theme-card-border:');
+      expect(css).toContain('--theme-message-bg:');
+      expect(css).toContain('--theme-panel-bg:');
+      expect(css).toContain('--theme-box-bg:');
+      expect(css).toContain('--theme-notification-bg:');
+      expect(css).toContain('--theme-modal-bg:');
+      expect(css).toContain('--theme-dropdown-bg:');
+      expect(css).toContain('--theme-tabs-border:');
+
+      // Verify fallback values from base tokens are used
+      expect(css).toMatch(/--theme-card-bg:\s*#f5f5f5/); // background.surface
+      expect(css).toMatch(/--theme-card-border:\s*#dbdbdb/); // border.default
+      expect(css).toMatch(/--theme-modal-bg:\s*rgba\(10, 10, 10, 0\.86\)/); // hardcoded default
     });
   });
 });

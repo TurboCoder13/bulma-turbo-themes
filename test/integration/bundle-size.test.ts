@@ -6,7 +6,7 @@ const SIZE_BUDGETS: Record<string, number> = {
   'packages/theme-selector/dist/index.js': 60_000, // 60KB (accounts for theme data growth)
   'packages/adapters/tailwind/dist/preset.js': 30_000, // 30KB
   'packages/adapters/tailwind/dist/colors.js': 20_000, // 20KB
-  'packages/css/dist/index.js': 30_000, // 30KB
+  'packages/css/dist/index.js': 35_000, // 35KB (increased: component CSS vars now emitted for all themes)
   'packages/adapters/bulma/dist/index.js': 20_000, // 20KB
 };
 

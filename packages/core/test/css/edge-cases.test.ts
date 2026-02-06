@@ -191,7 +191,7 @@ describe('cssForFlavor - edge cases', () => {
     expect(css).toContain('--theme-card-bg:');
   });
 
-  it('handles component with empty fallback path returning empty string', () => {
+  it('emits component tokens with fallbacks when components is deleted', () => {
     const tokens = createMockTokens();
     delete (tokens as Record<string, unknown>).components;
 
@@ -199,10 +199,11 @@ describe('cssForFlavor - edge cases', () => {
     const css = cssForFlavor(flavor);
 
     expect(css).toContain('/* SPDX-License-Identifier: MIT */');
-    expect(css).not.toContain('/* Card component tokens */');
+    expect(css).toContain('/* Card component tokens */');
+    expect(css).toContain('--theme-card-bg:');
   });
 
-  it('handles undefined components with fallbackPath', () => {
+  it('emits component tokens with fallbacks when components is undefined', () => {
     const tokens = createMockTokens();
     tokens.components = undefined;
 
@@ -210,5 +211,6 @@ describe('cssForFlavor - edge cases', () => {
     const css = cssForFlavor(flavor);
 
     expect(css).toContain('/* SPDX-License-Identifier: MIT */');
+    expect(css).toContain('--theme-card-bg:');
   });
 });
