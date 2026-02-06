@@ -91,6 +91,31 @@ export const themeNames: Record<string, string> = {
   'rose-pine-dawn': 'Dawn',
 };
 
+/** Appearance (light/dark) for each theme. */
+export const themeAppearances: Record<string, 'light' | 'dark'> = {
+  'catppuccin-mocha': 'dark',
+  'catppuccin-macchiato': 'dark',
+  'catppuccin-frappe': 'dark',
+  'catppuccin-latte': 'light',
+  dracula: 'dark',
+  'gruvbox-dark-hard': 'dark',
+  'gruvbox-dark': 'dark',
+  'gruvbox-dark-soft': 'dark',
+  'gruvbox-light-hard': 'light',
+  'gruvbox-light': 'light',
+  'gruvbox-light-soft': 'light',
+  'github-dark': 'dark',
+  'github-light': 'light',
+  'bulma-dark': 'dark',
+  'bulma-light': 'light',
+  nord: 'dark',
+  'solarized-dark': 'dark',
+  'solarized-light': 'light',
+  'rose-pine': 'dark',
+  'rose-pine-moon': 'dark',
+  'rose-pine-dawn': 'light',
+};
+
 /** Icon filename (relative to /assets/img/) for the theme dropdown trigger. */
 export const themeIcons: Record<string, string> = {
   'catppuccin-mocha': 'catppuccin-logo-macchiato.png',
@@ -115,3 +140,11 @@ export const themeIcons: Record<string, string> = {
   'rose-pine-moon': 'rose-pine-moon.png',
   'rose-pine-dawn': 'rose-pine-dawn.png',
 };
+
+// Runtime validation: ensure every theme ID has entries in all lookup maps.
+// Runs at module evaluation time so missing entries fail the Astro build.
+for (const id of validThemeIds) {
+  if (!(id in themeNames)) throw new Error(`themeNames missing entry for "${id}"`);
+  if (!(id in themeIcons)) throw new Error(`themeIcons missing entry for "${id}"`);
+  if (!(id in themeAppearances)) throw new Error(`themeAppearances missing entry for "${id}"`);
+}

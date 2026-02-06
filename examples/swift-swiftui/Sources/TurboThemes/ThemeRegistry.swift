@@ -1,5 +1,31 @@
 import SwiftUI
 
+// MARK: - Shared Gruvbox Palettes
+
+/// Shared foreground colors for all Gruvbox dark variants (only backgrounds differ).
+private let gruvboxDarkPalette = (
+    heading: Color(hex: "#b8bb26"),
+    bodyPrimary: Color(hex: "#ebdbb2"),
+    bodySecondary: Color(hex: "#d5c4a1"),
+    brandPrimary: Color(hex: "#d79921"),
+    stateSuccess: Color(hex: "#b8bb26"),
+    stateDanger: Color(hex: "#fb4934"),
+    stateWarning: Color(hex: "#fabd2f"),
+    stateInfo: Color(hex: "#83a598")
+)
+
+/// Shared foreground colors for all Gruvbox light variants (only backgrounds differ).
+private let gruvboxLightPalette = (
+    heading: Color(hex: "#79740e"),
+    bodyPrimary: Color(hex: "#3c3836"),
+    bodySecondary: Color(hex: "#504945"),
+    brandPrimary: Color(hex: "#b57614"),
+    stateSuccess: Color(hex: "#79740e"),
+    stateDanger: Color(hex: "#9d0006"),
+    stateWarning: Color(hex: "#b57614"),
+    stateInfo: Color(hex: "#076678")
+)
+
 /// Registry of all available themes with their palettes.
 public enum ThemeRegistry {
     /// Default palette used as fallback (Catppuccin Mocha).
@@ -168,14 +194,14 @@ public enum ThemeRegistry {
             palette: ThemePalette(
                 backgroundBase: Color(hex: "#1d2021"),
                 backgroundSurface: Color(hex: "#282828"),
-                heading: Color(hex: "#b8bb26"),
-                bodyPrimary: Color(hex: "#ebdbb2"),
-                bodySecondary: Color(hex: "#d5c4a1"),
-                brandPrimary: Color(hex: "#d79921"),
-                stateSuccess: Color(hex: "#b8bb26"),
-                stateDanger: Color(hex: "#fb4934"),
-                stateWarning: Color(hex: "#fabd2f"),
-                stateInfo: Color(hex: "#83a598")
+                heading: gruvboxDarkPalette.heading,
+                bodyPrimary: gruvboxDarkPalette.bodyPrimary,
+                bodySecondary: gruvboxDarkPalette.bodySecondary,
+                brandPrimary: gruvboxDarkPalette.brandPrimary,
+                stateSuccess: gruvboxDarkPalette.stateSuccess,
+                stateDanger: gruvboxDarkPalette.stateDanger,
+                stateWarning: gruvboxDarkPalette.stateWarning,
+                stateInfo: gruvboxDarkPalette.stateInfo
             )
         ),
         .gruvboxDark: ThemeDefinition(
@@ -184,14 +210,14 @@ public enum ThemeRegistry {
             palette: ThemePalette(
                 backgroundBase: Color(hex: "#282828"),
                 backgroundSurface: Color(hex: "#3c3836"),
-                heading: Color(hex: "#b8bb26"),
-                bodyPrimary: Color(hex: "#ebdbb2"),
-                bodySecondary: Color(hex: "#d5c4a1"),
-                brandPrimary: Color(hex: "#d79921"),
-                stateSuccess: Color(hex: "#b8bb26"),
-                stateDanger: Color(hex: "#fb4934"),
-                stateWarning: Color(hex: "#fabd2f"),
-                stateInfo: Color(hex: "#83a598")
+                heading: gruvboxDarkPalette.heading,
+                bodyPrimary: gruvboxDarkPalette.bodyPrimary,
+                bodySecondary: gruvboxDarkPalette.bodySecondary,
+                brandPrimary: gruvboxDarkPalette.brandPrimary,
+                stateSuccess: gruvboxDarkPalette.stateSuccess,
+                stateDanger: gruvboxDarkPalette.stateDanger,
+                stateWarning: gruvboxDarkPalette.stateWarning,
+                stateInfo: gruvboxDarkPalette.stateInfo
             )
         ),
         .gruvboxDarkSoft: ThemeDefinition(
@@ -200,14 +226,14 @@ public enum ThemeRegistry {
             palette: ThemePalette(
                 backgroundBase: Color(hex: "#32302f"),
                 backgroundSurface: Color(hex: "#3c3836"),
-                heading: Color(hex: "#b8bb26"),
-                bodyPrimary: Color(hex: "#ebdbb2"),
-                bodySecondary: Color(hex: "#d5c4a1"),
-                brandPrimary: Color(hex: "#d79921"),
-                stateSuccess: Color(hex: "#b8bb26"),
-                stateDanger: Color(hex: "#fb4934"),
-                stateWarning: Color(hex: "#fabd2f"),
-                stateInfo: Color(hex: "#83a598")
+                heading: gruvboxDarkPalette.heading,
+                bodyPrimary: gruvboxDarkPalette.bodyPrimary,
+                bodySecondary: gruvboxDarkPalette.bodySecondary,
+                brandPrimary: gruvboxDarkPalette.brandPrimary,
+                stateSuccess: gruvboxDarkPalette.stateSuccess,
+                stateDanger: gruvboxDarkPalette.stateDanger,
+                stateWarning: gruvboxDarkPalette.stateWarning,
+                stateInfo: gruvboxDarkPalette.stateInfo
             )
         ),
         .gruvboxLightHard: ThemeDefinition(
@@ -216,14 +242,14 @@ public enum ThemeRegistry {
             palette: ThemePalette(
                 backgroundBase: Color(hex: "#f9f5d7"),
                 backgroundSurface: Color(hex: "#fbf1c7"),
-                heading: Color(hex: "#79740e"),
-                bodyPrimary: Color(hex: "#3c3836"),
-                bodySecondary: Color(hex: "#504945"),
-                brandPrimary: Color(hex: "#b57614"),
-                stateSuccess: Color(hex: "#79740e"),
-                stateDanger: Color(hex: "#9d0006"),
-                stateWarning: Color(hex: "#b57614"),
-                stateInfo: Color(hex: "#076678")
+                heading: gruvboxLightPalette.heading,
+                bodyPrimary: gruvboxLightPalette.bodyPrimary,
+                bodySecondary: gruvboxLightPalette.bodySecondary,
+                brandPrimary: gruvboxLightPalette.brandPrimary,
+                stateSuccess: gruvboxLightPalette.stateSuccess,
+                stateDanger: gruvboxLightPalette.stateDanger,
+                stateWarning: gruvboxLightPalette.stateWarning,
+                stateInfo: gruvboxLightPalette.stateInfo
             )
         ),
         .gruvboxLight: ThemeDefinition(
@@ -232,14 +258,14 @@ public enum ThemeRegistry {
             palette: ThemePalette(
                 backgroundBase: Color(hex: "#fbf1c7"),
                 backgroundSurface: Color(hex: "#ebdbb2"),
-                heading: Color(hex: "#79740e"),
-                bodyPrimary: Color(hex: "#3c3836"),
-                bodySecondary: Color(hex: "#504945"),
-                brandPrimary: Color(hex: "#b57614"),
-                stateSuccess: Color(hex: "#79740e"),
-                stateDanger: Color(hex: "#9d0006"),
-                stateWarning: Color(hex: "#b57614"),
-                stateInfo: Color(hex: "#076678")
+                heading: gruvboxLightPalette.heading,
+                bodyPrimary: gruvboxLightPalette.bodyPrimary,
+                bodySecondary: gruvboxLightPalette.bodySecondary,
+                brandPrimary: gruvboxLightPalette.brandPrimary,
+                stateSuccess: gruvboxLightPalette.stateSuccess,
+                stateDanger: gruvboxLightPalette.stateDanger,
+                stateWarning: gruvboxLightPalette.stateWarning,
+                stateInfo: gruvboxLightPalette.stateInfo
             )
         ),
         .gruvboxLightSoft: ThemeDefinition(
@@ -248,14 +274,14 @@ public enum ThemeRegistry {
             palette: ThemePalette(
                 backgroundBase: Color(hex: "#f2e5bc"),
                 backgroundSurface: Color(hex: "#ebdbb2"),
-                heading: Color(hex: "#79740e"),
-                bodyPrimary: Color(hex: "#3c3836"),
-                bodySecondary: Color(hex: "#504945"),
-                brandPrimary: Color(hex: "#b57614"),
-                stateSuccess: Color(hex: "#79740e"),
-                stateDanger: Color(hex: "#9d0006"),
-                stateWarning: Color(hex: "#b57614"),
-                stateInfo: Color(hex: "#076678")
+                heading: gruvboxLightPalette.heading,
+                bodyPrimary: gruvboxLightPalette.bodyPrimary,
+                bodySecondary: gruvboxLightPalette.bodySecondary,
+                brandPrimary: gruvboxLightPalette.brandPrimary,
+                stateSuccess: gruvboxLightPalette.stateSuccess,
+                stateDanger: gruvboxLightPalette.stateDanger,
+                stateWarning: gruvboxLightPalette.stateWarning,
+                stateInfo: gruvboxLightPalette.stateInfo
             )
         ),
         .nord: ThemeDefinition(

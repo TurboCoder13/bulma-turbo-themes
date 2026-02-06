@@ -1,6 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { themeGroups, themeNames as shortLabels, themeAppearances } from '../data/theme-meta';
+
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Build full theme names + mode for the explorer script (derived from theme-meta.ts)
+const themeExplorerMeta: Record<string, { name: string; mode: string }> = {};
+for (const group of themeGroups) {
+  for (const flavor of group.flavors) {
+    const short = shortLabels[flavor] || flavor;
+    const fullName = short === group.displayName ? group.displayName : `${group.displayName} ${short}`;
+    const mode = themeAppearances[flavor] === 'light' ? 'Light' : 'Dark';
+    themeExplorerMeta[flavor] = { name: fullName, mode };
+  }
+}
+const themeExplorerMetaJson = JSON.stringify(themeExplorerMeta);
 ---
 
 <BaseLayout title="Themes" wide={true}>
@@ -349,31 +363,10 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     </main>
   </div>
 
-  <script is:inline>
+  <script is:inline define:vars={{ themeExplorerMetaJson }}>
   (function() {
-    var themeNames = {
-      'catppuccin-mocha': { name: 'Catppuccin Mocha', mode: 'Dark' },
-      'catppuccin-macchiato': { name: 'Catppuccin Macchiato', mode: 'Dark' },
-      'catppuccin-frappe': { name: 'Catppuccin Frappé', mode: 'Dark' },
-      'catppuccin-latte': { name: 'Catppuccin Latte', mode: 'Light' },
-      'dracula': { name: 'Dracula', mode: 'Dark' },
-      'gruvbox-dark-hard': { name: 'Gruvbox Dark Hard', mode: 'Dark' },
-      'gruvbox-dark': { name: 'Gruvbox Dark', mode: 'Dark' },
-      'gruvbox-dark-soft': { name: 'Gruvbox Dark Soft', mode: 'Dark' },
-      'gruvbox-light-hard': { name: 'Gruvbox Light Hard', mode: 'Light' },
-      'gruvbox-light': { name: 'Gruvbox Light', mode: 'Light' },
-      'gruvbox-light-soft': { name: 'Gruvbox Light Soft', mode: 'Light' },
-      'github-dark': { name: 'GitHub Dark', mode: 'Dark' },
-      'github-light': { name: 'GitHub Light', mode: 'Light' },
-      'bulma-dark': { name: 'Bulma Dark', mode: 'Dark' },
-      'bulma-light': { name: 'Bulma Light', mode: 'Light' },
-      'nord': { name: 'Nord', mode: 'Dark' },
-      'solarized-dark': { name: 'Solarized Dark', mode: 'Dark' },
-      'solarized-light': { name: 'Solarized Light', mode: 'Light' },
-      'rose-pine': { name: 'Rosé Pine', mode: 'Dark' },
-      'rose-pine-moon': { name: 'Rosé Pine Moon', mode: 'Dark' },
-      'rose-pine-dawn': { name: 'Rosé Pine Dawn', mode: 'Light' }
-    };
+    // Theme metadata derived from theme-meta.ts at build time
+    var themeNames = JSON.parse(themeExplorerMetaJson);
 
     function updatePalette() {
       var styles = getComputedStyle(document.documentElement);
