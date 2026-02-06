@@ -1,82 +1,47 @@
-# CODEOWNERS - Define code ownership and review requirements
-# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# CODEOWNERS - Define code ownership for pull request reviews
 #
-# Note: Dependency files are excluded from CODEOWNERS to allow Renovate bot to automerge.
-# This improves security by enabling automated dependency updates without manual intervention.
+# Rules are evaluated top-to-bottom; LAST matching pattern wins.
+# To exclude files from review requirements, place them at the end with no owner.
 
-# ==============================================================================
-# EXCLUSIONS FOR AUTOMATED DEPENDENCY MANAGEMENT
-# ==============================================================================
-# The following files are intentionally NOT owned to allow Renovate automerge:
-# - package.json (npm dependencies)
-# - package-lock.json (npm lockfile)
-# - Gemfile.lock (Ruby dependencies)
-# - renovate.json (Renovate configuration)
-#
-# Rationale: Automated dependency updates improve security posture by ensuring
-# timely patching of vulnerabilities. Manual review adds latency without
-# significant security benefit when CI gates are comprehensive.
+# =============================================================================
+# Global default - all files require maintainer review
+# =============================================================================
+* @TurboCoder13
 
-# ==============================================================================
-# CRITICAL SECURITY PATHS - Require explicit approval
-# ==============================================================================
+# =============================================================================
+# Core package and source code
+# =============================================================================
+/src/** @TurboCoder13
+/scripts/ @TurboCoder13
 
-# GitHub Actions workflows - Critical for CI/CD security
-/.github/workflows/** @eiteldagnin
+# =============================================================================
+# CI/CD and GitHub configuration
+# =============================================================================
+/.github/workflows/ @TurboCoder13
+/.github/actions/ @TurboCoder13
 
-# Composite actions - Reusable workflow components
-/.github/actions/** @eiteldagnin
+# =============================================================================
+# Documentation
+# =============================================================================
+*.md @TurboCoder13
 
-# Security policies and documentation
-/SECURITY.md @eiteldagnin
-/CODE_OF_CONDUCT.md @eiteldagnin
-/GOVERNANCE.md @eiteldagnin
-
-# ==============================================================================
-# SOURCE CODE - Require code review
-# ==============================================================================
-
-# TypeScript source
-/src/** @eiteldagnin
-
-# Build and automation scripts
-/scripts/** @eiteldagnin
-*.sh @eiteldagnin
-
+# =============================================================================
 # Tests
-/test/** @eiteldagnin
+# =============================================================================
+/test/ @TurboCoder13
 
-# ==============================================================================
-# SITE CONTENT - Require content review
-# ==============================================================================
+# =============================================================================
+# Dependency files - EXCLUDED from code review requirements
+# These are placed LAST so they override the global owner.
+# This allows Renovate patch automerge to work without blocking on reviews.
+# =============================================================================
 
-# Jekyll layouts and content
-/_layouts/** @eiteldagnin
-/_es/** @eiteldagnin
-/_data/** @eiteldagnin
+# Node/Bun dependencies
+package.json
+bun.lock
 
-# Site assets (CSS, images)
-/assets/** @eiteldagnin
+# Ruby dependencies
+Gemfile.lock
 
-# Markdown documentation
-*.md @eiteldagnin
-
-# ==============================================================================
-# BUILD CONFIGURATION - Require review
-# ==============================================================================
-
-# TypeScript configuration
-/tsconfig.json @eiteldagnin
-
-# Vitest configuration
-/vitest.config.ts @eiteldagnin
-
-# Jekyll configuration
-/_config.yml @eiteldagnin
-
-# ==============================================================================
-# DEFAULT OWNER - Fallback for unmatched files
-# ==============================================================================
-
-# Default owner for all other files
-* @eiteldagnin
+# Renovate configuration
+renovate.json

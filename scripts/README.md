@@ -403,4 +403,4 @@ For questions about scripts:
 ---
 
 **Last Updated:** 2025-10-05  
-**Maintained by:** @eiteldagnin
+**Maintained by:** @TurboCoder13
