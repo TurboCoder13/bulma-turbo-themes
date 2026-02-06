@@ -48,7 +48,7 @@ function applyTheme(themeId: string) {
 
 onMounted(() => {
   const saved = localStorage.getItem('turbo-theme');
-  if (saved) {
+  if (saved && isValidTheme(saved)) {
     theme.value = saved;
   }
   applyTheme(theme.value);

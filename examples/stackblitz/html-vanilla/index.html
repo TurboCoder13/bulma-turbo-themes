@@ -94,32 +94,15 @@
     </div>
 
     <script>
-      const VALID_THEMES = [
-        'catppuccin-mocha',
-        'catppuccin-macchiato',
-        'catppuccin-frappe',
-        'catppuccin-latte',
-        'dracula',
-        'gruvbox-dark-hard',
-        'gruvbox-dark',
-        'gruvbox-dark-soft',
-        'gruvbox-light-hard',
-        'gruvbox-light',
-        'gruvbox-light-soft',
-        'github-dark',
-        'github-light',
-        'bulma-dark',
-        'bulma-light',
-        'nord',
-        'solarized-dark',
-        'solarized-light',
-        'rose-pine',
-        'rose-pine-moon',
-        'rose-pine-dawn',
-      ];
       const DEFAULT_THEME = 'catppuccin-mocha';
 
       const selector = document.getElementById('theme-selector');
+      // Derive valid themes from the <select> options (single source of truth)
+      const VALID_THEMES = selector
+        ? Array.from(selector.options)
+            .map((o) => o.value)
+            .filter((v) => v)
+        : [];
       const themeLink = document.getElementById('theme-css');
 
       function isValidTheme(theme) {

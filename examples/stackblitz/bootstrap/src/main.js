@@ -1,28 +1,29 @@
-const VALID_THEMES = [
-  'catppuccin-mocha',
-  'catppuccin-macchiato',
-  'catppuccin-frappe',
-  'catppuccin-latte',
-  'dracula',
-  'gruvbox-dark-hard',
-  'gruvbox-dark',
-  'gruvbox-dark-soft',
-  'gruvbox-light-hard',
-  'gruvbox-light',
-  'gruvbox-light-soft',
-  'github-dark',
-  'github-light',
-  'bulma-dark',
-  'bulma-light',
-  'nord',
-  'solarized-dark',
-  'solarized-light',
-  'rose-pine',
-  'rose-pine-moon',
-  'rose-pine-dawn',
+const THEMES = [
+  { id: 'catppuccin-mocha', isLight: false },
+  { id: 'catppuccin-macchiato', isLight: false },
+  { id: 'catppuccin-frappe', isLight: false },
+  { id: 'catppuccin-latte', isLight: true },
+  { id: 'dracula', isLight: false },
+  { id: 'gruvbox-dark-hard', isLight: false },
+  { id: 'gruvbox-dark', isLight: false },
+  { id: 'gruvbox-dark-soft', isLight: false },
+  { id: 'gruvbox-light-hard', isLight: true },
+  { id: 'gruvbox-light', isLight: true },
+  { id: 'gruvbox-light-soft', isLight: true },
+  { id: 'github-dark', isLight: false },
+  { id: 'github-light', isLight: true },
+  { id: 'bulma-dark', isLight: false },
+  { id: 'bulma-light', isLight: true },
+  { id: 'nord', isLight: false },
+  { id: 'solarized-dark', isLight: false },
+  { id: 'solarized-light', isLight: true },
+  { id: 'rose-pine', isLight: false },
+  { id: 'rose-pine-moon', isLight: false },
+  { id: 'rose-pine-dawn', isLight: true },
 ];
+const VALID_THEMES = THEMES.map((t) => t.id);
+const LIGHT_THEMES = THEMES.filter((t) => t.isLight).map((t) => t.id);
 const DEFAULT_THEME = 'catppuccin-mocha';
-const LIGHT_THEMES = ['catppuccin-latte', 'gruvbox-light-hard', 'gruvbox-light', 'gruvbox-light-soft', 'github-light', 'bulma-light', 'solarized-light', 'rose-pine-dawn'];
 
 const selector = document.getElementById('theme-selector');
 const themeLink = document.getElementById('theme-css');

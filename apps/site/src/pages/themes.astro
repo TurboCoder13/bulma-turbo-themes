@@ -439,6 +439,8 @@ const themeExplorerMetaJson = JSON.stringify(themeExplorerMeta);
         navigator.clipboard.writeText(text).then(function() {
           el.classList.add('copied');
           setTimeout(function() { el.classList.remove('copied'); }, 1500);
+        }).catch(function() {
+          console.warn('Failed to copy to clipboard');
         });
       });
     });

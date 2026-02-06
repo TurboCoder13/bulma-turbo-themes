@@ -174,7 +174,9 @@
         const DEFAULT_THEME = 'catppuccin-mocha';
         const selector = document.getElementById('theme-selector');
         // Derive valid themes from the <select> options (single source of truth)
-        const VALID_THEMES = Array.from(selector.options).map((opt) => opt.value);
+        const VALID_THEMES = selector
+          ? Array.from(selector.options).map((opt) => opt.value)
+          : [];
         const themeLink = document.getElementById('theme-css');
 
         function applyTheme(id) {
