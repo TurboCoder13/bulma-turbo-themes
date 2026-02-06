@@ -36,6 +36,7 @@ const VENDOR_FAMILY_MAP: Record<string, ThemeFamily> = {
   nord: 'nord',
   'rose-pine': 'rose-pine',
   solarized: 'solarized',
+  'tokyo-night': 'tokyo-night',
 };
 
 const DEFAULT_FAMILY: ThemeFamily = 'bulma';
@@ -66,6 +67,7 @@ const VENDOR_ICON_MAP: Record<string, string | AppearanceIcons> = {
     light: 'assets/img/solarized-light.png',
     dark: 'assets/img/solarized-dark.png',
   },
+  'tokyo-night': 'assets/img/tokyo-night.png',
 };
 
 /** Predefined flavor descriptions */
@@ -85,6 +87,9 @@ const FLAVOR_DESCRIPTIONS: Record<string, string> = {
   'rose-pine-dawn': 'Light Rosé Pine variant for daytime use.',
   'solarized-dark': 'Solarized Dark with a balanced, low-contrast palette.',
   'solarized-light': 'Solarized Light tuned for bright, daylight-friendly UIs.',
+  'tokyo-night-dark': 'Deep midnight blues with neon accents.',
+  'tokyo-night-storm': 'Stormy variant with richer contrast and depth.',
+  'tokyo-night-light': 'Clean daylight palette inspired by Tokyo mornings.',
 };
 
 // ============================================================================

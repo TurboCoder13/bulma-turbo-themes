@@ -79,6 +79,7 @@ const vendorMeta = {
   nord: { name: 'Nord', homepage: 'https://www.nordtheme.com/' },
   'rose-pine': { name: 'Rosé Pine (synced)', homepage: 'https://rosepinetheme.com/' },
   solarized: { name: 'Solarized', homepage: 'https://ethanschoonover.com/solarized/' },
+  'tokyo-night': { name: 'Tokyo Night', homepage: 'https://github.com/enkia/tokyo-night-vscode-theme' },
 };
 
 /**
