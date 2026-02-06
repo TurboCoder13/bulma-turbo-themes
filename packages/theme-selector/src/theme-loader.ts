@@ -66,6 +66,14 @@ export function getBaseUrl(doc: Document): string {
 }
 
 /**
+ * Extracts the theme ID from a theme link element's ID.
+ * Strips a leading "theme-" prefix and trailing "-css" suffix.
+ */
+function extractThemeIdFromLinkId(linkId: string): string {
+  return linkId.replace(/^theme-/, '').replace(/-css$/, '');
+}
+
+/**
  * Clears onload/onerror handlers from a link element to prevent memory leaks.
  */
 function clearLinkHandlers(link: HTMLLinkElement): void {
@@ -142,6 +150,9 @@ export async function loadThemeCSS(
   let themeLink = doc.getElementById(themeLinkId) as HTMLLinkElement | null;
 
   if (!themeLink) {
+    // Record existing theme links before appending the new one
+    const existingLinks = doc.querySelectorAll(DOM_SELECTORS.THEME_CSS_LINKS);
+
     themeLink = doc.createElement('link');
     themeLink.id = themeLinkId;
     themeLink.rel = 'stylesheet';
@@ -157,19 +168,28 @@ export async function loadThemeCSS(
 
     doc.head.appendChild(themeLink);
 
-    // Wait for CSS to load (but don't fail if it doesn't load)
     try {
       await loadCSSWithTimeout(themeLink, theme.id);
+
+      // Only remove old theme links after successful load
+      existingLinks.forEach((link) => {
+        const linkThemeId = extractThemeIdFromLinkId(link.id);
+        if (linkThemeId !== theme.id && linkThemeId !== 'base') {
+          link.remove();
+        }
+      });
     } catch (error) {
+      // Loading failed — remove the new link and keep prior theme intact
+      themeLink.remove();
       logThemeError(ThemeErrors.CSS_LOAD_FAILED(theme.id, error));
     }
+  } else {
+    // Link already exists — clean up any other stale theme links
+    doc.querySelectorAll(DOM_SELECTORS.THEME_CSS_LINKS).forEach((link) => {
+      const linkThemeId = extractThemeIdFromLinkId(link.id);
+      if (linkThemeId !== theme.id && linkThemeId !== 'base') {
+        link.remove();
+      }
+    });
   }
-
-  // Clean up old theme CSS links (keep current and base themes)
-  doc.querySelectorAll(DOM_SELECTORS.THEME_CSS_LINKS).forEach((link) => {
-    const linkThemeId = link.id.replace('theme-', '').replace('-css', '');
-    if (linkThemeId !== theme.id && linkThemeId !== 'base') {
-      link.remove();
-    }
-  });
 }

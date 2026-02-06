@@ -30,6 +30,7 @@ describe('wireFlavorSelector - error handling', () => {
       type: '',
       href: '',
       setAttribute: vi.fn(),
+      remove: vi.fn(),
       set onload(_handler: () => void) {
         // Don't call - simulate load failure
       },
@@ -105,6 +106,7 @@ describe('wireFlavorSelector - error handling', () => {
         expect.stringContaining('Theme CSS failed to load'),
         expect.anything()
       );
+      expect(mockThemeLink.remove).toHaveBeenCalled();
 
       try {
         await clickPromise;

@@ -29,21 +29,22 @@ Universal, accessible theme packs and a drop-in theme selector.
 Built on [Bulma](https://bulma.io/) CSS framework with color palettes from these amazing
 projects:
 
-| Theme                                                                                                           | Variants                                                  | Source                                                           |
-| --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
-| <img src="./assets/img/catppuccin-logo-macchiato.png" width="20" height="20" alt="Catppuccin" /> **Catppuccin** | Mocha, Macchiato, Frappé, Latte                           | [catppuccin.com](https://catppuccin.com/)                        |
-| <img src="./assets/img/dracula-logo.png" width="20" height="20" alt="Dracula" /> **Dracula**                    | Dark                                                      | [draculatheme.com](https://draculatheme.com/)                    |
-| <img src="./assets/img/github-logo-dark.png" width="20" height="20" alt="GitHub" /> **GitHub**                  | Light, Dark                                               | [primer.style](https://primer.style/)                            |
-| <img src="./assets/img/bulma-logo.png" width="20" height="20" alt="Bulma" /> **Bulma**                          | Light, Dark                                               | [bulma.io](https://bulma.io/)                                    |
-| <img src="./assets/img/nord.png" width="20" height="20" alt="Nord" /> **Nord**                                  | Nord                                                      | [nordtheme.com](https://www.nordtheme.com/)                      |
-| <img src="./assets/img/solarized-dark.png" width="20" height="20" alt="Solarized" /> **Solarized**              | Dark, Light                                               | [ethanschoonover.com](https://ethanschoonover.com/solarized/)    |
-| <img src="./assets/img/rose-pine.png" width="20" height="20" alt="Rosé Pine" /> **Rosé Pine**                   | Rosé Pine, Moon, Dawn                                     | [rosepinetheme.com](https://rosepinetheme.com/)                  |
-| <img src="./assets/img/gruvbox-dark.png" width="20" height="20" alt="Gruvbox" /> **Gruvbox**                    | Dark Hard, Dark, Dark Soft, Light Hard, Light, Light Soft | [github.com/morhetz/gruvbox](https://github.com/morhetz/gruvbox) |
+| Theme                                                                                                           | Variants                                                  | Source                                                                        |
+| --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| <img src="./assets/img/catppuccin-logo-macchiato.png" width="20" height="20" alt="Catppuccin" /> **Catppuccin** | Mocha, Macchiato, Frappé, Latte                           | [catppuccin.com](https://catppuccin.com/)                                     |
+| <img src="./assets/img/dracula-logo.png" width="20" height="20" alt="Dracula" /> **Dracula**                    | Dark                                                      | [draculatheme.com](https://draculatheme.com/)                                 |
+| <img src="./assets/img/github-logo-dark.png" width="20" height="20" alt="GitHub" /> **GitHub**                  | Light, Dark                                               | [primer.style](https://primer.style/)                                         |
+| <img src="./assets/img/bulma-logo.png" width="20" height="20" alt="Bulma" /> **Bulma**                          | Light, Dark                                               | [bulma.io](https://bulma.io/)                                                 |
+| <img src="./assets/img/nord.png" width="20" height="20" alt="Nord" /> **Nord**                                  | Nord                                                      | [nordtheme.com](https://www.nordtheme.com/)                                   |
+| <img src="./assets/img/solarized-dark.png" width="20" height="20" alt="Solarized" /> **Solarized**              | Dark, Light                                               | [ethanschoonover.com/solarized](https://ethanschoonover.com/solarized/)       |
+| <img src="./assets/img/rose-pine.png" width="20" height="20" alt="Rosé Pine" /> **Rosé Pine**                   | Rosé Pine, Moon, Dawn                                     | [rosepinetheme.com](https://rosepinetheme.com/)                               |
+| <img src="./assets/img/gruvbox-dark.png" width="20" height="20" alt="Gruvbox" /> **Gruvbox**                    | Dark Hard, Dark, Dark Soft, Light Hard, Light, Light Soft | [github.com/morhetz/gruvbox](https://github.com/morhetz/gruvbox)              |
+| <img src="./assets/img/tokyo-night.png" width="20" height="20" alt="Tokyo Night" /> **Tokyo Night**             | Night, Storm, Light                                       | [tokyo-night-vscode-theme](https://github.com/enkia/tokyo-night-vscode-theme) |
 
 ## Features
 
-- **21 curated themes** from Catppuccin, Gruvbox, Dracula, GitHub, Solarized, Nord, Rosé
-  Pine, and Bulma
+- **24 curated themes** from Catppuccin, Gruvbox, Dracula, GitHub, Solarized, Tokyo
+  Night, Nord, Rosé Pine, and Bulma
 - **Multi-platform**: npm, PyPI, RubyGems, Swift Package Manager
 - **Design tokens**: Platform-agnostic JSON tokens for any framework
 - **Accessible**: WCAG-compliant with keyboard and screen reader support

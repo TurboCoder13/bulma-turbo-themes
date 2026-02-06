@@ -108,6 +108,7 @@ describe('theme-mapper', () => {
       expect(mapFlavorToUI(createMockFlavor({ vendor: 'catppuccin' })).family).toBe('catppuccin');
       expect(mapFlavorToUI(createMockFlavor({ vendor: 'github' })).family).toBe('github');
       expect(mapFlavorToUI(createMockFlavor({ vendor: 'dracula' })).family).toBe('dracula');
+      expect(mapFlavorToUI(createMockFlavor({ vendor: 'tokyo-night' })).family).toBe('tokyo-night');
       expect(mapFlavorToUI(createMockFlavor({ vendor: 'unknown' })).family).toBe('bulma'); // fallback
     });
 
@@ -148,6 +149,9 @@ describe('theme-mapper', () => {
 
       const dracula = mapFlavorToUI(createMockFlavor({ vendor: 'dracula' }));
       expect(dracula.icon).toBe('assets/img/dracula-logo.png');
+
+      const tokyoNight = mapFlavorToUI(createMockFlavor({ vendor: 'tokyo-night' }));
+      expect(tokyoNight.icon).toBe('assets/img/tokyo-night.png');
     });
 
     it('extracts preview colors from tokens', () => {
