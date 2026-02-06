@@ -223,7 +223,9 @@ export function generateCssVarsFromTokens(tokens: ThemeTokens): string[] {
   // Component tokens (always emitted with fallbacks from base tokens)
   for (const [cssVar, componentPath, fallbackPath] of COMPONENT_TOKEN_MAPPINGS) {
     const value = resolveComponentToken(tokens, componentPath, fallbackPath);
-    add(cssVar, value);
+    if (value) {
+      add(cssVar, value);
+    }
   }
 
   // Syntax highlighting tokens
