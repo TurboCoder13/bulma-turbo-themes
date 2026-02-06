@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Code } from 'astro:components';
+import { flavors } from '../../../../src/themes/registry.js';
+
+const themeCount = flavors.length;
 
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 const installNpm = `npm install turbo-themes`;
@@ -28,7 +31,7 @@ const previewCode = `const theme = {
         <br />for any project
       </h1>
       <p class="hero-subtitle">
-        A design token system with 9 curated color themes. Switch themes instantly with CSS custom properties.
+        A design token system with {themeCount} curated color themes. Switch themes instantly with CSS custom properties.
       </p>
       <div class="hero-actions">
         <a href={`${baseUrl}/docs/`} class="btn btn-primary btn-lg">
@@ -60,6 +63,9 @@ const previewCode = `const theme = {
           <button class="hero-theme-btn" data-theme-preview="nord" title="Nord">
             <img class="hero-theme-icon" src={`${baseUrl}/assets/img/nord.png`} alt="Nord" width="28" height="28" />
           </button>
+          <button class="hero-theme-btn" data-theme-preview="solarized-dark" title="Solarized Dark">
+            <img class="hero-theme-icon" src={`${baseUrl}/assets/img/solarized-dark.png`} alt="Solarized Dark" width="28" height="28" />
+          </button>
           <button class="hero-theme-btn" data-theme-preview="rose-pine" title="Rosé Pine">
             <img class="hero-theme-icon" src={`${baseUrl}/assets/img/rose-pine.png`} alt="Rosé Pine" width="28" height="28" />
           </button>
@@ -88,8 +94,8 @@ const previewCode = `const theme = {
                 <path d="M12 6v6l4 2"></path>
               </svg>
             </div>
-            <h3 class="card-title">9 Beautiful Themes</h3>
-            <p>Catppuccin, Dracula, GitHub, and Bulma variants - carefully crafted dark and light modes.</p>
+            <h3 class="card-title">{themeCount} Beautiful Themes</h3>
+            <p>Catppuccin, Dracula, GitHub, Solarized, Nord, Rosé Pine and more - carefully crafted dark and light modes.</p>
           </div>
         </div>
 
@@ -323,6 +329,42 @@ const previewCode = `const theme = {
   </section>
 
   <script is:inline>
+    // Theme metadata constants (allocated once, reused by click handler)
+    var themeNames = {
+      'catppuccin-mocha': 'Mocha',
+      'catppuccin-macchiato': 'Macchiato',
+      'catppuccin-frappe': 'Frappé',
+      'catppuccin-latte': 'Latte',
+      'dracula': 'Dracula',
+      'github-dark': 'Dark',
+      'github-light': 'Light',
+      'bulma-dark': 'Dark',
+      'bulma-light': 'Light',
+      'nord': 'Nord',
+      'solarized-dark': 'Dark',
+      'solarized-light': 'Light',
+      'rose-pine': 'Rosé Pine',
+      'rose-pine-moon': 'Moon',
+      'rose-pine-dawn': 'Dawn'
+    };
+    var themeIcons = {
+      'catppuccin-mocha': 'catppuccin-logo-macchiato.png',
+      'catppuccin-macchiato': 'catppuccin-logo-macchiato.png',
+      'catppuccin-frappe': 'catppuccin-logo-macchiato.png',
+      'catppuccin-latte': 'catppuccin-logo-latte.png',
+      'dracula': 'dracula-logo.png',
+      'github-dark': 'github-logo-dark.png',
+      'github-light': 'github-logo-light.png',
+      'bulma-dark': 'turbo-themes-logo-dark.png',
+      'bulma-light': 'turbo-themes-logo.png',
+      'nord': 'nord.png',
+      'solarized-dark': 'solarized-dark.png',
+      'solarized-light': 'solarized-light.png',
+      'rose-pine': 'rose-pine.png',
+      'rose-pine-moon': 'rose-pine-moon.png',
+      'rose-pine-dawn': 'rose-pine-dawn.png'
+    };
+
     // Hero theme button click handler
     document.querySelectorAll('.hero-theme-btn[data-theme-preview]').forEach(function(btn) {
       btn.addEventListener('click', function() {
@@ -339,32 +381,26 @@ const previewCode = `const theme = {
           themeLink.href = baseUrl + '/assets/css/themes/turbo/' + theme + '.css';
         }
 
-        // Update header dropdown label if present
+        // Update header dropdown label and icon if present
         var themeLabel = document.getElementById('theme-label');
+        var themeTriggerIcon = document.getElementById('theme-trigger-icon');
         if (themeLabel) {
-          var themeNames = {
-            'catppuccin-mocha': 'Mocha',
-            'catppuccin-macchiato': 'Macchiato',
-            'catppuccin-frappe': 'Frappé',
-            'catppuccin-latte': 'Latte',
-            'dracula': 'Dracula',
-            'github-dark': 'GitHub Dark',
-            'github-light': 'GitHub Light',
-            'bulma-dark': 'Bulma Dark',
-            'bulma-light': 'Bulma Light',
-            'nord': 'Nord',
-            'rose-pine': 'Rosé Pine',
-            'rose-pine-moon': 'Moon',
-            'rose-pine-dawn': 'Dawn'
-          };
           themeLabel.textContent = themeNames[theme] || theme;
         }
+        if (themeTriggerIcon) {
+          themeTriggerIcon.src = baseUrl + '/assets/img/' + (themeIcons[theme] || 'catppuccin-logo-macchiato.png');
+        }
 
-        // Update active state
+        // Update active state on hero buttons
         document.querySelectorAll('.hero-theme-btn').forEach(function(b) {
           b.classList.remove('active');
         });
         this.classList.add('active');
+
+        // Sync header dropdown active state
+        document.querySelectorAll('.theme-menu .theme-option').forEach(function(opt) {
+          opt.classList.toggle('active', opt.getAttribute('data-theme') === theme);
+        });
       });
 
       // Set initial active state

@@ -8,6 +8,7 @@ import { draculaThemes } from './packs/dracula.js';
 import { githubSynced } from './packs/github.synced.js';
 import { nordThemes } from './packs/nord.js';
 import { rosePineSynced } from './packs/rose-pine.synced.js';
+import { solarizedThemes } from './packs/solarized.js';
 
 // Collect all flavors from all theme packages
 const allFlavors: ThemeFlavor[] = [
@@ -17,6 +18,7 @@ const allFlavors: ThemeFlavor[] = [
   ...githubSynced.flavors,
   ...nordThemes.flavors,
   ...rosePineSynced.flavors,
+  ...solarizedThemes.flavors,
 ];
 
 // Export flavors array for use in CSS generation
