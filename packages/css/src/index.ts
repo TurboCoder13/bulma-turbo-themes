@@ -15,6 +15,7 @@ export {
   generateThemeCss,
   generateCoreCss,
   generateCombinedCss,
+  generateThemesOnlyCss,
 } from './generator.js';
 
 // Base styles exports

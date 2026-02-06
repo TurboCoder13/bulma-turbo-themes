@@ -6,13 +6,14 @@
  * Generates pure CSS Custom Properties files from theme tokens.
  *
  * Output:
- *   - dist/turbo.css           (combined: core + all themes)
- *   - dist/turbo-core.css      (just default variables in :root)
- *   - dist/turbo-base.css      (semantic styles using variables)
- *   - dist/turbo-syntax.css    (syntax highlighting styles)
- *   - dist/themes/<id>.css     (individual theme files)
- *   - dist/components/         (pre-built UI components)
- *   - dist/turbo-components.css (all components bundled)
+ *   - dist/turbo.css              (combined: core + all themes)
+ *   - dist/turbo-core.css         (just default variables in :root)
+ *   - dist/turbo-base.css         (semantic styles using variables)
+ *   - dist/turbo-syntax.css       (syntax highlighting styles)
+ *   - dist/turbo-themes-all.css   (all [data-theme] selectors, no :root — FOUC-free)
+ *   - dist/themes/<id>.css        (individual theme files)
+ *   - dist/components/            (pre-built UI components)
+ *   - dist/turbo-components.css   (all components bundled)
  */
 
 import fs from 'node:fs';
@@ -116,6 +117,7 @@ async function main() {
     generateCoreCss,
     generateThemeCss,
     generateCombinedCss,
+    generateThemesOnlyCss,
     generateBaseCss,
     generateSyntaxBaseCss,
   } = await loadCssGenerators();
@@ -156,6 +158,10 @@ async function main() {
   const combinedCss = generateCombinedCss(flavors, 'catppuccin-mocha');
   writeFile(path.join(distDir, 'turbo.css'), combinedCss);
 
+  // Generate turbo-themes-all.css (all [data-theme] selectors, no :root — FOUC-free)
+  const themesOnlyCss = generateThemesOnlyCss(flavors);
+  writeFile(path.join(distDir, 'turbo-themes-all.css'), themesOnlyCss);
+
   // Build component CSS files
   const { totalSize: componentsTotalSize, bundleSize: componentsBundleSize } = buildComponents();
 
@@ -164,6 +170,7 @@ async function main() {
   const baseSize = Buffer.byteLength(baseCss, 'utf8');
   const syntaxSize = Buffer.byteLength(syntaxCss, 'utf8');
   const combinedSize = Buffer.byteLength(combinedCss, 'utf8');
+  const themesOnlySize = Buffer.byteLength(themesOnlyCss, 'utf8');
   const avgThemeSize = totalThemeSize / flavors.length;
 
   console.log('\n--- Build Summary ---');
@@ -172,6 +179,7 @@ async function main() {
   console.log(`  Syntax CSS:     ${(syntaxSize / 1024).toFixed(2)} KB`);
   console.log(`  Components CSS: ${(componentsBundleSize / 1024).toFixed(2)} KB`);
   console.log(`  Combined CSS:   ${(combinedSize / 1024).toFixed(2)} KB`);
+  console.log(`  Themes Only:    ${(themesOnlySize / 1024).toFixed(2)} KB`);
   console.log(`  Avg theme:      ${(avgThemeSize / 1024).toFixed(2)} KB`);
   console.log(`  Total themes:   ${flavors.length}`);
   console.log('\nBuild complete!\n');

@@ -74,11 +74,13 @@ because...
 
 ## Index of ADRs
 
-| ADR                                   | Title                                          | Status   | Date       |
-| ------------------------------------- | ---------------------------------------------- | -------- | ---------- |
-| [0001](0001-use-allstar-security.md)  | Use Allstar for Continuous Security Monitoring | Accepted | 2025-10-05 |
-| [0002](0002-sbom-signing-strategy.md) | SBOM Signing with Sigstore                     | Accepted | 2025-10-05 |
-| [0003](0003-reusable-workflows.md)    | Adopt Reusable GitHub Actions Workflows        | Accepted | 2025-10-05 |
+| ADR                                                         | Title                                          | Status   | Date       |
+| ----------------------------------------------------------- | ---------------------------------------------- | -------- | ---------- |
+| [0001](0001-use-allstar-security.md)                        | Use Allstar for Continuous Security Monitoring | Accepted | 2025-10-05 |
+| [0002](0002-sbom-signing-strategy.md)                       | SBOM Signing with Sigstore                     | Accepted | 2025-10-05 |
+| [0003](0003-reusable-workflows.md)                          | Adopt Reusable GitHub Actions Workflows        | Accepted | 2025-10-05 |
+| [0004](0004-csp-unsafe-inline-for-theme-blocking-script.md) | CSP 'unsafe-inline' for Theme Blocking Script  | Accepted | 2025-12-05 |
+| [0005](0005-css-only-theme-switching.md)                    | CSS-Only Theme Switching to Eliminate FOUC     | Accepted | 2026-02-06 |
 
 ## Template
 

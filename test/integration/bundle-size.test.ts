@@ -10,10 +10,26 @@ const SIZE_BUDGETS: Record<string, number> = {
   'packages/adapters/bulma/dist/index.js': 20_000, // 20KB
 };
 
+// CSS output size budgets
+const CSS_SIZE_BUDGETS: Record<string, number> = {
+  'packages/css/dist/turbo-themes-all.css': 112_640, // 110KB (all theme [data-theme] selectors)
+};
+
 describe('Bundle size budgets', () => {
   for (const [file, budget] of Object.entries(SIZE_BUDGETS)) {
     it(`${file} should exist and be under ${Math.round(budget / 1024)}KB`, () => {
       expect(existsSync(file), `Bundle file ${file} should exist after build`).toBe(true);
+
+      const stats = statSync(file);
+      expect(stats.size).toBeLessThan(budget);
+    });
+  }
+});
+
+describe('CSS size budgets', () => {
+  for (const [file, budget] of Object.entries(CSS_SIZE_BUDGETS)) {
+    it(`${file} should exist and be under ${Math.round(budget / 1024)}KB`, () => {
+      expect(existsSync(file), `CSS file ${file} should exist after build`).toBe(true);
 
       const stats = statSync(file);
       expect(stats.size).toBeLessThan(budget);
