@@ -106,6 +106,7 @@ describe('wireFlavorSelector - error handling', () => {
         expect.stringContaining('Theme CSS failed to load'),
         expect.anything()
       );
+      expect(mockThemeLink.remove).toHaveBeenCalled();
 
       try {
         await clickPromise;
