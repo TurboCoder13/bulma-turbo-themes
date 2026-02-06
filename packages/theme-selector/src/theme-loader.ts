@@ -66,6 +66,14 @@ export function getBaseUrl(doc: Document): string {
 }
 
 /**
+ * Extracts the theme ID from a theme link element's ID.
+ * Strips a leading "theme-" prefix and trailing "-css" suffix.
+ */
+function extractThemeIdFromLinkId(linkId: string): string {
+  return linkId.replace(/^theme-/, '').replace(/-css$/, '');
+}
+
+/**
  * Clears onload/onerror handlers from a link element to prevent memory leaks.
  */
 function clearLinkHandlers(link: HTMLLinkElement): void {
@@ -165,7 +173,7 @@ export async function loadThemeCSS(
 
       // Only remove old theme links after successful load
       existingLinks.forEach((link) => {
-        const linkThemeId = link.id.replace('theme-', '').replace('-css', '');
+        const linkThemeId = extractThemeIdFromLinkId(link.id);
         if (linkThemeId !== theme.id && linkThemeId !== 'base') {
           link.remove();
         }
@@ -178,7 +186,7 @@ export async function loadThemeCSS(
   } else {
     // Link already exists — clean up any other stale theme links
     doc.querySelectorAll(DOM_SELECTORS.THEME_CSS_LINKS).forEach((link) => {
-      const linkThemeId = link.id.replace('theme-', '').replace('-css', '');
+      const linkThemeId = extractThemeIdFromLinkId(link.id);
       if (linkThemeId !== theme.id && linkThemeId !== 'base') {
         link.remove();
       }
