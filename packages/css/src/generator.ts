@@ -41,6 +41,9 @@ function resolveTokenPath(tokens: ThemeTokens, path: string): string | undefined
   return typeof current === 'string' ? current : undefined;
 }
 
+/** Default modal backdrop color used when no component token is defined. */
+const DEFAULT_MODAL_BACKDROP = 'rgba(10, 10, 10, 0.86)';
+
 /**
  * Trusted font provider domains for web font imports.
  * Only HTTPS URLs from these domains are allowed to prevent CSS injection.
@@ -127,7 +130,7 @@ function resolveComponentToken(
   if (componentValue !== undefined) return componentValue;
 
   // Special case: modal.bg has a non-token default
-  if (componentPath === 'modal.bg') return 'rgba(10, 10, 10, 0.86)';
+  if (componentPath === 'modal.bg') return DEFAULT_MODAL_BACKDROP;
 
   // Fall back to base token
   if (fallbackPath) return resolveTokenPath(tokens, fallbackPath) ?? '';
