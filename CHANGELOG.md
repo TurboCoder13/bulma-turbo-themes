@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.15.1] - 2026-02-06
+
+### 🐛 Fixed
+
+- emit component CSS variables for all themes, not just those with components (#334)
+
 ## [0.15.0] - 2026-02-06
 
 ### ✨ Added
