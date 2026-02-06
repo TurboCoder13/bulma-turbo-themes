@@ -4,7 +4,6 @@
   "label": "Gruvbox Dark Hard",
   "vendor": "gruvbox",
   "appearance": "dark",
-  "iconUrl": "/assets/img/gruvbox-dark-hard.png",
   "tokens": {
     "background": {
       "base": {
@@ -184,6 +183,144 @@
         },
         "theadBg": {
           "$value": "#282828",
+          "$type": "color"
+        }
+      }
+    },
+    "components": {
+      "card": {
+        "bg": {
+          "$value": "#282828",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#665c54",
+          "$type": "color"
+        },
+        "headerBg": {
+          "$value": "#1d2021",
+          "$type": "color"
+        },
+        "footerBg": {
+          "$value": "#282828",
+          "$type": "color"
+        }
+      },
+      "message": {
+        "bg": {
+          "$value": "#1d2021",
+          "$type": "color"
+        },
+        "headerBg": {
+          "$value": "#282828",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#665c54",
+          "$type": "color"
+        },
+        "bodyFg": {
+          "$value": "#ebdbb2",
+          "$type": "color"
+        }
+      },
+      "panel": {
+        "bg": {
+          "$value": "#282828",
+          "$type": "color"
+        },
+        "headerBg": {
+          "$value": "#1d2021",
+          "$type": "color"
+        },
+        "headerFg": {
+          "$value": "#ebdbb2",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#665c54",
+          "$type": "color"
+        },
+        "blockBg": {
+          "$value": "#1d2021",
+          "$type": "color"
+        },
+        "blockHoverBg": {
+          "$value": "#282828",
+          "$type": "color"
+        },
+        "blockActiveBg": {
+          "$value": "#3c3836",
+          "$type": "color"
+        }
+      },
+      "box": {
+        "bg": {
+          "$value": "#282828",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#665c54",
+          "$type": "color"
+        }
+      },
+      "notification": {
+        "bg": {
+          "$value": "#1d2021",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#665c54",
+          "$type": "color"
+        }
+      },
+      "modal": {
+        "bg": {
+          "$value": "rgba(29, 32, 33, 0.9)",
+          "$type": "color"
+        },
+        "cardBg": {
+          "$value": "#282828",
+          "$type": "color"
+        },
+        "headerBg": {
+          "$value": "#1d2021",
+          "$type": "color"
+        },
+        "footerBg": {
+          "$value": "#282828",
+          "$type": "color"
+        }
+      },
+      "dropdown": {
+        "bg": {
+          "$value": "#282828",
+          "$type": "color"
+        },
+        "itemHoverBg": {
+          "$value": "#3c3836",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#665c54",
+          "$type": "color"
+        }
+      },
+      "tabs": {
+        "border": {
+          "$value": "#665c54",
+          "$type": "color"
+        },
+        "linkBg": {
+          "$value": "#282828",
+          "$type": "color"
+        },
+        "linkActiveBg": {
+          "$value": "#1d2021",
+          "$type": "color"
+        },
+        "linkHoverBg": {
+          "$value": "#3c3836",
           "$type": "color"
         }
       }

@@ -66,6 +66,13 @@ type TokensInput = {
   border: string;
 };
 
+function hexToRgba(hex: string, alpha: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 function buildTokens({ appearance, background, text, border }: TokensInput): ThemeTokens {
   const accents = appearance === 'dark' ? DARK_ACCENTS : LIGHT_ACCENTS;
   return {
@@ -140,6 +147,54 @@ function buildTokens({ appearance, background, text, border }: TokensInput): The
         theadBg: background.surface,
       },
     },
+    components:
+      appearance === 'dark'
+        ? {
+            card: { bg: background.surface, border, headerBg: background.base, footerBg: background.surface },
+            message: { bg: background.base, headerBg: background.surface, border, bodyFg: text.primary },
+            panel: {
+              bg: background.surface,
+              headerBg: background.base,
+              headerFg: text.primary,
+              border,
+              blockBg: background.base,
+              blockHoverBg: background.surface,
+              blockActiveBg: background.overlay,
+            },
+            box: { bg: background.surface, border },
+            notification: { bg: background.base, border },
+            modal: {
+              bg: hexToRgba(background.base, 0.9),
+              cardBg: background.surface,
+              headerBg: background.base,
+              footerBg: background.surface,
+            },
+            dropdown: { bg: background.surface, itemHoverBg: background.overlay, border },
+            tabs: { border, linkBg: background.surface, linkActiveBg: background.base, linkHoverBg: background.overlay },
+          }
+        : {
+            card: { bg: background.base, border, headerBg: background.surface, footerBg: background.surface },
+            message: { bg: background.surface, headerBg: background.base, border, bodyFg: text.primary },
+            panel: {
+              bg: background.base,
+              headerBg: background.surface,
+              headerFg: text.primary,
+              border,
+              blockBg: background.surface,
+              blockHoverBg: background.base,
+              blockActiveBg: background.overlay,
+            },
+            box: { bg: background.base, border },
+            notification: { bg: background.surface, border },
+            modal: {
+              bg: 'rgba(60, 56, 54, 0.86)',
+              cardBg: background.base,
+              headerBg: background.surface,
+              footerBg: background.surface,
+            },
+            dropdown: { bg: background.base, itemHoverBg: background.surface, border },
+            tabs: { border, linkBg: background.surface, linkActiveBg: background.base, linkHoverBg: background.overlay },
+          },
   };
 }
 
