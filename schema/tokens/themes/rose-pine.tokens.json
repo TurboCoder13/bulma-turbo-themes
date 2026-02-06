@@ -4,32 +4,70 @@
   "label": "Rosé Pine",
   "vendor": "rose-pine",
   "appearance": "dark",
-  "iconUrl": "/assets/img/rose-pine.png",
   "tokens": {
     "background": {
-      "base": { "$value": "#191724", "$type": "color" },
-      "surface": { "$value": "#1f1d2e", "$type": "color" },
-      "overlay": { "$value": "#26233a", "$type": "color" }
+      "base": {
+        "$value": "#191724",
+        "$type": "color"
+      },
+      "surface": {
+        "$value": "#1f1d2e",
+        "$type": "color"
+      },
+      "overlay": {
+        "$value": "#26233a",
+        "$type": "color"
+      }
     },
     "text": {
-      "primary": { "$value": "#e0def4", "$type": "color" },
-      "secondary": { "$value": "#908caa", "$type": "color" },
-      "inverse": { "$value": "#191724", "$type": "color" }
+      "primary": {
+        "$value": "#e0def4",
+        "$type": "color"
+      },
+      "secondary": {
+        "$value": "#908caa",
+        "$type": "color"
+      },
+      "inverse": {
+        "$value": "#191724",
+        "$type": "color"
+      }
     },
     "brand": {
-      "primary": { "$value": "#c4a7e7", "$type": "color" }
+      "primary": {
+        "$value": "#c4a7e7",
+        "$type": "color"
+      }
     },
     "state": {
-      "info": { "$value": "#9ccfd8", "$type": "color" },
-      "success": { "$value": "#31748f", "$type": "color" },
-      "warning": { "$value": "#f6c177", "$type": "color" },
-      "danger": { "$value": "#eb6f92", "$type": "color" }
+      "info": {
+        "$value": "#9ccfd8",
+        "$type": "color"
+      },
+      "success": {
+        "$value": "#31748f",
+        "$type": "color"
+      },
+      "warning": {
+        "$value": "#f6c177",
+        "$type": "color"
+      },
+      "danger": {
+        "$value": "#eb6f92",
+        "$type": "color"
+      }
     },
     "border": {
-      "default": { "$value": "#403d52", "$type": "color" }
+      "default": {
+        "$value": "#403d52",
+        "$type": "color"
+      }
     },
     "accent": {
-      "link": { "$value": "#c4a7e7", "$type": "color" }
+      "link": {
+        "$value": "#c4a7e7",
+        "$type": "color"
+      }
     },
     "typography": {
       "fonts": {
@@ -49,41 +87,104 @@
     },
     "content": {
       "heading": {
-        "h1": { "$value": "#31748f", "$type": "color" },
-        "h2": { "$value": "#c4a7e7", "$type": "color" },
-        "h3": { "$value": "#9ccfd8", "$type": "color" },
-        "h4": { "$value": "#f6c177", "$type": "color" },
-        "h5": { "$value": "#ebbcba", "$type": "color" },
-        "h6": { "$value": "#eb6f92", "$type": "color" }
+        "h1": {
+          "$value": "#31748f",
+          "$type": "color"
+        },
+        "h2": {
+          "$value": "#c4a7e7",
+          "$type": "color"
+        },
+        "h3": {
+          "$value": "#9ccfd8",
+          "$type": "color"
+        },
+        "h4": {
+          "$value": "#f6c177",
+          "$type": "color"
+        },
+        "h5": {
+          "$value": "#ebbcba",
+          "$type": "color"
+        },
+        "h6": {
+          "$value": "#eb6f92",
+          "$type": "color"
+        }
       },
       "body": {
-        "primary": { "$value": "#e0def4", "$type": "color" },
-        "secondary": { "$value": "#908caa", "$type": "color" }
+        "primary": {
+          "$value": "#e0def4",
+          "$type": "color"
+        },
+        "secondary": {
+          "$value": "#908caa",
+          "$type": "color"
+        }
       },
       "link": {
-        "default": { "$value": "#c4a7e7", "$type": "color" }
+        "default": {
+          "$value": "#c4a7e7",
+          "$type": "color"
+        }
       },
       "selection": {
-        "fg": { "$value": "#e0def4", "$type": "color" },
-        "bg": { "$value": "#524f67", "$type": "color" }
+        "fg": {
+          "$value": "#e0def4",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#524f67",
+          "$type": "color"
+        }
       },
       "blockquote": {
-        "border": { "$value": "#524f67", "$type": "color" },
-        "fg": { "$value": "#e0def4", "$type": "color" },
-        "bg": { "$value": "#1f1d2e", "$type": "color" }
+        "border": {
+          "$value": "#524f67",
+          "$type": "color"
+        },
+        "fg": {
+          "$value": "#e0def4",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#1f1d2e",
+          "$type": "color"
+        }
       },
       "codeInline": {
-        "fg": { "$value": "#e0def4", "$type": "color" },
-        "bg": { "$value": "#26233a", "$type": "color" }
+        "fg": {
+          "$value": "#e0def4",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#26233a",
+          "$type": "color"
+        }
       },
       "codeBlock": {
-        "fg": { "$value": "#e0def4", "$type": "color" },
-        "bg": { "$value": "#26233a", "$type": "color" }
+        "fg": {
+          "$value": "#e0def4",
+          "$type": "color"
+        },
+        "bg": {
+          "$value": "#26233a",
+          "$type": "color"
+        }
       },
       "table": {
-        "border": { "$value": "#524f67", "$type": "color" },
-        "stripe": { "$value": "#26233a", "$type": "color" },
-        "theadBg": { "$value": "#403d52", "$type": "color" }
+        "border": {
+          "$value": "#524f67",
+          "$type": "color"
+        },
+        "stripe": {
+          "$value": "#26233a",
+          "$type": "color"
+        },
+        "theadBg": {
+          "$value": "#403d52",
+          "$type": "color"
+        }
       }
     }
   }
