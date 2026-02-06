@@ -62,11 +62,8 @@ export function generateThemeCSSVariables(flavor: ThemeFlavor): string {
   // Surface/background variables
   lines.push(...generateVariables(tokens, SURFACE_MAPPINGS));
 
-  // Component tokens (optional)
-  const componentLines = generateComponentVariables(tokens, COMPONENT_MAPPINGS);
-  if (componentLines.length > 0) {
-    lines.push(...componentLines);
-  }
+  // Component tokens (always emitted with fallbacks from base tokens)
+  lines.push(...generateComponentVariables(tokens, COMPONENT_MAPPINGS));
 
   // Color scheme
   lines.push(`  color-scheme: ${flavor.appearance};`);

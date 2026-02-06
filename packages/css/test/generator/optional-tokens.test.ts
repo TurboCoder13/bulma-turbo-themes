@@ -122,15 +122,48 @@ describe('generateCssVarsFromTokens - optional component tokens', () => {
         card: {
           bg: '#282a36',
           border: '#44475a',
+          headerBg: '#383a4a',
+          footerBg: '#282a36',
+        },
+        message: {
+          bg: '#282a36',
+          headerBg: '#383a4a',
+          border: '#44475a',
+          bodyFg: '#f8f8f2',
+        },
+        panel: {
+          bg: '#282a36',
+          headerBg: '#383a4a',
+          headerFg: '#f8f8f2',
+          border: '#44475a',
+          blockBg: '#282a36',
+          blockHoverBg: '#383a4a',
+          blockActiveBg: '#44475a',
+        },
+        box: {
+          bg: '#282a36',
+          border: '#44475a',
+        },
+        notification: {
+          bg: '#282a36',
+          border: '#44475a',
         },
         modal: {
           bg: '#1e1e2e',
           cardBg: '#313244',
+          headerBg: '#383a4a',
+          footerBg: '#282a36',
         },
         dropdown: {
           bg: '#1e1e2e',
           border: '#45475a',
           itemHoverBg: '#313244',
+        },
+        tabs: {
+          border: '#44475a',
+          linkBg: '#282a36',
+          linkActiveBg: '#1e1e2e',
+          linkHoverBg: '#383a4a',
         },
       },
     };
@@ -139,11 +172,85 @@ describe('generateCssVarsFromTokens - optional component tokens', () => {
 
     expect(joined).toContain('--turbo-card-bg: #282a36');
     expect(joined).toContain('--turbo-card-border: #44475a');
+    expect(joined).toContain('--turbo-card-header-bg: #383a4a');
+    expect(joined).toContain('--turbo-card-footer-bg: #282a36');
+    expect(joined).toContain('--turbo-message-bg: #282a36');
+    expect(joined).toContain('--turbo-message-header-bg: #383a4a');
+    expect(joined).toContain('--turbo-message-border: #44475a');
+    expect(joined).toContain('--turbo-message-body-fg: #f8f8f2');
+    expect(joined).toContain('--turbo-panel-bg: #282a36');
+    expect(joined).toContain('--turbo-panel-header-bg: #383a4a');
+    expect(joined).toContain('--turbo-panel-header-fg: #f8f8f2');
+    expect(joined).toContain('--turbo-panel-border: #44475a');
+    expect(joined).toContain('--turbo-panel-block-bg: #282a36');
+    expect(joined).toContain('--turbo-panel-block-hover-bg: #383a4a');
+    expect(joined).toContain('--turbo-panel-block-active-bg: #44475a');
+    expect(joined).toContain('--turbo-box-bg: #282a36');
+    expect(joined).toContain('--turbo-box-border: #44475a');
+    expect(joined).toContain('--turbo-notification-bg: #282a36');
+    expect(joined).toContain('--turbo-notification-border: #44475a');
     expect(joined).toContain('--turbo-modal-bg: #1e1e2e');
     expect(joined).toContain('--turbo-modal-card-bg: #313244');
+    expect(joined).toContain('--turbo-modal-header-bg: #383a4a');
+    expect(joined).toContain('--turbo-modal-footer-bg: #282a36');
     expect(joined).toContain('--turbo-dropdown-bg: #1e1e2e');
     expect(joined).toContain('--turbo-dropdown-border: #45475a');
     expect(joined).toContain('--turbo-dropdown-item-hover: #313244');
+    expect(joined).toContain('--turbo-tabs-border: #44475a');
+    expect(joined).toContain('--turbo-tabs-link-bg: #282a36');
+    expect(joined).toContain('--turbo-tabs-link-active-bg: #1e1e2e');
+    expect(joined).toContain('--turbo-tabs-link-hover-bg: #383a4a');
+  });
+
+  it('should use fallbacks for missing component properties', () => {
+    const tokensWithPartialComponents: ThemeTokens = {
+      ...baseMockTokens,
+      components: {
+        card: { bg: '#282a36' },
+        modal: {},
+        dropdown: { bg: '#1e1e2e' },
+      },
+    };
+    const lines = generateCssVarsFromTokens(tokensWithPartialComponents);
+    const joined = lines.join('\n');
+
+    // Explicit value used when provided
+    expect(joined).toContain('--turbo-card-bg: #282a36');
+    // Fallback to base tokens when component property is missing
+    expect(joined).toContain(`--turbo-card-border: ${baseMockTokens.border.default}`);
+    expect(joined).toContain(`--turbo-card-header-bg: ${baseMockTokens.background.overlay}`);
+    // Missing component groups fall back entirely
+    expect(joined).toContain(`--turbo-message-bg: ${baseMockTokens.background.surface}`);
+    expect(joined).toContain(`--turbo-panel-bg: ${baseMockTokens.background.surface}`);
+    expect(joined).toContain(`--turbo-tabs-border: ${baseMockTokens.border.default}`);
+    // Modal with empty object falls back
+    expect(joined).toContain('--turbo-modal-bg: rgba(10, 10, 10, 0.86)');
+    expect(joined).toContain(`--turbo-modal-card-bg: ${baseMockTokens.background.surface}`);
+  });
+
+  it('should emit component tokens with fallbacks when components is undefined', () => {
+    const tokensWithoutComponents: ThemeTokens = {
+      ...baseMockTokens,
+    };
+    delete (tokensWithoutComponents as Partial<ThemeTokens>).components;
+    const lines = generateCssVarsFromTokens(tokensWithoutComponents);
+    const joined = lines.join('\n');
+
+    // All component CSS variables should be emitted with fallback values
+    expect(joined).toContain('--turbo-card-bg:');
+    expect(joined).toContain('--turbo-card-border:');
+    expect(joined).toContain('--turbo-message-bg:');
+    expect(joined).toContain('--turbo-panel-bg:');
+    expect(joined).toContain('--turbo-box-bg:');
+    expect(joined).toContain('--turbo-notification-bg:');
+    expect(joined).toContain('--turbo-modal-bg:');
+    expect(joined).toContain('--turbo-dropdown-bg:');
+    expect(joined).toContain('--turbo-tabs-border:');
+
+    // Verify fallbacks use base token values
+    expect(joined).toContain(`--turbo-card-bg: ${baseMockTokens.background.surface}`);
+    expect(joined).toContain(`--turbo-card-border: ${baseMockTokens.border.default}`);
+    expect(joined).toContain('--turbo-modal-bg: rgba(10, 10, 10, 0.86)');
   });
 });
 

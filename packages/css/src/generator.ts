@@ -41,6 +41,9 @@ function resolveTokenPath(tokens: ThemeTokens, path: string): string | undefined
   return typeof current === 'string' ? current : undefined;
 }
 
+/** Default modal backdrop color used when no component token is defined. */
+const DEFAULT_MODAL_BACKDROP = 'rgba(10, 10, 10, 0.86)';
+
 /**
  * Trusted font provider domains for web font imports.
  * Only HTTPS URLs from these domains are allowed to prevent CSS injection.
@@ -74,6 +77,64 @@ function isValidFontUrl(url: string): boolean {
   } catch {
     return false;
   }
+}
+
+/**
+ * Component token mappings: [cssVarName, componentPath, fallbackTokenPath].
+ * Each entry maps a CSS variable to a component token path with a fallback.
+ */
+const COMPONENT_TOKEN_MAPPINGS: ReadonlyArray<[string, string, string]> = [
+  ['card-bg', 'card.bg', 'background.surface'],
+  ['card-border', 'card.border', 'border.default'],
+  ['card-header-bg', 'card.headerBg', 'background.overlay'],
+  ['card-footer-bg', 'card.footerBg', 'background.surface'],
+  ['message-bg', 'message.bg', 'background.surface'],
+  ['message-header-bg', 'message.headerBg', 'background.overlay'],
+  ['message-border', 'message.border', 'border.default'],
+  ['message-body-fg', 'message.bodyFg', 'text.primary'],
+  ['panel-bg', 'panel.bg', 'background.surface'],
+  ['panel-header-bg', 'panel.headerBg', 'background.overlay'],
+  ['panel-header-fg', 'panel.headerFg', 'text.primary'],
+  ['panel-border', 'panel.border', 'border.default'],
+  ['panel-block-bg', 'panel.blockBg', 'background.surface'],
+  ['panel-block-hover-bg', 'panel.blockHoverBg', 'background.overlay'],
+  ['panel-block-active-bg', 'panel.blockActiveBg', 'background.overlay'],
+  ['box-bg', 'box.bg', 'background.surface'],
+  ['box-border', 'box.border', 'border.default'],
+  ['notification-bg', 'notification.bg', 'background.surface'],
+  ['notification-border', 'notification.border', 'border.default'],
+  ['modal-bg', 'modal.bg', ''],
+  ['modal-card-bg', 'modal.cardBg', 'background.surface'],
+  ['modal-header-bg', 'modal.headerBg', 'background.overlay'],
+  ['modal-footer-bg', 'modal.footerBg', 'background.surface'],
+  ['dropdown-bg', 'dropdown.bg', 'background.surface'],
+  ['dropdown-item-hover', 'dropdown.itemHoverBg', 'background.overlay'],
+  ['dropdown-border', 'dropdown.border', 'border.default'],
+  ['tabs-border', 'tabs.border', 'border.default'],
+  ['tabs-link-bg', 'tabs.linkBg', 'background.surface'],
+  ['tabs-link-active-bg', 'tabs.linkActiveBg', 'background.base'],
+  ['tabs-link-hover-bg', 'tabs.linkHoverBg', 'background.overlay'],
+];
+
+/**
+ * Resolves a component token value with fallback to a base token.
+ * Uses the components section if available, otherwise falls back to base tokens.
+ */
+function resolveComponentToken(
+  tokens: ThemeTokens,
+  componentPath: string,
+  fallbackPath: string,
+): string {
+  // Try component-specific value first
+  const componentValue = resolveTokenPath(tokens, `components.${componentPath}`);
+  if (componentValue !== undefined) return componentValue;
+
+  // Special case: modal.bg has a non-token default
+  if (componentPath === 'modal.bg') return DEFAULT_MODAL_BACKDROP;
+
+  // Fall back to base token
+  if (fallbackPath) return resolveTokenPath(tokens, fallbackPath) ?? '';
+  return '';
 }
 
 /**
@@ -162,21 +223,11 @@ export function generateCssVarsFromTokens(tokens: ThemeTokens): string[] {
     }
   }
 
-  // Component tokens (if available)
-  if (tokens.components) {
-    const { components } = tokens;
-    if (components.card) {
-      if (components.card.bg) add('card-bg', components.card.bg);
-      if (components.card.border) add('card-border', components.card.border);
-    }
-    if (components.modal) {
-      if (components.modal.bg) add('modal-bg', components.modal.bg);
-      if (components.modal.cardBg) add('modal-card-bg', components.modal.cardBg);
-    }
-    if (components.dropdown) {
-      if (components.dropdown.bg) add('dropdown-bg', components.dropdown.bg);
-      if (components.dropdown.border) add('dropdown-border', components.dropdown.border);
-      if (components.dropdown.itemHoverBg) add('dropdown-item-hover', components.dropdown.itemHoverBg);
+  // Component tokens (always emitted with fallbacks from base tokens)
+  for (const [cssVar, componentPath, fallbackPath] of COMPONENT_TOKEN_MAPPINGS) {
+    const value = resolveComponentToken(tokens, componentPath, fallbackPath);
+    if (value) {
+      add(cssVar, value);
     }
   }
 
