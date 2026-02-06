@@ -40,6 +40,11 @@ Following py-lintro standards:
 
 - `reporting-lighthouse-ci.yml` - Lighthouse performance analysis
 
+### PR Automation
+
+- `pr-labeler.yml` - Automatic label assignment based on changed files
+- `pr-auto-assign.yml` - Automatic CODEOWNER assignment to new PRs
+
 ### Maintenance
 
 - `maintenance-renovate.yml` - Automated dependency updates
@@ -81,6 +86,13 @@ Following py-lintro standards:
 | Workflow             | Purpose                                                          | Trigger            |
 | -------------------- | ---------------------------------------------------------------- | ------------------ |
 | `publish-on-tag.yml` | **Publish - npm Production**<br/>Publish package to npm registry | Tag push (v*.*.\*) |
+
+### 🏷️ PR Automation Workflows
+
+| Workflow             | Purpose                                                          | Trigger            |
+| -------------------- | ---------------------------------------------------------------- | ------------------ |
+| `pr-labeler.yml`     | **PR - Auto Label**<br/>Apply labels based on changed file paths | Pull Request       |
+| `pr-auto-assign.yml` | **PR - Auto Assign**<br/>Assign random CODEOWNER to new PRs     | Pull Request (new) |
 
 ### 🔧 Maintenance Workflows
 
@@ -281,4 +293,4 @@ For questions about workflows:
 
 **Last Updated:** 2025-10-05  
 **Maintained by:** @eiteldagnin  
-**Workflow Count:** 10
+**Workflow Count:** 29

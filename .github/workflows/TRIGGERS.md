@@ -26,6 +26,8 @@ turbo-themes, their triggers, and purposes.
 | release-auto-tag                |             |             |              |           | ✅     |              |
 | maintenance-renovate            |             |             |              | ✅ Daily  |        |              |
 | maintenance-auto-bump-refs      |             |             |              | ✅ Weekly |        |              |
+| pr-labeler                      |             |             | ✅           |           |        |              |
+| pr-auto-assign                  |             |             | ✅ (opened)  |           |        |              |
 
 ## Workflow Categories
 
@@ -239,6 +241,18 @@ publish testing
 - Runs Lighthouse CI analysis
 - Posts results comment on PRs
 - Uploads reports as artifacts
+
+### PR Automation
+
+#### pr-labeler.yml
+
+**Triggers:** Pull request opened/synchronized/reopened (pull_request_target)
+**Purpose:** Auto-label PRs based on changed file paths
+
+#### pr-auto-assign.yml
+
+**Triggers:** Pull request opened (pull_request_target)
+**Purpose:** Auto-assign a random CODEOWNER to new pull requests
 
 ## Workflow Dependencies
 
