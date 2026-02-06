@@ -1,0 +1,46 @@
+# SPDX-License-Identifier: MIT
+---
+name: PR - Auto Assign
+
+# Automatically assigns a random CODEOWNER to new pull requests.
+# Ensures every PR has an assignee for accountability.
+
+'on':
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: pr-auto-assign-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  assign:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@e3f713f2d8f53843e71c69a996d56f51aa9adfb9 # v2.14.1
+        with:
+          egress-policy: 'block'
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            codeload.github.com:443
+
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          sparse-checkout: |
+            .github/CODEOWNERS
+            scripts/ci/pr-auto-assign.sh
+          sparse-checkout-cone-mode: false
+
+      - name: Assign random CODEOWNER
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: ./scripts/ci/pr-auto-assign.sh
