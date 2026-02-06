@@ -77,8 +77,8 @@ export const REAL_THEME_IDS = {
   solarizedDark: 'solarized-dark',
   solarizedLight: 'solarized-light',
   tokyoNightDark: 'tokyo-night-dark',
-  tokyoNightStorm: 'tokyo-night-storm',
   tokyoNightLight: 'tokyo-night-light',
+  tokyoNightStorm: 'tokyo-night-storm',
 } as const;
 
 /**

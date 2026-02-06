@@ -1,10 +1,9 @@
 {
   "$schema": "../../turbo-themes.schema.json#/$defs/ThemeFile",
   "id": "tokyo-night-dark",
-  "label": "Night",
+  "label": "Tokyo Night Dark",
   "vendor": "tokyo-night",
   "appearance": "dark",
-  "iconUrl": "/assets/img/tokyo-night.png",
   "tokens": {
     "background": {
       "base": { "$value": "#1a1b26", "$type": "color" },

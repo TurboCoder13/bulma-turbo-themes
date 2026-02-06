@@ -43,8 +43,8 @@ projects:
 
 ## Features
 
-- **24 curated themes** from Catppuccin, Gruvbox, Dracula, GitHub, Solarized, Tokyo Night,
-  Nord, Rosé Pine, and Bulma
+- **24 curated themes** from Catppuccin, Gruvbox, Dracula, GitHub, Solarized, Tokyo
+  Night, Nord, Rosé Pine, and Bulma
 - **Multi-platform**: npm, PyPI, RubyGems, Swift Package Manager
 - **Design tokens**: Platform-agnostic JSON tokens for any framework
 - **Accessible**: WCAG-compliant with keyboard and screen reader support
