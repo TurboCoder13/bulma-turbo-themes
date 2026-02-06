@@ -7,6 +7,7 @@ import type { ThemeFlavor } from '../theme-mapper.js';
 import type { ThemeFamilyMeta } from '../constants.js';
 import { setItemActiveState } from './helpers.js';
 import { DOM_IDS, DOM_SELECTORS } from '../constants.js';
+import { resolveAssetPath } from '../theme-loader.js';
 import type { DropdownElements } from './state.js';
 
 export interface DropdownContext {
@@ -70,7 +71,11 @@ export function createThemeItemElement(
   if (theme.icon) {
     const icon = documentObj.createElement('img');
     icon.className = 'theme-icon';
-    icon.src = baseUrl ? `${baseUrl}/${theme.icon}` : theme.icon;
+    try {
+      icon.src = resolveAssetPath(theme.icon, baseUrl);
+    } catch {
+      icon.src = theme.icon;
+    }
     icon.alt = `${familyMeta.name} ${theme.name}`;
     icon.width = 24;
     icon.height = 24;
