@@ -13,4 +13,5 @@ export type ThemeFamily =
   | 'gruvbox'
   | 'nord'
   | 'rose-pine'
-  | 'solarized';
+  | 'solarized'
+  | 'tokyo-night';
