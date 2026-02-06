@@ -1,9 +1,16 @@
 /**
  * Shared theme display metadata consumed by BaseLayout and index page inline scripts.
  *
- * Single source of truth for theme label and icon mappings used in the header
- * dropdown and the hero theme-preview strip.
+ * Derived from the canonical core metadata — automatically stays in sync
+ * when themes are added or removed.
  */
+
+import {
+  VENDOR_GROUPS,
+  THEME_SHORT_LABELS,
+  THEME_APPEARANCES as coreAppearances,
+  VALID_THEMES,
+} from '../../../../packages/core/src/themes/metadata.js';
 
 /** Theme group for dropdown rendering. */
 export interface ThemeGroup {
@@ -13,138 +20,60 @@ export interface ThemeGroup {
 }
 
 /** Ordered theme groups for dropdown rendering. */
-export const themeGroups: ThemeGroup[] = [
-  {
-    id: 'catppuccin',
-    displayName: 'Catppuccin',
-    flavors: ['catppuccin-mocha', 'catppuccin-macchiato', 'catppuccin-frappe', 'catppuccin-latte'],
-  },
-  {
-    id: 'dracula',
-    displayName: 'Dracula',
-    flavors: ['dracula'],
-  },
-  {
-    id: 'gruvbox',
-    displayName: 'Gruvbox',
-    flavors: [
-      'gruvbox-dark-hard',
-      'gruvbox-dark',
-      'gruvbox-dark-soft',
-      'gruvbox-light-hard',
-      'gruvbox-light',
-      'gruvbox-light-soft',
-    ],
-  },
-  {
-    id: 'github',
-    displayName: 'GitHub',
-    flavors: ['github-dark', 'github-light'],
-  },
-  {
-    id: 'bulma',
-    displayName: 'Bulma',
-    flavors: ['bulma-dark', 'bulma-light'],
-  },
-  {
-    id: 'nord',
-    displayName: 'Nord',
-    flavors: ['nord'],
-  },
-  {
-    id: 'solarized',
-    displayName: 'Solarized',
-    flavors: ['solarized-dark', 'solarized-light'],
-  },
-  {
-    id: 'rose-pine',
-    displayName: 'Rosé Pine',
-    flavors: ['rose-pine', 'rose-pine-moon', 'rose-pine-dawn'],
-  },
-];
+export const themeGroups: ThemeGroup[] = VENDOR_GROUPS.map((g) => ({
+  id: g.id,
+  displayName: g.displayName,
+  flavors: [...g.themeIds],
+}));
 
 /** All valid theme IDs derived from the groups. */
-export const validThemeIds: string[] = themeGroups.flatMap((g) => g.flavors);
+export const validThemeIds: string[] = [...VALID_THEMES];
 
 /** Human-readable short label shown in the theme dropdown trigger. */
-export const themeNames: Record<string, string> = {
-  'catppuccin-mocha': 'Mocha',
-  'catppuccin-macchiato': 'Macchiato',
-  'catppuccin-frappe': 'Frappé',
-  'catppuccin-latte': 'Latte',
-  dracula: 'Dracula',
-  'gruvbox-dark-hard': 'Dark Hard',
-  'gruvbox-dark': 'Dark',
-  'gruvbox-dark-soft': 'Dark Soft',
-  'gruvbox-light-hard': 'Light Hard',
-  'gruvbox-light': 'Light',
-  'gruvbox-light-soft': 'Light Soft',
-  'github-dark': 'Dark',
-  'github-light': 'Light',
-  'bulma-dark': 'Dark',
-  'bulma-light': 'Light',
-  nord: 'Nord',
-  'solarized-dark': 'Dark',
-  'solarized-light': 'Light',
-  'rose-pine': 'Rosé Pine',
-  'rose-pine-moon': 'Moon',
-  'rose-pine-dawn': 'Dawn',
-};
+export const themeNames: Record<string, string> = { ...THEME_SHORT_LABELS };
 
 /** Appearance (light/dark) for each theme. */
-export const themeAppearances: Record<string, 'light' | 'dark'> = {
-  'catppuccin-mocha': 'dark',
-  'catppuccin-macchiato': 'dark',
-  'catppuccin-frappe': 'dark',
-  'catppuccin-latte': 'light',
-  dracula: 'dark',
-  'gruvbox-dark-hard': 'dark',
-  'gruvbox-dark': 'dark',
-  'gruvbox-dark-soft': 'dark',
-  'gruvbox-light-hard': 'light',
-  'gruvbox-light': 'light',
-  'gruvbox-light-soft': 'light',
-  'github-dark': 'dark',
-  'github-light': 'light',
-  'bulma-dark': 'dark',
-  'bulma-light': 'light',
-  nord: 'dark',
-  'solarized-dark': 'dark',
-  'solarized-light': 'light',
-  'rose-pine': 'dark',
-  'rose-pine-moon': 'dark',
-  'rose-pine-dawn': 'light',
+export const themeAppearances: Record<string, 'light' | 'dark'> = { ...coreAppearances };
+
+/**
+ * Icon configuration per vendor, keyed by vendor ID.
+ * Each entry has a dark icon and a light icon filename.
+ */
+const VENDOR_ICON_CONFIG: Record<string, { dark: string; light: string }> = {
+  catppuccin: { dark: 'catppuccin-logo-macchiato.png', light: 'catppuccin-logo-latte.png' },
+  dracula: { dark: 'dracula-logo.png', light: 'dracula-logo.png' },
+  gruvbox: { dark: 'turbo-themes-logo-dark.png', light: 'turbo-themes-logo.png' },
+  github: { dark: 'github-logo-dark.png', light: 'github-logo-light.png' },
+  bulma: { dark: 'turbo-themes-logo-dark.png', light: 'turbo-themes-logo.png' },
+  nord: { dark: 'nord.png', light: 'nord.png' },
+  solarized: { dark: 'solarized-dark.png', light: 'solarized-light.png' },
+  'rose-pine': { dark: 'rose-pine.png', light: 'rose-pine-dawn.png' },
+  'tokyo-night': { dark: 'turbo-themes-logo-dark.png', light: 'turbo-themes-logo.png' },
 };
 
-/** Icon filename (relative to /assets/img/) for the theme dropdown trigger. */
-export const themeIcons: Record<string, string> = {
-  'catppuccin-mocha': 'catppuccin-logo-macchiato.png',
-  'catppuccin-macchiato': 'catppuccin-logo-macchiato.png',
-  'catppuccin-frappe': 'catppuccin-logo-macchiato.png',
-  'catppuccin-latte': 'catppuccin-logo-latte.png',
-  dracula: 'dracula-logo.png',
+/** Per-theme icon overrides (where the vendor-level default is wrong). */
+const THEME_ICON_OVERRIDES: Record<string, string> = {
   'gruvbox-dark-hard': 'gruvbox-dark-hard.png',
   'gruvbox-dark': 'gruvbox-dark.png',
   'gruvbox-dark-soft': 'gruvbox-dark-soft.png',
   'gruvbox-light-hard': 'gruvbox-light-hard.png',
   'gruvbox-light': 'gruvbox-light.png',
   'gruvbox-light-soft': 'gruvbox-light-soft.png',
-  'github-dark': 'github-logo-dark.png',
-  'github-light': 'github-logo-light.png',
-  'bulma-dark': 'turbo-themes-logo-dark.png',
-  'bulma-light': 'turbo-themes-logo.png',
-  nord: 'nord.png',
-  'solarized-dark': 'solarized-dark.png',
-  'solarized-light': 'solarized-light.png',
-  'rose-pine': 'rose-pine.png',
   'rose-pine-moon': 'rose-pine-moon.png',
-  'rose-pine-dawn': 'rose-pine-dawn.png',
 };
 
-// Runtime validation: ensure every theme ID has entries in all lookup maps.
-// Runs at module evaluation time so missing entries fail the Astro build.
-for (const id of validThemeIds) {
-  if (!(id in themeNames)) throw new Error(`themeNames missing entry for "${id}"`);
-  if (!(id in themeIcons)) throw new Error(`themeIcons missing entry for "${id}"`);
-  if (!(id in themeAppearances)) throw new Error(`themeAppearances missing entry for "${id}"`);
+/** Icon filename (relative to /assets/img/) for the theme dropdown trigger. */
+export const themeIcons: Record<string, string> = {};
+
+for (const group of VENDOR_GROUPS) {
+  const vendorIcons = VENDOR_ICON_CONFIG[group.id];
+  if (!vendorIcons) continue;
+  for (const id of group.themeIds) {
+    if (id in THEME_ICON_OVERRIDES) {
+      themeIcons[id] = THEME_ICON_OVERRIDES[id];
+    } else {
+      const appearance = coreAppearances[id] ?? 'dark';
+      themeIcons[id] = appearance === 'dark' ? vendorIcons.dark : vendorIcons.light;
+    }
+  }
 }

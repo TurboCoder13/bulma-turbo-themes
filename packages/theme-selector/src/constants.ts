@@ -4,13 +4,14 @@
  */
 
 import type { ThemeFamily } from './types.js';
+import { DEFAULT_THEME as CORE_DEFAULT_THEME } from '@lgtm-hq/turbo-themes-core';
 
 // Re-export ThemeFamily for convenience
 export type { ThemeFamily } from './types.js';
 
 export const STORAGE_KEY = 'turbo-theme';
 export const LEGACY_STORAGE_KEYS = ['bulma-theme-flavor'];
-export const DEFAULT_THEME = 'catppuccin-mocha';
+export const DEFAULT_THEME = CORE_DEFAULT_THEME;
 
 // DOM element IDs and selectors - centralized to avoid magic strings
 export const DOM_IDS = {

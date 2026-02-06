@@ -8,3 +8,4 @@
 export * from './tokens/index.js';
 export * from './themes/registry.js';
 export * from './themes/types.js';
+export * from './themes/metadata.js';
