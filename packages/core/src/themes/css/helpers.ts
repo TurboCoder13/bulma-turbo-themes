@@ -201,8 +201,6 @@ export function generateComponentVariables(
   tokens: ThemeTokens,
   mappings: ComponentTokenMapping[]
 ): string[] {
-  if (!tokens.components) return [];
-
   const lines: string[] = [];
   let currentComponent = '';
 
