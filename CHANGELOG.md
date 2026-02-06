@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.15.0] - 2026-02-06
+
+### ✨ Added
+
+- add Solarized theme pack with light and dark variants (#333)
+
 ## [0.14.0] - 2026-02-05
 
 ### ✨ Added
