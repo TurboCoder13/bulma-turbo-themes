@@ -9,7 +9,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { generateBlockingScript } from '../src/blocking-script.js';
 import { DEFAULT_THEME, VALID_THEMES } from '@lgtm-hq/turbo-themes-core';
-import { STORAGE_KEY, LEGACY_STORAGE_KEYS } from '../src/constants.js';
+import { CSS_LINK_ID, STORAGE_KEY, LEGACY_STORAGE_KEYS } from '../src/constants.js';
 
 describe('generateBlockingScript', () => {
   describe('output structure', () => {
@@ -101,16 +101,16 @@ describe('generateBlockingScript', () => {
       delete (window as Record<string, unknown>).__INITIAL_THEME__;
 
       // Create theme CSS link element
-      const existing = document.getElementById('turbo-theme-css');
+      const existing = document.getElementById(CSS_LINK_ID);
       if (existing) existing.remove();
       const link = document.createElement('link');
-      link.id = 'turbo-theme-css';
+      link.id = CSS_LINK_ID;
       link.href = '/assets/css/themes/turbo/catppuccin-mocha.css';
       document.head.appendChild(link);
     });
 
     afterEach(() => {
-      const link = document.getElementById('turbo-theme-css');
+      const link = document.getElementById(CSS_LINK_ID);
       if (link) link.remove();
     });
 
@@ -164,13 +164,13 @@ describe('generateBlockingScript', () => {
     it('updates CSS link href for non-default theme', () => {
       mockLocalStorage['turbo-theme'] = 'dracula';
       execScript();
-      const link = document.getElementById('turbo-theme-css') as HTMLLinkElement;
+      const link = document.getElementById(CSS_LINK_ID) as HTMLLinkElement;
       expect(link.href).toContain('/assets/css/themes/turbo/dracula.css');
     });
 
     it('does not update CSS link for default theme', () => {
       execScript();
-      const link = document.getElementById('turbo-theme-css') as HTMLLinkElement;
+      const link = document.getElementById(CSS_LINK_ID) as HTMLLinkElement;
       expect(link.href).toContain('catppuccin-mocha.css');
     });
 
@@ -178,7 +178,7 @@ describe('generateBlockingScript', () => {
       document.documentElement.setAttribute('data-baseurl', '/my-site');
       mockLocalStorage['turbo-theme'] = 'dracula';
       execScript();
-      const link = document.getElementById('turbo-theme-css') as HTMLLinkElement;
+      const link = document.getElementById(CSS_LINK_ID) as HTMLLinkElement;
       expect(link.href).toContain('/my-site/assets/css/themes/turbo/dracula.css');
     });
 

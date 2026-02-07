@@ -10,6 +10,7 @@ import {
   applyThemeClass,
   loadThemeCSS,
 } from '../src/theme-loader.js';
+import { CSS_LINK_ID } from '../src/constants.js';
 
 describe('theme-loader', () => {
   beforeEach(() => {
@@ -181,6 +182,30 @@ describe('theme-loader', () => {
 
       const links = document.querySelectorAll('#theme-test-theme-css');
       expect(links.length).toBe(1);
+    });
+
+    it('adopts blocking script link element instead of creating duplicate', async () => {
+      // Simulate blocking script's link element
+      const blockingLink = document.createElement('link');
+      blockingLink.id = CSS_LINK_ID;
+      blockingLink.rel = 'stylesheet';
+      blockingLink.href = '/assets/css/themes/turbo/dracula.css';
+      document.head.appendChild(blockingLink);
+
+      const theme = {
+        id: 'dracula',
+        cssFile: 'assets/css/themes/dracula.css',
+      };
+
+      await loadThemeCSS(document, theme, '');
+
+      // Should adopt the blocking link (renamed to runtime convention)
+      expect(document.getElementById('theme-dracula-css')).toBe(blockingLink);
+      expect(blockingLink.getAttribute('data-theme-id')).toBe('dracula');
+      // Original blocking link id should no longer exist
+      expect(document.getElementById(CSS_LINK_ID)).toBeNull();
+      // Should not have created a second link
+      expect(document.querySelectorAll('link[rel="stylesheet"]').length).toBe(1);
     });
 
     it('cleans up old theme CSS links', async () => {

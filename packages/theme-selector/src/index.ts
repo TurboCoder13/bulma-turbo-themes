@@ -6,7 +6,7 @@
 import { migrateLegacyStorage, getSavedTheme, saveTheme, DEFAULT_THEME } from './storage.js';
 import { getBaseUrl, getCurrentThemeFromClasses } from './theme-loader.js';
 import { applyTheme, getCurrentTheme } from './apply-theme.js';
-import { DOM_IDS, THEME_FAMILIES } from './constants.js';
+import { CSS_LINK_ID, DOM_IDS, THEME_FAMILIES } from './constants.js';
 import { getThemes, getValidThemeIds } from './theme-resolver.js';
 import { createDropdownStateManager, type DropdownState } from './dropdown/state.js';
 import { wireDropdownEventHandlers } from './dropdown/events.js';
@@ -40,7 +40,7 @@ export async function initTheme(documentObj: Document, windowObj: Window): Promi
     if (currentTheme === savedTheme) {
       // Theme class already applied by blocking script, just ensure CSS is loaded
       const themeLinkId = `theme-${savedTheme}-css`;
-      const themeLink = documentObj.getElementById(themeLinkId);
+      const themeLink = documentObj.getElementById(themeLinkId) || documentObj.getElementById(CSS_LINK_ID);
       if (!themeLink) {
         // CSS not loaded yet, load it now
         await applyTheme(documentObj, savedTheme);

@@ -16,7 +16,7 @@
  */
 
 import { DEFAULT_THEME, VALID_THEMES } from '@lgtm-hq/turbo-themes-core';
-import { STORAGE_KEY, LEGACY_STORAGE_KEYS } from './constants.js';
+import { CSS_LINK_ID, STORAGE_KEY, LEGACY_STORAGE_KEYS } from './constants.js';
 
 export interface BlockingScriptOptions {
   /** Valid theme IDs to accept. Defaults to VALID_THEMES from core. */
@@ -51,10 +51,11 @@ export function generateBlockingScript(options: BlockingScriptOptions = {}): str
   const D = JSON.stringify(defaultTheme);
   const V = JSON.stringify(validThemes);
   const L = JSON.stringify(legacyKeys);
+  const C = JSON.stringify(CSS_LINK_ID);
 
   return [
     '(function(){try{',
-    `var S=${S};var D=${D};var V=${V};var L=${L};`,
+    `var S=${S};var D=${D};var V=${V};var L=${L};var C=${C};`,
     // Legacy migration
     'for(var i=0;i<L.length;i++){var lv=localStorage.getItem(L[i]);',
     'if(lv&&!localStorage.getItem(S)){localStorage.setItem(S,lv);localStorage.removeItem(L[i])}}',
@@ -63,8 +64,8 @@ export function generateBlockingScript(options: BlockingScriptOptions = {}): str
     // Apply to DOM
     'document.documentElement.setAttribute("data-theme",t);window.__INITIAL_THEME__=t;',
     // Update CSS link href for non-default theme
-    `if(t!==D){var b=document.documentElement.getAttribute("data-baseurl")||"";`,
-    'var l=document.getElementById("turbo-theme-css");',
+    'if(t!==D){var b=document.documentElement.getAttribute("data-baseurl")||"";',
+    'var l=document.getElementById(C);',
     'if(l)l.href=b+"/assets/css/themes/turbo/"+t+".css"}',
     '}catch(e){console.warn("Unable to load saved theme:",e)}})();',
   ].join('');
