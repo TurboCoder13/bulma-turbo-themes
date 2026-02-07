@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-The current theme switching mechanism uses dynamic `<link>` swapping with a blocking
+The current theme-switching mechanism uses dynamic `<link>` swapping with a blocking
 inline script. When a user revisits a page with a non-default theme saved in
 localStorage, the script swaps the stylesheet `href`, triggering a network request.
 Until the new CSS loads, the page renders with the default theme's variables — a visible
@@ -36,7 +36,7 @@ manipulates URLs read from localStorage, which is a CSP concern.
 
 ### Investigation Findings
 
-- **Size**: ~73KB raw / ~8KB gzipped for all 24 themes (just `[data-theme]` selectors)
+- **Size**: ~78 KB raw / ~8 KB gzipped for all 24 themes (just `[data-theme]` selectors)
 - **Parse time**: <5ms on modern browsers, well within the 16ms frame budget
 - **Caching**: A single cacheable file vs. cache-miss on each theme switch
 - **Browser support**: Attribute selectors since IE7; CSS custom properties since 2016
@@ -90,8 +90,8 @@ swapping, no network requests.
 
 ### Negative
 
-- Slightly larger initial CSS payload (~73KB raw, ~8KB gzipped) compared to loading a
-  single theme file (~3KB)
+- Slightly larger initial CSS payload (~78 KB raw, ~8 KB gzipped) compared to loading a
+  single theme file (~3 KB)
 - All themes are parsed even though only one is active (parse cost is <5ms, well within
   frame budget)
 

@@ -10,7 +10,7 @@ import {
   THEME_SHORT_LABELS,
   THEME_APPEARANCES as coreAppearances,
   VALID_THEMES,
-} from '../../../../packages/core/src/themes/metadata.js';
+} from '@lgtm-hq/turbo-themes-core/metadata';
 
 /** Theme group for dropdown rendering. */
 export interface ThemeGroup {
@@ -65,15 +65,22 @@ const THEME_ICON_OVERRIDES: Record<string, string> = {
 /** Icon filename (relative to /assets/img/) for the theme dropdown trigger. */
 export const themeIcons: Record<string, string> = {};
 
+const DEFAULT_ICONS = { dark: 'turbo-themes-logo-dark.png', light: 'turbo-themes-logo.png' };
+
 for (const group of VENDOR_GROUPS) {
   const vendorIcons = VENDOR_ICON_CONFIG[group.id];
-  if (!vendorIcons) continue;
+  if (!vendorIcons) {
+    console.warn(
+      `[theme-meta] Missing VENDOR_ICON_CONFIG for "${group.id}", using default icons for: ${group.themeIds.join(', ')}`,
+    );
+  }
+  const icons = vendorIcons ?? DEFAULT_ICONS;
   for (const id of group.themeIds) {
     if (id in THEME_ICON_OVERRIDES) {
       themeIcons[id] = THEME_ICON_OVERRIDES[id];
     } else {
       const appearance = coreAppearances[id] ?? 'dark';
-      themeIcons[id] = appearance === 'dark' ? vendorIcons.dark : vendorIcons.light;
+      themeIcons[id] = appearance === 'dark' ? icons.dark : icons.light;
     }
   }
 }

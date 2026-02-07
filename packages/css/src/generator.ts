@@ -369,9 +369,35 @@ export function generateThemesOnlyCss(flavors: readonly ThemeFlavor[]): string {
     throw new Error('No flavors provided');
   }
 
-  const themeCss = flavors.map((flavor) => generateThemeCss(flavor)).join('\n');
+  const allImports: string[] = [];
+  const themeBlocks: string[] = [];
 
-  return `/* Turbo Themes - All Theme Selectors (no :root defaults) */\n/* Load alongside turbo-core.css + turbo-base.css for FOUC-free theme switching */\n/* Generated automatically - do not edit */\n\n${themeCss}`;
+  for (const flavor of flavors) {
+    const css = generateThemeCss(flavor);
+    const lines = css.split('\n');
+    const imports: string[] = [];
+    const rest: string[] = [];
+
+    for (const line of lines) {
+      if (line.startsWith('@import ')) {
+        imports.push(line);
+      } else {
+        rest.push(line);
+      }
+    }
+
+    for (const imp of imports) {
+      if (!allImports.includes(imp)) {
+        allImports.push(imp);
+      }
+    }
+    themeBlocks.push(rest.join('\n'));
+  }
+
+  const header = `/* Turbo Themes - All Theme Selectors (no :root defaults) */\n/* Load alongside turbo-core.css + turbo-base.css for FOUC-free theme switching */\n/* Generated automatically - do not edit */`;
+  const importBlock = allImports.length > 0 ? `${allImports.join('\n')}\n\n` : '';
+
+  return `${importBlock}${header}\n\n${themeBlocks.join('\n')}`;
 }
 
 // Re-export the prefix for external use

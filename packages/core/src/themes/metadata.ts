@@ -7,6 +7,7 @@
  * from here instead of maintaining their own hardcoded copies.
  */
 
+import type { ThemeFlavor } from '../themes/types.js';
 import { flavors, themeIds, packages } from '../tokens/index.js';
 
 /** Default theme applied when no preference is stored. */
@@ -54,6 +55,16 @@ export interface VendorGroup {
  * Ordered array of vendor groups derived from packages + VENDOR_ORDER.
  * The "(synced)" suffix is stripped from display names.
  */
+// Dev-time validation: warn if packages has vendors not listed in VENDOR_ORDER
+const _packageKeys = Object.keys(packages);
+const _missingFromOrder = _packageKeys.filter((id) => !VENDOR_ORDER.includes(id));
+if (_missingFromOrder.length > 0) {
+  console.warn(
+    `[metadata] VENDOR_ORDER is missing vendor IDs present in packages: ${_missingFromOrder.join(', ')}. ` +
+      'Append them to VENDOR_ORDER so their themes are included in VENDOR_GROUPS.',
+  );
+}
+
 export const VENDOR_GROUPS: readonly VendorGroup[] = /*#__PURE__*/ VENDOR_ORDER.filter(
   (id) => id in packages,
 ).map((id) => {
@@ -61,7 +72,9 @@ export const VENDOR_GROUPS: readonly VendorGroup[] = /*#__PURE__*/ VENDOR_ORDER.
   return {
     id,
     displayName: pkg.name.replace(/\s*\(synced\)\s*/i, ''),
-    themeIds: pkg.flavors.map((f) => f!.id),
+    themeIds: pkg.flavors
+      .filter((f): f is ThemeFlavor => Boolean(f))
+      .map((f) => f.id),
   };
 });
 

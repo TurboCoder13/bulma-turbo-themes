@@ -16,8 +16,13 @@ import {
 
 describe('metadata', () => {
   describe('VALID_THEMES', () => {
+    // Exact count is a regression guard — update when themes are added/removed
     it('contains 24 themes', () => {
       expect(VALID_THEMES).toHaveLength(24);
+    });
+
+    it('is non-empty', () => {
+      expect(VALID_THEMES.length).toBeGreaterThan(0);
     });
 
     it('contains unique IDs', () => {
@@ -36,6 +41,7 @@ describe('metadata', () => {
       expect(VALID_THEME_SET.has(DEFAULT_THEME)).toBe(true);
     });
 
+    // Regression guard — intentionally hardcoded to catch accidental default changes
     it('is catppuccin-mocha', () => {
       expect(DEFAULT_THEME).toBe('catppuccin-mocha');
     });

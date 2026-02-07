@@ -195,6 +195,7 @@
         const VALID_THEMES = selector
           ? Array.from(selector.options).map((opt) => opt.value)
           : [];
+        if (VALID_THEMES.length === 0) return;
 
         function applyTheme(id) {
           const themeId = VALID_THEMES.includes(id) ? id : VALID_THEMES[0];

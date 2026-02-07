@@ -62,7 +62,8 @@ def get_theme_ids() -> list[str]:
 
 
 # Pre-defined theme IDs derived from tokens.json — always in sync
-THEME_IDS: tuple[str, ...] = tuple(sorted(get_theme_ids()))
+# Preserves canonical vendor-grouped ordering from tokens.json
+THEME_IDS: tuple[str, ...] = tuple(get_theme_ids())
 
 
 # Lazy-loaded THEMES dict for backwards compatibility

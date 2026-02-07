@@ -10,6 +10,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@lgtm-hq/turbo-themes-core": "workspace:*",
     "astro": "^5.7.13",
     "@astrojs/sitemap": "^3.3.1"
   },
