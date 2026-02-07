@@ -72,9 +72,7 @@ export const VENDOR_GROUPS: readonly VendorGroup[] = /*#__PURE__*/ VENDOR_ORDER.
   return {
     id,
     displayName: pkg.name.replace(/\s*\(synced\)\s*/i, ''),
-    themeIds: pkg.flavors
-      .filter((f): f is ThemeFlavor => Boolean(f))
-      .map((f) => f.id),
+    themeIds: pkg.flavors.flatMap((f) => (f ? [f.id] : [])),
   };
 });
 
@@ -116,12 +114,13 @@ export function getShortLabel(themeId: string): string {
     return flavor.label;
   }
 
-  // Strip vendor display name prefix (case-insensitive, handles accented chars)
-  const displayName = vendorPkg.name.replace(/\s*\(synced\)\s*/i, '');
+  // Strip vendor display name prefix (case-insensitive, NFC-normalized for
+  // consistent handling of composed/decomposed Unicode accents).
+  const displayName = vendorPkg.name.replace(/\s*\(synced\)\s*/i, '').normalize('NFC');
   const label = flavor.label;
 
   let result: string;
-  if (label.toLowerCase().startsWith(displayName.toLowerCase())) {
+  if (label.normalize('NFC').toLowerCase().startsWith(displayName.toLowerCase())) {
     const stripped = label.slice(displayName.length).trim();
     result = stripped || label;
   } else {

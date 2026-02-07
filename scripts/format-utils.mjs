@@ -82,6 +82,10 @@ export function stateTextOverrides(stateColors, inverse, textPrimary) {
     candidates.sort((a, b) => b.cr - a.cr);
     if (candidates[0].cr >= WCAG_AA_LARGE) {
       overrides[`${key}Text`] = candidates[0].color;
+    } else {
+      console.warn(
+        `[a11y] ${key}: no candidate meets WCAG AA Large (${WCAG_AA_LARGE}:1) on ${bg} — best: ${candidates[0].color} (${candidates[0].cr.toFixed(2)}:1)`,
+      );
     }
   }
   return overrides;

@@ -57,7 +57,7 @@
         "$type": "color"
       },
       "warningText": {
-        "$value": "#575279",
+        "$value": "#000000",
         "$type": "color"
       }
     },

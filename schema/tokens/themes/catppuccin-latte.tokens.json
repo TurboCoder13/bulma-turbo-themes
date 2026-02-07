@@ -61,11 +61,11 @@
         "$type": "color"
       },
       "successText": {
-        "$value": "#ffffff",
+        "$value": "#000000",
         "$type": "color"
       },
       "warningText": {
-        "$value": "#4c4f69",
+        "$value": "#000000",
         "$type": "color"
       }
     },
