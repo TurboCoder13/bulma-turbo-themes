@@ -8,6 +8,7 @@ import type { ThemeFamilyMeta } from '../constants.js';
 import { setItemActiveState } from './helpers.js';
 import { DOM_IDS, DOM_SELECTORS } from '../constants.js';
 import { resolveAssetPath } from '../theme-loader.js';
+import { ThemeErrors, logThemeError } from '../errors.js';
 import type { DropdownElements } from './state.js';
 
 export interface DropdownContext {
@@ -74,6 +75,7 @@ export function createThemeItemElement(
     try {
       icon.src = resolveAssetPath(theme.icon, baseUrl);
     } catch {
+      logThemeError(ThemeErrors.INVALID_ICON_PATH(theme.id));
       icon.src = theme.icon;
     }
     icon.alt = `${familyMeta.name} ${theme.name}`;

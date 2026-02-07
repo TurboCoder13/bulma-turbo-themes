@@ -206,6 +206,9 @@ var TurboThemeSelector = (function(exports) {
       return "";
     }
   }
+  function extractThemeIdFromLinkId(linkId) {
+    return linkId.replace(/^theme-/, "").replace(/-css$/, "");
+  }
   function clearLinkHandlers(link) {
     link.onload = null;
     link.onerror = null;
@@ -250,6 +253,7 @@ var TurboThemeSelector = (function(exports) {
     const themeLinkId = `theme-${theme.id}-css`;
     let themeLink = doc.getElementById(themeLinkId);
     if (!themeLink) {
+      const existingLinks = doc.querySelectorAll(DOM_SELECTORS.THEME_CSS_LINKS);
       themeLink = doc.createElement("link");
       themeLink.id = themeLinkId;
       themeLink.rel = "stylesheet";
@@ -264,16 +268,24 @@ var TurboThemeSelector = (function(exports) {
       doc.head.appendChild(themeLink);
       try {
         await loadCSSWithTimeout(themeLink, theme.id);
+        existingLinks.forEach((link) => {
+          const linkThemeId = extractThemeIdFromLinkId(link.id);
+          if (linkThemeId !== theme.id && linkThemeId !== "base") {
+            link.remove();
+          }
+        });
       } catch (error) {
+        themeLink.remove();
         logThemeError(ThemeErrors.CSS_LOAD_FAILED(theme.id, error));
       }
+    } else {
+      doc.querySelectorAll(DOM_SELECTORS.THEME_CSS_LINKS).forEach((link) => {
+        const linkThemeId = extractThemeIdFromLinkId(link.id);
+        if (linkThemeId !== theme.id && linkThemeId !== "base") {
+          link.remove();
+        }
+      });
     }
-    doc.querySelectorAll(DOM_SELECTORS.THEME_CSS_LINKS).forEach((link) => {
-      const linkThemeId = link.id.replace("theme-", "").replace("-css", "");
-      if (linkThemeId !== theme.id && linkThemeId !== "base") {
-        link.remove();
-      }
-    });
   }
   function setItemActiveState(item, isActive) {
     if (isActive) {
@@ -665,7 +677,12 @@ var TurboThemeSelector = (function(exports) {
     if (theme.icon) {
       const icon = documentObj.createElement("img");
       icon.className = "theme-icon";
-      icon.src = baseUrl ? `${baseUrl}/${theme.icon}` : theme.icon;
+      try {
+        icon.src = resolveAssetPath(theme.icon, baseUrl);
+      } catch {
+        logThemeError(ThemeErrors.INVALID_ICON_PATH(theme.id));
+        icon.src = theme.icon;
+      }
       icon.alt = `${familyMeta.name} ${theme.name}`;
       icon.width = 24;
       icon.height = 24;
