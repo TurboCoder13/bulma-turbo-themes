@@ -78,6 +78,14 @@ export const VENDOR_GROUPS: readonly VendorGroup[] = /*#__PURE__*/ VENDOR_ORDER.
   };
 });
 
+/** O(1) flavor lookup by ID, built once at module evaluation time. */
+const flavorById: ReadonlyMap<string, ThemeFlavor> = /*#__PURE__*/ new Map(
+  flavors.map((f) => [f.id, f]),
+);
+
+/** Cache for computed short labels. */
+const shortLabelCache = new Map<string, string>();
+
 /**
  * Strip the vendor prefix from a theme label to produce a short label.
  *
@@ -90,25 +98,38 @@ export const VENDOR_GROUPS: readonly VendorGroup[] = /*#__PURE__*/ VENDOR_ORDER.
  * @returns The short display label, or the full label if the theme is not found
  */
 export function getShortLabel(themeId: string): string {
-  const flavor = flavors.find((f) => f.id === themeId);
+  const cached = shortLabelCache.get(themeId);
+  if (cached !== undefined) return cached;
+
+  const flavor = flavorById.get(themeId);
   if (!flavor) return themeId;
 
   const vendorPkg = packages[flavor.vendor];
-  if (!vendorPkg) return flavor.label;
+  if (!vendorPkg) {
+    shortLabelCache.set(themeId, flavor.label);
+    return flavor.label;
+  }
 
   // Single-flavor vendors keep their full label
-  if (vendorPkg.flavors.length === 1) return flavor.label;
+  if (vendorPkg.flavors.length === 1) {
+    shortLabelCache.set(themeId, flavor.label);
+    return flavor.label;
+  }
 
   // Strip vendor display name prefix (case-insensitive, handles accented chars)
   const displayName = vendorPkg.name.replace(/\s*\(synced\)\s*/i, '');
   const label = flavor.label;
 
+  let result: string;
   if (label.toLowerCase().startsWith(displayName.toLowerCase())) {
     const stripped = label.slice(displayName.length).trim();
-    return stripped || label;
+    result = stripped || label;
+  } else {
+    result = label;
   }
 
-  return label;
+  shortLabelCache.set(themeId, result);
+  return result;
 }
 
 /** Pre-computed short labels for all themes. */

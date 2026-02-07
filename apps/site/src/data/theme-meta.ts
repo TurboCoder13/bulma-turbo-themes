@@ -84,3 +84,4 @@ for (const group of VENDOR_GROUPS) {
     }
   }
 }
+Object.freeze(themeIcons);

@@ -20,9 +20,6 @@ export interface ThemeTokens {
     success: string;
     warning: string;
     danger: string;
-    infoText?: string;
-    successText?: string;
-    warningText?: string;
     dangerText?: string;
   };
   border: {
