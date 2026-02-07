@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.17.1] - 2026-02-07
+
+### 🐛 Fixed
+
+- add per-state text color tokens for WCAG contrast on state buttons (#350)
+
 ## [0.17.0] - 2026-02-06
 
 ### ✨ Added
