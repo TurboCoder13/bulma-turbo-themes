@@ -55,6 +55,10 @@
       "danger": {
         "$value": "#9d0006",
         "$type": "color"
+      },
+      "warningText": {
+        "$value": "#3c3836",
+        "$type": "color"
       }
     },
     "border": {

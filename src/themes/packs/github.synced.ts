@@ -131,6 +131,8 @@ export const githubSynced: ThemePackage = {
           success: '#3fb950',
           warning: '#d29922',
           danger: '#f85149',
+          successText: '#000000',
+          warningText: '#000000',
         },
         border: {
           default: '#3d444d',

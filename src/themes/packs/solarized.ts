@@ -174,6 +174,9 @@ export const solarizedThemes: ThemePackage = {
           success: '#859900',
           warning: '#b58900',
           danger: '#dc322f',
+          infoText: '#002b36',
+          successText: '#002b36',
+          warningText: '#002b36',
         },
         border: {
           default: '#93a1a1',
