@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.19.0] - 2026-02-07
+
+### ✨ Added
+
+- consolidate theme metadata into single source of truth (#349)
+
 ## [0.18.0] - 2026-02-07
 
 ### ✨ Added
