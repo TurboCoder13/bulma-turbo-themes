@@ -48,6 +48,9 @@ export const catppuccinSynced: ThemePackage = {
           success: '#40a02b',
           warning: '#df8e1d',
           danger: '#d20f39',
+          infoText: '#000000',
+          successText: '#000000',
+          warningText: '#000000',
         },
         border: {
           default: '#9ca0b0',

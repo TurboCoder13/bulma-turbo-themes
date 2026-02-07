@@ -1,7 +1,7 @@
 {
   "$schema": "../../turbo-themes.schema.json#/$defs/ThemeFile",
   "id": "rose-pine-dawn",
-  "label": "Rosé Pine Dawn",
+  "label": "Ros\u00e9 Pine Dawn",
   "vendor": "rose-pine",
   "appearance": "light",
   "tokens": {
@@ -54,6 +54,10 @@
       },
       "danger": {
         "$value": "#b4637a",
+        "$type": "color"
+      },
+      "warningText": {
+        "$value": "#575279",
         "$type": "color"
       }
     },

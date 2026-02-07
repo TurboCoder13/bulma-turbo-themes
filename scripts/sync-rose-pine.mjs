@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 import { variants } from '@rose-pine/palette';
 
-import { escapeString, isValidIdentifier } from './format-utils.mjs';
+import { escapeString, isValidIdentifier, stateTextOverrides } from './format-utils.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -45,6 +45,16 @@ function buildTokens(variant) {
       success: rpColor('pine', variant) ?? '#22c55e',
       warning: rpColor('gold', variant) ?? '#facc15',
       danger: rpColor('love', variant) ?? '#ef4444',
+      ...stateTextOverrides(
+        {
+          info: rpColor('foam', variant) ?? brandPrimary,
+          success: rpColor('pine', variant) ?? '#22c55e',
+          warning: rpColor('gold', variant) ?? '#facc15',
+          danger: rpColor('love', variant) ?? '#ef4444',
+        },
+        bgBase,
+        textPrimary,
+      ),
     },
     border: { default: rpColor('highlightMed', variant) ?? '#e5e7eb' },
     accent: { link: rpColor('iris', variant) ?? brandPrimary },

@@ -326,16 +326,19 @@ export const gruvboxThemes: ThemePackage = {
       vendor: 'gruvbox',
       appearance: 'light',
       iconUrl: '/assets/img/gruvbox-light-soft.png',
-      tokens: buildTokens({
-        appearance: 'light',
-        background: {
-          base: '#f2e5bc',
-          surface: '#ebdbb2',
-          overlay: '#d5c4a1',
-        },
-        text: LIGHT_TEXT,
-        border: LIGHT_BORDER,
-      }),
+      tokens: (() => {
+        const t = buildTokens({
+          appearance: 'light',
+          background: {
+            base: '#f2e5bc',
+            surface: '#ebdbb2',
+            overlay: '#d5c4a1',
+          },
+          text: LIGHT_TEXT,
+          border: LIGHT_BORDER,
+        });
+        return { ...t, state: { ...t.state, warningText: '#3c3836' } };
+      })(),
     },
   ],
 } as const;

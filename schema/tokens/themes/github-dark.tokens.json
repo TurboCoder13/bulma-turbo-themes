@@ -55,6 +55,14 @@
       "danger": {
         "$value": "#f85149",
         "$type": "color"
+      },
+      "successText": {
+        "$value": "#0d1117",
+        "$type": "color"
+      },
+      "warningText": {
+        "$value": "#0d1117",
+        "$type": "color"
       }
     },
     "border": {

@@ -83,9 +83,9 @@
   background: var(--turbo-brand-primary);
 }
 
-/* State variants */
+/* State variants - use per-state text tokens with bg-base fallback (#267) */
 .btn-success {
-  color: var(--turbo-bg-base);
+  color: var(--turbo-state-success-text, var(--turbo-bg-base));
   background: var(--turbo-state-success);
 }
 
@@ -94,7 +94,7 @@
 }
 
 .btn-warning {
-  color: var(--turbo-bg-base);
+  color: var(--turbo-state-warning-text, var(--turbo-bg-base));
   background: var(--turbo-state-warning);
 }
 
@@ -103,7 +103,7 @@
 }
 
 .btn-danger {
-  color: var(--turbo-bg-base);
+  color: var(--turbo-state-danger-text, var(--turbo-bg-base));
   background: var(--turbo-state-danger);
 }
 
@@ -112,7 +112,7 @@
 }
 
 .btn-info {
-  color: var(--turbo-bg-base);
+  color: var(--turbo-state-info-text, var(--turbo-bg-base));
   background: var(--turbo-state-info);
 }
 

@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { escapeString, isValidIdentifier } from './format-utils.mjs';
+import { escapeString, isValidIdentifier, stateTextOverrides } from './format-utils.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -83,6 +83,11 @@ function buildTokens(tokens, appearance) {
       success: successColor,
       warning: warningColor,
       danger: dangerColor,
+      ...stateTextOverrides(
+        { info: infoColor, success: successColor, warning: warningColor, danger: dangerColor },
+        textInverse,
+        textPrimary,
+      ),
     },
     border: { default: borderDefault },
     accent: { link: linkColor },

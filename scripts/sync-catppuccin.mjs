@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 import { flavors as catFlavors } from '@catppuccin/palette';
 
-import { escapeString, isValidIdentifier } from './format-utils.mjs';
+import { escapeString, isValidIdentifier, stateTextOverrides } from './format-utils.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,6 +42,16 @@ function buildTokens(flavor) {
       success: catColor('green', flavor) ?? '#22c55e',
       warning: catColor('yellow', flavor) ?? '#facc15',
       danger: catColor('red', flavor) ?? '#ef4444',
+      ...stateTextOverrides(
+        {
+          info: catColor('sky', flavor) ?? brandPrimary,
+          success: catColor('green', flavor) ?? '#22c55e',
+          warning: catColor('yellow', flavor) ?? '#facc15',
+          danger: catColor('red', flavor) ?? '#ef4444',
+        },
+        bgBase,
+        textPrimary,
+      ),
     },
     border: { default: catColor('overlay0', flavor) ?? '#e5e7eb' },
     accent: { link: catColor('blue', flavor) ?? brandPrimary },
