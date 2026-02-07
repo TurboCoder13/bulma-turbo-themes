@@ -33,12 +33,14 @@ export function resolveInitialTheme(windowObj: Window, validThemes: string[]): s
 
 /**
  * Sanitizes a base URL to prevent XSS via protocol injection.
- * Only allows relative paths; rejects protocol-relative and absolute URLs.
+ * Strips leading whitespace and control characters, then rejects
+ * protocol-relative and absolute URLs. Only allows relative paths.
  */
 export function sanitizeBaseUrl(raw: string): string {
-  if (raw.startsWith('//')) return '';
-  if (/^[a-z][a-z0-9+.-]*:/i.test(raw)) return '';
-  return raw;
+  const normalized = raw.replace(/^[\s\u0000-\u001F\u007F]+/, '');
+  if (normalized.startsWith('//')) return '';
+  if (/^[a-z][a-z0-9+.-]*:/i.test(normalized)) return '';
+  return normalized;
 }
 
 /**
@@ -98,7 +100,8 @@ export function applyInitialTheme(
     const baseUrl = sanitizeBaseUrl(doc.documentElement.getAttribute('data-baseurl') || '');
     const themeLink = doc.getElementById('turbo-theme-css') as HTMLLinkElement | null;
     if (themeLink) {
-      themeLink.href = buildThemeCssHref(baseUrl, theme);
+      const href = buildThemeCssHref(baseUrl, theme);
+      themeLink.href = new URL(href, windowObj.location.href).pathname;
     }
   }
 

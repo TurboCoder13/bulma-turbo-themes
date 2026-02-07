@@ -74,7 +74,7 @@ export function createThemeItemElement(
     icon.className = 'theme-icon';
     try {
       icon.src = resolveAssetPath(theme.icon, baseUrl);
-    } catch (err) {
+    } catch {
       logThemeError(ThemeErrors.INVALID_ICON_PATH(theme.id));
       icon.src = theme.icon;
     }

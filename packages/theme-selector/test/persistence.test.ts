@@ -160,6 +160,24 @@ describe('persistence', () => {
     it('rejects protocol-relative URL', () => {
       expect(sanitizeBaseUrl('//evil.com')).toBe('');
     });
+
+    it('strips leading whitespace before checking protocol', () => {
+      expect(sanitizeBaseUrl('  javascript:alert(1)')).toBe('');
+    });
+
+    it('strips leading control characters before checking protocol', () => {
+      expect(sanitizeBaseUrl('\x00javascript:alert(1)')).toBe('');
+      expect(sanitizeBaseUrl('\x1Fjavascript:alert(1)')).toBe('');
+      expect(sanitizeBaseUrl('\x7Fjavascript:alert(1)')).toBe('');
+    });
+
+    it('strips leading whitespace before checking protocol-relative URL', () => {
+      expect(sanitizeBaseUrl('\t//evil.com')).toBe('');
+    });
+
+    it('strips leading whitespace from valid paths', () => {
+      expect(sanitizeBaseUrl('  /turbo')).toBe('/turbo');
+    });
   });
 
   describe('buildThemeCssHref', () => {
