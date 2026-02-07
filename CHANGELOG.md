@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.18.0] - 2026-02-07
+
+### ✨ Added
+
+- add turbo-themes-all.css for FOUC-free theme switching (#348)
+
 ## [0.17.2] - 2026-02-07
 
 ### 🐛 Fixed
