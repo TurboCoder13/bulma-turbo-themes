@@ -8,6 +8,7 @@
   "workspaces": [
     "packages/*",
     "packages/adapters/*",
+    "apps/site",
     "examples/react",
     "examples/vue",
     "examples/bootstrap"
