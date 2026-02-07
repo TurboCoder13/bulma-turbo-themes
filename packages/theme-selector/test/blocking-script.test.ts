@@ -105,7 +105,7 @@ describe('generateBlockingScript', () => {
       if (existing) existing.remove();
       const link = document.createElement('link');
       link.id = CSS_LINK_ID;
-      link.href = '/assets/css/themes/turbo/catppuccin-mocha.css';
+      link.href = `/assets/css/themes/turbo/${DEFAULT_THEME}.css`;
       document.head.appendChild(link);
     });
 
@@ -114,17 +114,15 @@ describe('generateBlockingScript', () => {
       if (link) link.remove();
     });
 
-    const validThemes = ['catppuccin-mocha', 'dracula', 'nord'];
-
     function execScript(options = {}) {
-      const script = generateBlockingScript({ validThemes, ...options });
+      const script = generateBlockingScript({ validThemes: VALID_THEMES, ...options });
       // nosemgrep: javascript.browser.security.eval-detected.eval-detected -- test-only: eval is the only way to execute the generated IIFE string in happy-dom
       eval(script);
     }
 
     it('sets data-theme to default when localStorage is empty', () => {
       execScript();
-      expect(document.documentElement.getAttribute('data-theme')).toBe('catppuccin-mocha');
+      expect(document.documentElement.getAttribute('data-theme')).toBe(DEFAULT_THEME);
     });
 
     it('sets data-theme to stored theme when valid', () => {
@@ -136,7 +134,7 @@ describe('generateBlockingScript', () => {
     it('falls back to default when stored theme is invalid', () => {
       mockLocalStorage['turbo-theme'] = 'nonexistent';
       execScript();
-      expect(document.documentElement.getAttribute('data-theme')).toBe('catppuccin-mocha');
+      expect(document.documentElement.getAttribute('data-theme')).toBe(DEFAULT_THEME);
     });
 
     it('sets window.__INITIAL_THEME__', () => {
@@ -171,7 +169,7 @@ describe('generateBlockingScript', () => {
     it('does not update CSS link for default theme', () => {
       execScript();
       const link = document.getElementById(CSS_LINK_ID) as HTMLLinkElement;
-      expect(link.href).toContain('catppuccin-mocha.css');
+      expect(link.href).toContain(`${DEFAULT_THEME}.css`);
     });
 
     it('uses data-baseurl for CSS link href', () => {
