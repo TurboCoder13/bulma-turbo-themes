@@ -126,41 +126,41 @@ describe('generateBlockingScript', () => {
     });
 
     it('sets data-theme to stored theme when valid', () => {
-      mockLocalStorage['turbo-theme'] = 'dracula';
+      mockLocalStorage[STORAGE_KEY] = 'dracula';
       execScript();
       expect(document.documentElement.getAttribute('data-theme')).toBe('dracula');
     });
 
     it('falls back to default when stored theme is invalid', () => {
-      mockLocalStorage['turbo-theme'] = 'nonexistent';
+      mockLocalStorage[STORAGE_KEY] = 'nonexistent';
       execScript();
       expect(document.documentElement.getAttribute('data-theme')).toBe(DEFAULT_THEME);
     });
 
     it('sets window.__INITIAL_THEME__', () => {
-      mockLocalStorage['turbo-theme'] = 'nord';
+      mockLocalStorage[STORAGE_KEY] = 'nord';
       execScript();
       expect(window.__INITIAL_THEME__).toBe('nord');
     });
 
     it('migrates legacy storage key', () => {
-      mockLocalStorage['bulma-theme-flavor'] = 'dracula';
+      mockLocalStorage[LEGACY_STORAGE_KEYS[0]] = 'dracula';
       execScript();
       expect(document.documentElement.getAttribute('data-theme')).toBe('dracula');
-      expect(window.localStorage.setItem).toHaveBeenCalledWith('turbo-theme', 'dracula');
-      expect(window.localStorage.removeItem).toHaveBeenCalledWith('bulma-theme-flavor');
+      expect(window.localStorage.setItem).toHaveBeenCalledWith(STORAGE_KEY, 'dracula');
+      expect(window.localStorage.removeItem).toHaveBeenCalledWith(LEGACY_STORAGE_KEYS[0]);
     });
 
     it('does not migrate when current key already exists', () => {
-      mockLocalStorage['turbo-theme'] = 'nord';
-      mockLocalStorage['bulma-theme-flavor'] = 'dracula';
+      mockLocalStorage[STORAGE_KEY] = 'nord';
+      mockLocalStorage[LEGACY_STORAGE_KEYS[0]] = 'dracula';
       execScript();
       expect(document.documentElement.getAttribute('data-theme')).toBe('nord');
       expect(window.localStorage.removeItem).not.toHaveBeenCalled();
     });
 
     it('updates CSS link href for non-default theme', () => {
-      mockLocalStorage['turbo-theme'] = 'dracula';
+      mockLocalStorage[STORAGE_KEY] = 'dracula';
       execScript();
       const link = document.getElementById(CSS_LINK_ID) as HTMLLinkElement;
       expect(link.href).toContain('/assets/css/themes/turbo/dracula.css');
@@ -174,7 +174,7 @@ describe('generateBlockingScript', () => {
 
     it('uses data-baseurl for CSS link href', () => {
       document.documentElement.setAttribute('data-baseurl', '/my-site');
-      mockLocalStorage['turbo-theme'] = 'dracula';
+      mockLocalStorage[STORAGE_KEY] = 'dracula';
       execScript();
       const link = document.getElementById(CSS_LINK_ID) as HTMLLinkElement;
       expect(link.href).toContain('/my-site/assets/css/themes/turbo/dracula.css');
@@ -189,6 +189,7 @@ describe('generateBlockingScript', () => {
         configurable: true,
       });
       expect(() => execScript()).not.toThrow();
+      expect(warnSpy).toHaveBeenCalledWith('Unable to load saved theme:', expect.any(Error));
       warnSpy.mockRestore();
     });
   });
