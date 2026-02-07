@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.17.2] - 2026-02-07
+
+### 🐛 Fixed
+
+- add unit tests for inline theme switching logic (#268) (#347)
+
 ## [0.17.1] - 2026-02-07
 
 ### 🐛 Fixed
