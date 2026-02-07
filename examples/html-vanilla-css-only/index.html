@@ -1,5 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html
+  lang="en"
+  data-theme-whitelist="catppuccin-mocha catppuccin-macchiato catppuccin-frappe catppuccin-latte dracula gruvbox-dark-hard gruvbox-dark gruvbox-dark-soft gruvbox-light-hard gruvbox-light gruvbox-light-soft github-dark github-light bulma-dark bulma-light nord solarized-dark solarized-light rose-pine rose-pine-moon rose-pine-dawn tokyo-night-storm tokyo-night-dark tokyo-night-light"
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,7 +15,9 @@
     <script>
       try {
         var t = localStorage.getItem('turbo-theme');
-        if (t) document.documentElement.setAttribute('data-theme', t);
+        var w = document.documentElement.getAttribute('data-theme-whitelist');
+        if (t && w && (' ' + w + ' ').indexOf(' ' + t + ' ') > -1)
+          document.documentElement.setAttribute('data-theme', t);
       } catch (e) {}
     </script>
     <style>

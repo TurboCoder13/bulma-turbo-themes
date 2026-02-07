@@ -57,11 +57,13 @@ selectors for every registered theme. No `:root` block is included.
 <link rel="stylesheet" href="turbo-base.css" />
 <link rel="stylesheet" href="turbo-themes-all.css" />
 
-<!-- Blocking script: 2 lines, no URL manipulation -->
+<!-- Blocking script: validate against whitelist, no URL manipulation -->
 <script>
   try {
     var t = localStorage.getItem('turbo-theme');
-    if (t) document.documentElement.setAttribute('data-theme', t);
+    var w = document.documentElement.getAttribute('data-theme-whitelist');
+    if (t && w && (' ' + w + ' ').indexOf(' ' + t + ' ') > -1)
+      document.documentElement.setAttribute('data-theme', t);
   } catch (e) {}
 </script>
 ```
