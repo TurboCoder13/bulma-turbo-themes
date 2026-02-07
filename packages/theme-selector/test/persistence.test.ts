@@ -440,5 +440,27 @@ describe('persistence', () => {
       expect(opt1.classList.contains('active')).toBe(false);
       expect(opt2.classList.contains('active')).toBe(true);
     });
+
+    it('matches on data-theme-id attribute (dropdown items)', () => {
+      const opt1 = document.createElement('button');
+      opt1.setAttribute('data-theme-id', 'dracula');
+      const opt2 = document.createElement('button');
+      opt2.setAttribute('data-theme-id', 'nord-dark');
+
+      updateActiveTheme([opt1, opt2], 'dracula');
+
+      expect(opt1.classList.contains('active')).toBe(true);
+      expect(opt2.classList.contains('active')).toBe(false);
+    });
+
+    it('prefers data-theme-id over data-theme when both present', () => {
+      const opt = document.createElement('button');
+      opt.setAttribute('data-theme-id', 'dracula');
+      opt.setAttribute('data-theme', 'nord-dark');
+
+      updateActiveTheme([opt], 'dracula');
+
+      expect(opt.classList.contains('active')).toBe(true);
+    });
   });
 });

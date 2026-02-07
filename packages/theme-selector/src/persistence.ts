@@ -112,10 +112,11 @@ export function applyInitialTheme(
  * Updates active theme state on theme option elements.
  *
  * Toggles the `active` class on each element based on whether its
- * `data-theme` attribute matches the given active theme ID.
+ * `data-theme-id` or `data-theme` attribute matches the given active theme ID.
  */
 export function updateActiveTheme(options: ArrayLike<Element>, activeTheme: string): void {
   Array.from(options).forEach((opt) => {
-    opt.classList.toggle('active', opt.getAttribute('data-theme') === activeTheme);
+    const themeId = opt.getAttribute('data-theme-id') || opt.getAttribute('data-theme');
+    opt.classList.toggle('active', themeId === activeTheme);
   });
 }
