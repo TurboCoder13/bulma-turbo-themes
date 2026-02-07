@@ -120,8 +120,9 @@ export async function wireFlavorSelector(
   return { cleanup: () => abortController.abort() };
 }
 
-// Re-export navbar and accessibility functions
+// Re-export navbar, accessibility, and blocking script functions
 export { initNavbar, enhanceAccessibility };
+export { generateBlockingScript, type BlockingScriptOptions } from './blocking-script.js';
 
 // Re-export types
 export type { ThemeMode, ThemeAppearance, ThemeFamily } from './types.js';
