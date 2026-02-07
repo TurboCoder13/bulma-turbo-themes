@@ -7,6 +7,7 @@ import {
   generateThemeCss,
   generateCoreCss,
   generateCombinedCss,
+  generateThemesOnlyCss,
 } from '../src/generator.js';
 import { CSS_GENERATOR_MOCK_TOKENS } from '../../../test/fixtures/tokens.js';
 
@@ -384,5 +385,42 @@ describe('generateCombinedCss', () => {
     const css = generateCombinedCss(flavors, 'nonexistent');
 
     expect(css).toContain(':root {');
+  });
+});
+
+describe('generateThemesOnlyCss', () => {
+  const flavors = [
+    mockFlavor,
+    { ...mockFlavor, id: 'second-theme', label: 'Second Theme' },
+  ];
+
+  it('should include header comment', () => {
+    const css = generateThemesOnlyCss(flavors);
+
+    expect(css).toContain('All Theme Selectors');
+    expect(css).toContain('do not edit');
+  });
+
+  it('should NOT include :root block', () => {
+    const css = generateThemesOnlyCss(flavors);
+
+    expect(css).not.toContain(':root {');
+  });
+
+  it('should include all theme selectors', () => {
+    const css = generateThemesOnlyCss(flavors);
+
+    expect(css).toContain('[data-theme="test-theme"]');
+    expect(css).toContain('[data-theme="second-theme"]');
+  });
+
+  it('should throw if no flavors provided', () => {
+    expect(() => generateThemesOnlyCss([])).toThrow('No flavors provided');
+  });
+
+  it('should throw if flavors is falsy', () => {
+    expect(() => generateThemesOnlyCss(null as unknown as ThemeFlavor[])).toThrow(
+      'No flavors provided',
+    );
   });
 });
