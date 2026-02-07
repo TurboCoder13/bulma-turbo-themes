@@ -13,6 +13,9 @@ export const STORAGE_KEY = 'turbo-theme';
 export const LEGACY_STORAGE_KEYS = ['bulma-theme-flavor'];
 export const DEFAULT_THEME = CORE_DEFAULT_THEME;
 
+/** ID of the CSS link element used by the blocking script to prevent FOUC. */
+export const CSS_LINK_ID = 'turbo-theme-css';
+
 // DOM element IDs and selectors - centralized to avoid magic strings
 export const DOM_IDS = {
   THEME_FLAVOR_TRIGGER: 'theme-flavor-trigger',

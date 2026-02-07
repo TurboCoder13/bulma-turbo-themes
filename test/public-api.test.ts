@@ -3052,6 +3052,7 @@ describe('public API', () => {
       // Mock getElementById to return null for theme link check (so link gets created)
       Object.defineProperty(document, 'getElementById', {
         value: vi.fn((id) => {
+          if (id === 'turbo-theme-css') return null; // blocking script link — not present in this test
           if (id.startsWith('theme-') && id.endsWith('-css')) return null;
           if (id === 'theme-flavor-trigger-icon') return mockElement;
           return mockElement;

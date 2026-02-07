@@ -3,7 +3,7 @@
  * Theme CSS loading utilities
  */
 
-import { DOM_SELECTORS } from './constants.js';
+import { CSS_LINK_ID, DOM_SELECTORS } from './constants.js';
 import { ThemeErrors, logThemeError } from './errors.js';
 
 export interface ThemeInfo {
@@ -148,6 +148,16 @@ export async function loadThemeCSS(
 ): Promise<void> {
   const themeLinkId = `theme-${theme.id}-css`;
   let themeLink = doc.getElementById(themeLinkId) as HTMLLinkElement | null;
+
+  // Adopt the blocking script's link element if present (prevents duplicate CSS loads)
+  if (!themeLink) {
+    const blockingLink = doc.getElementById(CSS_LINK_ID) as HTMLLinkElement | null;
+    if (blockingLink) {
+      blockingLink.id = themeLinkId;
+      blockingLink.setAttribute('data-theme-id', theme.id);
+      themeLink = blockingLink;
+    }
+  }
 
   if (!themeLink) {
     // Record existing theme links before appending the new one

@@ -1,0 +1,196 @@
+// SPDX-License-Identifier: MIT
+/**
+ * Tests for the blocking script generator.
+ *
+ * Validates that generateBlockingScript() produces a self-contained IIFE
+ * that correctly prevents FOUC by applying the saved theme before first paint.
+ */
+
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { generateBlockingScript } from '../src/blocking-script.js';
+import { DEFAULT_THEME, VALID_THEMES } from '@lgtm-hq/turbo-themes-core';
+import { CSS_LINK_ID, STORAGE_KEY, LEGACY_STORAGE_KEYS } from '../src/constants.js';
+
+describe('generateBlockingScript', () => {
+  describe('output structure', () => {
+    it('returns a non-empty string', () => {
+      const script = generateBlockingScript();
+      expect(script).toBeTruthy();
+      expect(typeof script).toBe('string');
+    });
+
+    it('is wrapped in an IIFE', () => {
+      const script = generateBlockingScript();
+      expect(script).toMatch(/^\(function\(\)\{/);
+      expect(script).toMatch(/\}\)\(\);$/);
+    });
+
+    it('contains try-catch for error handling', () => {
+      const script = generateBlockingScript();
+      expect(script).toContain('try{');
+      expect(script).toContain('catch(e)');
+    });
+  });
+
+  describe('embedded constants', () => {
+    it('embeds STORAGE_KEY from core by default', () => {
+      const script = generateBlockingScript();
+      expect(script).toContain(JSON.stringify(STORAGE_KEY));
+    });
+
+    it('embeds DEFAULT_THEME from core by default', () => {
+      const script = generateBlockingScript();
+      expect(script).toContain(JSON.stringify(DEFAULT_THEME));
+    });
+
+    it('embeds VALID_THEMES from core by default', () => {
+      const script = generateBlockingScript();
+      expect(script).toContain(JSON.stringify(VALID_THEMES));
+    });
+
+    it('embeds LEGACY_STORAGE_KEYS from core by default', () => {
+      const script = generateBlockingScript();
+      expect(script).toContain(JSON.stringify(LEGACY_STORAGE_KEYS));
+    });
+
+    it('respects custom storageKey option', () => {
+      const script = generateBlockingScript({ storageKey: 'my-theme' });
+      expect(script).toContain('"my-theme"');
+      expect(script).not.toContain(JSON.stringify(STORAGE_KEY));
+    });
+
+    it('respects custom defaultTheme option', () => {
+      const script = generateBlockingScript({ defaultTheme: 'dracula' });
+      expect(script).toContain('"dracula"');
+    });
+
+    it('respects custom validThemes option', () => {
+      const script = generateBlockingScript({ validThemes: ['a', 'b'] });
+      expect(script).toContain('["a","b"]');
+    });
+
+    it('respects custom legacyKeys option', () => {
+      const script = generateBlockingScript({ legacyKeys: ['old-key'] });
+      expect(script).toContain('["old-key"]');
+    });
+  });
+
+  describe('execution behavior', () => {
+    let mockLocalStorage: Record<string, string>;
+
+    beforeEach(() => {
+      mockLocalStorage = {};
+
+      Object.defineProperty(window, 'localStorage', {
+        value: {
+          getItem: vi.fn((key: string) => mockLocalStorage[key] ?? null),
+          setItem: vi.fn((key: string, value: string) => {
+            mockLocalStorage[key] = value;
+          }),
+          removeItem: vi.fn((key: string) => {
+            delete mockLocalStorage[key];
+          }),
+        },
+        writable: true,
+        configurable: true,
+      });
+
+      // Set up minimal DOM
+      document.documentElement.setAttribute('data-baseurl', '');
+      document.documentElement.removeAttribute('data-theme');
+      delete (window as Record<string, unknown>).__INITIAL_THEME__;
+
+      // Create theme CSS link element
+      const existing = document.getElementById(CSS_LINK_ID);
+      if (existing) existing.remove();
+      const link = document.createElement('link');
+      link.id = CSS_LINK_ID;
+      link.href = `/assets/css/themes/turbo/${DEFAULT_THEME}.css`;
+      document.head.appendChild(link);
+    });
+
+    afterEach(() => {
+      const link = document.getElementById(CSS_LINK_ID);
+      if (link) link.remove();
+    });
+
+    function execScript(options = {}) {
+      const script = generateBlockingScript({ validThemes: VALID_THEMES, ...options });
+      // nosemgrep: javascript.browser.security.eval-detected.eval-detected -- test-only: eval is the only way to execute the generated IIFE string in happy-dom
+      eval(script);
+    }
+
+    it('sets data-theme to default when localStorage is empty', () => {
+      execScript();
+      expect(document.documentElement.getAttribute('data-theme')).toBe(DEFAULT_THEME);
+    });
+
+    it('sets data-theme to stored theme when valid', () => {
+      mockLocalStorage[STORAGE_KEY] = 'dracula';
+      execScript();
+      expect(document.documentElement.getAttribute('data-theme')).toBe('dracula');
+    });
+
+    it('falls back to default when stored theme is invalid', () => {
+      mockLocalStorage[STORAGE_KEY] = 'nonexistent';
+      execScript();
+      expect(document.documentElement.getAttribute('data-theme')).toBe(DEFAULT_THEME);
+    });
+
+    it('sets window.__INITIAL_THEME__', () => {
+      mockLocalStorage[STORAGE_KEY] = 'nord';
+      execScript();
+      expect(window.__INITIAL_THEME__).toBe('nord');
+    });
+
+    it('migrates legacy storage key', () => {
+      mockLocalStorage[LEGACY_STORAGE_KEYS[0]] = 'dracula';
+      execScript();
+      expect(document.documentElement.getAttribute('data-theme')).toBe('dracula');
+      expect(window.localStorage.setItem).toHaveBeenCalledWith(STORAGE_KEY, 'dracula');
+      expect(window.localStorage.removeItem).toHaveBeenCalledWith(LEGACY_STORAGE_KEYS[0]);
+    });
+
+    it('does not migrate when current key already exists', () => {
+      mockLocalStorage[STORAGE_KEY] = 'nord';
+      mockLocalStorage[LEGACY_STORAGE_KEYS[0]] = 'dracula';
+      execScript();
+      expect(document.documentElement.getAttribute('data-theme')).toBe('nord');
+      expect(window.localStorage.removeItem).not.toHaveBeenCalled();
+    });
+
+    it('updates CSS link href for non-default theme', () => {
+      mockLocalStorage[STORAGE_KEY] = 'dracula';
+      execScript();
+      const link = document.getElementById(CSS_LINK_ID) as HTMLLinkElement;
+      expect(link.href).toContain('/assets/css/themes/turbo/dracula.css');
+    });
+
+    it('does not update CSS link for default theme', () => {
+      execScript();
+      const link = document.getElementById(CSS_LINK_ID) as HTMLLinkElement;
+      expect(link.href).toContain(`${DEFAULT_THEME}.css`);
+    });
+
+    it('uses data-baseurl for CSS link href', () => {
+      document.documentElement.setAttribute('data-baseurl', '/my-site');
+      mockLocalStorage[STORAGE_KEY] = 'dracula';
+      execScript();
+      const link = document.getElementById(CSS_LINK_ID) as HTMLLinkElement;
+      expect(link.href).toContain('/my-site/assets/css/themes/turbo/dracula.css');
+    });
+
+    it('handles localStorage exceptions gracefully', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      Object.defineProperty(window, 'localStorage', {
+        get() {
+          throw new Error('SecurityError');
+        },
+        configurable: true,
+      });
+      expect(() => execScript()).not.toThrow();
+      expect(warnSpy).toHaveBeenCalledWith('Unable to load saved theme:', expect.any(Error));
+      warnSpy.mockRestore();
+    });
+  });
+});

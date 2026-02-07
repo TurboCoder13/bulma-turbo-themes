@@ -798,6 +798,7 @@ export const createBaseUrlTestSetup = (
 
   Object.defineProperty(document, 'getElementById', {
     value: vi.fn((id) => {
+      if (id === 'turbo-theme-css') return null; // blocking script link — not present in these tests
       if (id.startsWith('theme-') && id.endsWith('-css')) return null;
       if (id === 'theme-flavor-trigger-icon') return mockElement;
       if (id === 'theme-flavor-menu') return mockElement;

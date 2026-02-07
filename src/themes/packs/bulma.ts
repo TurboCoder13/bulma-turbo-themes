@@ -48,9 +48,9 @@ export const bulmaThemes: ThemePackage = {
           info: '#3e8ed0',
           success: '#48c78e',
           warning: '#ffe08a',
+          danger: '#f14668',
           successText: '#363636',
           warningText: '#363636',
-          danger: '#f14668',
         },
         border: {
           default: '#dbdbdb',
