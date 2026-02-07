@@ -1,0 +1,238 @@
+<!doctype html>
+<html
+  lang="en"
+  data-theme-whitelist="catppuccin-mocha catppuccin-macchiato catppuccin-frappe catppuccin-latte dracula gruvbox-dark-hard gruvbox-dark gruvbox-dark-soft gruvbox-light-hard gruvbox-light gruvbox-light-soft github-dark github-light bulma-dark bulma-light nord solarized-dark solarized-light rose-pine rose-pine-moon rose-pine-dawn tokyo-night-storm tokyo-night-dark tokyo-night-light"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Turbo Themes - CSS-Only Theme Switching (No FOUC)</title>
+    <!-- Turbo Themes: Core defaults + base styles + ALL theme selectors -->
+    <link rel="stylesheet" href="../../packages/css/dist/turbo-core.css" />
+    <link rel="stylesheet" href="../../packages/css/dist/turbo-base.css" />
+    <link rel="stylesheet" href="../../packages/css/dist/turbo-themes-all.css" />
+    <!-- Blocking script: set data-theme before first paint (no network request) -->
+    <script>
+      try {
+        var t = localStorage.getItem('turbo-theme');
+        var w = document.documentElement.getAttribute('data-theme-whitelist');
+        if (t && w && (' ' + w + ' ').indexOf(' ' + t + ' ') > -1)
+          document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    </script>
+    <style>
+      :root {
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+        line-height: 1.4;
+      }
+      body {
+        background: var(--turbo-bg-base);
+        color: var(--turbo-text-primary);
+        padding: 2rem;
+        max-width: 960px;
+        margin: 0 auto;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      select,
+      button {
+        font: inherit;
+      }
+      .card {
+        background: var(--turbo-bg-surface);
+        border: 1px solid var(--turbo-border-default);
+        border-radius: 10px;
+        padding: 1rem;
+        margin: 1rem 0;
+        box-shadow: 0 4px 20px
+          color-mix(in srgb, var(--turbo-shadow-200) 60%, transparent);
+      }
+      .card h2 {
+        margin-top: 0;
+        color: var(--turbo-text-primary);
+      }
+      .muted {
+        color: var(--turbo-text-muted);
+      }
+      .badge {
+        display: inline-block;
+        background: var(--turbo-state-success);
+        color: var(--turbo-text-inverse);
+        font-size: 0.75rem;
+        padding: 0.15rem 0.5rem;
+        border-radius: 4px;
+        vertical-align: middle;
+        margin-left: 0.5rem;
+      }
+      .buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .btn {
+        border: none;
+        border-radius: 6px;
+        padding: 0.5rem 0.9rem;
+        cursor: pointer;
+        color: var(--turbo-text-inverse);
+      }
+      .btn-primary {
+        background: var(--turbo-brand-primary);
+      }
+      .btn-success {
+        background: var(--turbo-state-success);
+      }
+      .btn-danger {
+        background: var(--turbo-state-danger);
+      }
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 0.75rem;
+      }
+      .metric {
+        padding: 0.75rem;
+        border-radius: 8px;
+        background: var(--turbo-bg-overlay);
+        border: 1px solid var(--turbo-border-strong);
+      }
+      code {
+        background: var(--turbo-bg-overlay);
+        padding: 0.1rem 0.3rem;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>CSS-Only Theme Switching <span class="badge">No FOUC</span></h1>
+        <p class="muted">
+          All themes loaded via <code>turbo-themes-all.css</code>. Switching only
+          changes the <code>data-theme</code> attribute — no stylesheet swapping, no
+          network requests.
+        </p>
+      </div>
+      <label>
+        <span class="muted">Theme</span><br />
+        <select id="theme-selector">
+          <option value="catppuccin-mocha">Catppuccin Mocha</option>
+          <option value="catppuccin-macchiato">Catppuccin Macchiato</option>
+          <option value="catppuccin-frappe">Catppuccin Frappe</option>
+          <option value="catppuccin-latte">Catppuccin Latte</option>
+          <option value="dracula">Dracula</option>
+          <option value="gruvbox-dark-hard">Gruvbox Dark Hard</option>
+          <option value="gruvbox-dark">Gruvbox Dark</option>
+          <option value="gruvbox-dark-soft">Gruvbox Dark Soft</option>
+          <option value="gruvbox-light-hard">Gruvbox Light Hard</option>
+          <option value="gruvbox-light">Gruvbox Light</option>
+          <option value="gruvbox-light-soft">Gruvbox Light Soft</option>
+          <option value="github-dark">GitHub Dark</option>
+          <option value="github-light">GitHub Light</option>
+          <option value="bulma-dark">Bulma Dark</option>
+          <option value="bulma-light">Bulma Light</option>
+          <option value="nord">Nord</option>
+          <option value="solarized-dark">Solarized Dark</option>
+          <option value="solarized-light">Solarized Light</option>
+          <option value="rose-pine">Rosé Pine</option>
+          <option value="rose-pine-moon">Rosé Pine Moon</option>
+          <option value="rose-pine-dawn">Rosé Pine Dawn</option>
+          <option value="tokyo-night-storm">Tokyo Night Storm</option>
+          <option value="tokyo-night-dark">Tokyo Night</option>
+          <option value="tokyo-night-light">Tokyo Night Light</option>
+        </select>
+      </label>
+    </header>
+
+    <section class="card">
+      <h2>Buttons</h2>
+      <div class="buttons">
+        <button class="btn btn-primary">Primary</button>
+        <button class="btn btn-success">Success</button>
+        <button class="btn btn-danger">Danger</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Content</h2>
+      <p>
+        Body text using <code>var(--turbo-text-primary)</code>. Secondary copy uses
+        <span class="muted">var(--turbo-text-muted)</span>.
+      </p>
+      <ul>
+        <li>Lists inherit typography tokens.</li>
+        <li>Background surfaces use <code>--turbo-bg-surface</code>.</li>
+        <li>Borders use <code>--turbo-border-default</code>.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Metrics</h2>
+      <div class="metrics">
+        <div class="metric">
+          <div class="muted">Active Users</div>
+          <strong>1,248</strong>
+        </div>
+        <div class="metric">
+          <div class="muted">Conversions</div>
+          <strong>3.8%</strong>
+        </div>
+        <div class="metric">
+          <div class="muted">Latency</div>
+          <strong>123 ms</strong>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      (function () {
+        const STORAGE_KEY = 'turbo-theme';
+        const selector = document.getElementById('theme-selector');
+        const VALID_THEMES = selector
+          ? Array.from(selector.options).map((opt) => opt.value)
+          : [];
+        if (VALID_THEMES.length === 0) return;
+
+        function applyTheme(id) {
+          const themeId = VALID_THEMES.includes(id) ? id : VALID_THEMES[0];
+          document.documentElement.setAttribute('data-theme', themeId);
+          try {
+            localStorage.setItem(STORAGE_KEY, themeId);
+          } catch (e) {
+            console.warn('Could not persist theme selection', e);
+          }
+        }
+
+        // Sync selector with current data-theme (set by blocking script)
+        let initial = VALID_THEMES[0];
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved && VALID_THEMES.includes(saved)) {
+            initial = saved;
+          }
+        } catch (e) {
+          // ignore
+        }
+        if (selector) {
+          selector.value = initial;
+        }
+        applyTheme(initial);
+
+        if (selector) {
+          selector.addEventListener('change', (e) => {
+            applyTheme(e.target.value);
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

@@ -347,5 +347,58 @@ export function generateCombinedCss(
   return `/* Turbo Themes - Pure CSS Custom Properties */\n/* Generated automatically - do not edit */\n\n${coreCss}\n${themeCss}`;
 }
 
+/**
+ * Generates a CSS file containing only `[data-theme]` selectors for all themes.
+ *
+ * Unlike `generateCombinedCss()`, this does NOT include a `:root` block.
+ * Designed for CSS-only theme switching where a blocking script sets
+ * `data-theme` on `<html>` — no stylesheet swapping required, eliminating FOUC.
+ *
+ * @param flavors - Array of all theme flavors
+ * @returns CSS string with all `[data-theme]` selectors
+ *
+ * @example
+ * ```ts
+ * const css = generateThemesOnlyCss(flavors);
+ * // [data-theme="catppuccin-mocha"] { ... }
+ * // [data-theme="dracula"] { ... }
+ * ```
+ */
+export function generateThemesOnlyCss(flavors: readonly ThemeFlavor[]): string {
+  if (!flavors || flavors.length === 0) {
+    throw new Error('No flavors provided');
+  }
+
+  const allImports: string[] = [];
+  const themeBlocks: string[] = [];
+
+  for (const flavor of flavors) {
+    const css = generateThemeCss(flavor);
+    const lines = css.split('\n');
+    const imports: string[] = [];
+    const rest: string[] = [];
+
+    for (const line of lines) {
+      if (line.startsWith('@import ')) {
+        imports.push(line);
+      } else {
+        rest.push(line);
+      }
+    }
+
+    for (const imp of imports) {
+      if (!allImports.includes(imp)) {
+        allImports.push(imp);
+      }
+    }
+    themeBlocks.push(rest.join('\n'));
+  }
+
+  const header = `/* Turbo Themes - All Theme Selectors (no :root defaults) */\n/* Load alongside turbo-core.css + turbo-base.css for FOUC-free theme switching */\n/* Generated automatically - do not edit */`;
+  const importBlock = allImports.length > 0 ? `${allImports.join('\n')}\n\n` : '';
+
+  return `${importBlock}${header}\n\n${themeBlocks.join('\n')}`;
+}
+
 // Re-export the prefix for external use
 export { CSS_VAR_PREFIX };

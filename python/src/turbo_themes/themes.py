@@ -61,20 +61,9 @@ def get_theme_ids() -> list[str]:
     return list(_load_tokens().themes.keys())
 
 
-# Pre-defined theme IDs for convenience
-THEME_IDS: tuple[str, ...] = tuple(
-    [
-        "bulma-dark",
-        "bulma-light",
-        "catppuccin-frappe",
-        "catppuccin-latte",
-        "catppuccin-macchiato",
-        "catppuccin-mocha",
-        "dracula",
-        "github-dark",
-        "github-light",
-    ]
-)
+# Pre-defined theme IDs derived from tokens.json — always in sync
+# Preserves canonical vendor-grouped ordering from tokens.json
+THEME_IDS: tuple[str, ...] = tuple(get_theme_ids())
 
 
 # Lazy-loaded THEMES dict for backwards compatibility
@@ -90,7 +79,7 @@ class _ThemesProxy:
         return iter(get_all_themes())
 
     def __len__(self) -> int:
-        return len(THEME_IDS)
+        return len(get_all_themes())
 
     def keys(self) -> Any:
         return get_all_themes().keys()

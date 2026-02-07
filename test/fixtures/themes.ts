@@ -61,25 +61,9 @@ export const THEME_IDS = {
 
 /**
  * Real theme IDs from the production theme registry.
- * Use these when testing against actual theme data.
+ * Derived from the canonical token data — always in sync.
  */
-export const REAL_THEME_IDS = {
-  catppuccinMocha: 'catppuccin-mocha',
-  catppuccinLatte: 'catppuccin-latte',
-  catppuccinFrappe: 'catppuccin-frappe',
-  catppuccinMacchiato: 'catppuccin-macchiato',
-  dracula: 'dracula',
-  githubDark: 'github-dark',
-  githubLight: 'github-light',
-  gruvboxDark: 'gruvbox-dark',
-  gruvboxLight: 'gruvbox-light',
-  nordDark: 'nord-dark',
-  solarizedDark: 'solarized-dark',
-  solarizedLight: 'solarized-light',
-  tokyoNightDark: 'tokyo-night-dark',
-  tokyoNightLight: 'tokyo-night-light',
-  tokyoNightStorm: 'tokyo-night-storm',
-} as const;
+export { themeIds as REAL_THEME_IDS } from '../../packages/core/src/tokens/index.js';
 
 /**
  * Theme appearances for filtering tests
