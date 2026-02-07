@@ -679,7 +679,8 @@ var TurboThemeSelector = (function(exports) {
       icon.className = "theme-icon";
       try {
         icon.src = resolveAssetPath(theme.icon, baseUrl);
-      } catch {
+      } catch (err) {
+        logThemeError(ThemeErrors.INVALID_ICON_PATH(theme.id));
         icon.src = theme.icon;
       }
       icon.alt = `${familyMeta.name} ${theme.name}`;

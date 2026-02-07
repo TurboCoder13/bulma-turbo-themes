@@ -14,6 +14,7 @@ import {
   buildThemeIconSrc,
   applyInitialTheme,
   updateActiveTheme,
+  sanitizeBaseUrl,
   DEFAULT_THEME,
 } from '../src/persistence.js';
 
@@ -124,6 +125,40 @@ describe('persistence', () => {
 
       expect(theme).toBe('catppuccin-latte');
       expect(mockLocalStorage.removeItem).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('sanitizeBaseUrl', () => {
+    it('allows empty string', () => {
+      expect(sanitizeBaseUrl('')).toBe('');
+    });
+
+    it('allows relative path', () => {
+      expect(sanitizeBaseUrl('/turbo')).toBe('/turbo');
+    });
+
+    it('allows nested relative path', () => {
+      expect(sanitizeBaseUrl('/my-site/demo')).toBe('/my-site/demo');
+    });
+
+    it('rejects javascript: protocol', () => {
+      expect(sanitizeBaseUrl('javascript:alert(1)')).toBe('');
+    });
+
+    it('rejects data: protocol', () => {
+      expect(sanitizeBaseUrl('data:text/html,<script>alert(1)</script>')).toBe('');
+    });
+
+    it('rejects http: absolute URL', () => {
+      expect(sanitizeBaseUrl('http://evil.com')).toBe('');
+    });
+
+    it('rejects https: absolute URL', () => {
+      expect(sanitizeBaseUrl('https://evil.com')).toBe('');
+    });
+
+    it('rejects protocol-relative URL', () => {
+      expect(sanitizeBaseUrl('//evil.com')).toBe('');
     });
   });
 
@@ -287,6 +322,20 @@ describe('persistence', () => {
       applyInitialTheme(document, window, ['dracula']);
 
       expect(link.href).toContain('/assets/css/themes/turbo/dracula.css');
+    });
+
+    it('sanitizes malicious data-baseurl to prevent XSS', () => {
+      mockLocalStorage.getItem = vi.fn(() => 'dracula');
+      document.documentElement.setAttribute('data-baseurl', 'javascript:alert(1)');
+
+      const link = document.createElement('link');
+      link.id = 'turbo-theme-css';
+      document.head.appendChild(link);
+
+      applyInitialTheme(document, window, ['dracula']);
+
+      expect(link.href).toContain('/assets/css/themes/turbo/dracula.css');
+      expect(link.href).not.toContain('javascript:');
     });
 
     it('handles localStorage error during initial theme resolution', () => {

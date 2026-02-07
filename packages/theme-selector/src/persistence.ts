@@ -32,6 +32,16 @@ export function resolveInitialTheme(windowObj: Window, validThemes: string[]): s
 }
 
 /**
+ * Sanitizes a base URL to prevent XSS via protocol injection.
+ * Only allows relative paths; rejects protocol-relative and absolute URLs.
+ */
+export function sanitizeBaseUrl(raw: string): string {
+  if (raw.startsWith('//')) return '';
+  if (/^[a-z][a-z0-9+.-]*:/i.test(raw)) return '';
+  return raw;
+}
+
+/**
  * Builds the full CSS href path for a theme.
  */
 export function buildThemeCssHref(baseUrl: string, themeId: string): string {
@@ -85,7 +95,7 @@ export function applyInitialTheme(
   windowObj.__INITIAL_THEME__ = theme;
 
   if (needsCssUpdate(theme)) {
-    const baseUrl = doc.documentElement.getAttribute('data-baseurl') || '';
+    const baseUrl = sanitizeBaseUrl(doc.documentElement.getAttribute('data-baseurl') || '');
     const themeLink = doc.getElementById('turbo-theme-css') as HTMLLinkElement | null;
     if (themeLink) {
       themeLink.href = buildThemeCssHref(baseUrl, theme);
