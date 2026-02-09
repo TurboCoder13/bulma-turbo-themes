@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.19.1] - 2026-02-09
+
+### 🐛 Fixed
+
+- add missing rose-pine.synced.ts to repository (#356)
+
 ## [0.19.0] - 2026-02-07
 
 ### ✨ Added
