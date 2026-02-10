@@ -10,6 +10,12 @@ The format is based on Keep a Changelog and this project adheres to SemVer.
 
 - TBD
 
+## [0.19.2] - 2026-02-10
+
+### 🐛 Fixed
+
+- build core package before site in build:ci:site (#359)
+
 ## [0.19.1] - 2026-02-09
 
 ### 🐛 Fixed
