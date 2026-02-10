@@ -103,7 +103,7 @@
     "build:tokens:all": "bun run build:tokens",
     "build:platforms": "node scripts/build-all-platforms.mjs",
     "serve": "bun run build && bun run build:js && bun run build:themes && cd apps/site && bun install && bun run dev",
-    "build:ci:site": "cd apps/site && bun install && bun run build",
+    "build:ci:site": "bun run build:core && cd apps/site && bun install && bun run build",
     "build:gem": "./scripts/build-gem.sh",
     "build:all": "bun run build && bun run build:gem",
     "test": "bun run test:packages && vitest run --coverage",
