@@ -9,15 +9,18 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: renovate
-  cancel-in-progress: false
-
 jobs:
   renovate:
     name: 🔄 Automated Dependency Updates
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    concurrency:
+      group: renovate
+      cancel-in-progress: false
     steps:
       - name: Harden Runner
         if: ${{ !env.ACT }}
@@ -31,8 +34,10 @@ jobs:
             github.com:443
             objects.githubusercontent.com:443
             pkg-containers.githubusercontent.com:443
+            release-assets.githubusercontent.com:443
             registry.npmjs.org:443
             rubygems.org:443
+
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
@@ -41,3 +46,5 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           configurationFile: renovate.json
+        env:
+          LOG_LEVEL: ${{ github.event_name == 'workflow_dispatch' && 'debug' || 'info' }}
